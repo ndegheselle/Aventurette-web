@@ -1,0 +1,11 @@
+{
+    "users": {
+        "login": "Connexion",
+        "logout": "Déconnexion",
+        "profil": "Profil",
+        "form": {
+            "email": "E-mail",
+            "password": "Mot de passe"
+        }
+    }
+}

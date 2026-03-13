@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: sunset --default, corporate;
+}
+
+/* Customize style */
+:root {
+  --radius-box: 0.5rem;
+}
