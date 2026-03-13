@@ -11,14 +11,6 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
-	Articles = "articles",
-	Clients = "clients",
-	Companies = "companies",
-	Estimates = "estimates",
-	EstimatesLines = "estimates_lines",
-	Invoices = "invoices",
-	InvoicesLines = "invoices_lines",
-	Services = "services",
 	Users = "users",
 }
 
@@ -100,116 +92,8 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export type ArticlesRecord = {
-	created: IsoAutoDateString
-	description?: string
-	id: string
-	name: string
-	quantity?: number
-	sku?: string
-	unitPrice: number
-	updated: IsoAutoDateString
-	vatRate?: number
-}
-
-export type ClientsRecord = {
-	adress: string
-	companyName?: string
-	created: IsoAutoDateString
-	email?: string
-	firstName: string
-	id: string
-	lastName: string
-	phone?: string
-	updated: IsoAutoDateString
-}
-
-export type CompaniesRecord = {
-	SIRET?: string
-	adress?: string
-	created: IsoAutoDateString
-	email?: string
-	id: string
-	logo?: FileNameString
-	name?: string
-	phone?: string
-	updated: IsoAutoDateString
-}
-
-export enum EstimatesStatusOptions {
-	"TEMPLATE" = "TEMPLATE",
-	"WAITING" = "WAITING",
-	"ACCEPTED" = "ACCEPTED",
-	"REFUSED" = "REFUSED",
-}
-export type EstimatesRecord = {
-	client: RecordIdString
-	created: IsoAutoDateString
-	id: string
-	lines?: RecordIdString[]
-	notes?: string
-	reference: string
-	status: EstimatesStatusOptions
-	updated: IsoAutoDateString
-}
-
-export type EstimatesLinesRecord = {
-	article?: RecordIdString
-	created: IsoAutoDateString
-	estimate: RecordIdString
-	id: string
-	quantity?: number
-	service?: RecordIdString
-	updated: IsoAutoDateString
-}
-
-export enum InvoicesStatusOptions {
-	"ISSUED" = "ISSUED",
-	"PAID" = "PAID",
-	"OVERDUE" = "OVERDUE"
-}
-export type InvoicesRecord = {
-	client: RecordIdString
-	created: IsoAutoDateString
-	dueDate: IsoDateString
-	estimate: RecordIdString
-	id: string
-	issuedAt: IsoDateString
-	lines?: RecordIdString[]
-	notes?: string
-	number: number
-	paidAt?: IsoDateString
-	status: InvoicesStatusOptions
-	updated: IsoAutoDateString
-}
-
-export type InvoicesLinesRecord = {
-	created: IsoAutoDateString
-	description?: string
-	id: string
-	invoice: RecordIdString
-	name?: string
-	quantity?: number
-	unitPrice: number
-	updated: IsoAutoDateString
-	vatRate?: number
-}
-
-export type ServicesRecord = {
-	code?: string
-	created: IsoAutoDateString
-	description?: string
-	durationHours?: number
-	id: string
-	name: string
-	unitPrice?: number
-	updated: IsoAutoDateString
-	vatRate?: number
-}
-
 export type UsersRecord = {
 	avatar?: FileNameString
-	company: RecordIdString
 	created: IsoAutoDateString
 	email: string
 	emailVisibility?: boolean
@@ -227,14 +111,6 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
-export type ArticlesResponse<Texpand = unknown> = Required<ArticlesRecord> & BaseSystemFields<Texpand>
-export type ClientsResponse<Texpand = unknown> = Required<ClientsRecord> & BaseSystemFields<Texpand>
-export type CompaniesResponse<Texpand = unknown> = Required<CompaniesRecord> & BaseSystemFields<Texpand>
-export type EstimatesResponse<Texpand = unknown> = Required<EstimatesRecord> & BaseSystemFields<Texpand>
-export type EstimatesLinesResponse<Texpand = unknown> = Required<EstimatesLinesRecord> & BaseSystemFields<Texpand>
-export type InvoicesResponse<Texpand = unknown> = Required<InvoicesRecord> & BaseSystemFields<Texpand>
-export type InvoicesLinesResponse<Texpand = unknown> = Required<InvoicesLinesRecord> & BaseSystemFields<Texpand>
-export type ServicesResponse<Texpand = unknown> = Required<ServicesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -245,14 +121,6 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
-	articles: ArticlesRecord
-	clients: ClientsRecord
-	companies: CompaniesRecord
-	estimates: EstimatesRecord
-	estimates_lines: EstimatesLinesRecord
-	invoices: InvoicesRecord
-	invoices_lines: InvoicesLinesRecord
-	services: ServicesRecord
 	users: UsersRecord
 }
 
@@ -262,14 +130,6 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
-	articles: ArticlesResponse
-	clients: ClientsResponse
-	companies: CompaniesResponse
-	estimates: EstimatesResponse
-	estimates_lines: EstimatesLinesResponse
-	invoices: InvoicesResponse
-	invoices_lines: InvoicesLinesResponse
-	services: ServicesResponse
 	users: UsersResponse
 }
 
