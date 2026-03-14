@@ -6,7 +6,8 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/osutils"
-	// _ "backend/migrations"
+
+	_ "backend/migrations"
 )
 
 func main() {

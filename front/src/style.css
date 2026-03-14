@@ -8,3 +8,8 @@
 :root {
   --radius-box: 0.5rem;
 }
+
+.lucide {
+  width: 18px;
+  height: 18px;
+}

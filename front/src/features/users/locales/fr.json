@@ -1,11 +1,20 @@
 {
     "users": {
-        "login": "Connexion",
         "logout": "Déconnexion",
+        "login": "Connexion",
+        "login.label": "Connexion",
+        "register": "S'inscrire",
+        "register.label": "Créer un nouveau",
         "profil": "Profil",
         "form": {
+            "withOauth2": "ou connectez vous avec",
             "email": "E-mail",
-            "password": "Mot de passe"
+            "password": "Mot de passe",
+            "confirmPassword": "Confirmer le mot de passe",
+            "accountNew": "Créer un nouveau compte",
+            "accountAlready": "J'ai déjà un compte",
+            "rememberMe": "Rester connecté",
+            "error": "E-mail ou mot de passe faux"
         }
     }
 }

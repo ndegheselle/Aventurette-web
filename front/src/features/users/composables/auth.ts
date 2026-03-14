@@ -7,6 +7,11 @@ const user = ref<UserData | null>();
 export const useAuth = () => {
     const router = useRouter();
 
+    const register = async (email: string, password: string, passwordConfirm: string) => {
+        user.value = await users.register(email, password, passwordConfirm);
+        isLoggedIn.value = user.value != null;
+    }
+
     const login = async (email: string, password: string) => {
         user.value = await users.login(email, password);
         isLoggedIn.value = user.value != null;
@@ -35,6 +40,7 @@ export const useAuth = () => {
         isLoggedIn,
         user,
         login,
+        register,
         logout,
         refresh
     };

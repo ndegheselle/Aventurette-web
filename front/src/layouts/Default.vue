@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import SettingsMenu from '@common/components/navbar/SettingsMenu.vue';
 import AlertsContainer from '@common/components/popups/AlertsContainer.vue';
 import ConfirmationModal from '@common/components/popups/ConfirmationModal.vue';
-import UserMenu from '@features/users/navbar/UserMenu.vue';
+import UserMenu from '@features/users/components/navbar/UserMenu.vue';
+import { LanguagesIcon, MenuIcon, SunMoonIcon } from 'lucide-vue-next';
 
 let isDark = JSON.parse(localStorage.getItem('isdark') ?? 'false');
 function toggleTheme(dark: boolean) {
@@ -15,32 +17,21 @@ function toggleTheme(dark: boolean) {
         <nav class="navbar bg-base-300 shadow-sm">
             <div class="navbar-start">
                 <div class="dropdown">
-                    <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-                        <i class="fa-solid fa-bars-staggered"></i>
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-square lg:hidden">
+                        <MenuIcon />
                     </div>
                     <ul tabindex="-1"
                         class="menu menu-sm dropdown-content bg-base-200 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                        
                     </ul>
                 </div>
 
-                <RouterLink to="/" class="text-xl">Aventurette</RouterLink>
-            </div>
-            <div class="navbar-center hidden lg:flex">
-                <ul class="menu menu-horizontal px-1">
-                </ul>
+                <img class="ms-1" src="/icon.svg" style="height: 32px;" />
+                <RouterLink to="/" class="ms-2 text-xl">Aventurette</RouterLink>
             </div>
 
             <div class="navbar-end">
-                <button class="btn btn-ghost btn-circle avatar me-1">
-                    <label class="swap swap-rotate">
-                        <input type="checkbox" class="theme-controller" :checked="isDark" value="corporate"
-                            @change="() => toggleTheme(!isDark)" />
-                        <i class="swap-on fa-solid fa-sun"></i>
-                        <i class="swap-off fa-solid fa-moon"></i>
-                    </label>
-                </button>
-                <UserMenu />
+                <SettingsMenu />
+                <UserMenu class="ms-1" />
             </div>
         </nav>
 

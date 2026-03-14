@@ -1,0 +1,11 @@
+{
+    "settings": {
+        "theme": "Thème",
+        "language": "Langue",
+        "themes": {
+            "auto": "Automatique",
+            "dark": "Sombre",
+            "light": "Claire"
+        }
+    }
+}
