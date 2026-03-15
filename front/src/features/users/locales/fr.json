@@ -13,8 +13,7 @@
             "confirmPassword": "Confirmer le mot de passe",
             "accountNew": "Créer un nouveau compte",
             "accountAlready": "J'ai déjà un compte",
-            "rememberMe": "Rester connecté",
-            "error": "E-mail ou mot de passe faux"
+            "rememberMe": "Rester connecté"
         }
     }
 }

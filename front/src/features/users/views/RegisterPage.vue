@@ -5,8 +5,11 @@ import { NotImplementedError } from '@common/utils/dev';
 import { reactive, ref } from 'vue';
 import { useAuth } from '@features/users/composables/auth';
 import type { ClientResponseError } from 'pocketbase';
+import FormInput from '@common/components/data/FormInput.vue';
+import { useValidationErrors } from '@common/utils/dev';
 
 const { register } = useAuth();
+const { errors, getError } = useValidationErrors();
 
 const credentials = reactive({
     email: 'test@example.com',
@@ -14,20 +17,15 @@ const credentials = reactive({
     passwordConfirm: '1234567890'
 });
 
-const error = ref('');
 const isLoading = ref(false);
 
 async function onRegister() {
     isLoading.value = true;
-    error.value = '';
+    errors.value = null;
     try {
         await register(credentials.email, credentials.password, credentials.passwordConfirm);
     } catch (e: any) {
-        const clientError = e as ClientResponseError;
-        if (clientError) {
-            
-            error.value = e.data?.message;
-        }
+        errors.value = (e as ClientResponseError).data.data;
     } finally {
         isLoading.value = false;
     }
@@ -42,20 +40,11 @@ function handleProvider(provider: string) {
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
         <legend class="fieldset-legend">{{ $t('users.register') }}</legend>
 
-        <label class="label">{{ $t('users.form.email') }}</label>
-        <input type="email" class="input" :class="{ 'input-error': !!error }" v-model="credentials.email" />
-
-        <span class="label">{{ $t('users.form.password') }}</span>
-        <input type="password" class="input" :class="{ 'input-error': !!error }" v-model="credentials.password" />
-
-        <span class="label">{{ $t('users.form.confirmPassword') }}</span>
-        <input type="password" class="input" :class="{ 'input-error': !!error }"
-            v-model="credentials.passwordConfirm" />
-
-        <small class="text-error" v-if="error">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            {{ error }}
-        </small>
+        <FormInput type="email" :label="$t('users.form.email')" v-model="credentials.email" :error="getError('email')" />
+        <FormInput type="password" :label="$t('users.form.password')" v-model="credentials.password"
+            :error="getError('password')" />
+        <FormInput type="password" :label="$t('users.form.confirmPassword')" v-model="credentials.passwordConfirm"
+            :error="getError('passwordConfirm')" />
 
         <div class="divider">{{ $t('users.form.withOauth2') }}</div>
         <LoginProviders @provider-selected="handleProvider" />

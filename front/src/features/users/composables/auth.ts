@@ -1,4 +1,5 @@
 import { users, type UserData } from '@features/users/data/users';
+import { userLoginRoute } from '@features/users/routes';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -21,7 +22,7 @@ export const useAuth = () => {
         await users.logout();
         user.value = null;
         isLoggedIn.value = user.value != null;
-        router.push('/user/login');
+        router.push({name: userLoginRoute});
     }
 
     const refresh = async () => {

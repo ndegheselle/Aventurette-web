@@ -7,5 +7,13 @@
             "dark": "Sombre",
             "light": "Claire"
         }
+    },
+    "validation": {
+        "errors": {
+            "validation_values_mismatch": "Les valeurs ne correspondent pas.",
+            "validation_required": "Valeur obligatoire.",
+            "validation_invalid_email": "Email invalide ou déjà utilisé.",
+            "validation_not_unique": "Cette valeur est déjà utilisé."
+        }
     }
 }

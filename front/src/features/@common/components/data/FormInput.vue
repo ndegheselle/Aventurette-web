@@ -2,8 +2,8 @@
 const model = defineModel<string | number | null>();
 
 defineProps<{
-  label: string,
-  error?: { message: string }
+  label: any,
+  error?: string
 }>();
 
 defineOptions({
@@ -14,7 +14,7 @@ defineOptions({
 <template>
   <div class="form-control w-full">
     <label v-if="label"
-           class="label">
+           class="label" :class="{ 'text-error': error }">
       <span class="label-text">{{ label }}</span>
     </label>
     <input class="input input-bordered w-full"
@@ -24,7 +24,7 @@ defineOptions({
     <small v-if="error"
            class="text-error mt-1">
       <i class="fa-solid fa-triangle-exclamation"></i>
-      {{ error.message }}
+      {{ error }}
     </small>
   </div>
 </template>
