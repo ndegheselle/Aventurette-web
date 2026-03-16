@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { UsersTypeOptions } from '@common/database/types.g';
-import { userProfilFamilyRoute } from '@features/users/routes';
+import { userFamilyChildrensRoute } from '@features/users/routes';
 import { useRouter } from 'vue-router';
+import { useAuth } from '@features/users/composables/auth';
 
 const router = useRouter();
-function selectType(type: UsersTypeOptions) {
-    router.push({ name: userProfilFamilyRoute });
+const { update } = useAuth();
+
+async function selectType(type: UsersTypeOptions) {
+    await update({type: type});
+    router.push({ name: userFamilyChildrensRoute });
 }
 </script>
 

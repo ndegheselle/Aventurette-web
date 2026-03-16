@@ -37,7 +37,7 @@ export class Paginated<T> {
 
 export interface IDataCrud<TResponse extends BaseEntity> {
     create(data: TResponse): Promise<TResponse>;
-    update(id: string, data: Partial<TResponse>): Promise<void>;
+    update(id: string, data: Partial<TResponse>): Promise<TResponse>;
     delete(id: string): Promise<void>;
 
     getById(id: string): Promise<TResponse | null>;

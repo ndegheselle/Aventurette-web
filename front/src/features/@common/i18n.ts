@@ -24,6 +24,7 @@ for (const path in files) {
 }
 
 export const i18n = createI18n({
+    legacy: false,
     locale: "fr",
     messages
 });

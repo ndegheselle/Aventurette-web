@@ -38,8 +38,8 @@ export class PocketbaseCrud<TResponse extends BaseSystemFields> implements IData
         return await this.collection.create<TResponse>(data, { expand: this.expands?.join(",") });
     }
 
-    async update(id: string, data: Partial<TResponse>): Promise<void> {
-        await this.collection.update<TResponse>(id, data, { expand: this.expands?.join(",") });
+    async update(id: string, data: Partial<TResponse>): Promise<TResponse> {
+        return await this.collection.update<TResponse>(id, data, { expand: this.expands?.join(",") });
     }
 
     async delete(id: string): Promise<void> {

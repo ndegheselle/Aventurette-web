@@ -11,8 +11,8 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
-	Chilren = "chilren",
-	Family = "family",
+	Childrens = "childrens",
+	Families = "families",
 	Users = "users",
 }
 
@@ -94,15 +94,17 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export type ChilrenRecord = {
+export type ChildrensRecord = {
+	age?: number
 	created: IsoAutoDateString
 	id: string
 	name?: string
 	updated: IsoAutoDateString
 }
 
-export type FamilyRecord = {
+export type FamiliesRecord = {
 	childrens?: RecordIdString[]
+    user: RecordIdString
 	created: IsoAutoDateString
 	id: string
 	name?: string
@@ -132,8 +134,8 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
-export type ChilrenResponse<Texpand = unknown> = Required<ChilrenRecord> & BaseSystemFields<Texpand>
-export type FamilyResponse<Texpand = unknown> = Required<FamilyRecord> & BaseSystemFields<Texpand>
+export type ChildrensResponse<Texpand = unknown> = Required<ChildrensRecord> & BaseSystemFields<Texpand>
+export type FamiliesResponse<Texpand = unknown> = Required<FamiliesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -144,8 +146,8 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
-	chilren: ChilrenRecord
-	family: FamilyRecord
+	childrens: ChildrensRecord
+	families: FamiliesRecord
 	users: UsersRecord
 }
 
@@ -155,8 +157,8 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
-	chilren: ChilrenResponse
-	family: FamilyResponse
+	childrens: ChildrensResponse
+	families: FamiliesResponse
 	users: UsersResponse
 }
 
