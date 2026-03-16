@@ -3,9 +3,8 @@
         "logout": "Déconnexion",
         "login": "Connexion",
         "login.label": "Connexion",
-        "register": "S'inscrire",
+        "register": "Inscription",
         "register.label": "Créer un nouveau",
-        "profil": "Profil",
         "form": {
             "withOauth2": "ou connectez vous avec",
             "email": "E-mail",
@@ -14,6 +13,22 @@
             "accountNew": "Créer un nouveau compte",
             "accountAlready": "J'ai déjà un compte",
             "rememberMe": "Rester connecté"
+        }
+    },
+    "profil": {
+        "title": "Profil",
+        "selection": "Qui êtes vous ?",
+        "family": {
+            "title": "Une famille",
+            "description": "Une description pour la famille."
+        },
+        "association": {
+            "title": "Une association",
+            "description": "Une description pour l'association."
+        },
+        "school": {
+            "title": "Une école",
+            "description": "Une description pour l'école."
         }
     }
 }

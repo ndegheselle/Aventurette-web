@@ -1,8 +1,12 @@
+import type { ClientResponseError } from "pocketbase";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 export class NotImplementedError extends Error { }
 
+/**
+ * Handle errors
+ */
 export const useValidationErrors = () => {
     const errors = ref<{
         [key: string]: any;
@@ -17,7 +21,13 @@ export const useValidationErrors = () => {
         return code ? t(`validation.errors.${code}`) : undefined;
     }
 
+    function setErrors(ex: any)
+    {
+        errors.value = (ex as ClientResponseError)?.data.data ?? null;
+    }
+
     return {
+        setErrors,
         getError,
         errors
     };

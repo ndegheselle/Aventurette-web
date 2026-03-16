@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuth } from '@features/users/composables/auth';
-import { LogOutIcon, UserPenIcon } from 'lucide-vue-next';
 import { userLoginRoute, userRegisterRoute } from '@features/users/routes';
+import { LogOutIcon, UserPenIcon } from 'lucide-vue-next';
 
 const { isLoggedIn, user, logout } = useAuth();
 
@@ -12,14 +12,14 @@ const { isLoggedIn, user, logout } = useAuth();
         <div tabindex="0" role="button" class="btn btn-circle">
             <div class="avatar">
                 <div class="rounded-full">
-                    <img src="https://i.pravatar.cc/64" />
+                    <img src="https://placehold.co/64" />
                 </div>
             </div>
         </div>
         <ul tabindex="-1" class="menu dropdown-content bg-base-200 rounded-box z-1 mt-3 w-52 p-2 shadow">
             <li>
                 <RouterLink to="/user/profil">
-                    <UserPenIcon /> {{ $t('users.profil') }}
+                    <UserPenIcon /> {{ $t('profil.title') }}
                 </RouterLink>
             </li>
             <li>

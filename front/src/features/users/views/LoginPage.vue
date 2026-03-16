@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { NotImplementedError } from '@common/utils/dev';
+import FormInput from '@common/components/data/FormInput.vue';
+import { NotImplementedError, useValidationErrors } from '@common/utils/dev';
 import { useAuth } from '@features/users/composables/auth';
 import { userRegisterRoute } from '@features/users/routes';
 import LoginProviders from '@features/users/views/LoginProviders.vue';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
+const { errors, getError, setErrors } = useValidationErrors();
 
 const router = useRouter();
 const { login } = useAuth();
@@ -18,17 +17,16 @@ const credentials = reactive({
     password: '1234567890'
 });
 
-const error = ref('');
 const isLoading = ref(false);
 
 async function onLogin() {
     isLoading.value = true;
-    error.value = '';
+    errors.value = null;
     try {
         await login(credentials.email, credentials.password);
         router.push('/');
     } catch (e: any) {
-        error.value = e.data?.message || t("users.form.error");
+        setErrors(e);
     } finally {
         isLoading.value = false;
     }
@@ -41,32 +39,39 @@ function handleProvider(provider: string) {
 </script>
 
 <template>
-    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
-        <legend class="fieldset-legend">{{ $t('users.login') }}</legend>
-        <label class="label" :class="{ 'text-error': !!error }">{{ $t('users.form.email') }}</label>
-        <input type="email" class="input" placeholder="Email" :class="{ 'input-error': !!error }"
-            v-model="credentials.email" />
-        <span class="label" :class="{ 'text-error': !!error }">{{ $t('users.form.password') }}</span>
-        <input type="password" class="input" placeholder="Password" :class="{ 'input-error': !!error }"
-            v-model="credentials.password" />
-        <small class="text-error" v-if="error">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            {{ error }}
-        </small>
+    <div class="flex flex-1 my-2">
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
+            <legend class="fieldset-legend">{{ $t('users.login') }}</legend>
 
-        <label class="label">
-            <input type="checkbox" checked="true" class="checkbox" />
-            {{ $t('users.form.rememberMe') }}
-        </label>
+            <FormInput type="email"
+                       :label="$t('users.form.email')"
+                       v-model="credentials.email"
+                       :error="getError('email')" />
+            <FormInput type="password"
+                       :label="$t('users.form.password')"
+                       v-model="credentials.password"
+                       :error="getError('password')" />
 
-        <div class="divider">{{ $t('users.form.withOauth2') }}</div>
-        <LoginProviders @provider-selected="handleProvider" />
+            <label class="label">
+                <input type="checkbox"
+                       checked="true"
+                       class="checkbox" />
+                {{ $t('users.form.rememberMe') }}
+            </label>
 
-        <button class="btn btn-primary mt-4" :disabled="isLoading" @click="onLogin">
-            <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
-            {{ $t('users.login') }}
-        </button>
-        <RouterLink :to="{ name: userRegisterRoute }" class="btn btn-ghost">{{ $t('users.form.accountNew') }}
-        </RouterLink>
-    </fieldset>
+            <div class="divider">{{ $t('users.form.withOauth2') }}</div>
+            <LoginProviders @provider-selected="handleProvider" />
+
+            <button class="btn btn-primary mt-4"
+                    :disabled="isLoading"
+                    @click="onLogin">
+                <span v-if="isLoading"
+                      class="loading loading-spinner loading-sm"></span>
+                {{ $t('users.login') }}
+            </button>
+            <RouterLink :to="{ name: userRegisterRoute }"
+                        class="btn btn-ghost">{{ $t('users.form.accountNew') }}
+            </RouterLink>
+        </fieldset>
+    </div>
 </template>

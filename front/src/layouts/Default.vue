@@ -3,7 +3,7 @@ import SettingsMenu from '@common/components/navbar/SettingsMenu.vue';
 import AlertsContainer from '@common/components/popups/AlertsContainer.vue';
 import ConfirmationModal from '@common/components/popups/ConfirmationModal.vue';
 import UserMenu from '@features/users/components/navbar/UserMenu.vue';
-import { LanguagesIcon, MenuIcon, SunMoonIcon } from 'lucide-vue-next';
+import { MenuIcon } from 'lucide-vue-next';
 
 let isDark = JSON.parse(localStorage.getItem('isdark') ?? 'false');
 function toggleTheme(dark: boolean) {
@@ -17,7 +17,9 @@ function toggleTheme(dark: boolean) {
         <nav class="navbar bg-base-300 shadow-sm">
             <div class="navbar-start">
                 <div class="dropdown">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-square lg:hidden">
+                    <div tabindex="0"
+                         role="button"
+                         class="btn btn-ghost btn-square lg:hidden">
                         <MenuIcon />
                     </div>
                     <ul tabindex="-1"
@@ -25,8 +27,11 @@ function toggleTheme(dark: boolean) {
                     </ul>
                 </div>
 
-                <img class="ms-1" src="/icon.svg" style="height: 32px;" />
-                <RouterLink to="/" class="ms-2 text-xl">Aventurette</RouterLink>
+                <img class="ms-1"
+                     src="https://placehold.co/32"
+                     style="height: 32px;" />
+                <RouterLink to="/"
+                            class="ms-2 text-xl">Aventurette</RouterLink>
             </div>
 
             <div class="navbar-end">
@@ -35,11 +40,18 @@ function toggleTheme(dark: boolean) {
             </div>
         </nav>
 
-        <main class="flex flex-1">
-            <RouterView />
+        <main class="flex flex-1 overflow-x-hidden relative">
+            <router-view v-slot="{ Component, route }">
+                <transition v-if="route.meta.transition"
+                            :name="route.meta.transition">
+                    <component :is="Component" />
+                </transition>
+                <component v-else
+                           :is="Component" />
+            </router-view>
         </main>
 
-        <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4 mt-auto">
+        <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
             <aside>
                 <p>
                     Copyright © {{ new Date().getFullYear() }} - Aventurette
