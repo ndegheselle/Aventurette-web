@@ -41,7 +41,7 @@ function handleProvider(provider: string) {
 </script>
 
 <template>
-    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border-base p-4 m-auto">
         <legend class="fieldset-legend">{{ $t('users.login') }}</legend>
         <label class="label" :class="{ 'text-error': !!error }">{{ $t('users.form.email') }}</label>
         <input type="email" class="input" placeholder="Email" :class="{ 'input-error': !!error }"
