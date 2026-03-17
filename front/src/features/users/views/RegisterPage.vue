@@ -7,7 +7,7 @@ import LoginProviders from '@features/users/views/LoginProviders.vue';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const { register } = useAuth();
+const auth = useAuth();
 const errors = useValidationErrors();
 const router = useRouter();
 
@@ -23,7 +23,7 @@ async function onRegister() {
     isLoading.value = true;
     errors.reset();
     try {
-        await register(credentials.email, credentials.password, credentials.passwordConfirm);
+        await auth.register(credentials.email, credentials.password, credentials.passwordConfirm);
         router.push({ name: routesNames.profilType });
     } catch (e: any) {
         errors.set(e);

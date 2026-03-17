@@ -17,7 +17,7 @@ import { MinusIcon, PlusIcon } from 'lucide-vue-next';
         </button>
         <ul class="list rounded-box border border-base-300 mt-2">
             <li class="list-row">
-                <div><img class="size-10 rounded-box" src="https://placehold.co/64" />
+                <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64" />
                 </div>
                 <div>
                     <div>Dio Lupa</div>

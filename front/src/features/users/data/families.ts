@@ -13,11 +13,6 @@ class FamiliesService extends PocketbaseCrud<FamilyData> {
         super(Collections.Families);
     }
 
-    override async create(data: FamilyData): Promise<FamilyData> {
-        const existing = await this.getByUser(data.user);
-        return existing ?? await super.create(data);
-    }
-
     async getByUser(userId: string) : Promise<FamilyData | null>
     {
         var result = await this.collection.getList<FamilyData>(1, 1, {filter: `user='${userId}'`});

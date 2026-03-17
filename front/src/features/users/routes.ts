@@ -43,7 +43,7 @@ export async function usersBeforeEach(to: RouteLocationNormalized) {
     return;
 
   const auth = useAuth();
-  if (!auth.isLoggedIn.value && !await auth.refresh()) {
+  if (auth.isLoggedIn.value === false && (await auth.refresh()) === false) {
     return { name: routesNames.login };
   }
 
@@ -51,7 +51,7 @@ export async function usersBeforeEach(to: RouteLocationNormalized) {
     return;
 
   const profil = useProfil();
-  if (!profil.isValid)
+  if (profil.isValid.value === false)
     return { name: routesNames.profilType };
 }
 

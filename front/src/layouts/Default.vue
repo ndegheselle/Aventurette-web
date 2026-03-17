@@ -28,7 +28,7 @@ function toggleTheme(dark: boolean) {
                 </div>
 
                 <img class="ms-1"
-                     src="https://placehold.co/32"
+                     src="https://placeholder.pagebee.io/api/plain/32/32"
                      style="height: 32px;" />
                 <RouterLink to="/"
                             class="ms-2 text-xl">Aventurette</RouterLink>

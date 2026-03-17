@@ -10,7 +10,7 @@ import { useRouter } from 'vue-router';
 const errors = useValidationErrors("users.login.defaultError");
 
 const router = useRouter();
-const { login } = useAuth();
+const auth = useAuth();
 
 const credentials = reactive({
     email: 'test@example.com',
@@ -23,7 +23,7 @@ async function onLogin() {
     isLoading.value = true;
     errors.reset()
     try {
-        await login(credentials.email, credentials.password);
+        await auth.login(credentials.email, credentials.password);
         router.push('/');
     } catch (e: any) {
         errors.set(e);
