@@ -1,10 +1,11 @@
 {
     "users": {
         "logout": "Déconnexion",
-        "login": "Connexion",
-        "login.label": "Connexion",
+        "login": {
+            "title": "Connexion",
+            "defaultError": "Mauvais identifiants."
+        },
         "register": "Inscription",
-        "register.label": "Créer un nouveau",
         "form": {
             "withOauth2": "ou connectez vous avec",
             "email": "E-mail",
@@ -18,7 +19,7 @@
     "profil": {
         "title": "Profil",
         "selection": "Qui êtes vous ?",
-        "family": {
+        "personnal": {
             "title": "Une famille",
             "description": "Une description pour la famille."
         },

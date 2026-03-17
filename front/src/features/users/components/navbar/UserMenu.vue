@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useAuth } from '@features/users/composables/auth';
-import { userLoginRoute, userRegisterRoute } from '@features/users/routes';
+import { routesNames } from '@features/users/routes';
 import { LogOutIcon, UserPenIcon } from 'lucide-vue-next';
 
-const { isLoggedIn, user, logout } = useAuth();
+const { isLoggedIn, currentUser, logout } = useAuth();
 
 </script>
 
@@ -31,10 +31,10 @@ const { isLoggedIn, user, logout } = useAuth();
     </div>
     <ul v-else class="menu menu-horizontal p-0">
         <li>
-            <RouterLink :to="{ name: userLoginRoute }" class="btn">{{ $t('users.login') }}</RouterLink>
+            <RouterLink :to="{ name: routesNames.login }" class="btn">{{ $t('users.login.title') }}</RouterLink>
         </li>
         <li class="ms-1">
-            <RouterLink :to="{ name: userRegisterRoute }" class="btn btn-primary">{{ $t('users.register') }}
+            <RouterLink :to="{ name: routesNames.register }" class="btn btn-primary">{{ $t('users.register') }}
             </RouterLink>
         </li>
     </ul>

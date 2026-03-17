@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAuth } from '@features/users/composables/auth';
+import type { FamilyData } from '@features/users/data/families';
 
-const { user } = useAuth();
+const { family } = defineProps<{family: FamilyData}>();
 </script>
 
 <template>

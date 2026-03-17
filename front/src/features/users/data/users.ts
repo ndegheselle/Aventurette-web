@@ -1,5 +1,7 @@
 import { PocketbaseCrud, usePocketBase } from "@common/database/pocketbase.ts";
-import { type UsersResponse, Collections } from "@common/database/types.g.ts";
+import { type UsersResponse, Collections, UsersTypeOptions } from "@common/database/types.g.ts";
+
+export { UsersTypeOptions as UserProfilType };
 
 export type UserData = UsersResponse;
 
@@ -10,10 +12,11 @@ class UsersService extends PocketbaseCrud<UserData> {
     }
 
     async register(email: string, password: string, passwordConfirm: string): Promise<UserData | null> {
-        const result = await this.collection.create<UserData>({ email: email, password: password, passwordConfirm: passwordConfirm });
+        await this.collection.create<UserData>({ email: email, password: password, passwordConfirm: passwordConfirm });
         // TODO : send email verification
         // collection.requestVerification(email);
-        return result;
+        const result = await this.collection.authWithPassword<UserData>(email, password);
+        return result?.record;
     }
 
     async login(email: string, password: string): Promise<UserData | null> {

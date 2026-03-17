@@ -10,6 +10,7 @@
     },
     "validation": {
         "errors": {
+            "default": "Une erreur est survenue.",
             "validation_values_mismatch": "Les valeurs ne correspondent pas.",
             "validation_required": "Valeur obligatoire.",
             "validation_invalid_email": "Email invalide ou déjà utilisé.",

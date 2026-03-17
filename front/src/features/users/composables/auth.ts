@@ -1,65 +1,80 @@
+import { NotAuthentifiedError } from '@common/utils/dev';
 import { useProfil } from '@features/users/composables/profil';
 import { users, type UserData } from '@features/users/data/users';
-import { userLoginRoute } from '@features/users/routes';
-import { ref } from 'vue';
+import { routesNames } from '@features/users/routes';
+import { computed, readonly, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const isLoggedIn = ref(false);
-const user = ref<UserData | null>();
-export const useAuth = () => {
+// --- shared state (singleton) ---
+const currentUser = ref<UserData | null>(null);
+
+export function useAuth() {
     const router = useRouter();
     const profil = useProfil();
 
-    function setUser(u: UserData | null)
-    {
-        if (u == null)
+    const isLoggedIn = computed(() => currentUser.value !== null);
+
+    function setUser(user: UserData | null) {
+        currentUser.value = user;
+
+        if (user) {
+            profil.refresh(user);
+        } else {
             profil.reset();
-        else if (u)
-            profil.refresh(u);
-
-        user.value = u;
-        isLoggedIn.value = user.value != null;
+        }
     }
 
-    const update = async(data: Partial<UserData>) : Promise<void> => {
-        if (!user.value) return;
-        let updated = await users.update(user.value?.id, data);
+    async function update(data: Partial<UserData>) {
+        if (!currentUser.value) return;
+
+        const updated = await users.update(currentUser.value.id, data);
         setUser(updated);
-    };
-
-    const register = async (email: string, password: string, passwordConfirm: string) => {
-        let newUser = await users.register(email, password, passwordConfirm);
-        setUser(newUser);
     }
 
-    const login = async (email: string, password: string) => {
-        var logged = await users.login(email, password);
-        setUser(logged);
+    async function register(email: string, password: string, passwordConfirm: string) {
+        const user = await users.register(email, password, passwordConfirm);
+        setUser(user);
     }
 
-    const logout = async () => {
+    async function login(email: string, password: string) {
+        const user = await users.login(email, password);
+        setUser(user);
+    }
+
+    async function logout() {
         await users.logout();
         setUser(null);
-        router.push({name: userLoginRoute});
+        router.push({ name: routesNames.login });
     }
 
-    const refresh = async () => {
+    async function refresh() {
         try {
-            const me = await users.refresh(); // cookie is sent automatically
+            const me = await users.refresh();
             setUser(me);
-        } catch (err) {
+        } catch {
             setUser(null);
         }
         return isLoggedIn.value;
     }
 
+    function userId(): string {
+        if (!currentUser.value) {
+            throw new NotAuthentifiedError();
+        }
+        return currentUser.value.id;
+    }
+
     return {
+        // expose readonly state
+        currentUser: readonly(currentUser),
         isLoggedIn,
-        user,
+
+        // actions
         login,
         register,
         logout,
         refresh,
-        update
+        update,
+        userId,
     };
 }

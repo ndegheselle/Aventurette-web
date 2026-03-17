@@ -1,35 +1,36 @@
-import { UsersTypeOptions } from '@common/database/types.g';
 import type { FamilyData } from '@features/users/data/families';
-import { ref } from 'vue';
 import { families } from '@features/users/data/families';
-import type { UserData } from '@features/users/data/users';
+import { type UserData, UserProfilType } from '@features/users/data/users';
+import { ref } from 'vue';
 
-const withValidProfil = ref(false);
-const profil = ref<FamilyData | null>();
+const isValid = ref(false);
+const current = ref<FamilyData | null>(null);
+const type = ref<UserProfilType | null>(null);
 
 export const useProfil = () => {
 
     async function refresh(user: UserData) {
         if (!user.type) {
-            withValidProfil.value = false;
+            isValid.value = false;
         }
         else {
             // Get corresponding profil
-            if (user.type == UsersTypeOptions.FAMILY)
-                profil.value = await families.getByUser(user.id);
-
-            withValidProfil.value = !!profil.value;
+            if (user.type == UserProfilType.PERSONNAL)
+                current.value = await families.getByUser(user.id);
+            type.value = user.type;
+            isValid.value = !!current.value;
         }
     }
 
     function reset() {
-        profil.value = null;
-        withValidProfil.value = false;
+        current.value = null;
+        isValid.value = false;
     }
 
     return {
-        profil,
-        withValidProfil,
+        current,
+        isValid,
+        type,
         refresh,
         reset
     };

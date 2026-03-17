@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import { UsersTypeOptions } from '@common/database/types.g';
-import { userFamilyChildrensRoute } from '@features/users/routes';
-import { useRouter } from 'vue-router';
 import { useAuth } from '@features/users/composables/auth';
+import { families, type FamilyData } from '@features/users/data/families';
+import { UserProfilType } from '@features/users/data/users';
+import { routesNames } from '@features/users/routes';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { update } = useAuth();
+const { update, userId } = useAuth();
 
-async function selectType(type: UsersTypeOptions) {
+async function selectType(type: UserProfilType) {
     await update({type: type});
-    router.push({ name: userFamilyChildrensRoute });
+    if (type == UserProfilType.PERSONNAL) {
+        await families.create({user: userId(), name: ""} as FamilyData);
+    }
+    router.push({ name: routesNames.profil });
 }
 </script>
 
 <template>
-    <div class="m-auto">
+    <div class="m-auto py-2">
         <h1 class="text-4xl text-center font-semibold mb-4">{{ $t("profil.selection") }}</h1>
         <div class="grid grid-cols-3 gap-2">
             <div class="card bg-base-100 w-64 shadow-sm">
@@ -23,11 +27,11 @@ async function selectType(type: UsersTypeOptions) {
                          class="w-full" />
                 </figure>
                 <div class="card-body">
-                    <h2 class="card-title">{{ $t("profil.family.title") }}</h2>
-                    <p>{{ $t("profil.family.description") }}</p>
+                    <h2 class="card-title">{{ $t("profil.personnal.title") }}</h2>
+                    <p>{{ $t("profil.personnal.description") }}</p>
                     <div class="card-actions">
                         <button class="btn btn-primary w-full"
-                                @click="() => selectType(UsersTypeOptions.FAMILY)">
+                                @click="() => selectType(UserProfilType.PERSONNAL)">
                             {{ $t("actions.select") }}
                         </button>
                     </div>
@@ -43,7 +47,7 @@ async function selectType(type: UsersTypeOptions) {
                     <p>{{ $t("profil.association.description") }}</p>
                     <div class="card-actions">
                         <button class="btn btn-primary w-full"
-                                @click="() => selectType(UsersTypeOptions.ASSOCIATION)">
+                                @click="() => selectType(UserProfilType.ASSOCIATION)">
                             {{ $t("actions.select") }}</button>
                     </div>
                 </div>
@@ -58,7 +62,7 @@ async function selectType(type: UsersTypeOptions) {
                     <p>{{ $t("profil.school.description") }}</p>
                     <div class="card-actions">
                         <button class="btn btn-primary w-full"
-                                @click="() => selectType(UsersTypeOptions.SCHOOL)">
+                                @click="() => selectType(UserProfilType.SCHOOL)">
                             {{ $t("actions.select") }}</button>
                     </div>
                 </div>

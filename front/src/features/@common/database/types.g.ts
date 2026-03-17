@@ -112,7 +112,7 @@ export type FamiliesRecord = {
 }
 
 export enum UsersTypeOptions {
-	"FAMILY" = "FAMILY",
+	"PERSONNAL" = "PERSONNAL",
 	"ASSOCIATION" = "ASSOCIATION",
 	"SCHOOL" = "SCHOOL",
 }
