@@ -1,7 +1,6 @@
 import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
 
 import { useAuth } from '@features/users/composables/auth';
-import { useProfil } from '@features/users/composables/profil';
 
 import LoginPage from '@features/users/views/LoginPage.vue';
 import RegisterPage from '@features/users/views/RegisterPage.vue';
@@ -46,13 +45,6 @@ export async function usersBeforeEach(to: RouteLocationNormalized) {
   if (auth.isLoggedIn.value === false && (await auth.refresh()) === false) {
     return { name: routesNames.login };
   }
-
-  if (to.name === routesNames.profilType)
-    return;
-
-  const profil = useProfil();
-  if (profil.isValid.value === false)
-    return { name: routesNames.profilType };
 }
 
 export default routes;

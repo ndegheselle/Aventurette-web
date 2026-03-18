@@ -1,15 +1,16 @@
 <script setup lang="ts" generic="T extends BaseEntity">
-import { onMounted, ref } from 'vue';
-import { type PaginationOptions, SortDirection } from '@common/database/crud';
 import Pagination from '@common/components/data/Pagination.vue';
+import type { BaseEntity } from '@common/database/crud';
+import { type PaginationOptions, SortDirection } from '@common/database/crud';
 import { debounce } from '@common/utils/debounce';
-import type { BaseEntity } from '@common/data/base';
+import { SearchIcon } from 'lucide-vue-next';
+import { onMounted, ref } from 'vue';
 
 const { pagination = {
     sortBy: undefined,
     sortDirection: undefined,
     page: 1,
-    perPage: 5
+    perPage: 10
 } } = defineProps<{
     total: number,
     items: T[],
@@ -93,8 +94,8 @@ onMounted(refresh);
     <div class="flex flex-col">
         <div class="flex">
             <label class="input input-sm">
-                <i class="fa-solid fa-magnifying-glass opacity-50"></i>
-                <input @input="debouncedLoad" type="search" placeholder="Recherche" v-model="search" />
+                <SearchIcon class="opacity-50" />
+                <input @input="debouncedLoad" type="search" :placeholder="$t('actions.search')" v-model="search" />
             </label>
             <div class="ms-auto">
                 <slot name="actions" />
@@ -115,7 +116,7 @@ onMounted(refresh);
                     </template>
                     <tr v-else>
                         <td colspan="100" class="text-center opacity-60 py-6">
-                            Aucun résultat
+                            {{ $t('data.noResult') }}
                         </td>
                     </tr>
                 </tbody>

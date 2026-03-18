@@ -18,6 +18,16 @@
         }
     },
     "actions": {
-        "select": "Sélectionner"
+        "select": "Sélectionner",
+        "search": "Rechercher"
+    },
+    "data": {
+        "noResult": "Aucun résultat",
+        "pagination": {
+            "first": "Première page",
+            "last": "Dernière page",
+            "previous": "Page précédente",
+            "next": "Page suivante"
+        }
     }
 }

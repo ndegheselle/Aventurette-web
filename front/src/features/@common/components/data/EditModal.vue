@@ -9,7 +9,7 @@ const modal = useDeferredModal(dialog);
 const alert = useAlert();
 
 const data = reactive<T>({} as T);
-const errors = ref({} as { [key in keyof T]?: { message: string } });
+const errors = ref({} as { [key in keyof T]?: { code: string, message: string } });
 const isLoading = ref(false);
 
 async function confirm() {

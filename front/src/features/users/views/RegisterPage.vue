@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FormInput from '@common/components/data/FormInput.vue';
+import FormInput from '@common/components/form/FormInput.vue';
 import { NotImplementedError, useValidationErrors } from '@common/utils/dev';
 import { useAuth } from '@features/users/composables/auth';
 import { routesNames } from '@features/users/routes';
