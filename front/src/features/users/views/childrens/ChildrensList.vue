@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { MinusIcon, PlusIcon } from 'lucide-vue-next';
+import ListPaginatedSearch from '@common/components/data/ListPaginatedSearch.vue';
+import { usePageActions } from '@common/composables/data/pageActions';
+import { useTemplateRef } from 'vue';
+import { childrens } from '@features/users/data/childrens';
+const modalRef = useTemplateRef('modal');
+const { list, total, remove, create, edit, refresh } = usePageActions(childrens, (el) => modalRef?.value?.show(el));
 
 </script>
 
@@ -11,22 +16,9 @@ import { MinusIcon, PlusIcon } from 'lucide-vue-next';
                 <rect width="100" height="50" x="0" y="50" ry="20" />
             </svg>
         </div>
-        <button class="btn btn-primary mx-auto">
-            <PlusIcon />
-            Ajouter
-        </button>
-        <ul class="list rounded-box border border-base-300 mt-2">
-            <li class="list-row">
-                <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64" />
-                </div>
-                <div>
-                    <div>Dio Lupa</div>
-                    <div class="text-xs uppercase font-semibold opacity-60">8 ans</div>
-                </div>
-                <button class="btn btn-square btn-ghost">
-                    <MinusIcon />
-                </button>
-            </li>
-        </ul>
+        <h1>Childrens</h1>
+        <ListPaginatedSearch>
+
+        </ListPaginatedSearch>
     </div>
 </template>

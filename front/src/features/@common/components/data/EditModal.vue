@@ -2,18 +2,20 @@
 import { useAlert } from '@common/composables/popups/alert';
 import { useDeferredModal } from '@common/composables/popups/modal';
 import type { BaseEntity, IDataCrud } from '@common/database/crud';
+import { useValidationErrors } from '@common/utils/dev';
 import { reactive, ref, useTemplateRef } from 'vue';
 
 const dialog = useTemplateRef<HTMLDialogElement>('dialog');
 const modal = useDeferredModal(dialog);
 const alert = useAlert();
+const errors = useValidationErrors();
 
 const data = reactive<T>({} as T);
-const errors = ref({} as { [key in keyof T]?: { code: string, message: string } });
 const isLoading = ref(false);
 
 async function confirm() {
     isLoading.value = true;
+    errors.reset();
     try {
         if (data.id == null) {
             await crud.create(data as T);
@@ -24,7 +26,7 @@ async function confirm() {
         }
         modal.confirm();
     } catch (e: any) {
-        errors.value = e.data?.data || (data.id == null ? 'Création échouée' : 'Modification échouée');
+        errors.set(e);
     } finally {
         isLoading.value = false;
     }
@@ -36,7 +38,7 @@ function isNew() {
 
 function show(client: T): Promise<boolean> {
     Object.assign(data, client);
-    errors.value = {};
+    errors.reset();
     return modal.show();
 }
 

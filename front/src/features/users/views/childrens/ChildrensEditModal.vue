@@ -1,32 +1,24 @@
 <script setup lang="ts">
-import { MinusIcon, PlusIcon } from 'lucide-vue-next';
+import EditModal from '@common/components/data/EditModal.vue';
+import { computed, useTemplateRef } from 'vue';
+import { type ChildrenData, childrens } from '@features/users/data/childrens';
+import FormInput from '@common/components/form/FormInput.vue';
 
+const dialog = useTemplateRef('dialog');
+const data = computed(() => dialog.value?.data);
+function show(child: ChildrenData) {
+  return dialog.value!.show(child)
+}
+defineExpose({ client: data, show });
 </script>
 
 <template>
-    <div class="container mx-auto flex flex-col my-2">
-        <div class="bg-base-200 rounded-box">
-            <svg viewBox="0 0 100 100" width="80px">
-                <circle cx="50" cy="50" r="30" />
-                <rect width="100" height="50" x="0" y="50" ry="20" />
-            </svg>
-        </div>
-        <button class="btn btn-primary mx-auto">
-            <PlusIcon />
-            Ajouter
-        </button>
-        <ul class="list rounded-box border border-base-300 mt-2">
-            <li class="list-row">
-                <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64" />
-                </div>
-                <div>
-                    <div>Dio Lupa</div>
-                    <div class="text-xs uppercase font-semibold opacity-60">8 ans</div>
-                </div>
-                <button class="btn btn-square btn-ghost">
-                    <MinusIcon />
-                </button>
-            </li>
-        </ul>
-    </div>
+    <EditModal :crud="childrens" ref="dialog">
+        <template #form="{ data, errors }">
+            <fieldset class="fieldset ">
+                <FormInput v-model="data.name" :error="errors.get" label="Nom *" />
+                <FormInput type="number" v-model="data.age" :error="errors?.sku" label="SKU" />
+            </fieldset>
+        </template>
+    </EditModal>
 </template>
