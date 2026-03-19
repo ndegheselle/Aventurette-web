@@ -5,17 +5,20 @@ import { useI18n } from "vue-i18n";
 export class NotImplementedError extends Error { }
 export class NotAuthentifiedError extends Error { }
 
+type ValidationErrorMap = Record<string, {code?: string}>;
+
 /**
- * Handle errors
+ * Handle errors from the API
+ * @param defaultErrorKey The global error key to use by default
+ * @param useGlobalErrorByDefault Use the global error if a field doesn't have an error 
+ * @returns 
  */
-export const useValidationErrors = (defaultErrorKey: string = "validation.errors.default") => {
+export function useValidationErrors(defaultErrorKey: string = "validation.errors.default") {
 
     /**
      * List of errors grouped by properties
      */
-    const properties = ref<{
-        [key: string]: any;
-    } | null>(null);
+    const properties = ref<ValidationErrorMap | null>(null);
 
     /**
      * Global error with the default message
@@ -32,7 +35,7 @@ export const useValidationErrors = (defaultErrorKey: string = "validation.errors
         return code ? t(`validation.errors.${code}`) : undefined;
     }
 
-    function set(ex: any)
+    function set(ex: unknown)
     {
         properties.value = (ex as ClientResponseError)?.data.data ?? null;
         global.value = t(defaultErrorKey);

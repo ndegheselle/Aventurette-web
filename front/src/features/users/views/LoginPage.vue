@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import FormInput from '@common/components/form/FormInput.vue';
+import FieldError from '@common/components/form/FieldError.vue';
+import FieldLabel from '@common/components/form/FieldLabel.vue';
 import { NotImplementedError, useValidationErrors } from '@common/utils/dev';
 import { useAuth } from '@features/users/composables/auth';
 import { routesNames } from '@features/users/routes';
 import LoginProviders from '@features/users/views/LoginProviders.vue';
+import { EyeClosedIcon, EyeIcon, KeyRoundIcon, MailIcon } from 'lucide-vue-next';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -11,6 +13,7 @@ const errors = useValidationErrors("users.login.defaultError");
 
 const router = useRouter();
 const auth = useAuth();
+const showPassword = ref(false);
 
 const credentials = reactive({
     email: 'test@example.com',
@@ -40,17 +43,36 @@ function handleProvider(provider: string) {
 
 <template>
     <div class="flex flex-1 my-2">
+
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
             <legend class="fieldset-legend">{{ $t('users.login.title') }}</legend>
 
-            <FormInput type="email"
-                       :label="$t('users.form.email')"
-                       v-model="credentials.email"
-                       :error="errors.get('email') ?? errors.global.value" />
-            <FormInput type="password"
-                       :label="$t('users.form.password')"
-                       v-model="credentials.password"
-                       :error="errors.get('password') ?? errors.global.value" />
+            <FieldLabel label="users.form.email"
+                        :error="errors.get('email')">
+                <label class="input">
+                    <MailIcon class="opacity-50" />
+                    <input class="grow"
+                           v-model="credentials.email"
+                           :class="{ 'input-error': errors.get('email') }" />
+                </label>
+            </FieldLabel>
+
+            <FieldLabel label="users.form.password"
+                        :error="errors.get('password')">
+                <label class="input">
+                    <KeyRoundIcon class="opacity-50" />
+                    <input class="grow"
+                           :type="showPassword ? 'text' : 'password'"
+                           v-model="credentials.password"
+                           :class="{ 'input-error': errors.get('password') }" />
+                    <button class="btn btn-ghost btn-circle absolute right-1 btn-sm" @click="showPassword = !showPassword">
+                        <EyeIcon v-if="showPassword" />
+                        <EyeClosedIcon v-else />
+                    </button>
+                </label>
+            </FieldLabel>
+
+            <FieldError :error="errors.global.value" />
 
             <label class="label">
                 <input type="checkbox"

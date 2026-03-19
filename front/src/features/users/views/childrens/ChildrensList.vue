@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import ListPaginatedSearch from '@common/components/data/ListPaginatedSearch.vue';
-import { usePageActions } from '@common/composables/data/pageActions';
+import { PlusIcon } from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
-import { childrens } from '@features/users/data/childrens';
 const modalRef = useTemplateRef('modal');
-const { list, total, remove, create, edit, refresh } = usePageActions(childrens, (el) => modalRef?.value?.show(el));
 
 </script>
 
@@ -16,9 +13,9 @@ const { list, total, remove, create, edit, refresh } = usePageActions(childrens,
                 <rect width="100" height="50" x="0" y="50" ry="20" />
             </svg>
         </div>
-        <h1>Childrens</h1>
-        <ListPaginatedSearch>
-
-        </ListPaginatedSearch>
+        <button class="btn btn-primary mt-1">
+            <PlusIcon />
+            {{ $t("actions.add") }}
+        </button>
     </div>
 </template>

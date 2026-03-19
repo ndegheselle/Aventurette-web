@@ -19,7 +19,8 @@
     },
     "actions": {
         "select": "Sélectionner",
-        "search": "Rechercher"
+        "search": "Rechercher",
+        "add": "Ajouter"
     },
     "data": {
         "noResult": "Aucun résultat",
