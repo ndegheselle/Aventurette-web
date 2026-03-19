@@ -31,5 +31,12 @@
             "title": "Une école",
             "description": "Une description pour l'école."
         }
+    },
+    "childrens": 
+    {
+        "form": {
+            "name": "Nom",
+            "age": "Age"
+        }
     }
 }

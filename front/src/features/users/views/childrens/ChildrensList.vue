@@ -1,7 +1,21 @@
 <script setup lang="ts">
 import { PlusIcon } from 'lucide-vue-next';
+import { type ChildrenData } from '@features/users/data/childrens';
+import ChildrensEditModal from '@features/users/views/childrens/ChildrensEditModal.vue';
 import { useTemplateRef } from 'vue';
-const modalRef = useTemplateRef('modal');
+import { useAuth } from '@features/users/composables/auth';
+import { useAlert } from '@common/composables/popups/alert';
+
+const modal = useTemplateRef('modal');
+const auth = useAuth();
+const alert = useAlert();
+
+let counter = 1;
+function test()
+{
+    counter ++;
+    alert.success("afafarf afafaf " + counter);
+}
 
 </script>
 
@@ -13,9 +27,16 @@ const modalRef = useTemplateRef('modal');
                 <rect width="100" height="50" x="0" y="50" ry="20" />
             </svg>
         </div>
-        <button class="btn btn-primary mt-1">
+
+        <button @click="test">
+            test
+        </button>
+
+        <button class="btn btn-primary mt-1"  @click="() => modal?.show({ user: auth.currentId() } as ChildrenData)">
             <PlusIcon />
             {{ $t("actions.add") }}
         </button>
+
+        <ChildrensEditModal ref="modal" />
     </div>
 </template>

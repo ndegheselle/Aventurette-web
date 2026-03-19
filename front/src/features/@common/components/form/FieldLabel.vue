@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="form-control w-full">
+  <div class="form-control">
     <label v-if="label"
            class="label" :class="{ 'text-error': error }">
       <span class="label-text">{{ $t(label) }}</span>

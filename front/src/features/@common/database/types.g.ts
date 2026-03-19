@@ -99,6 +99,7 @@ export type ChildrensRecord = {
 	id: string
 	name?: string
 	updated: IsoAutoDateString
+	user: RecordIdString
 }
 
 export enum UsersTypeOptions {

@@ -20,10 +20,18 @@
     "actions": {
         "select": "Sélectionner",
         "search": "Rechercher",
-        "add": "Ajouter"
+        "add": "Ajouter",
+
+        "save": "Sauvegarder",
+        "cancel": "Annuler",
+
+        "new": "Nouveau",
+        "update": "Modifier"
     },
     "data": {
         "noResult": "Aucun résultat",
+        "created": "Crée avec succès !",
+        "update": "Mis à jour avec succès !",
         "pagination": {
             "first": "Première page",
             "last": "Dernière page",
