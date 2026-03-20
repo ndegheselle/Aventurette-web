@@ -7,8 +7,6 @@ class ChildrensService extends PocketbaseCrud<ChildrenData> {
     constructor() {
         super(Collections.Childrens);
     }
-
-    
 }
 
 export const childrens = new ChildrensService();

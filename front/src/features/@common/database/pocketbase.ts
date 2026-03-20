@@ -1,6 +1,6 @@
+import { type IDataCrud, Paginated, PaginationOptions } from "@common/database/crud";
 import PocketBase from 'pocketbase';
 import type { BaseSystemFields, TypedPocketBase } from './types.g.ts';
-import { type IDataCrud, Paginated, PaginationOptions } from "@common/database/crud";
 
 let pb: TypedPocketBase | null;
 export function initDatabase(url: string) {
@@ -50,7 +50,13 @@ export class PocketbaseCrud<TResponse extends BaseSystemFields> implements IData
         return await this.collection.getOne<TResponse>(id, { expand: this.expands?.join(",") });
     }
 
-    async getAll(options: PaginationOptions): Promise<Paginated<TResponse>> {
+    async getAll(): Promise<TResponse[]> {
+        return await this.collection.getFullList<TResponse>({
+            expand: this.expands?.join(",")
+        });
+    }
+
+    async getList(options: PaginationOptions): Promise<Paginated<TResponse>> {
         const result = await this.collection.getList<TResponse>(options.page, options.perPage, {
             expand: this.expands?.join(","),
             sort: options.sortBy ? `${options.sortDirection}${options.sortBy}` : undefined,
@@ -61,7 +67,7 @@ export class PocketbaseCrud<TResponse extends BaseSystemFields> implements IData
 
     async search(search: string, options: PaginationOptions): Promise<Paginated<TResponse>> {
         if (!this.searchFields || this.searchFields.length === 0)
-            return this.getAll(options);
+            return this.getList(options);
 
         const filter = this.searchFields.map(field => `${field}~'${search}'`).join(" || ");
         const result = await this.collection.getList<TResponse>(options.page, options.perPage, {

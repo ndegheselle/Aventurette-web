@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useTemplateRef, onMounted } from 'vue';
 import { useConfirmation } from '@common/composables/popups/confirmation.ts';
+import { CheckIcon, XIcon } from 'lucide-vue-next';
+import { onMounted, useTemplateRef } from 'vue';
 
 const confirmation = useConfirmation();
 const dialog = useTemplateRef<HTMLDialogElement>('dialog');
@@ -21,15 +22,21 @@ onMounted(() => {
             </form>
 
             <div class="flex items-center mb-1">
-                <i v-if="confirmation.icon.value" class="mr-2" :class="confirmation.icon.value"></i>
+                <component :is="confirmation.icon.value" v-if="confirmation.icon.value" class="mr-2" style="width: 24px; height: 24px" />
                 <h3 class="text-lg font-bold">{{ confirmation.title }}</h3>
             </div>
 
             <p v-html="confirmation.message.value"></p>
 
             <div class="modal-action">
-                <button class="btn" @click="confirmation.cancel()">Cancel</button>
-                <button class="btn btn-primary" @click="confirmation.confirm()">Confirm</button>
+                <button class="btn" @click="confirmation.cancel()">
+                    <XIcon />
+                    {{ $t("actions.cancel") }}
+                </button>
+                <button class="btn btn-primary" @click="confirmation.confirm()">
+                    <CheckIcon />
+                    {{ $t("actions.confirm") }}
+                </button>
             </div>
         </div>
 

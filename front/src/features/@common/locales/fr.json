@@ -21,12 +21,17 @@
         "select": "Sélectionner",
         "search": "Rechercher",
         "add": "Ajouter",
-
         "save": "Sauvegarder",
         "cancel": "Annuler",
-
         "new": "Nouveau",
-        "update": "Modifier"
+        "update": "Modifier",
+        "confirm": "Confirmer"
+    },
+    "confirmation": {
+        "remove": {
+            "title": "Confirmer la suppression",
+            "message": "Etes vous sure de vouloir supprimer {name} ?"
+        }
     },
     "data": {
         "noResult": "Aucun résultat",

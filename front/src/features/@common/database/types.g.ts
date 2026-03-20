@@ -12,6 +12,7 @@ export enum Collections {
 	Otps = "_otps",
 	Superusers = "_superusers",
 	Childrens = "childrens",
+	Interests = "interests",
 	Users = "users",
 }
 
@@ -97,9 +98,17 @@ export type ChildrensRecord = {
 	age?: number
 	created: IsoAutoDateString
 	id: string
+	interests?: RecordIdString[]
 	name?: string
 	updated: IsoAutoDateString
 	user: RecordIdString
+}
+
+export type InterestsRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
 }
 
 export enum UsersTypeOptions {
@@ -127,6 +136,7 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ChildrensResponse<Texpand = unknown> = Required<ChildrensRecord> & BaseSystemFields<Texpand>
+export type InterestsResponse<Texpand = unknown> = Required<InterestsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -138,6 +148,7 @@ export type CollectionRecords = {
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
 	childrens: ChildrensRecord
+	interests: InterestsRecord
 	users: UsersRecord
 }
 
@@ -148,6 +159,7 @@ export type CollectionResponses = {
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
 	childrens: ChildrensResponse
+	interests: InterestsResponse
 	users: UsersResponse
 }
 

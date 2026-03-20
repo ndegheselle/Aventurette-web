@@ -41,6 +41,7 @@ export interface IDataCrud<TResponse extends BaseEntity> {
     delete(id: string): Promise<void>;
 
     getById(id: string): Promise<TResponse | null>;
-    getAll(options: PaginationOptions): Promise<Paginated<TResponse>>;
+    getAll(): Promise<TResponse[]>;
+    getList(options: PaginationOptions): Promise<Paginated<TResponse>>;
     search(search: string, options: PaginationOptions): Promise<Paginated<TResponse>>;
 }

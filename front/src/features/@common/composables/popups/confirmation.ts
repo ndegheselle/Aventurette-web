@@ -1,10 +1,10 @@
-import { ref } from 'vue';
+import { ref, shallowRef, type Component } from 'vue';
 
 const dialog = ref<HTMLDialogElement | null>(null);
 
 const title = ref('');
 const message = ref('');
-const icon = ref('');
+const icon = shallowRef<Component | null>(null);
 let resolver: ((value: boolean) => void) | null = null;
 
 export function useConfirmation() {
@@ -13,10 +13,10 @@ export function useConfirmation() {
     dialog.value = el;
   }
 
-  function show(t: string, m: string, i?: string): Promise<boolean> {
+  function show(t: string, m: string, i?: Component): Promise<boolean> {
     title.value = t;
     message.value = m;
-    icon.value = i || '';
+    icon.value = i ?? null;
 
     return new Promise<boolean>((resolve) => {
       resolver = resolve;

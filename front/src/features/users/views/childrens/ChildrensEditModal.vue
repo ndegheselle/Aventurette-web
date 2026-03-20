@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useTemplateRef, computed } from 'vue';
-import { childrens } from '@features/users/data/childrens';
-import { SaveIcon, XIcon } from 'lucide-vue-next';
-import { useEditModal } from '@common/composables/data/useEditModal';
-import FieldLabel from '@common/components/form/FieldLabel.vue';
 import FieldError from '@common/components/form/FieldError.vue';
+import FieldLabel from '@common/components/form/FieldLabel.vue';
+import { useEditModal } from '@common/composables/data/useEditModal';
+import { childrens } from '@features/users/data/childrens';
+import InterestsSelect from '@features/users/views/childrens/InterestsSelect.vue';
+import { SaveIcon, XIcon } from 'lucide-vue-next';
+import { computed, useTemplateRef } from 'vue';
 
 const dialog = useTemplateRef('dialog');
 const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(dialog, childrens);
@@ -22,7 +23,7 @@ defineExpose({ show });
                 {{ isNew ? $t('actions.new') : $t('actions.update') }}
             </h3>
 
-            <div class="flex flex-1">
+            <div class="flex flex-1 flex-col">
                 <fieldset class="fieldset grow">
                     <FieldLabel label="childrens.form.name" :error="errors.get('name')">
                         <input class="input w-full" v-model="children.name"
@@ -33,6 +34,8 @@ defineExpose({ show });
                             min="0" />
                     </FieldLabel>
                 </fieldset>
+
+                <InterestsSelect />
             </div>
 
             <FieldError :error="errors.global.value" />
