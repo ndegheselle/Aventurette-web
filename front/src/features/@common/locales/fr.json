@@ -36,7 +36,7 @@
     "data": {
         "noResult": "Aucun résultat",
         "created": "Crée avec succès !",
-        "update": "Mis à jour avec succès !",
+        "updated": "Mis à jour avec succès !",
         "pagination": {
             "first": "Première page",
             "last": "Dernière page",

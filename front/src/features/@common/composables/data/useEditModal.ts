@@ -4,15 +4,18 @@ import { useValidationErrors } from '@common/utils/dev';
 import { useAlert } from '@common/composables/popups/alert';
 import { useI18n } from 'vue-i18n';
 import type { BaseEntity, IDataCrud } from '@common/database/crud';
+import { toRaw } from 'vue';
 
 export function useEditModal<T extends BaseEntity>(dialog: Ref<HTMLDialogElement | null>, crud: IDataCrud<T>) {
     const modal = useDeferredModal<T>(dialog);
+    const alert = useAlert();
+
     const data = ref<T>({} as T);
+    const isNew = computed(() => data.value?.id == null);
+
     const isLoading = ref(false);
     const errors = useValidationErrors();
-    const alert = useAlert();
     const { t } = useI18n();
-    const isNew = computed(() => data.value?.id == null);
 
     async function confirm() {
         if (!data.value) return;
@@ -20,14 +23,15 @@ export function useEditModal<T extends BaseEntity>(dialog: Ref<HTMLDialogElement
         isLoading.value = true;
         errors.reset();
         try {
-            if (isNew) {
-                await crud.create(data.value);
+            let result;
+            if (isNew.value) {
+                result = await crud.create(data.value);
                 alert.success(t('data.created'));
             } else {
-                await crud.update(data.value.id, data.value);
+                result = await crud.update(data.value.id, data.value);
                 alert.success(t('data.updated'));
             }
-            modal.confirm(data.value);
+            modal.confirm(result);
         } catch (e: any) {
             errors.set(e);
         } finally {
@@ -36,7 +40,8 @@ export function useEditModal<T extends BaseEntity>(dialog: Ref<HTMLDialogElement
     }
 
     function show(child: T) {
-        data.value = child;
+        const raw = toRaw(child);
+        data.value = structuredClone(raw);
         return modal.show();
     }
 

@@ -24,7 +24,7 @@ async function confirm() {
             await crud.update(data.id, data as T);
             alert.success('Élément modifié avec succès');
         }
-        modal.confirm();
+        modal.confirm(true);
     } catch (e: any) {
         errors.set(e);
     } finally {
@@ -36,7 +36,7 @@ function isNew() {
     return data.id == null;
 }
 
-function show(client: T): Promise<boolean> {
+function show(client: T): Promise<boolean | null> {
     Object.assign(data, client);
     errors.reset();
     return modal.show();

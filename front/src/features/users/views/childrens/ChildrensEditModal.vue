@@ -35,7 +35,7 @@ defineExpose({ show });
                     </FieldLabel>
                 </fieldset>
 
-                <InterestsSelect />
+                <InterestsSelect v-model:selected="children.interests" />
             </div>
 
             <FieldError :error="errors.global.value" />

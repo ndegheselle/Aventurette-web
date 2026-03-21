@@ -32,7 +32,10 @@ async function remove(children: ChildrenData, index: number) {
 async function edit(children: ChildrenData)
 {
     if (!modal.value) return;
-    await modal.value.show(children);
+   const updatedChild = await modal.value.show(children);
+    if (updatedChild) {
+        Object.assign(children, updatedChild);
+    }
 }
 
 onMounted(async () => {

@@ -34,6 +34,9 @@
     },
     "childrens": 
     {
+        "interests": {
+            "title": "Centre d'intêrets"
+        },
         "form": {
             "name": "Nom",
             "age": "Age"
