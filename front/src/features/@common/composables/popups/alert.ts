@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 
 export enum EnumAlertType {
+    Debug,
     Neutral,
     Info,
     Success,
@@ -22,8 +23,7 @@ export class Alert {
 
 const alerts = ref<Alert[]>([]);
 
-const ALERT_DEFAULT_DELAY = 3000;
-export function useAlert() {
+export function useAlert(delayMs: number = 10000) {
 
     function close(id: number) {
         alerts.value = alerts.value.filter(t => t.id !== id);
@@ -34,12 +34,13 @@ export function useAlert() {
         alerts.value.push({ id, type, message });
         setTimeout(() => {
             alerts.value = alerts.value.filter(t => t.id !== id)
-        }, ALERT_DEFAULT_DELAY);
+        }, delayMs);
     }
 
     return {
         alerts,
         close,
+        debug: (msg: string) => push(EnumAlertType.Debug, msg),
         info: (msg: string) => push(EnumAlertType.Info, msg),
         success: (msg: string) => push(EnumAlertType.Success, msg),
         error: (msg: string) => push(EnumAlertType.Error, msg),

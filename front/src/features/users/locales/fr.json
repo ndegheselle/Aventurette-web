@@ -1,5 +1,6 @@
 {
     "users": {
+        "title": "Utilisateur",
         "logout": "Déconnexion",
         "login": {
             "title": "Connexion",
@@ -34,6 +35,8 @@
     },
     "childrens": 
     {
+        "title": "Enfants",
+        "years": "{years} ans",
         "interests": {
             "title": "Centre d'intêrets"
         },

@@ -89,3 +89,13 @@
   width: 18px;
   height: 18px;
 }
+
+.icon-sm {
+    width: 14px; 
+    height: 14px;
+}
+
+.icon-lg {
+    width: 24px; 
+    height: 24px;
+}

@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import Container from '@common/components/layout/Container.vue';
 import ChildrensList from '@features/users/views/childrens/ChildrensList.vue';
+import UserProfil from '@features/users/views/profil/UserProfil.vue';
 
 </script>
 
 <template>
-    <div class="container mx-auto flex flex-col my-2">
+    <Container>
+        <UserProfil />
         <ChildrensList />
-    </div>
+    </Container>
 </template>

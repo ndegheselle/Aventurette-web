@@ -22,7 +22,7 @@ onMounted(() => {
             </form>
 
             <div class="flex items-center mb-1">
-                <component :is="confirmation.icon.value" v-if="confirmation.icon.value" class="mr-2" style="width: 24px; height: 24px" />
+                <component :is="confirmation.icon.value" v-if="confirmation.icon.value" class="mr-2 icon-lg" />
                 <h3 class="text-lg font-bold">{{ confirmation.title }}</h3>
             </div>
 
