@@ -1,30 +1,36 @@
-FROM node:alpine AS build
-WORKDIR /repo
+# -----------------------
+# 1. Build stage
+# -----------------------
+FROM node:alpine AS builder
 
-ENV VITE_API_URL=http://sagace.lubriciel.ovh/api
+WORKDIR /app
 
-# Workspace manifests
-COPY package.json package-lock.json ./
-COPY packages/front/package.json packages/front/package.json
-COPY packages/common/package.json packages/common/package.json
+# Install dependencies first (better caching)
+COPY package*.json ./
+RUN npm install
 
-RUN npm install --workspace=packages/front
-RUN npm install --workspace=packages/common
+# Copy source
+COPY . .
 
-COPY packages/common packages/common
-COPY packages/front packages/front
+# Build the app
+RUN npm run build
 
-RUN npm run build --workspace=packages/common
-RUN npm run build --workspace=packages/front
 
-# Minimal runtime container
+# -----------------------
+# 2. Production stage
+# -----------------------
 FROM nginx:alpine
 
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY nginx/conf.d /etc/nginx/conf.d
+# Remove default nginx static files
+RUN rm -rf /usr/share/nginx/html/*
 
-# Copy built frontend into nginx
-COPY --from=build /repo/packages/front/dist /usr/share/nginx/html
+# Copy built app from builder
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Optional: custom nginx config
+# (recommended for SPA routing)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
