@@ -12,11 +12,11 @@
         "erasableSyntaxOnly": false,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
-        "baseUrl": "./",
         "paths": {
-            "@common/*": [ "src/features/@common/*" ],
-            "@features/*": [ "src/features/*" ],
-            "@/*": [ "src/*" ]
+            "@api/*": [ "./src/features/@api/*" ],
+            "@common/*": [ "./src/features/@common/*" ],
+            "@features/*": [ "./src/features/*" ],
+            "@/*": [ "./src/*" ]
         }
     },
     "include": [

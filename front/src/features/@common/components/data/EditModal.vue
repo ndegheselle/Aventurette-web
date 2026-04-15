@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T extends BaseEntity">
 import { useAlert } from '@common/composables/popups/alert';
 import { useDeferredModal } from '@common/composables/popups/modal';
-import type { BaseEntity, IDataCrud } from '@common/database/crud';
+import type { BaseEntity, IDataCrud } from '@api/crud';
 import { useValidationErrors } from '@common/utils/dev';
 import { reactive, ref, useTemplateRef } from 'vue';
 

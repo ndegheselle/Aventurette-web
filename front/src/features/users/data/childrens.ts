@@ -1,5 +1,5 @@
-import { PocketbaseCrud } from "@common/database/pocketbase.ts";
-import { type ChildrensResponse, Collections } from "@common/database/types.g.ts";
+import { PocketbaseCrud } from "@api/pocketbase.ts";
+import { type ChildrensResponse, Collections } from "@api/types.g.ts";
 import type { InterestData } from "@features/users/data/interests";
 
 type ChildrenExpand = {

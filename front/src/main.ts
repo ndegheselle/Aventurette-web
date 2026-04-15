@@ -1,6 +1,6 @@
 import './style.css';
 
-import { initDatabase } from '@common/database/pocketbase';
+import { initDatabase } from '@api/pocketbase';
 import { i18n } from '@common/i18n';
 import { applyDefaultBehaviors } from '@common/utils/dom';
 import { usersBeforeEach } from '@features/users/routes';

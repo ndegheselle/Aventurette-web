@@ -1,7 +1,7 @@
 import { useConfirmation } from '@common/composables/popups/confirmation';
-import type { PaginationOptions } from '@common/database/crud';
-import { type IDataCrud } from '@common/database/crud';
-import type { BaseSystemFields } from '@common/database/types.g';
+import type { PaginationOptions } from '@api/crud';
+import { type IDataCrud } from '@api/crud';
+import type { BaseSystemFields } from '@api/types.g';
 import { ref } from 'vue';
 
 export function usePageActions<T extends BaseSystemFields>(data: IDataCrud<T>, editCallback: ((element: T) => Promise<boolean> | undefined) | undefined = undefined)

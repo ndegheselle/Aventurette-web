@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends BaseEntity">
 import Pagination from '@common/components/data/Pagination.vue';
-import type { BaseEntity, PaginationOptions } from '@common/database/crud';
+import type { BaseEntity, PaginationOptions } from '@api/crud';
 import { debounce } from '@common/utils/debounce';
 import { SearchIcon } from 'lucide-vue-next';
 import { onMounted, reactive, ref, watch } from 'vue';

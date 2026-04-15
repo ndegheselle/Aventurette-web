@@ -1,5 +1,5 @@
-import { ref, watch } from "vue";
-import { useI18n } from 'vue-i18n';
+import { ref } from "vue";
+import { i18n } from '@common/i18n';
 
 export enum EnumTheme {
     auto,
@@ -24,11 +24,7 @@ function applyTheme(theme: EnumTheme) {
 }
 
 export function useSettings() {
-    const { locale } = useI18n();
-
-    // Init language
-    const lang = localStorage.getItem('language');
-    if (lang) locale.value = lang;
+    const locale = i18n.global.locale;
 
     // Init theme
     const storedTheme = localStorage.getItem('theme');

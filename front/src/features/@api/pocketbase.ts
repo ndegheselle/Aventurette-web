@@ -1,4 +1,4 @@
-import { type IDataCrud, Paginated, PaginationOptions } from "@common/database/crud";
+import { type IDataCrud, Paginated, PaginationOptions } from "@api/crud";
 import PocketBase from 'pocketbase';
 import type { BaseSystemFields, TypedPocketBase } from './types.g.ts';
 

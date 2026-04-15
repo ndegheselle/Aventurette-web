@@ -3,7 +3,7 @@ import { useDeferredModal } from '@common/composables/popups/modal';
 import { useValidationErrors } from '@common/utils/dev';
 import { useAlert } from '@common/composables/popups/alert';
 import { useI18n } from 'vue-i18n';
-import type { BaseEntity, IDataCrud } from '@common/database/crud';
+import type { BaseEntity, IDataCrud } from '@api/crud';
 import { toRaw } from 'vue';
 
 export function useEditModal<T extends BaseEntity>(dialog: Ref<HTMLDialogElement | null>, crud: IDataCrud<T>) {
