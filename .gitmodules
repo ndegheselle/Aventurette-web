@@ -1,0 +1,3 @@
+[submodule "front/src/features/@common"]
+	path = front/src/features/@common
+	url = https://github.com/ndegheselle/Chapelure-web-lib.git
