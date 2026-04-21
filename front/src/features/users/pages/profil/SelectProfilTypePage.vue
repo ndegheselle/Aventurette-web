@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuth } from '@chapelure/auth/composables/auth';
+import { useAuth } from '@chapelure/auth/composables/useAuth';
 import { UserProfilType, users } from '@features/users/data/users';
 import { routesNames } from '@features/users/routes';
 import { useRouter } from 'vue-router';

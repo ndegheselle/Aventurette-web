@@ -1,6 +1,6 @@
 import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
 
-import { useAuth } from '@chapelure/auth/composables/auth';
+import { useAuth } from '@chapelure/auth/composables/useAuth';
 
 import LoginPage from '@features/users/pages/LoginPage.vue';
 import RegisterPage from '@features/users/pages/RegisterPage.vue';

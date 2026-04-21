@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuth } from '@chapelure/auth/composables/auth';
+import { useAuth } from '@chapelure/auth/composables/useAuth';
 import Group from '@chapelure/common/components/layout/Group.vue';
 import { useConfirmation } from '@chapelure/common/composables/popups/confirmation';
 import { type ChildrenData, childrens } from '@features/users/data/childrens';
