@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import FieldError from '@common/components/form/FieldError.vue';
-import FieldLabel from '@common/components/form/FieldLabel.vue';
-import { useEditModal } from '@common/composables/data/useEditModal';
+import FieldError from '@chapelure/common/components/form/FieldError.vue';
+import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
+import { useEditModal } from '@chapelure/common/composables/data/useEditModal';
 import { childrens } from '@features/users/data/childrens';
-import InterestsSelect from '@features/users/views/childrens/InterestsSelect.vue';
+import InterestsSelect from '@features/users/pages/childrens/InterestsSelect.vue';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
 import { computed, useTemplateRef } from 'vue';
 

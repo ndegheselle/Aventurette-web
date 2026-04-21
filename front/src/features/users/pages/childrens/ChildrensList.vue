@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useConfirmation } from '@common/composables/popups/confirmation';
-import { useAuth } from '@features/users/composables/auth';
+import { useAuth } from '@chapelure/auth/composables/auth';
+import Group from '@chapelure/common/components/layout/Group.vue';
+import { useConfirmation } from '@chapelure/common/composables/popups/confirmation';
 import { type ChildrenData, childrens } from '@features/users/data/childrens';
-import ChildrensEditModal from '@features/users/views/childrens/ChildrensEditModal.vue';
-import InterestsList from '@features/users/views/childrens/InterestsList.vue';
+import ChildrensEditModal from '@features/users/pages/childrens/ChildrensEditModal.vue';
+import InterestsList from '@features/users/pages/childrens/InterestsList.vue';
 import { CircleQuestionMarkIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { onMounted, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Group from '@common/components/layout/Group.vue';
 
 const modal = useTemplateRef('modal');
 const auth = useAuth();

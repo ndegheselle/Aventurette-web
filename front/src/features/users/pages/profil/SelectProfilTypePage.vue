@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useAuth } from '@features/users/composables/auth';
-import { UserProfilType } from '@features/users/data/users';
+import { useAuth } from '@chapelure/auth/composables/auth';
+import { UserProfilType, users } from '@features/users/data/users';
 import { routesNames } from '@features/users/routes';
 import { useRouter } from 'vue-router';
 
@@ -8,7 +8,7 @@ const router = useRouter();
 const auth = useAuth();
 
 async function selectType(type: UserProfilType) {
-    await auth.update({ type: type });
+    await users.update(auth.currentId(), { type });
     router.push({ name: routesNames.profil });
 }
 </script>

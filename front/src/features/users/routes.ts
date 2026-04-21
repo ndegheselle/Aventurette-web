@@ -1,11 +1,11 @@
 import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
 
-import { useAuth } from '@features/users/composables/auth';
+import { useAuth } from '@chapelure/auth/composables/auth';
 
-import LoginPage from '@features/users/views/LoginPage.vue';
-import RegisterPage from '@features/users/views/RegisterPage.vue';
-import ProfilPage from '@features/users/views/profil/ProfilPage.vue';
-import SelectProfilTypePage from '@features/users/views/profil/SelectProfilTypePage.vue';
+import LoginPage from '@features/users/pages/LoginPage.vue';
+import RegisterPage from '@features/users/pages/RegisterPage.vue';
+import ProfilPage from '@features/users/pages/profil/ProfilPage.vue';
+import SelectProfilTypePage from '@features/users/pages/profil/SelectProfilTypePage.vue';
 
 export const routesNames = {
   profil: 'users.profil',

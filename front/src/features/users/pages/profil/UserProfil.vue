@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Group from '@common/components/layout/Group.vue';
+import Group from '@chapelure/common/components/layout/Group.vue';
+import { useAlert } from '@chapelure/common/composables/popups/alert';
 import { type InterestData } from '@features/users/data/interests';
-const props = defineProps<{ interests?: InterestData[] }>();
 
-import { useAlert } from '@common/composables/popups/alert';
+const props = defineProps<{ interests?: InterestData[] }>();
 const alert = useAlert();
 
 alert.debug("WIP : Ajouter modification adresse mail, changement mot de passe, afficher type de compte.");

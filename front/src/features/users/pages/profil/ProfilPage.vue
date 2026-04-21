@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Container from '@common/components/layout/Container.vue';
-import ChildrensList from '@features/users/views/childrens/ChildrensList.vue';
-import UserProfil from '@features/users/views/profil/UserProfil.vue';
+import Container from '@chapelure/common/components/layout/Container.vue';
+import ChildrensList from '@features/users/pages/childrens/ChildrensList.vue';
+import UserProfil from '@features/users/pages/profil/UserProfil.vue';
 
 </script>
 

@@ -1,5 +1,5 @@
-import { PocketbaseCrud } from "@api/pocketbase.ts";
-import { type InterestsResponse, Collections } from "@api/types.g.ts";
+import { PocketbaseCrud } from "@chapelure/api/pocketbase.ts";
+import { type InterestsResponse, Collections } from "@common/types.g.ts";
 
 export type InterestData = InterestsResponse;
 

@@ -1,22 +1,4 @@
 {
-    "users": {
-        "title": "Utilisateur",
-        "logout": "Déconnexion",
-        "login": {
-            "title": "Connexion",
-            "defaultError": "Mauvais identifiants."
-        },
-        "register": "Inscription",
-        "form": {
-            "withOauth2": "ou connectez vous avec",
-            "email": "E-mail",
-            "password": "Mot de passe",
-            "confirmPassword": "Confirmer le mot de passe",
-            "accountNew": "Créer un nouveau compte",
-            "accountAlready": "J'ai déjà un compte",
-            "rememberMe": "Rester connecté"
-        }
-    },
     "profil": {
         "title": "Profil",
         "selection": "Qui êtes vous ?",
