@@ -5,7 +5,9 @@
 Get the app :
 ```bash
 cd ~
-git clone https://github.com/ndegheselle/Aventurette-web.git
+git clone https://github.com/ndegheselle/Aventurette-web.git  --recurse-submodules
+# or, if already cloned:
+git submodule update --init --recursive
 ```
 
 Create .env :

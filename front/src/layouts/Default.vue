@@ -4,12 +4,6 @@ import AlertsContainer from '@common/components/popups/AlertsContainer.vue';
 import ConfirmationModal from '@common/components/popups/ConfirmationModal.vue';
 import UserMenu from '@features/users/components/navbar/UserMenu.vue';
 import { MenuIcon } from 'lucide-vue-next';
-
-let isDark = JSON.parse(localStorage.getItem('isdark') ?? 'false');
-function toggleTheme(dark: boolean) {
-    localStorage.setItem('isdark', JSON.stringify(dark));
-    isDark = dark;
-}
 </script>
 
 <template>

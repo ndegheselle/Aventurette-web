@@ -18,8 +18,8 @@ export default defineConfig({
     },
     resolve: {
         alias: {
+            '@chapelure': fileURLToPath(new URL('./src/features/@chapelure', import.meta.url)),
             '@common': fileURLToPath(new URL('./src/features/@common', import.meta.url)),
-            '@api': fileURLToPath(new URL('./src/features/@api', import.meta.url)),
             '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
