@@ -1,6 +1,4 @@
-import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
-
-import { useAuth } from '@chapelure/auth/composables/useAuth';
+import type { RouteRecordRaw } from 'vue-router';
 
 import LoginPage from '@features/users/pages/LoginPage.vue';
 import RegisterPage from '@features/users/pages/RegisterPage.vue';
@@ -36,15 +34,5 @@ const routes: RouteRecordRaw[] = [
     component: RegisterPage,
   },
 ];
-
-export async function usersBeforeEach(to: RouteLocationNormalized) {
-  if (to.name === routesNames.login || to.name === routesNames.register)
-    return;
-
-  const auth = useAuth();
-  if (auth.isLoggedIn.value === false && (await auth.refresh()) === false) {
-    return { name: routesNames.login };
-  }
-}
 
 export default routes;

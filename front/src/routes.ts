@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 import HomePage from '@/pages/HomePage.vue';
 import usersRoutes from '@features/users/routes';
+import activiesRoutes from '@features/activities/routes';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -14,6 +15,7 @@ const routes: RouteRecordRaw[] = [
                 component: HomePage,
             },
             ...usersRoutes,
+            ...activiesRoutes
         ]
     }
 ];

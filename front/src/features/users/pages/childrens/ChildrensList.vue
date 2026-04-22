@@ -5,7 +5,7 @@ import { useConfirmation } from '@chapelure/common/composables/popups/confirmati
 import { type ChildrenData, childrens } from '@features/users/data/childrens';
 import ChildrensEditModal from '@features/users/pages/childrens/ChildrensEditModal.vue';
 import InterestsList from '@features/users/pages/childrens/InterestsList.vue';
-import { CircleQuestionMarkIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
+import { CircleQuestionMarkIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
 import { onMounted, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -46,6 +46,9 @@ onMounted(async () => {
 
 <template>
     <Group :title="$t('childrens.title')">
+        <template v-slot:title>
+            <UsersRoundIcon /> {{ $t('childrens.title') }}
+        </template>
         <template v-slot:action>
             <button class="btn btn-circle btn-primary" @click="add">
                 <PlusIcon />
