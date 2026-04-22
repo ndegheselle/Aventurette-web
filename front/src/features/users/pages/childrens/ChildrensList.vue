@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useAuth } from '@chapelure/auth/composables/useAuth';
+import List from '@chapelure/common/components/data/List.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
 import { useConfirmation } from '@chapelure/common/composables/popups/confirmation';
 import { type ChildrenData, childrens } from '@features/users/data/childrens';
 import ChildrensEditModal from '@features/users/pages/childrens/ChildrensEditModal.vue';
 import InterestsList from '@features/users/pages/childrens/InterestsList.vue';
-import { CircleQuestionMarkIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
+import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
 import { onMounted, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -54,32 +55,24 @@ onMounted(async () => {
                 <PlusIcon />
             </button>
         </template>
-        <ul class="list bg-base-100 rounded-box border border-base-300 mt-1">
-            <li class="p-4 opacity-60 tracking-wide flex" v-if="!list.length">
-                <div class="flex mx-auto">
-                    <CircleQuestionMarkIcon class="mr-2 my-auto" />
-                    <span>{{ $t('data.noResult') }}</span>
+        <List :items="list" v-slot="{ item, index }" class="mt-1">
+            <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
+            <div>
+                <div class="flex">
+                    <div>{{ item.name }}</div>
+                    <div class="text-xs uppercase font-semibold opacity-60 my-auto ms-2">{{
+                        $t("childrens.years",
+                            { years: item.age }) }} </div>
                 </div>
-            </li>
-            <li class="list-row" v-for="(children, index) in list">
-                <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
-                <div>
-                    <div class="flex">
-                        <div>{{ children.name }}</div>
-                        <div class="text-xs uppercase font-semibold opacity-60 my-auto ms-2">{{
-                            $t("childrens.years",
-                                { years: children.age }) }} </div>
-                    </div>
-                    <InterestsList :interests="children.expand.interests" />
-                </div>
-                <button class="btn btn-square btn-ghost" @click="() => remove(children, index)">
-                    <MinusIcon />
-                </button>
-                <button class="btn btn-square btn-ghost" @click="() => edit(children)">
-                    <PenIcon />
-                </button>
-            </li>
-        </ul>
+                <InterestsList :interests="item.expand.interests" />
+            </div>
+            <button class="btn btn-square btn-ghost" @click="() => remove(item, index)">
+                <MinusIcon />
+            </button>
+            <button class="btn btn-square btn-ghost" @click="() => edit(item)">
+                <PenIcon />
+            </button>
+        </List>
         <ChildrensEditModal ref="modal" />
     </Group>
 </template>
