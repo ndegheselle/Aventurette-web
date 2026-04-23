@@ -2,7 +2,7 @@
 import { useAuth } from '@chapelure/auth/composables/useAuth';
 import List from '@chapelure/common/components/data/List.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
-import { useConfirmation } from '@chapelure/common/composables/popups/confirmation';
+import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
 import { type ChildrenData, childrens } from '@features/users/data/childrens';
 import ChildrensEditModal from '@features/users/pages/childrens/ChildrensEditModal.vue';
 import InterestsList from '@features/users/pages/childrens/InterestsList.vue';
@@ -51,7 +51,7 @@ onMounted(async () => {
             <UsersRoundIcon /> {{ $t('childrens.title') }}
         </template>
         <template v-slot:action>
-            <button class="btn btn-circle btn-primary" @click="add">
+            <button class="btn btn-circle btn-primary" @click="() => add()">
                 <PlusIcon />
             </button>
         </template>

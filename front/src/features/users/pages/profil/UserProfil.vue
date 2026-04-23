@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Group from '@chapelure/common/components/layout/Group.vue';
-import { useAlert } from '@chapelure/common/composables/popups/alert';
+import { useAlert } from '@chapelure/common/composables/popups/useAlert';
 import { type InterestData } from '@features/users/data/interests';
 
 const props = defineProps<{ interests?: InterestData[] }>();
