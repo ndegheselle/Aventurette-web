@@ -1,6 +1,6 @@
 import { AuthService } from "@chapelure/auth/data/auth.ts";
-import { type UsersResponse, UsersTypeOptions } from "@common/types.g.ts";
 import type { ChildrenData } from "@features/users/data/childrens";
+import { type UsersResponse, UsersTypeOptions } from "@shared/types.g.ts";
 
 export { UsersTypeOptions as UserProfilType };
 

@@ -1,5 +1,5 @@
 import { PocketbaseCrud } from "@chapelure/api/pocketbase.ts";
-import { type ActivitiesResponse, Collections } from "@common/types.g.ts";
+import { type ActivitiesResponse, Collections } from "@shared/types.g.ts";
 
 export type ActivityData = ActivitiesResponse;
 

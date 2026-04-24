@@ -19,7 +19,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@chapelure': fileURLToPath(new URL('./src/features/@chapelure', import.meta.url)),
-            '@common': fileURLToPath(new URL('./src/features/@common', import.meta.url)),
+            '@shared': fileURLToPath(new URL('./src/features/@shared', import.meta.url)),
             '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
