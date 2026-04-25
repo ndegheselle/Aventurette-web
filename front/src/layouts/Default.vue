@@ -32,7 +32,7 @@ import { routesNames as activitiesRoutesNames } from '@features/activities/route
             </div>
         </nav>
 
-        <main class="flex flex-1 overflow-x-hidden relative">
+        <main class="flex flex-1 overflow-x-clip relative">
             <router-view v-slot="{ Component, route }">
                 <transition v-if="route.meta.transition" :name="route.meta.transition">
                     <component :is="Component" />

@@ -10,7 +10,7 @@ alert.debug("WIP : Ajouter modification adresse mail, changement mot de passe, a
 </script>
 
 <template>
-    <Group :title="$t('users.title')">
+    <Group>
         <div class="flex items-center gap-4">
             <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
             <div class="flex flex-col gap-4">

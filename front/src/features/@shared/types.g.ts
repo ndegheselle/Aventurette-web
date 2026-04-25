@@ -12,6 +12,8 @@ export const Collections = {
 	Otps: "_otps",
 	Superusers: "_superusers",
 	Activities: "activities",
+	ActivitiesRessources: "activities_ressources",
+	ActivitiesSteps: "activities_steps",
 	Childrens: "childrens",
 	Interests: "interests",
 	Users: "users",
@@ -99,8 +101,23 @@ export type SuperusersRecord = {
 export type ActivitiesRecord = {
 	created: IsoAutoDateString
 	id: string
+	steps?: RecordIdString[]
 	updated: IsoAutoDateString
 	user: RecordIdString
+}
+
+export type ActivitiesRessourcesRecord = {
+	activity: RecordIdString
+	created: IsoAutoDateString
+	id: string
+	step?: RecordIdString
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesStepsRecord = {
+	created: IsoAutoDateString
+	id: string
+	updated: IsoAutoDateString
 }
 
 export type ChildrensRecord = {
@@ -146,6 +163,8 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
+export type ActivitiesRessourcesResponse<Texpand = unknown> = Required<ActivitiesRessourcesRecord> & BaseSystemFields<Texpand>
+export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
 export type ChildrensResponse<Texpand = unknown> = Required<ChildrensRecord> & BaseSystemFields<Texpand>
 export type InterestsResponse<Texpand = unknown> = Required<InterestsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -159,6 +178,8 @@ export type CollectionRecords = {
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
 	activities: ActivitiesRecord
+	activities_ressources: ActivitiesRessourcesRecord
+	activities_steps: ActivitiesStepsRecord
 	childrens: ChildrensRecord
 	interests: InterestsRecord
 	users: UsersRecord
@@ -171,6 +192,8 @@ export type CollectionResponses = {
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
 	activities: ActivitiesResponse
+	activities_ressources: ActivitiesRessourcesResponse
+	activities_steps: ActivitiesStepsResponse
 	childrens: ChildrensResponse
 	interests: InterestsResponse
 	users: UsersResponse

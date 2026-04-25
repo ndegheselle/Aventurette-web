@@ -46,16 +46,15 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Group :title="$t('childrens.title')">
-        <template v-slot:title>
-            <UsersRoundIcon /> {{ $t('childrens.title') }}
-        </template>
-        <template v-slot:action>
+    <Group>
+        <div class="flex justify-between">
+            <h2 class="text-2xl flex items-center gap-2 ms-2"><UsersRoundIcon /> {{ $t('childrens.title') }}</h2>
             <button class="btn btn-circle btn-primary" @click="() => add()">
                 <PlusIcon />
             </button>
-        </template>
-        <List :items="list" v-slot="{ item, index }" class="mt-1">
+        </div>
+        
+        <List :items="list" v-slot="{ item, index }">
             <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <div>
                 <div class="flex">
@@ -73,6 +72,6 @@ onMounted(async () => {
                 <PenIcon />
             </button>
         </List>
-        <ChildrensEditModal ref="modal" />
     </Group>
+    <ChildrensEditModal ref="modal" />
 </template>

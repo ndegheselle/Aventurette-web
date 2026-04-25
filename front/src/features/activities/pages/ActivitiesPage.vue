@@ -6,7 +6,8 @@ import Container from '@chapelure/common/components/layout/Container.vue';
 import { activities, type ActivityData } from '@features/activities/data/activities';
 import { PlusIcon } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
-
+import { filters } from '@features/activities/data/activities.filters';
+import { routesNames } from '@features/activities/routes';
 const list = ref<ActivityData[]>([]);
 
 onMounted(async () => {
@@ -23,10 +24,12 @@ onMounted(async () => {
                 {{ $t('actions.add') }}
             </button>
         </div>
-        <Filters />
+        <Filters :filters="filters" />
         <List :items="list" v-slot="{ item, index }" class="flex-1">
             <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
-            <span>{{ item }}</span>
+            <RouterLink :to="{name: routesNames.page, params: {id: item.id}}">
+                {{ item.id }}
+            </RouterLink>
             <span>{{ index }}</span>
         </List>
     </Container>

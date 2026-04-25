@@ -1,11 +1,16 @@
 import { PocketbaseCrud } from "@chapelure/api/pocketbase.ts";
-import { type ActivitiesResponse, Collections } from "@shared/types.g.ts";
+import { type ActivitiesResponse, type ActivitiesStepsResponse, Collections } from "@shared/types.g.ts";
 
-export type ActivityData = ActivitiesResponse;
+type ActivityExpand = {
+    steps?: ActivityStepData[];
+};
+
+export type ActivityData = ActivitiesResponse<ActivityExpand>;
+export type ActivityStepData = ActivitiesStepsResponse;
 
 class ActivitiesService extends PocketbaseCrud<ActivityData> {
     constructor() {
-        super(Collections.Activities, ["name"]);
+        super(Collections.Activities, ["name"], ["steps"]);
     }
 }
 

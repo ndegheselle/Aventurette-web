@@ -1,5 +1,9 @@
 {
     "activities": {
-        "all": "Toutes les activités"
+        "all": "Toutes les activités",
+        "materials": "Materiel",
+        "description": "Description",
+        "resources": "Ressources",
+        "steps": "Étapes"
     }
 }
