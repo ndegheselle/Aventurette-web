@@ -4,6 +4,22 @@
         "materials": "Materiel",
         "description": "Description",
         "resources": "Ressources",
-        "steps": "Étapes"
+        "steps": "Étapes",
+        "actions": {
+            "favorite": "Favoris",
+            "addToPlanning": "Ajouter au planning",
+            "start": "Démarrer"
+        },
+        "fields": {
+            
+        },
+        "duration": "{duration} min",
+        "age": "{min}-{max} ans",
+        "environnement": {
+            "INDOOR": "Intérieur",
+            "OUTDOOR": "Extérieur",
+            "CLASSROOM": "Classe",
+            "CAR": "Voiture"
+        }
     }
 }

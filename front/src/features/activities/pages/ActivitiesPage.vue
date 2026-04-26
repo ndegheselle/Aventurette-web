@@ -3,15 +3,17 @@ import List from '@chapelure/common/components/data/List.vue';
 import Filters from '@chapelure/common/components/inputs/Filters.vue';
 import Search from '@chapelure/common/components/inputs/Search.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
-import { activities, type ActivityData } from '@features/activities/data/activities';
-import { PlusIcon } from 'lucide-vue-next';
+import { activities, getUniqueBenefits, type ActivityData } from '@features/activities/data/activities';
+import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 import { filters } from '@features/activities/data/activities.filters';
 import { routesNames } from '@features/activities/routes';
+import AcitivityMetadaDisplay from '@features/activities/components/AcitivityMetadaDisplay.vue';
 const list = ref<ActivityData[]>([]);
 
 onMounted(async () => {
     list.value = await activities.getAll();
+    console.log(list.value);
 });
 </script>
 
@@ -25,12 +27,20 @@ onMounted(async () => {
             </button>
         </div>
         <Filters :filters="filters" />
-        <List :items="list" v-slot="{ item, index }" class="flex-1">
-            <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
-            <RouterLink :to="{name: routesNames.page, params: {id: item.id}}">
-                {{ item.id }}
+        <List :items="list" v-slot="{ item }" class="flex-1">
+            <div><img class="size-16 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
+            <div>
+                <div class="flex gap-2">
+                    <b class="my-auto">{{ item.name }}</b>
+                    <AcitivityMetadaDisplay :activity="item" />
+                </div>
+                <p class="text-xs" v-html="item.description"></p>
+                <BenefitsDisplay class="mt-1" :benefits="getUniqueBenefits(item)" />
+            </div>
+
+            <RouterLink :to="{ name: routesNames.page, params: { id: item.id } }" class="btn btn-square btn-ghost my-auto">
+                <ArrowRightIcon />
             </RouterLink>
-            <span>{{ index }}</span>
         </List>
     </Container>
 </template>

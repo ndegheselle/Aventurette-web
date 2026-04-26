@@ -10,13 +10,13 @@ export const filters: Record<string, Filter> = {
   tags: {
     type: FilterType.Choices,
     label: 'activity.fields.tags',
-    availables: [{ label: 'activity.fields.tags.tata', value: 'pouet' }],
+    availables: [{ label: 'activities.fields.tags.tata', value: 'pouet' }],
     values: [],
   },
   category: {
     type: FilterType.Choice,
     label: 'activity.fields.category',
-    availables: [{ label: 'activity.fields.category.one', value: 'pouet' }],
+    availables: [{ label: 'activities.fields.category.one', value: 'pouet' }],
     value: '',
   },
 };
