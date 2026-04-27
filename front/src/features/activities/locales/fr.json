@@ -1,6 +1,6 @@
 {
     "activities": {
-        "all": "Toutes les activités",
+        "title": "Activités",
         "materials": "Materiel",
         "description": "Description",
         "resources": "Ressources",
@@ -11,7 +11,14 @@
             "start": "Démarrer"
         },
         "fields": {
-            
+            "name": "Nom",
+            "summary": "Description courte",
+            "description": "Description"
+        },
+        "edit": {
+            "description": "Description",
+            "steps": "Étapes",
+            "properties": "Informations"
         },
         "duration": "{duration} min",
         "age": "{min}-{max} ans",

@@ -9,6 +9,7 @@ import { onMounted, ref } from 'vue';
 import { filters } from '@features/activities/data/activities.filters';
 import { routesNames } from '@features/activities/routes';
 import AcitivityMetadaDisplay from '@features/activities/components/AcitivityMetadaDisplay.vue';
+import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 const list = ref<ActivityData[]>([]);
 
 onMounted(async () => {
@@ -21,10 +22,10 @@ onMounted(async () => {
     <Container>
         <div class="flex flex-none gap-1">
             <Search />
-            <button class="btn btn-primary">
+            <RouterLink :to="{ name: routesNames.edit.description, params: { id: 'new' } }" class="btn btn-primary">
                 <PlusIcon />
                 {{ $t('actions.add') }}
-            </button>
+            </RouterLink>
         </div>
         <Filters :filters="filters" />
         <List :items="list" v-slot="{ item }" class="flex-1">

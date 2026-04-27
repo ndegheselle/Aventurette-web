@@ -3,7 +3,7 @@ import SettingsMenu from '@chapelure/common/components/navbar/SettingsMenu.vue';
 import AlertsContainer from '@chapelure/common/components/popups/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/common/components/popups/ConfirmationModal.vue';
 import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
-import { MenuIcon } from 'lucide-vue-next';
+import { MenuIcon, TreesIcon } from 'lucide-vue-next';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 </script>
 
@@ -17,7 +17,9 @@ import { routesNames as activitiesRoutesNames } from '@features/activities/route
                     </summary>
                     <ul class="menu dropdown-content bg-base-200 rounded-box w-52 p-2 shadow">
                         <li>
-                            <RouterLink :to="{ name: activitiesRoutesNames.all }">{{ $t('activities.all') }}</RouterLink>
+                            <RouterLink :to="{ name: activitiesRoutesNames.all }">
+                                <TreesIcon /> {{ $t('activities.title') }}
+                            </RouterLink>
                         </li>
                         <UserSideMenu />
                     </ul>

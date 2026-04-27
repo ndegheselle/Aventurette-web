@@ -3,12 +3,13 @@ import { activities, getUniqueBenefits, type ActivityData } from '@features/acti
 import { ref } from 'vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
-import { CalendarIcon, ClockIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MapIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon, UserRoundIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
 import List from '@chapelure/common/components/data/List.vue';
 import { watch } from 'vue';
 import { useRoute } from 'vue-router';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/AcitivityMetadaDisplay.vue';
+import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 
 const route = useRoute();
 const activity = ref<ActivityData | null>(null);
@@ -28,8 +29,12 @@ watch(
         <button></button>
     </div>
     <Container>
-        <div class="sticky top-0 flex gap-2 pt-1">
-            <button class="btn">
+        <div class="sticky top-0 flex gap-2 py-1 bg-base-100">
+            <RouterLink :to="{ name: activitiesRoutesNames.all }" class="btn btn-ghost">
+                <ArrowLeftIcon /> {{ $t('actions.back') }}
+            </RouterLink>
+
+            <button class="btn ms-auto">
                 <HeartIcon />
                 {{ $t('activities.actions.favorite') }}
             </button>
@@ -37,7 +42,7 @@ watch(
                 <CalendarIcon />
                 {{ $t('activities.actions.addToPlanning') }}
             </button>
-            <button class="btn ms-auto btn-primary">
+            <button class="btn btn-primary">
                 <MonitorPlayIcon />
                 {{ $t('activities.actions.start') }}
             </button>
@@ -58,17 +63,9 @@ watch(
                 <PackageOpenIcon /> {{ $t('activities.materials') }}
             </h2>
             <div class="flex gap-2">
-                <div class="text-center">
+                <div class="text-center" v-for="material in activity?.expand.materials">
                     <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
-                    <span>Ciseaux</span>
-                </div>
-                <div class="text-center">
-                    <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
-                    <span>Ciseaux</span>
-                </div>
-                <div class="text-center">
-                    <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
-                    <span>Ciseaux</span>
+                    <span>{{ material.name }}</span>
                 </div>
             </div>
         </Group>
@@ -77,17 +74,9 @@ watch(
                 <FileTextIcon /> {{ $t('activities.resources') }}
             </h2>
             <div class="flex gap-2">
-                <div class="text-center">
+                <div class="text-center" v-for="material in activity?.expand.resources">
                     <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
-                    <span>PDF 1</span>
-                </div>
-                <div class="text-center">
-                    <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
-                    <span>Image 2</span>
-                </div>
-                <div class="text-center">
-                    <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
-                    <span>Image 3</span>
+                    <span>{{ material.name }}</span>
                 </div>
             </div>
         </Group>

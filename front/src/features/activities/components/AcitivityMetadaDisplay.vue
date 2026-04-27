@@ -8,13 +8,13 @@ const { activity } = defineProps<{
 
 <template>
     <div class="flex gap-1">
-        <span class="badge badge-lg">
+        <span class="badge">
             <MapIcon /> {{ $t("activities.environnement." + activity?.environnement) }}
         </span>
-        <span class="badge badge-lg">
+        <span class="badge">
             <UserRoundIcon /> {{ $t("activities.age", { min: activity?.ageMin, max: activity?.ageMax }) }}
         </span>
-        <span class="badge badge-lg">
+        <span class="badge">
             <ClockIcon /> {{ $t("activities.duration", { duration: activity?.durationMinutes }) }}
         </span>
     </div>
