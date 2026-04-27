@@ -5,14 +5,7 @@ import Group from '@chapelure/common/components/layout/Group.vue';
 import type { ActivityData } from '@features/activities/data/activities';
 import { ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
 import { routesNames } from '@features/activities/routes';
-import { useEditor, EditorContent } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
 import TextEditor from '@features/activities/components/TextEditor.vue';
-
-const editor = useEditor({
-    content: "<p>I'm running Tiptap with Vue.js. 🎉</p>",
-    extensions: [StarterKit],
-});
 
 defineProps<{
     activity: ActivityData;
