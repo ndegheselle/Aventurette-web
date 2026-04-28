@@ -17,13 +17,19 @@ import {
 } from 'lucide-vue-next'
 import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 
-const props = withDefaults(defineProps<{ content?: string }>(), { content: '' })
-const emit = defineEmits<{ 'update:content': [value: string] }>()
+// ⬇️ rename prop
+const props = withDefaults(defineProps<{ modelValue?: string }>(), {
+  modelValue: '',
+})
+
+// ⬇️ rename emit
+const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 const editor = shallowRef<Editor | undefined>(undefined)
 
+// ⬇️ watch modelValue instead of content
 watch(
-  () => props.content,
+  () => props.modelValue,
   (value) => {
     if (editor.value?.getHTML() === value) return
     editor.value?.commands.setContent(value)
@@ -33,9 +39,9 @@ watch(
 onMounted(() => {
   editor.value = new Editor({
     extensions: [StarterKit],
-    content: props.content,
+    content: props.modelValue,
     onUpdate: () => {
-      emit('update:content', editor.value!.getHTML())
+      emit('update:modelValue', editor.value!.getHTML())
     },
   })
 })
@@ -47,7 +53,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="border border-base-300 rounded-box overflow-hidden flex flex-col h-full">
-    <div v-if="editor" class="flex flex-wrap gap-1 p-1 border-b border-base-300 bg-base-200">
+    <div v-if="editor" class="flex flex-wrap gap-1 p-1 border-b border-base-300">
       <div class="join">
         <button
           class="btn btn-sm join-item"
@@ -144,7 +150,7 @@ onBeforeUnmount(() => {
         </button>
       </div>
     </div>
-    <editor-content :editor="editor" class="prose max-w-none p-3 h-full" />
+    <editor-content :editor="editor" class="prose prose-p:my-1 max-w-none bg-base-100 p-3 h-full" />
   </div>
 </template>
 

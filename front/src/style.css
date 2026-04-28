@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
 @import "@chapelure/common/styles/transitions.css";
 @import "@chapelure/common/styles/themes.css";
 @import "@chapelure/common/styles/helpers.css";

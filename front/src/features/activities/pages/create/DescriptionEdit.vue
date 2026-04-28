@@ -42,10 +42,9 @@ defineProps<{
             </FieldLabel>
 
             <FieldLabel label="activities.fields.description" class="flex-1">
-                <TextEditor content="" class="flex-1" />
+                <TextEditor v-model="activity.description" class="flex-1" />
             </FieldLabel>
         </Group>
-
         <div class="mt-auto flex">
             <RouterLink class="btn btn-primary ms-auto" :to="{ name: routesNames.edit.steps }">
                 <ArrowRightIcon />
