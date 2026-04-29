@@ -110,10 +110,10 @@ export type ActivitiesEnvironnementOptions = typeof ActivitiesEnvironnementOptio
 export type ActivitiesRecord = {
 	ageMax?: number
 	ageMin?: number
-	created: IsoAutoDateString
-	description: HTMLString
 	durationMinutes?: number
 	environnement: ActivitiesEnvironnementOptions
+	created: IsoAutoDateString
+	description: HTMLString
 	id: string
 	materials?: RecordIdString[]
 	name: string

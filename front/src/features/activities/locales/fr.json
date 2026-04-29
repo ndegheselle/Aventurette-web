@@ -12,6 +12,8 @@
         },
         "fields": {
             "name": "Nom",
+            "environnement": "Environnement",
+            "age": "Âge",
             "summary": "Description courte",
             "description": "Description"
         },

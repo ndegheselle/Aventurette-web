@@ -21,8 +21,7 @@ export type ActivityMaterialData = ActivitiesMaterialsResponse;
 
 class ActivitiesService extends PocketbaseCrud<ActivityData> {
     constructor() {
-        super(Collections.Activities, 
-            ["name", "summary", "description"], 
+        super(Collections.Activities,
             [
                 "steps", "steps.benefits", "steps.benefits", "steps.materials", "steps.resources",
                 "resources", "materials" 

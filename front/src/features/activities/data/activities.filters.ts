@@ -1,19 +1,45 @@
-import { FilterType, type Filter } from "@chapelure/common/base/filters";
+import { type FilterDefinition, type FilterGroup, createGroup, createFilter, FilterType } from "@chapelure/api/filters";
+import type { ActivityData } from "@features/activities/data/activities";
 
-// XXX : fake filter to change
-export const filters: Record<string, Filter> = {
-  duration: {
-    type: FilterType.Number,
-    label: 'activity.fields.duration'
-  },
-  tags: {
-    type: FilterType.Choices,
-    label: 'activity.fields.tags',
-    availables: [{ label: 'activities.fields.tags.tata', value: 'pouet' }]
-  },
-  category: {
-    type: FilterType.Choice,
-    label: 'activity.fields.category',
-    availables: [{ label: 'activities.fields.category.one', value: 'pouet' }]
-  },
-};
+export function createSearchFilter(search: string): FilterGroup {
+    return createGroup({
+        filters: [
+            createFilter({
+                key: 'name',
+                value: search,
+            }),
+            createFilter({
+                key: 'summary',
+                value: search,
+            }),
+            createFilter({
+                key: 'description',
+                value: search,
+            }),
+        ]
+    });
+}
+
+export const definition: FilterDefinition<ActivityData>[] = [
+    {
+        type: FilterType.Range,
+        label: 'activities.fields.age',
+        binding: { kind: 'range', keyMin: 'ageMin', keyMax: 'ageMax' },
+    },
+    {
+        type: FilterType.Number,
+        label: 'activities.fields.duration',
+        binding: { kind: 'single', key: 'durationMinutes' },
+    },
+    {
+        type: FilterType.Choices,
+        label: 'activities.fields.environnement',
+        binding: { kind: 'single', key: 'environnement' },
+        availables: [
+            { label: 'activities.environnement.INDOOR', value: 'INDOOR' },
+            { label: 'activities.environnement.OUTDOOR', value: 'OUTDOOR' },
+            { label: 'activities.environnement.CLASSROOM', value: 'CLASSROOM' },
+            { label: 'activities.environnement.CAR', value: 'CAR' },
+        ],
+    },
+];
