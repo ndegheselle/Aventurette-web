@@ -4,19 +4,16 @@ import { FilterType, type Filter } from "@chapelure/common/base/filters";
 export const filters: Record<string, Filter> = {
   duration: {
     type: FilterType.Number,
-    label: 'activity.fields.duration',
-    value: { min: 12, max: 90 },
+    label: 'activity.fields.duration'
   },
   tags: {
     type: FilterType.Choices,
     label: 'activity.fields.tags',
-    availables: [{ label: 'activities.fields.tags.tata', value: 'pouet' }],
-    values: [],
+    availables: [{ label: 'activities.fields.tags.tata', value: 'pouet' }]
   },
   category: {
     type: FilterType.Choice,
     label: 'activity.fields.category',
-    availables: [{ label: 'activities.fields.category.one', value: 'pouet' }],
-    value: '',
+    availables: [{ label: 'activities.fields.category.one', value: 'pouet' }]
   },
 };
