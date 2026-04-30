@@ -1,4 +1,4 @@
-import { type FilterDefinition, type FilterGroup, createGroup, createFilter, FilterType } from "@chapelure/api/filters";
+import { type FilterDefinition, type FilterGroup, BindingKind, createFilter, createGroup, FilterType } from "@chapelure/api/filters";
 import type { ActivityData } from "@features/activities/data/activities";
 
 export function createSearchFilter(search: string): FilterGroup {
@@ -22,19 +22,19 @@ export function createSearchFilter(search: string): FilterGroup {
 
 export const definition: FilterDefinition<ActivityData>[] = [
     {
-        type: FilterType.Range,
+        type: FilterType.Number,
         label: 'activities.fields.age',
-        binding: { kind: 'range', keyMin: 'ageMin', keyMax: 'ageMax' },
+        binding: { kind: BindingKind.Range, keyMin: 'ageMin', keyMax: 'ageMax' },
     },
     {
         type: FilterType.Number,
-        label: 'activities.fields.duration',
-        binding: { kind: 'single', key: 'durationMinutes' },
+        label: 'activities.fields.durationMinutes',
+        binding: { kind: BindingKind.Single, key: 'durationMinutes' },
     },
     {
-        type: FilterType.Choices,
+        type: FilterType.Choice,
         label: 'activities.fields.environnement',
-        binding: { kind: 'single', key: 'environnement' },
+        binding: { kind: BindingKind.Single, key: 'environnement' },
         availables: [
             { label: 'activities.environnement.INDOOR', value: 'INDOOR' },
             { label: 'activities.environnement.OUTDOOR', value: 'OUTDOOR' },

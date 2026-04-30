@@ -3,18 +3,17 @@ import List from '@chapelure/common/components/data/List.vue';
 import Filters from '@chapelure/common/components/inputs/Filters.vue';
 import Search from '@chapelure/common/components/inputs/Search.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
-import { activities, getUniqueBenefits, type ActivityData } from '@features/activities/data/activities';
-import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
-import { onMounted, ref } from 'vue';
-import { filters } from '@features/activities/data/activities.filters';
-import { routesNames } from '@features/activities/routes';
 import AcitivityMetadaDisplay from '@features/activities/components/AcitivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
+import { activities, getUniqueBenefits, type ActivityData } from '@features/activities/data/activities';
+import { definition } from '@features/activities/data/activities.filters';
+import { routesNames } from '@features/activities/routes';
+import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
+import { onMounted, ref } from 'vue';
 const list = ref<ActivityData[]>([]);
 
 onMounted(async () => {
     list.value = await activities.getAll();
-    console.log(list.value);
 });
 </script>
 
@@ -27,7 +26,7 @@ onMounted(async () => {
                 {{ $t('actions.add') }}
             </RouterLink>
         </div>
-        <Filters :filters="filters" />
+        <Filters :filters="definition" />
         <List :items="list" v-slot="{ item }" class="flex-1">
             <div><img class="size-16 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <div>
