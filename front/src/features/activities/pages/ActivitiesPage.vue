@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { createGroup } from '@chapelure/api/filters';
 import List from '@chapelure/common/components/data/List.vue';
 import Filters from '@chapelure/common/components/inputs/Filters.vue';
 import Search from '@chapelure/common/components/inputs/Search.vue';
@@ -10,7 +11,9 @@ import { definition } from '@features/activities/data/activities.filters';
 import { routesNames } from '@features/activities/routes';
 import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
+
 const list = ref<ActivityData[]>([]);
+const group = createGroup({filters: []});
 
 onMounted(async () => {
     list.value = await activities.getAll();
@@ -26,7 +29,7 @@ onMounted(async () => {
                 {{ $t('actions.add') }}
             </RouterLink>
         </div>
-        <Filters :filters="definition" />
+        <Filters :filters="definition" v-model="group"/>
         <List :items="list" v-slot="{ item }" class="flex-1">
             <div><img class="size-16 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <div>
