@@ -13,7 +13,7 @@ func init() {
 		}
 
 		// update field
-		if err := collection.Fields.AddMarshaledJSONAt(9, []byte(`{
+		if err := collection.Fields.AddMarshaledJSONAt(11, []byte(`{
 			"hidden": false,
 			"id": "select435178374",
 			"maxSelect": 1,
@@ -40,11 +40,11 @@ func init() {
 		}
 
 		// update field
-		if err := collection.Fields.AddMarshaledJSONAt(9, []byte(`{
+		if err := collection.Fields.AddMarshaledJSONAt(11, []byte(`{
 			"hidden": false,
 			"id": "select435178374",
 			"maxSelect": 1,
-			"name": "environement",
+			"name": "environment",
 			"presentable": false,
 			"required": true,
 			"system": false,

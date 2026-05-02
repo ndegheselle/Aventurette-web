@@ -12,7 +12,7 @@
         },
         "fields": {
             "name": "Nom",
-            "environnement": "Environnement",
+            "environment": "Environment",
             "age": "Âge",
             "durationMinutes": "Durée (minutes)",
             "summary": "Description courte",
@@ -24,8 +24,12 @@
             "properties": "Informations"
         },
         "duration": "{duration} min",
-        "age": "{min}-{max} ans",
-        "environnement": {
+        "age": {
+            "range": "{min}-{max} ans",
+            "minOnly": "À partir de {min} ans",
+            "maxOnly": "Jusqu'à {max} ans"
+        },
+        "environment": {
             "INDOOR": "Intérieur",
             "OUTDOOR": "Extérieur",
             "CLASSROOM": "Classe",

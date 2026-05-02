@@ -100,18 +100,18 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export const ActivitiesEnvironnementOptions = {
+export const ActivitiesEnvironmentOptions = {
 	"INDOOR": "INDOOR",
 	"OUTDOOR": "OUTDOOR",
 	"CLASSROOM": "CLASSROOM",
 	"CAR": "CAR",
 } as const
-export type ActivitiesEnvironnementOptions = typeof ActivitiesEnvironnementOptions[keyof typeof ActivitiesEnvironnementOptions]
+export type ActivitiesEnvironmentOptions = typeof ActivitiesEnvironmentOptions[keyof typeof ActivitiesEnvironmentOptions]
 export type ActivitiesRecord = {
 	ageMax?: number
 	ageMin?: number
 	durationMinutes?: number
-	environnement: ActivitiesEnvironnementOptions
+	environment: ActivitiesEnvironmentOptions
 	created: IsoAutoDateString
 	description: HTMLString
 	id: string
