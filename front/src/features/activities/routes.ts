@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router';
 import ActivitiesPage from '@features/activities/pages/ActivitiesPage.vue';
 import ActivityPage from '@features/activities/pages/ActivityPage.vue';
 
-import EditLayout from '@features/activities/pages/create/EditLayout.vue';
+import EditLayout from '@features/activities/pages/create/_EditLayout.vue';
 import DescriptionEdit from '@features/activities/pages/create/DescriptionEdit.vue';
 import StepsEdit from '@features/activities/pages/create/StepsEdit.vue';
 import PropertiesEdit from '@features/activities/pages/create/PropertiesEdit.vue';

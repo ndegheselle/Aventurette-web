@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
 import type { ActivityData } from '@features/activities/data/activities';

@@ -16,7 +16,12 @@
             "age": "Âge",
             "durationMinutes": "Durée (minutes)",
             "summary": "Description courte",
-            "description": "Description"
+            "description": "Description",
+            "picture": "Image",
+            "benefits": "Bénéfices"
+        },
+        "contraints": {
+            "picture": "Maximum 2MB, minimum 800x200px"
         },
         "edit": {
             "description": "Description",

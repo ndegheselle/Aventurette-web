@@ -5,7 +5,7 @@ import { useDeferredModal } from '@chapelure/common/composables/popups/useModal'
 import Modal from '@chapelure/common/components/popups/Modal.vue';
 import { FunnelIcon, ChevronRightIcon, BabyIcon, MapIcon, ClockIcon } from 'lucide-vue-next';
 import { reactive, computed } from 'vue';
-import { useAgeDisplay } from '@features/activities/locales/helpers';
+import { availablesEnvironments, useAgeDisplay } from '@features/activities/locales/helpers';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -37,13 +37,6 @@ const filterEnvironment = reactive(createFilter<ActivityData>({
     value: [],
     operator: FilterOperator.Contains,
 }));
-
-const availablesEnvironments = [
-    { label: 'activities.environment.INDOOR', value: ActivityEnvironment.INDOOR },
-    { label: 'activities.environment.OUTDOOR', value: ActivityEnvironment.OUTDOOR },
-    { label: 'activities.environment.CLASSROOM', value: ActivityEnvironment.CLASSROOM },
-    { label: 'activities.environment.CAR', value: ActivityEnvironment.CAR },
-];
 
 const group: FilterGroup<ActivityData> = createGroup({
     filters: [
