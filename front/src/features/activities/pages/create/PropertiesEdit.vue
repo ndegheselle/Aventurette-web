@@ -2,9 +2,10 @@
 import Group from '@chapelure/common/components/layout/Group.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import type { ActivityData } from '@features/activities/data/activities';
-import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, ImageIcon, LibraryIcon, ListTreeIcon, UploadIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, ImageIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
 import { routesNames } from '@features/activities/routes';
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
+import ImageInput from '@chapelure/common/components/form/ImageInput.vue';
 import { availablesEnvironments } from '@features/activities/locales/helpers';
 
 defineProps<{
@@ -36,12 +37,11 @@ defineProps<{
 
         <Group class="flex-1">
             <FieldLabel label="activities.fields.picture">
-                <div class="rounded-box border border-dashed border-base-300 h-32 flex flex-col justify-center items-center">
-                    <UploadIcon class="icon-xl opacity-50"/>
-                    <span v-html="$t('inputs.image.upload')"></span>
-                    <label class="label text-sm">{{ $t('activities.contraints.picture') }}</label>
-                </div>
-                <input type="file" class="file-input w-full mt-1" />
+                <ImageInput>
+                    <template #constraints>
+                        {{ $t('activities.contraints.picture') }}
+                    </template>
+                </ImageInput>
             </FieldLabel>
             <div class="grid grid-cols-3 gap-2">
                 <FieldLabel label="activities.fields.environment">
