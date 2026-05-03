@@ -1,58 +1,67 @@
 <script setup lang="ts">
-import { createFilter, createGroup, FilterOperator, type FilterGroup } from '@chapelure/api/filters';
-import { type ActivityData, ActivityEnvironment } from '@features/activities/data/activities';
+import { createFilter, createGroup, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/api/filters';
+import { type ActivityData } from '@features/activities/data/activities';
 import { useDeferredModal } from '@chapelure/common/composables/popups/useModal';
 import Modal from '@chapelure/common/components/popups/Modal.vue';
-import { FunnelIcon, ChevronRightIcon, BabyIcon, MapIcon, ClockIcon } from 'lucide-vue-next';
-import { reactive, computed } from 'vue';
+import { FunnelIcon, ChevronRightIcon, BabyIcon, MapIcon, ClockIcon, XIcon, CheckIcon} from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import { availablesEnvironments, useAgeDisplay } from '@features/activities/locales/helpers';
 import { useI18n } from 'vue-i18n';
+import Search from '@chapelure/common/components/inputs/Search.vue';
+import { createSearchFilter } from '@features/activities/data/activities.filters';
 
 const { t } = useI18n();
 const controller = useDeferredModal();
+const search = ref<string>('');
+const model = defineModel<FilterGroup<ActivityData>>();
 
-/* Filter definitions */
-const filterAgeMin = reactive(createFilter<ActivityData>({
-    key: 'ageMin',
-    value: null,
-    operator: FilterOperator.GreaterThan,
-}));
-const filterAgeMax = reactive(createFilter<ActivityData>({
-    key: 'ageMax',
-    value: null,
-    operator: FilterOperator.LessThan,
-}));
-const filterDurationMin = reactive(createFilter<ActivityData>({
-    key: 'durationMinutes',
-    value: null,
-    operator: FilterOperator.GreaterThan,
-}));
-const filterDurationMax = reactive(createFilter<ActivityData>({
-    key: 'durationMinutes',
-    value: null,
-    operator: FilterOperator.LessThan,
-}));
-const filterEnvironment = reactive(createFilter<ActivityData>({
-    key: 'environment',
-    value: [],
-    operator: FilterOperator.Contains,
-}));
+const emit = defineEmits<{
+    (e: 'change', value: FilterGroup<ActivityData>): void;
+}>();
 
-const group: FilterGroup<ActivityData> = createGroup({
-    filters: [
-        filterAgeMin,
-        filterAgeMax,
-        filterDurationMin,
-        filterDurationMax,
-        filterEnvironment
-    ],
-});
+/* Filter values */
+const ageMin = ref<number | null>(null);
+const ageMax = ref<number | null>(null);
+const durationMin = ref<number | null>(null);
+const durationMax = ref<number | null>(null);
+const environment = ref<string[]>([]);
 
-const ageDisplay = computed(() => useAgeDisplay(t, filterAgeMin.value, filterAgeMax.value));
-const additionalFilters = computed(() => filterDurationMin.value || filterDurationMax.value ? 1 : 0);
+const ageDisplay = computed(() => useAgeDisplay(t, ageMin.value, ageMax.value));
+const additionalFilters = computed(() => durationMin.value || durationMax.value ? 1 : 0);
+
+function onChanged() {
+    const searchFilter = createSearchFilter(search.value);
+    let group = createGroup({
+        filters: [
+            createFilter<ActivityData>({ key: 'ageMin', value: ageMin.value, operator: FilterOperator.GreaterThan }),
+            createFilter<ActivityData>({ key: 'ageMax', value: ageMax.value, operator: FilterOperator.LessThan }),
+            createFilter<ActivityData>({ key: 'durationMinutes', value: durationMin.value, operator: FilterOperator.GreaterThan }),
+            createFilter<ActivityData>({ key: 'durationMinutes', value: durationMax.value, operator: FilterOperator.LessThan }),
+            createFilter<ActivityData>({ key: 'environment', value: [...environment.value], operator: FilterOperator.Contains }),
+        ],
+    });
+
+    if (searchFilter)
+        group.filters.push(searchFilter);
+
+    group = removeEmptyFilters(group);
+    console.log(group);
+    model.value = group;
+    emit('change', group);
+}
+
+function reset() {
+    search.value = '';
+    ageMin.value = null;
+    ageMax.value = null;
+    durationMin.value = null;
+    durationMax.value = null;
+    environment.value = [];
+}
 </script>
 
 <template>
+    <Search @search="() => onChanged()" v-model="search" />
     <section class="flex gap-1">
         <button class="btn btn-sm flex-1" @click="() => controller.show()">
             <BabyIcon />
@@ -61,11 +70,11 @@ const additionalFilters = computed(() => filterDurationMin.value || filterDurati
         </button>
         <button class="btn btn-sm flex-1" @click="() => controller.show()">
             <MapIcon />
-            <span v-if="!filterEnvironment.value.length">
+            <span v-if="!environment.length">
                 {{ $t('activities.fields.environment') }}
             </span>
             <span v-else>
-                {{filterEnvironment.value.map((v: any) => $t(`activities.environment.${v}`)).join(', ')}}
+                {{environment.map((v) => $t(`activities.environment.${v}`)).join(', ')}}
             </span>
             <ChevronRightIcon />
         </button>
@@ -86,9 +95,9 @@ const additionalFilters = computed(() => filterDurationMin.value || filterDurati
                 </legend>
                 <div class="flex gap-2 items-center">
                     <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="filterAgeMin.value" />
+                    <input type="number" class="input input-sm w-full" v-model="ageMin" @change="onChanged" />
                     <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="filterAgeMax.value" />
+                    <input type="number" class="input input-sm w-full" v-model="ageMax" @change="onChanged" />
                 </div>
 
                 <legend class="fieldset-legend justify-start">
@@ -96,9 +105,9 @@ const additionalFilters = computed(() => filterDurationMin.value || filterDurati
                 </legend>
                 <div class="flex gap-2 items-center">
                     <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="filterDurationMin.value" />
+                    <input type="number" class="input input-sm w-full" v-model="durationMin" @change="onChanged" />
                     <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="filterDurationMax.value" />
+                    <input type="number" class="input input-sm w-full" v-model="durationMax" @change="onChanged" />
                 </div>
 
                 <legend class="fieldset-legend justify-start">
@@ -107,12 +116,22 @@ const additionalFilters = computed(() => filterDurationMin.value || filterDurati
                 <div class="flex gap-2 flex-col">
                     <label v-for="choice in availablesEnvironments" :key="choice.value"
                         class="label cursor-pointer gap-2">
-                        <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value"
-                            v-model="filterEnvironment.value" />
+                        <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value" v-model="environment"
+                            @change="onChanged" />
                         <span class="text-sm">{{ $t(choice.label) }}</span>
                     </label>
                 </div>
             </fieldset>
         </section>
+        <template #actions>
+            <button class="btn me-auto" @click="reset">
+                <XIcon />
+                {{ $t("actions.reset") }}
+            </button>
+            <button class="btn btn-primary" @click="() => controller.confirm(true as any)">
+                <CheckIcon />
+                {{ $t("actions.filter") }}
+            </button>
+        </template>
     </Modal>
 </template>
