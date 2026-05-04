@@ -51,6 +51,7 @@ function onCancel()
 function onConfirm()
 {
     Object.assign(current, pending);
+    onChanged();
 }
 
 function onChanged() {
@@ -61,7 +62,7 @@ function onChanged() {
             createFilter<ActivityData>({ key: 'ageMax', value: current["ageMax"], operator: FilterOperator.LessThan }),
             createFilter<ActivityData>({ key: 'durationMinutes', value: current["durationMin"], operator: FilterOperator.GreaterThan }),
             createFilter<ActivityData>({ key: 'durationMinutes', value: current["durationMax"], operator: FilterOperator.LessThan }),
-            createFilter<ActivityData>({ key: 'environment', value: [...current["environment"]], operator: FilterOperator.Contains }),
+            createFilter<ActivityData>({ key: 'environment', value: [...current["environment"]], operator: FilterOperator.Equals }),
         ],
     });
 
@@ -118,9 +119,9 @@ function reset() {
                 </legend>
                 <div class="flex gap-2 items-center">
                     <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="pending['ageMin']" @change="onChanged" />
+                    <input type="number" class="input input-sm w-full" v-model="pending['ageMin']" />
                     <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="pending['ageMax']" @change="onChanged" />
+                    <input type="number" class="input input-sm w-full" v-model="pending['ageMax']" />
                 </div>
 
                 <legend class="fieldset-legend justify-start">
@@ -128,9 +129,9 @@ function reset() {
                 </legend>
                 <div class="flex gap-2 items-center">
                     <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="pending['durationMin']" @change="onChanged" />
+                    <input type="number" class="input input-sm w-full" v-model="pending['durationMin']" />
                     <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="pending['durationMax']" @change="onChanged" />
+                    <input type="number" class="input input-sm w-full" v-model="pending['durationMax']" />
                 </div>
 
                 <legend class="fieldset-legend justify-start">
@@ -139,8 +140,7 @@ function reset() {
                 <div class="flex gap-2 flex-col">
                     <label v-for="choice in availablesEnvironments" :key="choice.value"
                         class="label cursor-pointer gap-2">
-                        <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value" v-model="pending['environment']"
-                            @change="onChanged" />
+                        <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value" v-model="pending['environment']" />
                         <span class="text-sm">{{ $t(choice.label) }}</span>
                     </label>
                 </div>

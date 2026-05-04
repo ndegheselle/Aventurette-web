@@ -2,11 +2,12 @@
 import Group from '@chapelure/common/components/layout/Group.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import type { ActivityData } from '@features/activities/data/activities';
-import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, ImageIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
 import { routesNames } from '@features/activities/routes';
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import ImageInput from '@chapelure/common/components/form/ImageInput.vue';
+import ImageInput from '@chapelure/common/components/inputs/ImageInput.vue';
 import { availablesEnvironments } from '@features/activities/locales/helpers';
+import TagSelect from '@chapelure/common/components/inputs/TagSelect.vue';
 
 defineProps<{
     activity: ActivityData;
@@ -43,7 +44,19 @@ defineProps<{
                     </template>
                 </ImageInput>
             </FieldLabel>
-            <div class="grid grid-cols-3 gap-2">
+                <FieldLabel label="activities.fields.age">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
+                            <input type="number" class="input w-full" />
+                        </div>
+                        <div>
+                            <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
+                            <input type="number" class="input w-full" />
+                        </div>
+                    </div>
+                </FieldLabel>
+            <div class="grid grid-cols-2 gap-2">
                 <FieldLabel label="activities.fields.environment">
                     <select class="select w-full">
                         <option v-for="env in availablesEnvironments" :key="env.value" :value="env.value">
@@ -51,23 +64,12 @@ defineProps<{
                         </option>
                     </select>
                 </FieldLabel>
-                <FieldLabel label="activities.fields.age">
-                    <div class="flex flex-col gap-1">
-                        <div class="flex gap-1 items-center">
-                            <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                            <input type="number" class="input w-full" />
-                        </div>
-                        <div class="flex gap-1 items-center">
-                            <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                            <input type="number" class="input w-full" />
-                        </div>
-                    </div>
-                </FieldLabel>
                 <FieldLabel label="activities.fields.durationMinutes">
                     <input type="number" class="input w-full" />
                 </FieldLabel>
             </div>
             <FieldLabel label="activities.fields.benefits">
+                <TagSelect />
             </FieldLabel>
         </Group>
 
