@@ -7,7 +7,7 @@ import Container from '@chapelure/common/components/layout/Container.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/AcitivityMetadaDisplay.vue';
 import ActivitiesFilters from '@features/activities/components/ActivitiesFilters.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
-import { activities, getUniqueBenefits, type ActivityData } from '@features/activities/data/activities';
+import { activities, type ActivityData } from '@features/activities/data/activities';
 import { routesNames } from '@features/activities/routes';
 import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 import { onMounted, reactive, ref } from 'vue';
@@ -39,7 +39,7 @@ async function onChanged() {
                     <AcitivityMetadaDisplay :activity="item" />
                 </div>
                 <p class="text-xs" v-html="item.description"></p>
-                <BenefitsDisplay class="mt-1" :benefits="getUniqueBenefits(item)" />
+                <BenefitsDisplay class="mt-1" :benefits="item.expand.benefits" />
             </div>
 
             <RouterLink :to="{ name: routesNames.page, params: { id: item.id } }"

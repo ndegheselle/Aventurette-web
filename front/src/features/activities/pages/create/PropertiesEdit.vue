@@ -8,10 +8,18 @@ import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
 import ImageInput from '@chapelure/common/components/inputs/ImageInput.vue';
 import { availablesEnvironments } from '@features/activities/locales/helpers';
 import TagSelect from '@chapelure/common/components/inputs/TagSelect.vue';
+import { ref, onMounted } from 'vue';
+import { type BenefitData, benefits } from '@features/activities/data/benefits';
+
+const availableBenefits = ref<BenefitData[]>([]);
 
 defineProps<{
     activity: ActivityData;
 }>();
+
+onMounted(async () => {
+    availableBenefits.value = await benefits.getAll();
+});
 </script>
 
 <template>
@@ -69,7 +77,7 @@ defineProps<{
                 </FieldLabel>
             </div>
             <FieldLabel label="activities.fields.benefits">
-                <TagSelect />
+                <TagSelect :items="availableBenefits" display-key="name" />
             </FieldLabel>
         </Group>
 

@@ -6,10 +6,10 @@ type ActivityExpand = {
     steps?: ActivityStepData[];
     materials?: ActivityResourceData[];
     resources?: ActivityMaterialData[];
+    benefits?: BenefitData[];
 };
 
 type ActivityStepExpand = {
-    benefits?: BenefitData[];
     materials?: ActivityResourceData[];
     resources?: ActivityMaterialData[];
 };
@@ -28,12 +28,6 @@ class ActivitiesService extends PocketbaseCrud<ActivityData> {
                 "resources", "materials"
             ]);
     }
-}
-
-export function getUniqueBenefits(activity: ActivityData | null): BenefitData[] {
-    if (!activity) return [];
-    const benefits = activity.expand.steps?.flatMap(s => s.expand?.benefits ?? []) ?? [];
-    return Array.from(new Map(benefits.map(b => [b.id, b])).values());
 }
 
 export const activities = new ActivitiesService();

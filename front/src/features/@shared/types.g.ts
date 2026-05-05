@@ -110,10 +110,11 @@ export type ActivitiesEnvironmentOptions = typeof ActivitiesEnvironmentOptions[k
 export type ActivitiesRecord = {
 	ageMax?: number
 	ageMin?: number
-	durationMinutes?: number
-	environment: ActivitiesEnvironmentOptions
+	benefits?: RecordIdString[]
 	created: IsoAutoDateString
 	description: HTMLString
+	durationMinutes?: number
+	environment: ActivitiesEnvironmentOptions
 	id: string
 	materials?: RecordIdString[]
 	name: string
@@ -139,7 +140,6 @@ export type ActivitiesResourcesRecord = {
 }
 
 export type ActivitiesStepsRecord = {
-	benefits?: RecordIdString[]
 	created: IsoAutoDateString
 	description: HTMLString
 	id: string

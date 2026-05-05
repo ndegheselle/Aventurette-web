@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activities, getUniqueBenefits, type ActivityData } from '@features/activities/data/activities';
+import { activities, type ActivityData } from '@features/activities/data/activities';
 import { ref } from 'vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
@@ -55,7 +55,7 @@ watch(
                     <AcitivityMetadaDisplay :activity="activity ?? undefined" />
                 </div>
                 <p>{{ activity?.summary }}</p>
-                <BenefitsDisplay :benefits="getUniqueBenefits(activity)" />
+                <BenefitsDisplay :benefits="activity?.expand.benefits" />
             </div>
         </Group>
         <Group>
@@ -94,7 +94,6 @@ watch(
                 <div class="text-4xl font-thin opacity-30 tabular-nums">{{ String(index + 1).padStart(2, '0') }}</div>
                 <div>
                     <p class="text-xs" v-html="item.description"></p>
-                    <BenefitsDisplay class="mt-1" :benefits="item.expand.benefits" />
                 </div>
             </List>
         </Group>
