@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import StarterKit from '@tiptap/starter-kit'
-import { Editor, EditorContent } from '@tiptap/vue-3'
+import StarterKit from '@tiptap/starter-kit';
+import { Editor, EditorContent } from '@tiptap/vue-3';
 import {
   BoldIcon,
   CodeIcon,
@@ -14,34 +14,24 @@ import {
   RedoIcon,
   StrikethroughIcon,
   UndoIcon,
-} from 'lucide-vue-next'
-import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+} from 'lucide-vue-next';
+import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 
-// ⬇️ rename prop
-const props = withDefaults(defineProps<{ modelValue?: string }>(), {
-  modelValue: '',
-})
-
-// ⬇️ rename emit
-const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
+const model = defineModel<string>({ default: '' })
 
 const editor = shallowRef<Editor | undefined>(undefined)
 
-// ⬇️ watch modelValue instead of content
-watch(
-  () => props.modelValue,
-  (value) => {
-    if (editor.value?.getHTML() === value) return
-    editor.value?.commands.setContent(value)
-  },
-)
+watch(model, (value) => {
+  if (editor.value?.getHTML() === value) return
+  editor.value?.commands.setContent(value ?? '')
+})
 
 onMounted(() => {
   editor.value = new Editor({
     extensions: [StarterKit],
-    content: props.modelValue,
+    content: model.value,
     onUpdate: () => {
-      emit('update:modelValue', editor.value!.getHTML())
+      model.value = editor.value!.getHTML()
     },
   })
 })

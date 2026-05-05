@@ -13,7 +13,7 @@ import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 import { onMounted, reactive, ref } from 'vue';
 
 const paginated = ref<Paginated<ActivityData>>(new Paginated<ActivityData>([], 0, { page: 1, perPage: 5 }));
-const group = reactive<FilterGroup<ActivityData>>(createGroup<ActivityData>({}));
+let group = reactive<FilterGroup<ActivityData>>(createGroup<ActivityData>({}));
 
 onMounted(async () => {
     paginated.value = await activities.getList(paginated.value.options);
