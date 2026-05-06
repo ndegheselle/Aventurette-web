@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/api/filters';
 import Search from '@chapelure/common/components/inputs/Search.vue';
+import TagSelect from '@chapelure/common/components/inputs/TagSelect.vue';
 import Modal from '@chapelure/common/components/popups/Modal.vue';
 import { useModal } from '@chapelure/common/composables/popups/useModal';
-import { type ActivityData } from '@features/activities/data/activities';
+import { type ActivityData } from '@features/activities/composables/data/activities';
+import { useBenefits, type BenefitData } from '@features/activities/composables/data/benefits';
 import { availablesEnvironments, useAgeDisplay } from '@features/activities/locales/helpers';
-import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, XIcon } from 'lucide-vue-next';
-import { computed, reactive, ref } from 'vue';
+import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const controller = useModal({onCancel, onConfirm, onShow});
 const search = ref<string>('');
 const model = defineModel<FilterGroup<ActivityData>>();
+const availableBenefits = ref<BenefitData[]>([]);
 
 const emit = defineEmits<{
     (e: 'change', value: FilterGroup<ActivityData>): void;
@@ -25,6 +28,7 @@ const current = reactive({
     durationMin: null as number | null,
     durationMax: null as number | null,
     environment: [] as string[],
+    benefits: [] as string[],
 });
 
 const pending = reactive({
@@ -33,14 +37,22 @@ const pending = reactive({
     durationMin: null as number | null,
     durationMax: null as number | null,
     environment: [] as string[],
+    benefits: [] as string[],
 });
 
 const ageDisplay = computed(() => useAgeDisplay(t, current["ageMin"], current["ageMax"]));
-const additionalFilters = computed(() => current["durationMin"] || current["durationMax"] ? 1 : 0);
+const additionalFilters = computed(() => current["durationMin"] || current["durationMax"] || current["benefits"].length ? 1 : 0);
 
-function onShow()
-{
-    Object.assign(current, pending);
+const pendingBenefits = computed({
+    get: () => availableBenefits.value.filter(b => pending.benefits.includes(b.id)),
+    set: (items) => {
+        pending.benefits = Array.isArray(items) ? items.map(i => i.id) : [];
+    }
+});
+
+function onShow() {
+    // Initialize the temporary state (pending) with the currently applied filters
+    Object.assign(pending, current);
 }
 
 function onCancel()
@@ -63,6 +75,7 @@ function onChanged() {
             createFilter<ActivityData>({ key: 'durationMinutes', value: current["durationMin"], operator: FilterOperator.GreaterThan }),
             createFilter<ActivityData>({ key: 'durationMinutes', value: current["durationMax"], operator: FilterOperator.LessThan }),
             createFilter<ActivityData>({ key: 'environment', value: [...current["environment"]], operator: FilterOperator.Equals }),
+            createFilter<ActivityData>({ key: 'benefits', value: [...current["benefits"]], operator: FilterOperator.AnyEquals }),
         ],
     });
 
@@ -81,7 +94,13 @@ function reset() {
     pending["durationMin"] = null;
     pending["durationMax"] = null;
     pending["environment"] = [];
+    pending["benefits"] = [];
 }
+
+const benefits = useBenefits();
+onMounted(async () => {
+    availableBenefits.value = await benefits.getAll();
+});
 </script>
 
 <template>
@@ -144,6 +163,12 @@ function reset() {
                         <span class="text-sm">{{ $t(choice.label) }}</span>
                     </label>
                 </div>
+
+                <legend class="fieldset-legend justify-start">
+                    <TrendingUpIcon /> {{ $t('activities.fields.benefits') }}
+                </legend>
+                <TagSelect :items="availableBenefits" display-key="name" v-model="pendingBenefits" />
+
             </fieldset>
         </section>
         <template #actions>

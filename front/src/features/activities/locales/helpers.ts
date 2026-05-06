@@ -1,4 +1,4 @@
-import { ActivityEnvironment } from "@features/activities/data/activities";
+import { ActivityEnvironment } from "@features/activities/composables/data/activities";
 import type { ComposerTranslation } from "vue-i18n";
 
 export function useAgeDisplay(t: ComposerTranslation, ageMin: number | null, ageMax: number | null) {

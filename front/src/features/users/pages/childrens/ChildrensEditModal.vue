@@ -4,12 +4,13 @@ import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
 import Modal from '@chapelure/common/components/popups/Modal.vue';
 import { useEditModal } from '@chapelure/common/composables/data/useEditModal';
 import { useModal } from '@chapelure/common/composables/popups/useModal';
-import { childrens, type ChildrenData } from '@features/users/data/childrens';
+import { useChildrens, type ChildrenData } from '@features/users/composables/data/childrens';
 import InterestsSelect from '@features/users/pages/childrens/InterestsSelect.vue';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 const controller = useModal<ChildrenData>();
+const childrens = useChildrens();
 const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, childrens);
 const children = computed(() => data.value);
 defineExpose({ show });

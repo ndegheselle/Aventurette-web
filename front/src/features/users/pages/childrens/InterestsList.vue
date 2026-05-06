@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type InterestData } from '@features/users/data/interests';
+import { type InterestData } from '@features/users/composables/data/interests';
 const props = defineProps<{ interests?: InterestData[] }>();
 </script>
 

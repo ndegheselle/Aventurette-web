@@ -3,13 +3,14 @@ import { useAuth } from '@chapelure/auth/composables/useAuth';
 import List from '@chapelure/common/components/data/List.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
 import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
-import { type ChildrenData, childrens } from '@features/users/data/childrens';
+import { type ChildrenData, useChildrens } from '@features/users/composables/data/childrens';
 import ChildrensEditModal from '@features/users/pages/childrens/ChildrensEditModal.vue';
 import InterestsList from '@features/users/pages/childrens/InterestsList.vue';
 import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
 import { onMounted, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+const childrens = useChildrens();
 const modal = useTemplateRef('modal');
 const auth = useAuth();
 const list = ref<ChildrenData[]>([]);
@@ -28,7 +29,7 @@ async function remove(children: ChildrenData, index: number) {
     if (await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.message', { name: children.name }), TriangleAlertIcon) !== true)
         return;
 
-    await childrens.delete(children.id);
+    await childrens.remove(children.id);
     list.value.splice(index, 1);
 }
 

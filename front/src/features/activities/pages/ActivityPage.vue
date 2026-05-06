@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { activities, type ActivityData } from '@features/activities/data/activities';
-import { ref } from 'vue';
-import Group from '@chapelure/common/components/layout/Group.vue';
-import Container from '@chapelure/common/components/layout/Container.vue';
-import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
 import List from '@chapelure/common/components/data/List.vue';
-import { watch } from 'vue';
-import { useRoute } from 'vue-router';
-import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
+import Container from '@chapelure/common/components/layout/Container.vue';
+import Group from '@chapelure/common/components/layout/Group.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/AcitivityMetadaDisplay.vue';
+import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
+import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
+import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const activity = ref<ActivityData | null>(null);
+const activities = useActivities();
 
 watch(
     () => route.params.id,

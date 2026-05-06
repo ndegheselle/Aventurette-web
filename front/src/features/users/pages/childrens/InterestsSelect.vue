@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { interests, type InterestData } from '@features/users/data/interests';
+import { useInterests, type InterestData } from '@features/users/composables/data/interests';
 import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{ selected?: string[] }>();
 const emit = defineEmits<{ (e: 'update:selected', value: string[]): void }>();
-
+const interests = useInterests();
 const list = ref<(InterestData & { isSelected: boolean })[]>([]);
 
 onMounted(async () => {

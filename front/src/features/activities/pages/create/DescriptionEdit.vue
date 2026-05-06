@@ -2,10 +2,10 @@
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
-import type { ActivityData } from '@features/activities/data/activities';
-import { ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
-import { routesNames } from '@features/activities/routes';
 import TextEditor from '@features/activities/components/TextEditor.vue';
+import type { ActivityData } from '@features/activities/composables/data/activities';
+import { routesNames } from '@features/activities/routes';
+import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
 
 defineProps<{
     activity: ActivityData;
@@ -46,6 +46,10 @@ defineProps<{
             </FieldLabel>
         </Group>
         <div class="mt-auto flex">
+            <RouterLink class="btn" :to="{ name: routesNames.all }">
+                <ArrowLeftIcon />
+                {{ $t('actions.cancel') }}
+            </RouterLink>
             <RouterLink class="btn btn-primary ms-auto" :to="{ name: routesNames.edit.steps }">
                 <ArrowRightIcon />
                 {{ $t('actions.next') }}

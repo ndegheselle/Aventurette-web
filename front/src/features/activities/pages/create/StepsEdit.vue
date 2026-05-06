@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
-import type { ActivityData } from '@features/activities/data/activities';
-import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
+import type { ActivityData } from '@features/activities/composables/data/activities';
 import { routesNames } from '@features/activities/routes';
+import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
 
 defineProps<{
     activity: ActivityData;
