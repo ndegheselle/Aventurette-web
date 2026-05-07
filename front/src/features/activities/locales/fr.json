@@ -21,7 +21,7 @@
             "benefits": "Bénéfices"
         },
         "contraints": {
-            "picture": "Maximum 2MB, minimum 800x200px"
+            "picture": "Maximum 2MB"
         },
         "edit": {
             "description": "Description",

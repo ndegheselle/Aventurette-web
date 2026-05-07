@@ -31,7 +31,7 @@ defineProps<{
                 </span>
             </li>
         </ul>
-        <Group>
+        <Group class="flex-1">
         </Group>
 
         <div class="mt-auto flex">
