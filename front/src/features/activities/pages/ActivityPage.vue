@@ -5,6 +5,7 @@ import Group from '@chapelure/common/components/layout/Group.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/AcitivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
+import StepSummary from '@features/activities/pages/steps/StepSummary.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
@@ -91,10 +92,7 @@ watch(
                 <ListOrderedIcon /> {{ $t('activities.steps') }}
             </h2>
             <List :items="activity?.expand.steps" v-slot="{ item, index }">
-                <div class="text-4xl font-thin opacity-30 tabular-nums">{{ String(index + 1).padStart(2, '0') }}</div>
-                <div>
-                    <p class="text-xs" v-html="item.description"></p>
-                </div>
+                <StepSummary :index="index" :step="item" />
             </List>
         </Group>
     </Container>
