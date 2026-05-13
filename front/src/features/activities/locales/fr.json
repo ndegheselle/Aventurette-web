@@ -1,10 +1,15 @@
 {
     "activities": {
         "title": "Activités",
-        "materials": "Materiel",
         "description": "Description",
-        "resources": "Ressources",
-        "steps": "Étapes",
+        "steps": {
+            "title": "Étapes",
+            "fields": {
+                "description": "Description",
+                "ressources": "Ressources",
+                "materials": "Matériel"
+            }
+        },
         "actions": {
             "favorite": "Favoris",
             "addToPlanning": "Ajouter au planning",

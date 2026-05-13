@@ -3,17 +3,24 @@ import List from '@chapelure/common/components/data/List.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
 import type { ActivityData, ActivityStepData } from '@features/activities/composables/data/activities';
+import StepEditModal from '@features/activities/pages/steps/StepEditModal.vue';
 import StepSummary from '@features/activities/pages/steps/StepSummary.vue';
 import { routesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon, MinusIcon, PenIcon, PlusIcon } from 'lucide-vue-next';
+import { useTemplateRef } from 'vue';
 
 defineProps<{
     activity: ActivityData;
 }>();
 
-function remove(item: ActivityStepData, index: number) { }
+const modal = useTemplateRef('modal');
 
+function remove(item: ActivityStepData, index: number) { }
 function edit(item: ActivityStepData) { }
+function add()
+{
+    modal.value?.show({} as ActivityStepData);
+}
 </script>
 
 <template>
@@ -38,7 +45,7 @@ function edit(item: ActivityStepData) { }
             </li>
         </ul>
         <Group class="flex-1">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" @click="add">
                 <PlusIcon />
                 {{ $t("actions.add") }}
             </button>
@@ -72,4 +79,5 @@ function edit(item: ActivityStepData) { }
             </RouterLink>
         </div>
     </Container>
+    <StepEditModal ref="modal" />
 </template>
