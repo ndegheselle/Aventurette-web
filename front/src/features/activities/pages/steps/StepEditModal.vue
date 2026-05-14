@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import FileInput from '@chapelure/common/components/inputs/FileInput.vue';
+import FilesInput from '@chapelure/common/components/inputs/FilesInput.vue';
 import Modal from '@chapelure/common/components/popups/Modal.vue';
 import { useModal } from '@chapelure/common/composables/popups/useModal';
 import TextEditor from '@features/activities/components/TextEditor.vue';
@@ -34,7 +34,8 @@ defineExpose({ show });
                 <FieldLabel label="activities.steps.fields.materials">
                 </FieldLabel>
                 <FieldLabel label="activities.steps.fields.ressources">
-                    <FileInput :maxNumber="3" />
+                    <FilesInput :maxFilesNumber="3">
+                    </FilesInput>
                 </FieldLabel>
             </fieldset>
         </div>
