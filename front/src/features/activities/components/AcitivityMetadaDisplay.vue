@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ActivityData } from '@features/activities/data/activities';
+import type { ActivityData } from '@features/activities/composables/data/activities';
 import { useAgeDisplay } from '@features/activities/locales/helpers';
 import { ClockIcon, MapIcon, UserRoundIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
