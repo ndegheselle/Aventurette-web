@@ -1,6 +1,7 @@
 import { usePocketBaseCrud } from "@chapelure/api/pocketbase.ts";
 import type { BenefitData } from "@features/activities/composables/data/benefits";
-import { ActivitiesEnvironmentOptions, type ActivitiesMaterialsResponse, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse, Collections } from "@shared/types.g.ts";
+import type { ActivityMaterialData } from "@features/activities/composables/data/materials";
+import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse, Collections } from "@shared/types.g.ts";
 
 type ActivityExpand = {
     steps?: ActivityStepData[];
@@ -12,12 +13,15 @@ type ActivityExpand = {
 type ActivityStepExpand = {
     materials?: ActivityResourceData[];
     resources?: ActivityMaterialData[];
+
+    toSync: {
+        resources: File[];
+    }
 };
 
 export type ActivityData = ActivitiesResponse<ActivityExpand>;
 export type ActivityStepData = ActivitiesStepsResponse<ActivityStepExpand>;
 export type ActivityResourceData = ActivitiesResourcesResponse;
-export type ActivityMaterialData = ActivitiesMaterialsResponse;
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 
 export function useActivities() {

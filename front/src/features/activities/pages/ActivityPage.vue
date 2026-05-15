@@ -2,10 +2,10 @@
 import List from '@chapelure/common/components/data/List.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
-import AcitivityMetadaDisplay from '@features/activities/components/AcitivityMetadaDisplay.vue';
+import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
-import StepSummary from '@features/activities/pages/steps/StepSummary.vue';
+import StepSummary from '@features/activities/components/steps/StepSummary.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
@@ -61,7 +61,7 @@ watch(
         </Group>
         <Group>
             <h2 class="text-2xl flex items-center gap-2">
-                <PackageOpenIcon /> {{ $t('activities.steps.fields.materials') }}
+                <PackageOpenIcon /> {{ $t('activities.steps.fields.materials.title') }}
             </h2>
             <div class="flex gap-2">
                 <div class="text-center" v-for="material in activity?.expand.materials">
@@ -72,7 +72,7 @@ watch(
         </Group>
         <Group>
             <h2 class="text-2xl flex items-center gap-2">
-                <FileTextIcon /> {{ $t('activities.steps.fields.resources') }}
+                <FileTextIcon /> {{ $t('activities.steps.fields.resources.title') }}
             </h2>
             <div class="flex gap-2">
                 <div class="text-center" v-for="material in activity?.expand.resources">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import ImageInput from '@chapelure/common/components/inputs/ImageInput.vue';
+import FilesInput from '@chapelure/common/components/inputs/FilesInput.vue';
 import TagSelect from '@chapelure/common/components/inputs/TagSelect.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
@@ -47,11 +47,11 @@ onMounted(async () => {
 
         <Group class="flex-1">
             <FieldLabel label="activities.fields.picture">
-                <ImageInput>
+                <FilesInput> 
                     <template #constraints>
                         {{ $t('activities.contraints.picture') }}
                     </template>
-                </ImageInput>
+                </FilesInput>
             </FieldLabel>
                 <FieldLabel label="activities.fields.age">
                     <div class="grid grid-cols-2 gap-2">

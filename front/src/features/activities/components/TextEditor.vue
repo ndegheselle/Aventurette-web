@@ -43,7 +43,7 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="border border-base-300 rounded-box overflow-hidden flex flex-col h-full">
-        <div v-if="editor" class="flex flex-wrap gap-1 p-1 border-b border-base-300">
+        <div v-if="editor" class="flex flex-wrap gap-1 p-0.5 border-b border-base-300">
             <div class="join">
                 <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('bold') }"
                     @click="editor.chain().focus().toggleBold().run()">
@@ -93,7 +93,7 @@ onBeforeUnmount(() => {
                 </button>
             </div>
 
-            <div class="join">
+            <div class="join ms-auto">
                 <button class="btn btn-square join-item" :disabled="!editor.can().undo()"
                     @click="editor.chain().focus().undo().run()">
                     <UndoIcon />
@@ -104,7 +104,7 @@ onBeforeUnmount(() => {
                 </button>
             </div>
         </div>
-        <editor-content :editor="editor" class="prose prose-p:my-1 max-w-none bg-base-100 p-3 h-full" />
+        <editor-content :editor="editor" class="prose prose-p:my-1 max-w-none bg-base-100 px-2 h-full" />
     </div>
 </template>
 

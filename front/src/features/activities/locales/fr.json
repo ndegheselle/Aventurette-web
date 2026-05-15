@@ -6,8 +6,14 @@
             "title": "Étapes",
             "fields": {
                 "description": "Description",
-                "ressources": "Ressources",
-                "materials": "Matériel"
+                "resources": {
+                    "title": "Ressources",
+                    "constraints": "Formats PNG, JPEG, JPG et PDF. 10 fichiers max, 2MB max par fichier."
+                },
+                "materials": {
+                    "title": "Matériel",
+                    "notNeeded": "Aucun matériel requis"
+                }
             }
         },
         "actions": {
@@ -26,7 +32,7 @@
             "benefits": "Bénéfices"
         },
         "contraints": {
-            "picture": "Maximum 2MB"
+            "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
         },
         "edit": {
             "description": "Description",
