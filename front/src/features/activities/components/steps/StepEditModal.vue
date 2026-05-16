@@ -8,6 +8,7 @@ import MaterialsSelection from '@features/activities/components/materials/Materi
 import TextEditor from '@features/activities/components/TextEditor.vue';
 import type { ActivityStepData } from '@features/activities/composables/data/activities';
 import { ref, toRaw } from 'vue';
+import { XIcon, PlusIcon } from 'lucide-vue-next';
 
 const controller = useModal<ActivityStepData>();
 const data = ref<ActivityStepData>({} as ActivityStepData);
@@ -19,6 +20,10 @@ function show(child: ActivityStepData) {
     return controller.show();
 }
 
+function confirm()
+{
+    controller.confirm(data.value);
+}
 
 alert.debug("WIP : Gérer les ressources.");
 
@@ -45,5 +50,15 @@ defineExpose({ show });
                 </FilesInput>
             </FieldLabel>
         </div>
+        <template #actions>
+            <button class="btn" @click="controller.cancel">
+                <XIcon />
+                {{ $t('actions.cancel') }}
+            </button>
+            <button class="btn btn-primary" @click="confirm">
+                <PlusIcon />
+                {{ $t('actions.add') }}
+            </button>
+        </template>
     </Modal>
 </template>

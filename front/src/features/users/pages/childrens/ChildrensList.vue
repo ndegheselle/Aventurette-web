@@ -2,47 +2,32 @@
 import { useAuth } from '@chapelure/auth/composables/useAuth';
 import List from '@chapelure/common/components/data/List.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
+import { useEditableList } from '@chapelure/common/composables/data/useEditableList';
 import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
+import type { IEditModal } from '@chapelure/common/composables/popups/useModal';
 import { type ChildrenData, useChildrens } from '@features/users/composables/data/childrens';
 import ChildrensEditModal from '@features/users/pages/childrens/ChildrensEditModal.vue';
 import InterestsList from '@features/users/pages/childrens/InterestsList.vue';
 import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
-import { onMounted, ref, useTemplateRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const childrens = useChildrens();
-const modal = useTemplateRef('modal');
+const modal = useTemplateRef<IEditModal<ChildrenData>>('modal');
 const auth = useAuth();
-const list = ref<ChildrenData[]>([]);
+const {items, add, remove, edit} = useEditableList<ChildrenData>(modal, {onRemove: onRemove});
+
 const confirm = useConfirmation();
 const { t } = useI18n();
 
-async function add() {
-    if (!modal.value) return;
-
-    const newChild = await modal.value.show({ user: auth.currentId() } as ChildrenData);
-    if (newChild)
-        list.value.push(newChild);
-}
-
-async function remove(children: ChildrenData, index: number) {
+async function onRemove(children: ChildrenData) {
     if (await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.message', { name: children.name }), TriangleAlertIcon) !== true)
-        return;
-
+        return false;
     await childrens.remove(children.id);
-    list.value.splice(index, 1);
-}
-
-async function edit(children: ChildrenData) {
-    if (!modal.value) return;
-    const updatedChild = await modal.value.show(children);
-    if (updatedChild) {
-        Object.assign(children, updatedChild);
-    }
 }
 
 onMounted(async () => {
-    list.value = await childrens.getAll();
+    items.value = await childrens.getAll();
 });
 </script>
 
@@ -50,12 +35,12 @@ onMounted(async () => {
     <Group>
         <div class="flex justify-between">
             <h2 class="text-2xl flex items-center gap-2 ms-2"><UsersRoundIcon /> {{ $t('childrens.title') }}</h2>
-            <button class="btn btn-circle btn-primary" @click="() => add()">
+            <button class="btn btn-circle btn-primary" @click="() => add({ user: auth.currentId() } as ChildrenData)">
                 <PlusIcon />
             </button>
         </div>
         
-        <List :items="list" v-slot="{ item, index }">
+        <List :items="items" v-slot="{ item, index }">
             <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <div>
                 <div class="flex">

@@ -6,25 +6,27 @@ import type { ActivityData, ActivityStepData } from '@features/activities/compos
 import StepEditModal from '@features/activities/components/steps/StepEditModal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
 import { routesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon, MinusIcon, PenIcon, PlusIcon } from 'lucide-vue-next';
-import { ref, useTemplateRef } from 'vue';
+import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
+import { useTemplateRef } from 'vue';
+import { useEditableList } from '@chapelure/common/composables/data/useEditableList';
+import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
+import { useI18n } from 'vue-i18n';
 
 const { activity } = defineProps<{
     activity: ActivityData;
 }>();
 
 const modal = useTemplateRef('modal');
-const steps = ref<ActivityStepData[]>([]);
+const {items, add, edit, remove} = useEditableList(modal, {onRemove: onRemove});
+const confirm = useConfirmation();
+const { t } = useI18n();
 
-function remove(item: ActivityStepData, index: number) { }
-function edit(item: ActivityStepData) { }
-async function add() {
-    const newStep = await modal.value?.show({} as ActivityStepData);
-    if (newStep) {
-        console.log("afa");
-        steps.value.push(newStep);
-    }
+async function onRemove() {
+    if (await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.messageSimple'), TriangleAlertIcon) !== true)
+        return false;
+    return true;
 }
+
 </script>
 
 <template>
@@ -49,11 +51,11 @@ async function add() {
             </li>
         </ul>
         <Group class="flex-1">
-            <button class="btn btn-primary" @click="add">
+            <button class="btn btn-primary" @click="() => add({} as ActivityStepData)">
                 <PlusIcon />
                 {{ $t("actions.add") }}
             </button>
-            <List class="flex-1" :items="steps" v-slot="{ item, index }">
+            <List class="flex-1" :items="items" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
 
                 <button class="btn btn-square btn-ghost" @click="() => remove(item, index)">
