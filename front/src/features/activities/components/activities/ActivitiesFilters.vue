@@ -22,23 +22,19 @@ const emit = defineEmits<{
 }>();
 
 /* Filter values */
-const current = reactive({
-    ageMin: null as number | null,
-    ageMax: null as number | null,
-    durationMin: null as number | null,
-    durationMax: null as number | null,
-    environment: [] as string[],
-    benefits: [] as string[],
-});
+function emptyFilters() {
+    return {
+        ageMin: null as number | null,
+        ageMax: null as number | null,
+        durationMin: null as number | null,
+        durationMax: null as number | null,
+        environment: [] as string[],
+        benefits: [] as string[],
+    };
+}
 
-const pending = reactive({
-    ageMin: null as number | null,
-    ageMax: null as number | null,
-    durationMin: null as number | null,
-    durationMax: null as number | null,
-    environment: [] as string[],
-    benefits: [] as string[],
-});
+const current = reactive(emptyFilters());
+const pending = reactive(emptyFilters());
 
 const ageDisplay = computed(() => useAgeDisplay(t, current["ageMin"], current["ageMax"]));
 const additionalFilters = computed(() => current["durationMin"] || current["durationMax"] || current["benefits"].length ? 1 : 0);
@@ -89,12 +85,7 @@ function onChanged() {
 
 function reset() {
     search.value = '';
-    pending["ageMin"] = null;
-    pending["ageMax"] = null;
-    pending["durationMin"] = null;
-    pending["durationMax"] = null;
-    pending["environment"] = [];
-    pending["benefits"] = [];
+    Object.assign(pending, emptyFilters());
 }
 
 const benefits = useBenefits();
