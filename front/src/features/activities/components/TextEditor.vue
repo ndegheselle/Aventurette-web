@@ -104,7 +104,7 @@ onBeforeUnmount(() => {
                 </button>
             </div>
         </div>
-        <editor-content :editor="editor" class="prose prose-p:my-1 max-w-none bg-base-100 px-2 h-full" />
+        <editor-content :editor="editor" class="prose prose-p:my-1 max-w-none bg-base-100 px-2 flex-1" />
     </div>
 </template>
 
