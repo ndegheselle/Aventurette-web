@@ -6,12 +6,12 @@ import { useAlert } from '@chapelure/common/composables/popups/useAlert';
 import { useModal } from '@chapelure/common/composables/popups/useModal';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
-import type { ActivityStepData } from '@features/activities/composables/data/activities';
+import { type ActivityStepData, createEmptyStep } from '@features/activities/composables/data/activities';
 import { ref, toRaw } from 'vue';
 import { XIcon, PlusIcon } from 'lucide-vue-next';
 
 const controller = useModal<ActivityStepData>();
-const data = ref<ActivityStepData>({} as ActivityStepData);
+const data = ref<ActivityStepData>(createEmptyStep());
 const alert = useAlert();
 
 function show(child: ActivityStepData) {
@@ -40,7 +40,7 @@ defineExpose({ show });
                 <TextEditor v-model="data.description" class="min-h-64" />
             </FieldLabel>
             <FieldLabel label="activities.steps.fields.materials.title">
-                <MaterialsSelection v-model="data.materials" />
+                <MaterialsSelection v-model="data.expand.materials" />
             </FieldLabel>
             <FieldLabel label="activities.steps.fields.resources.title">
                 <FilesInput :maxFilesNumber="10" accept=".png,.jpeg,.jpg,.pdf">

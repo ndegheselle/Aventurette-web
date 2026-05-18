@@ -2,7 +2,7 @@
 import List from '@chapelure/common/components/data/List.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
-import type { ActivityData, ActivityStepData } from '@features/activities/composables/data/activities';
+import { type ActivityData, type ActivityStepData, createEmptyStep } from '@features/activities/composables/data/activities';
 import StepEditModal from '@features/activities/components/steps/StepEditModal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
 import { routesNames } from '@features/activities/routes';
@@ -51,7 +51,7 @@ async function onRemove() {
             </li>
         </ul>
         <Group class="flex-1">
-            <button class="btn btn-primary" @click="() => add({} as ActivityStepData)">
+            <button class="btn btn-primary" @click="() => add(createEmptyStep())">
                 <PlusIcon />
                 {{ $t("actions.add") }}
             </button>

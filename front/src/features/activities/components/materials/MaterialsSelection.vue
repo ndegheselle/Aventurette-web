@@ -4,30 +4,27 @@ import { useMaterials, type ActivityMaterialData } from '@features/activities/co
 import { onMounted, ref, computed } from 'vue';
 import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
 
-const selectedIds = defineModel<string[]>({ default: () => [] });
+const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });
 const materials = useMaterials();
 
 const availableMaterials = ref<ActivityMaterialData[]>([]);
 const open = ref<boolean>(false);
 const search = ref<string>("");
-let availableMaterialsMap = new Map<string, ActivityMaterialData>();
 
-const selected = computed(() => selectedIds.value.map(x => availableMaterialsMap.get(x)!));
 const availableItems = computed(() => availableMaterials.value.filter(
-    x => selectedIds.value.indexOf(x.id) === -1 && x.name.toLowerCase().includes(search.value.toLowerCase())
+    x => !selected.value.find((s) => s.id == x.id) && x.name.toLowerCase().includes(search.value.toLowerCase())
 ));
 
 onMounted(async () => {
     availableMaterials.value = await materials.getAll();
-    availableMaterialsMap = new Map(availableMaterials.value.map(x => [x.id, x]));
 });
 
 function addItem(item: ActivityMaterialData) {
-    selectedIds.value = [...selectedIds.value, item.id];
+    selected.value = [...selected.value, item];
 }
 
 function removeItem(index: number) {
-    selectedIds.value = selectedIds.value.filter((_, i) => i !== index);
+    selected.value = selected.value.filter((_, i) => i !== index);
 }
 
 function openDropdown() {

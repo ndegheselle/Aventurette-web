@@ -13,16 +13,22 @@ type ActivityExpand = {
 type ActivityStepExpand = {
     materials?: ActivityResourceData[];
     resources?: ActivityMaterialData[];
-
-    toSync: {
-        resources: File[];
-    }
 };
 
 export type ActivityData = ActivitiesResponse<ActivityExpand>;
 export type ActivityStepData = ActivitiesStepsResponse<ActivityStepExpand>;
 export type ActivityResourceData = ActivitiesResourcesResponse;
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
+
+export function createEmptyStep() : ActivityStepData
+{
+    return {
+        expand: {
+            materials: [],
+            resources: []
+        } as ActivityStepExpand
+    } as ActivityStepData;
+}
 
 export function useActivities() {
     return usePocketBaseCrud<ActivityData>(Collections.Activities,
