@@ -7,16 +7,15 @@ import { useModal } from '@chapelure/common/composables/popups/useModal';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
 import { type ActivityStepData, createEmptyStep } from '@features/activities/composables/data/activities';
-import { ref, toRaw } from 'vue';
-import { XIcon, PlusIcon } from 'lucide-vue-next';
+import { SaveIcon, XIcon } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 const controller = useModal<ActivityStepData>();
 const data = ref<ActivityStepData>(createEmptyStep());
 const alert = useAlert();
 
 function show(child: ActivityStepData) {
-    const raw = toRaw(child);
-    data.value = structuredClone(raw);
+    data.value = child;
     return controller.show();
 }
 
@@ -43,7 +42,7 @@ defineExpose({ show });
                 <MaterialsSelection v-model="data.expand.materials" />
             </FieldLabel>
             <FieldLabel label="activities.steps.fields.resources.title">
-                <FilesInput :maxFilesNumber="10" accept=".png,.jpeg,.jpg,.pdf">
+                <FilesInput :maxFilesNumber="-1" accept=".png,.jpeg,.jpg,.pdf" :hideFilesList="true">
                     <template #constraints>
                         {{ $t('activities.steps.fields.resources.constraints') }}
                     </template>
@@ -56,8 +55,8 @@ defineExpose({ show });
                 {{ $t('actions.cancel') }}
             </button>
             <button class="btn btn-primary" @click="confirm">
-                <PlusIcon />
-                {{ $t('actions.add') }}
+                <SaveIcon />
+                {{ $t('actions.save') }}
             </button>
         </template>
     </Modal>

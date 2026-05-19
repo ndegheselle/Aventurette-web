@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import Dropdown from '@chapelure/common/components/popups/Dropdown.vue';
+import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
 import { useMaterials, type ActivityMaterialData } from '@features/activities/composables/data/materials';
-import { onMounted, ref, computed } from 'vue';
 import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
 
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });
 const materials = useMaterials();
@@ -58,14 +59,11 @@ function openDropdown() {
         </ul>
     </Dropdown>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
-        <div v-for="(value, index) in selected" class="text-center p-1 relative">
-            <img class="size-16 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" />
-            <span >{{ value.name }}</span>
-
+        <MaterialDisplay :material="value" v-for="(value, index) in selected" class="relative">
             <button class="btn btn-error btn-circle btn-xs absolute top-0 right-0" @click="() => removeItem(index)">
                 <TrashIcon class="icon-sm" />
             </button>
-        </div>
+        </MaterialDisplay>
         <div v-if="!selected.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
             <CircleOffIcon />
             <span>{{ $t('activities.steps.fields.materials.notNeeded') }}</span>
