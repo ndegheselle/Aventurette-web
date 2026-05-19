@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FilesList from '@chapelure/common/components/data/FilesList.vue';
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
 import FilesInput from '@chapelure/common/components/inputs/FilesInput.vue';
 import TagSelect from '@chapelure/common/components/inputs/TagSelect.vue';
@@ -13,6 +14,7 @@ import { onMounted, ref } from 'vue';
 
 const availableBenefits = ref<BenefitData[]>([]);
 const benefits = useBenefits();
+const images = ref<File[]>([]);
 
 defineProps<{
     activity: ActivityData;
@@ -47,24 +49,25 @@ onMounted(async () => {
 
         <Group class="flex-1">
             <FieldLabel label="activities.fields.picture">
-                <FilesInput> 
+                <FilesInput accept="image/*" @change="$event => (images = images.concat($event))">
                     <template #constraints>
                         {{ $t('activities.contraints.picture') }}
                     </template>
                 </FilesInput>
+                <FilesList v-model="images" />
             </FieldLabel>
-                <FieldLabel label="activities.fields.age">
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                            <input type="number" class="input w-full" />
-                        </div>
-                        <div>
-                            <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                            <input type="number" class="input w-full" />
-                        </div>
+            <FieldLabel label="activities.fields.age">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
+                        <input type="number" class="input w-full" />
                     </div>
-                </FieldLabel>
+                    <div>
+                        <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
+                        <input type="number" class="input w-full" />
+                    </div>
+                </div>
+            </FieldLabel>
             <div class="grid grid-cols-2 gap-2">
                 <FieldLabel label="activities.fields.environment">
                     <select class="select w-full">
