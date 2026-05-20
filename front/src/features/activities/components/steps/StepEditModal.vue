@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import FilesInput from '@chapelure/common/components/inputs/FilesInput.vue';
+import FilesInput from '@chapelure/common/components/inputs/files/FilesInput.vue';
 import Modal from '@chapelure/common/components/popups/Modal.vue';
 import { useAlert } from '@chapelure/common/composables/popups/useAlert';
 import { useModal } from '@chapelure/common/composables/popups/useModal';

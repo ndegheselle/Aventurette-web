@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import FilesList from '@chapelure/common/components/data/FilesList.vue';
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import FilesInput from '@chapelure/common/components/inputs/FilesInput.vue';
+import FilesInput from '@chapelure/common/components/inputs/files/FilesInput.vue';
+import FilesList from '@chapelure/common/components/inputs/files/FilesList.vue';
+import { useOneFile } from '@chapelure/common/components/inputs/files/useFilesHandling';
 import TagSelect from '@chapelure/common/components/inputs/TagSelect.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
@@ -14,7 +15,7 @@ import { onMounted, ref } from 'vue';
 
 const availableBenefits = ref<BenefitData[]>([]);
 const benefits = useBenefits();
-const images = ref<File[]>([]);
+const { files, update: updateImage } = useOneFile();
 
 defineProps<{
     activity: ActivityData;
@@ -49,12 +50,12 @@ onMounted(async () => {
 
         <Group class="flex-1">
             <FieldLabel label="activities.fields.picture">
-                <FilesInput accept="image/*" @change="$event => (images = images.concat($event))">
+                <FilesInput accept="image/*" @change="updateImage">
                     <template #constraints>
                         {{ $t('activities.contraints.picture') }}
                     </template>
                 </FilesInput>
-                <FilesList v-model="images" />
+                <FilesList :files />
             </FieldLabel>
             <FieldLabel label="activities.fields.age">
                 <div class="grid grid-cols-2 gap-2">
