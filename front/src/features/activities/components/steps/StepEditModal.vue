@@ -2,7 +2,6 @@
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
 import FilesInput from '@chapelure/common/components/inputs/files/FilesInput.vue';
 import Modal from '@chapelure/common/components/popups/Modal.vue';
-import { useAlert } from '@chapelure/common/composables/popups/useAlert';
 import { useModal } from '@chapelure/common/composables/popups/useModal';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
@@ -12,7 +11,6 @@ import { ref } from 'vue';
 
 const controller = useModal<ActivityStepData>();
 const data = ref<ActivityStepData>(createEmptyStep());
-const alert = useAlert();
 
 function show(child: ActivityStepData) {
     data.value = child;
@@ -24,13 +22,11 @@ function confirm()
     controller.confirm(data.value);
 }
 
-alert.debug("WIP : Gérer les ressources.");
-
 defineExpose({ show });
 </script>
 
 <template>
-    <Modal :controller="controller">
+    <Modal :controller>
         <template #title>
             {{ $t('actions.update') }}
         </template>

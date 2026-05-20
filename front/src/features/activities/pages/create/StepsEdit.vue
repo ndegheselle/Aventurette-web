@@ -2,14 +2,14 @@
 import List from '@chapelure/common/components/data/List.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
-import { type ActivityData, type ActivityStepData, createEmptyStep } from '@features/activities/composables/data/activities';
+import { useEditableList } from '@chapelure/common/composables/data/useEditableList';
+import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
 import StepEditModal from '@features/activities/components/steps/StepEditModal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
+import { type ActivityData, createEmptyStep } from '@features/activities/composables/data/activities';
 import { routesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
-import { useEditableList } from '@chapelure/common/composables/data/useEditableList';
-import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
 import { useI18n } from 'vue-i18n';
 
 const { activity } = defineProps<{
