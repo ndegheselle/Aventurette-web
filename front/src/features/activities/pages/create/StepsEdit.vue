@@ -16,10 +16,10 @@ const { activity } = defineProps<{
     activity: ActivityData;
 }>();
 
+const { t } = useI18n();
 const modal = useTemplateRef('modal');
 const {items, add, edit, remove} = useEditableList(modal, {onRemove: onRemove});
 const confirm = useConfirmation();
-const { t } = useI18n();
 
 async function onRemove() {
     if (await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.messageSimple'), TriangleAlertIcon) !== true)

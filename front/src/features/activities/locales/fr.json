@@ -8,7 +8,8 @@
                 "description": "Description",
                 "resources": {
                     "title": "Ressources",
-                    "constraints": "Formats PNG, JPEG, JPG et PDF. 10 fichiers max, 2MB max par fichier."
+                    "constraints": "Formats PNG, JPEG, JPG et PDF. 10 fichiers max, 2MB max par fichier.",
+                    "empty": "Aucune ressources"
                 },
                 "materials": {
                     "title": "Matériel",

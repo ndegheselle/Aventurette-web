@@ -134,6 +134,7 @@ export type ActivitiesMaterialsRecord = {
 
 export type ActivitiesResourcesRecord = {
 	created: IsoAutoDateString
+	file?: FileNameString
 	id: string
 	name: string
 	updated: IsoAutoDateString

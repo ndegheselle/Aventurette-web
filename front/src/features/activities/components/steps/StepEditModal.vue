@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import FilesInput from '@chapelure/common/components/inputs/files/FilesInput.vue';
 import Modal from '@chapelure/common/components/popups/Modal.vue';
 import { useModal } from '@chapelure/common/composables/popups/useModal';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
+import ResourcesSelection from '@features/activities/components/resources/ResourcesSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
 import { type ActivityStepData, createEmptyStep } from '@features/activities/composables/data/activities';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
@@ -38,11 +38,7 @@ defineExpose({ show });
                 <MaterialsSelection v-model="data.expand.materials" />
             </FieldLabel>
             <FieldLabel label="activities.steps.fields.resources.title">
-                <FilesInput :maxFilesNumber="-1" accept=".png,.jpeg,.jpg,.pdf" :hideFilesList="true">
-                    <template #constraints>
-                        {{ $t('activities.steps.fields.resources.constraints') }}
-                    </template>
-                </FilesInput>
+                <ResourcesSelection v-model="data.expand.resources" />
             </FieldLabel>
         </div>
         <template #actions>

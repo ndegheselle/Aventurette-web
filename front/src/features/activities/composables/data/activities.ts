@@ -5,14 +5,14 @@ import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type Ac
 
 type ActivityExpand = {
     steps?: ActivityStepData[];
-    materials?: ActivityResourceData[];
-    resources?: ActivityMaterialData[];
+    materials?: ActivityMaterialData[];
+    resources?: ActivityResourceData[];
     benefits?: BenefitData[];
 };
 
 type ActivityStepExpand = {
-    materials?: ActivityResourceData[];
-    resources?: ActivityMaterialData[];
+    materials?: ActivityMaterialData[];
+    resources?: ActivityResourceData[];
 };
 
 export type ActivityData = ActivitiesResponse<ActivityExpand>;
