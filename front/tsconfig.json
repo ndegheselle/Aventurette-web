@@ -14,8 +14,8 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
         "paths": {
-            "@chapelure/*": [ "./src/features/@chapelure/*" ],
-            "@shared/*": [ "./src/features/@shared/*" ],
+            "@chapelure/*": [ "./src/chapelure/*" ],
+            "@shared/*": [ "./src/shared/*" ],
             "@features/*": [ "./src/features/*" ],
             "@/*": [ "./src/*" ]
         }

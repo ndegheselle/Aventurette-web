@@ -4,14 +4,14 @@ import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
 import Modal from '@chapelure/common/components/popups/Modal.vue';
 import { useEditModal } from '@chapelure/common/composables/data/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/common/composables/popups/useModal';
-import { useChildrens, type ChildrenData } from '@features/users/composables/data/childrens';
-import InterestsSelect from '@features/users/pages/childrens/InterestsSelect.vue';
+import { useChildren, type ChildrenData } from '@features/users/composables/data/children';
+import InterestsSelect from '@features/users/pages/children/InterestsSelect.vue';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 const controller = useModal<ChildrenData>();
-const childrens = useChildrens();
-const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, childrens);
+const children = useChildren();
+const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, children);
 const children = computed(() => data.value);
 defineExpose<IEditModal<ChildrenData>>({ show });
 </script>
@@ -24,11 +24,11 @@ defineExpose<IEditModal<ChildrenData>>({ show });
 
         <div class="flex flex-1 flex-col">
             <fieldset class="fieldset grow">
-                <FieldLabel label="childrens.form.name" :error="errors.get('name')">
+                <FieldLabel label="children.form.name" :error="errors.get('name')">
                     <input class="input w-full" v-model="children.name"
                         :class="{ 'input-error': errors.get('name') }" />
                 </FieldLabel>
-                <FieldLabel label="childrens.form.age" :error="errors.get('age')">
+                <FieldLabel label="children.form.age" :error="errors.get('age')">
                     <input type="number" v-model="children.age" class="input w-full"
                         :class="{ 'input-error': errors.get('age') }" min="0" />
                 </FieldLabel>

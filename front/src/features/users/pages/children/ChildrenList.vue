@@ -5,14 +5,14 @@ import Group from '@chapelure/common/components/layout/Group.vue';
 import { useEditableList } from '@chapelure/common/composables/data/useEditableList';
 import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
 import type { IEditModal } from '@chapelure/common/composables/popups/useModal';
-import { type ChildrenData, useChildrens } from '@features/users/composables/data/childrens';
-import ChildrensEditModal from '@features/users/pages/childrens/ChildrensEditModal.vue';
-import InterestsList from '@features/users/pages/childrens/InterestsList.vue';
+import { type ChildrenData, useChildren } from '@features/users/composables/data/children';
+import ChildrenEditModal from '@features/users/pages/children/ChildrenEditModal.vue';
+import InterestsList from '@features/users/pages/children/InterestsList.vue';
 import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
 import { onMounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const childrens = useChildrens();
+const childrenApi = useChildren();
 const modal = useTemplateRef<IEditModal<ChildrenData>>('modal');
 const auth = useAuth();
 const {items, add, remove, edit} = useEditableList<ChildrenData>(modal, {onRemove: onRemove});
@@ -20,21 +20,21 @@ const {items, add, remove, edit} = useEditableList<ChildrenData>(modal, {onRemov
 const confirm = useConfirmation();
 const { t } = useI18n();
 
-async function onRemove(children: ChildrenData) {
-    if (await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.message', { name: children.name }), TriangleAlertIcon) !== true)
+async function onRemove(child: ChildrenData) {
+    if (await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.message', { name: child.name }), TriangleAlertIcon) !== true)
         return false;
-    await childrens.remove(children.id);
+    await childrenApi.remove(child.id);
 }
 
 onMounted(async () => {
-    items.value = await childrens.getAll();
+    items.value = await childrenApi.getAll();
 });
 </script>
 
 <template>
     <Group>
         <div class="flex justify-between">
-            <h2 class="text-2xl flex items-center gap-2 ms-2"><UsersRoundIcon /> {{ $t('childrens.title') }}</h2>
+            <h2 class="text-2xl flex items-center gap-2 ms-2"><UsersRoundIcon /> {{ $t('children.title') }}</h2>
             <button class="btn btn-circle btn-primary" @click="() => add({ user: auth.currentId() } as ChildrenData)">
                 <PlusIcon />
             </button>
@@ -46,7 +46,7 @@ onMounted(async () => {
                 <div class="flex">
                     <div>{{ item.name }}</div>
                     <div class="text-xs uppercase font-semibold opacity-60 my-auto ms-2">{{
-                        $t("childrens.years",
+                        $t("children.years",
                             { years: item.age }) }} </div>
                 </div>
                 <InterestsList :interests="item.expand.interests" />
@@ -59,5 +59,5 @@ onMounted(async () => {
             </button>
         </List>
     </Group>
-    <ChildrensEditModal ref="modal" />
+    <ChildrenEditModal ref="modal" />
 </template>

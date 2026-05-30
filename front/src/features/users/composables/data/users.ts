@@ -1,5 +1,5 @@
 import { useAuth } from "@chapelure/auth/composables/useAuth";
-import type { ChildrenData } from "@features/users/composables/data/childrens";
+import type { ChildrenData } from "@features/users/composables/data/children";
 import { type UsersResponse, UsersTypeOptions } from "@shared/types.g.ts";
 
 export { UsersTypeOptions as UserProfilType };

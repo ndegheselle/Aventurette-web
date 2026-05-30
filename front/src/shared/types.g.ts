@@ -16,7 +16,7 @@ export const Collections = {
 	ActivitiesResources: "activities_resources",
 	ActivitiesSteps: "activities_steps",
 	Benefits: "benefits",
-	Childrens: "childrens",
+	Children: "childrens",
 	Interests: "interests",
 	Users: "users",
 } as const
@@ -156,7 +156,7 @@ export type BenefitsRecord = {
 	updated: IsoAutoDateString
 }
 
-export type ChildrensRecord = {
+export type ChildrenRecord = {
 	age?: number
 	created: IsoAutoDateString
 	id: string
@@ -203,7 +203,7 @@ export type ActivitiesMaterialsResponse<Texpand = unknown> = Required<Activities
 export type ActivitiesResourcesResponse<Texpand = unknown> = Required<ActivitiesResourcesRecord> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
 export type BenefitsResponse<Texpand = unknown> = Required<BenefitsRecord> & BaseSystemFields<Texpand>
-export type ChildrensResponse<Texpand = unknown> = Required<ChildrensRecord> & BaseSystemFields<Texpand>
+export type ChildrenResponse<Texpand = unknown> = Required<ChildrenRecord> & BaseSystemFields<Texpand>
 export type InterestsResponse<Texpand = unknown> = Required<InterestsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
@@ -220,7 +220,7 @@ export type CollectionRecords = {
 	activities_resources: ActivitiesResourcesRecord
 	activities_steps: ActivitiesStepsRecord
 	benefits: BenefitsRecord
-	childrens: ChildrensRecord
+	childrens: ChildrenRecord
 	interests: InterestsRecord
 	users: UsersRecord
 }
@@ -236,7 +236,7 @@ export type CollectionResponses = {
 	activities_resources: ActivitiesResourcesResponse
 	activities_steps: ActivitiesStepsResponse
 	benefits: BenefitsResponse
-	childrens: ChildrensResponse
+	childrens: ChildrenResponse
 	interests: InterestsResponse
 	users: UsersResponse
 }
