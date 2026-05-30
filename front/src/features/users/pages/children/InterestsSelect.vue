@@ -38,7 +38,7 @@ const toggle = (interest: InterestData & { isSelected: boolean }) => {
 <template>
     <div>
         <label class="label text-sm">
-            <span class="label-text">{{ $t('childrens.interests.title') }}</span>
+            <span class="label-text">{{ $t('children.interests.title') }}</span>
         </label>
         <div class="flex flex-wrap gap-1">
             <span v-for="interest in list" :key="interest.id" class="badge cursor-pointer"

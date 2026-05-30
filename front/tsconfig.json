@@ -15,7 +15,7 @@
         "noUncheckedSideEffectImports": true,
         "paths": {
             "@chapelure/*": [ "./src/features/@chapelure/*" ],
-            "@shared/*": [ "./src/features/@shared/*" ],
+            "@shared/*": [ "./src/shared/*" ],
             "@features/*": [ "./src/features/*" ],
             "@/*": [ "./src/*" ]
         }

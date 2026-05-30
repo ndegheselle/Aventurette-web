@@ -15,7 +15,7 @@
             "description": "Une description pour l'école."
         }
     },
-    "childrens": 
+    "children":
     {
         "title": "Enfants",
         "years": "{years} ans",
