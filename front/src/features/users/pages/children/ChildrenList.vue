@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useAuth } from '@features/auth/composables/useAuth';
-import List from '@chapelure/common/components/data/List.vue';
-import Group from '@chapelure/common/components/layout/Group.vue';
-import { useEditableList } from '@chapelure/common/composables/data/useEditableList';
-import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
-import type { IEditModal } from '@chapelure/common/composables/popups/useModal';
+import List from '@chapelure/ui/data/List.vue';
+import Card from '@chapelure/ui/layout/Card.vue';
+import { useEditableList } from '@chapelure/ui/composables/useEditableList';
+import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
+import type { IEditModal } from '@chapelure/ui/composables/useModal';
 import { type ChildrenData, useChildren } from '@features/users/composables/data/children';
 import ChildrenEditModal from '@features/users/pages/children/ChildrenEditModal.vue';
 import InterestsList from '@features/users/pages/children/InterestsList.vue';
-import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
+import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from '@chapelure/ui/icons';
 import { onMounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -32,7 +32,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Group>
+    <Card>
         <div class="flex justify-between">
             <h2 class="text-2xl flex items-center gap-2 ms-2"><UsersRoundIcon /> {{ $t('children.title') }}</h2>
             <button class="btn btn-circle btn-primary" @click="() => add({ user: auth.currentId() } as ChildrenData)">
@@ -58,6 +58,6 @@ onMounted(async () => {
                 <PenIcon />
             </button>
         </List>
-    </Group>
+    </Card>
     <ChildrenEditModal ref="modal" />
 </template>

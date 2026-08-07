@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import Modal from '@chapelure/common/components/popups/Modal.vue';
-import { useModal } from '@chapelure/common/composables/popups/useModal';
+import Field from '@chapelure/ui/forms/Field.vue';
+import Modal from '@chapelure/ui/overlays/Modal.vue';
+import { useModal } from '@chapelure/ui/composables/useModal';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
 import ResourcesSelection from '@features/activities/components/resources/ResourcesSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
 import { type ActivityStepData, createEmptyStep } from '@features/activities/composables/data/activities';
-import { SaveIcon, XIcon } from 'lucide-vue-next';
+import { SaveIcon, XIcon } from '@chapelure/ui/icons';
 import { ref } from 'vue';
 
 const controller = useModal<ActivityStepData>();
@@ -31,15 +31,15 @@ defineExpose({ show });
             {{ $t('actions.update') }}
         </template>
         <div class="flex flex-col">
-            <FieldLabel label="activities.steps.fields.description" class="flex-1">
+            <Field label="activities.steps.fields.description" class="flex-1">
                 <TextEditor v-model="data.description" class="min-h-64" />
-            </FieldLabel>
-            <FieldLabel label="activities.steps.fields.materials.title">
+            </Field>
+            <Field label="activities.steps.fields.materials.title">
                 <MaterialsSelection v-model="data.expand.materials" />
-            </FieldLabel>
-            <FieldLabel label="activities.steps.fields.resources.title">
+            </Field>
+            <Field label="activities.steps.fields.resources.title">
                 <ResourcesSelection v-model="data.expand.resources" />
-            </FieldLabel>
+            </Field>
         </div>
         <template #actions>
             <button class="btn" @click="controller.cancel">

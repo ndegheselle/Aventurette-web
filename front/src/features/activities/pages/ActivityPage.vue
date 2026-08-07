@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import List from '@chapelure/common/components/data/List.vue';
-import Container from '@chapelure/common/components/layout/Container.vue';
-import Group from '@chapelure/common/components/layout/Group.vue';
+import List from '@chapelure/ui/data/List.vue';
+import Container from '@chapelure/ui/layout/Container.vue';
+import Card from '@chapelure/ui/layout/Card.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from '@chapelure/ui/icons';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -48,7 +48,7 @@ watch(
                 {{ $t('activities.actions.start') }}
             </button>
         </div>
-        <Group>
+        <Card>
             <img class="max-h-32 object-cover rounded-box" src="https://placeholder.pagebee.io/api/plain/800/200" />
             <div class="flex flex-1 gap-1 flex-col">
                 <div class="flex justify-between">
@@ -58,8 +58,8 @@ watch(
                 <p>{{ activity?.summary }}</p>
                 <BenefitsDisplay :benefits="activity?.expand.benefits" />
             </div>
-        </Group>
-        <Group>
+        </Card>
+        <Card>
             <h2 class="text-2xl flex items-center gap-2">
                 <PackageOpenIcon /> {{ $t('activities.steps.fields.materials.title') }}
             </h2>
@@ -69,8 +69,8 @@ watch(
                     <span>{{ material.name }}</span>
                 </div>
             </div>
-        </Group>
-        <Group>
+        </Card>
+        <Card>
             <h2 class="text-2xl flex items-center gap-2">
                 <FileTextIcon /> {{ $t('activities.steps.fields.resources.title') }}
             </h2>
@@ -80,20 +80,20 @@ watch(
                     <span>{{ material.name }}</span>
                 </div>
             </div>
-        </Group>
-        <Group>
+        </Card>
+        <Card>
             <h2 class="text-2xl flex items-center gap-2">
                 <ScrollTextIcon /> {{ $t('activities.description') }}
             </h2>
             <p v-html="activity?.description"></p>
-        </Group>
-        <Group>
+        </Card>
+        <Card>
             <h2 class="text-2xl flex items-center gap-2">
                 <ListOrderedIcon /> {{ $t('activities.steps.title') }}
             </h2>
             <List :items="activity?.expand.steps" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
             </List>
-        </Group>
+        </Card>
     </Container>
 </template>

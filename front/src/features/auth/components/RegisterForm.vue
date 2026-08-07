@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import LoginProviders from '@features/auth/components/LoginProviders.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
-import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import { useValidationErrors } from '@chapelure/common/utils/dev';
+import Field from '@chapelure/ui/forms/Field.vue';
+import { useValidationErrors } from '@chapelure/ui/composables/useValidationErrors';
 import { NotImplementedError } from '@chapelure/core';
-import { EyeClosedIcon, EyeIcon, KeyRoundIcon, MailIcon } from 'lucide-vue-next';
+import { EyeClosedIcon, EyeIcon, KeyRoundIcon, MailIcon } from '@chapelure/ui/icons';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -49,7 +49,7 @@ const props = defineProps<{
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
             <legend class="fieldset-legend">{{ $t('users.register') }}</legend>
 
-            <FieldLabel label="users.form.email"
+            <Field label="users.form.email"
                         :error="errors.get('email')">
                 <label class="input">
                     <MailIcon class="opacity-50" />
@@ -57,9 +57,9 @@ const props = defineProps<{
                            v-model="credentials.email"
                            :class="{ 'input-error': errors.get('email') }" />
                 </label>
-            </FieldLabel>
+            </Field>
 
-            <FieldLabel label="users.form.password"
+            <Field label="users.form.password"
                         :error="errors.get('password')">
                 <label class="input">
                     <KeyRoundIcon class="opacity-50" />
@@ -73,8 +73,8 @@ const props = defineProps<{
                         <EyeClosedIcon v-else />
                     </button>
                 </label>
-            </FieldLabel>
-            <FieldLabel label="users.form.confirmPassword"
+            </Field>
+            <Field label="users.form.confirmPassword"
                         :error="errors.get('passwordConfirm')">
                 <label class="input">
                     <KeyRoundIcon class="opacity-50" />
@@ -88,7 +88,7 @@ const props = defineProps<{
                         <EyeClosedIcon v-else />
                     </button>
                 </label>
-            </FieldLabel>
+            </Field>
 
             <div class="divider">{{ $t('users.form.withOauth2') }}</div>
             <LoginProviders @provider-selected="handleProvider" />

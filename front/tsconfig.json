@@ -14,8 +14,7 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
         /* Workspace packages resolve to source, so `vue-tsc -b` typechecks them too and
-           Vite gives cross-package HMR. Keep these in sync with vite.config.ts aliases.
-           The package entries must stay above the legacy "@chapelure/*" entry. */
+           Vite gives cross-package HMR. Keep these in sync with vite.config.ts aliases. */
         "paths": {
             "@chapelure/core": [ "../packages/core/src/index.ts" ],
             "@chapelure/core/*": [ "../packages/core/src/*" ],
@@ -23,7 +22,6 @@
             "@chapelure/pocketbase/*": [ "../packages/pocketbase/src/*" ],
             "@chapelure/ui": [ "../packages/ui/src/index.ts" ],
             "@chapelure/ui/*": [ "../packages/ui/src/*" ],
-            "@chapelure/*": [ "./src/chapelure/*" ],
             "@features/*": [ "./src/features/*" ],
             "@/*": [ "./src/*" ]
         }

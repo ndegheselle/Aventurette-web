@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/core';
-import Search from '@chapelure/common/components/inputs/Search.vue';
-import TagSelect from '@chapelure/common/components/inputs/TagSelect.vue';
-import Modal from '@chapelure/common/components/popups/Modal.vue';
-import { useModal } from '@chapelure/common/composables/popups/useModal';
+import SearchInput from '@chapelure/ui/data/SearchInput.vue';
+import TagSelect from '@chapelure/ui/data/TagSelect.vue';
+import Modal from '@chapelure/ui/overlays/Modal.vue';
+import { useModal } from '@chapelure/ui/composables/useModal';
 import { type ActivityData } from '@features/activities/composables/data/activities';
 import { useBenefits, type BenefitData } from '@features/activities/composables/data/benefits';
 import { availablesEnvironments, useAgeDisplay } from '@features/activities/locales/helpers';
-import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
+import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from '@chapelure/ui/icons';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -95,7 +95,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Search @search="() => onChanged()" v-model="search" />
+    <SearchInput @search="() => onChanged()" v-model="search" />
     <section class="flex gap-1">
         <button class="btn btn-sm flex-1" @click="() => controller.show()">
             <BabyIcon />

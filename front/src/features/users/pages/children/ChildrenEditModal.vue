@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import FieldError from '@chapelure/common/components/form/FieldError.vue';
-import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import Modal from '@chapelure/common/components/popups/Modal.vue';
-import { useEditModal } from '@chapelure/common/composables/data/useEditModal';
-import { useModal, type IEditModal } from '@chapelure/common/composables/popups/useModal';
+import FieldError from '@chapelure/ui/forms/FieldError.vue';
+import Field from '@chapelure/ui/forms/Field.vue';
+import Modal from '@chapelure/ui/overlays/Modal.vue';
+import { useEditModal } from '@chapelure/ui/composables/useEditModal';
+import { useModal, type IEditModal } from '@chapelure/ui/composables/useModal';
 import { useChildren, type ChildrenData } from '@features/users/composables/data/children';
 import InterestsSelect from '@features/users/pages/children/InterestsSelect.vue';
-import { SaveIcon, XIcon } from 'lucide-vue-next';
+import { SaveIcon, XIcon } from '@chapelure/ui/icons';
 import { computed } from 'vue';
 
 const controller = useModal<ChildrenData>();
@@ -24,14 +24,14 @@ defineExpose<IEditModal<ChildrenData>>({ show });
 
         <div class="flex flex-1 flex-col">
             <fieldset class="fieldset grow">
-                <FieldLabel label="children.form.name" :error="errors.get('name')">
+                <Field label="children.form.name" :error="errors.get('name')">
                     <input class="input w-full" v-model="children.name"
                         :class="{ 'input-error': errors.get('name') }" />
-                </FieldLabel>
-                <FieldLabel label="children.form.age" :error="errors.get('age')">
+                </Field>
+                <Field label="children.form.age" :error="errors.get('age')">
                     <input type="number" v-model="children.age" class="input w-full"
                         :class="{ 'input-error': errors.get('age') }" min="0" />
-                </FieldLabel>
+                </Field>
             </fieldset>
 
             <InterestsSelect v-model:selected="children.interests" />

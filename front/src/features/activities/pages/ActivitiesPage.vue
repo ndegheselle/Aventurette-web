@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { createGroup, Paginated, type FilterGroup } from '@chapelure/core';
-import List from '@chapelure/common/components/data/List.vue';
-import Pagination from '@chapelure/common/components/data/Pagination.vue';
-import Container from '@chapelure/common/components/layout/Container.vue';
+import List from '@chapelure/ui/data/List.vue';
+import Pagination from '@chapelure/ui/data/Pagination.vue';
+import Container from '@chapelure/ui/layout/Container.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import ActivitiesFilters from '@features/activities/components/activities/ActivitiesFilters.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
 import { routesNames } from '@features/activities/routes';
-import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
+import { ArrowRightIcon, PlusIcon } from '@chapelure/ui/icons';
 import { onMounted, reactive, ref } from 'vue';
 
 const activities = useActivities();
@@ -55,8 +55,8 @@ async function onChanged() {
             </RouterLink>
         </List>
         <Pagination v-if="paginated.options.perPage < paginated.total"
-                    :page="paginated.options.page"
-                    :perPage="paginated.options.perPage"
+                    v-model:page="paginated.options.page"
+                    v-model:perPage="paginated.options.perPage"
                     :total="paginated.total"
                     @change="onChanged" />
     </Container>

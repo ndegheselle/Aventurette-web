@@ -14,7 +14,7 @@ import {
     RedoIcon,
     StrikethroughIcon,
     UndoIcon,
-} from 'lucide-vue-next';
+} from '@chapelure/ui/icons';
 import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 
 const model = defineModel<string>({ default: '' })

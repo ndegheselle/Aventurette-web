@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { fileUrls } from '@/backend';
-import FilesInput from '@chapelure/common/components/inputs/files/FilesInput.vue';
-import { useMultipleFiles } from '@chapelure/common/components/inputs/files/useFilesHandling';
+import FilesInput from '@chapelure/ui/files/FilesInput.vue';
+import { useMultipleFiles } from '@chapelure/ui/files/useFiles';
 import { type ActivityResourceData } from '@features/activities/composables/data/activities';
-import { CircleOffIcon, FileIcon, TrashIcon } from 'lucide-vue-next';
+import { CircleOffIcon, FileIcon, TrashIcon } from '@chapelure/ui/icons';
 import { ref, watch } from 'vue';
 
 const selected = defineModel<ActivityResourceData[]>({ default: () => [] });

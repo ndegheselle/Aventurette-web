@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import List from '@chapelure/common/components/data/List.vue';
-import Container from '@chapelure/common/components/layout/Container.vue';
-import Group from '@chapelure/common/components/layout/Group.vue';
-import { useEditableList } from '@chapelure/common/composables/data/useEditableList';
-import { useConfirmation } from '@chapelure/common/composables/popups/useConfirmation';
+import List from '@chapelure/ui/data/List.vue';
+import Container from '@chapelure/ui/layout/Container.vue';
+import Card from '@chapelure/ui/layout/Card.vue';
+import { useEditableList } from '@chapelure/ui/composables/useEditableList';
+import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
 import StepEditModal from '@features/activities/components/steps/StepEditModal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
 import { type ActivityData, createEmptyStep } from '@features/activities/composables/data/activities';
 import { routesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from '@chapelure/ui/icons';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -52,7 +52,7 @@ async function onRemove() {
                 </span>
             </li>
         </ul>
-        <Group class="flex-1">
+        <Card class="flex-1">
             <button class="btn btn-primary" @click="() => add(createEmptyStep())">
                 <PlusIcon />
                 {{ $t("actions.add") }}
@@ -67,7 +67,7 @@ async function onRemove() {
                     <PenIcon />
                 </button>
             </List>
-        </Group>
+        </Card>
 
         <div class="mt-auto flex">
             <RouterLink class="btn" :to="{ name: routesNames.edit.description }">

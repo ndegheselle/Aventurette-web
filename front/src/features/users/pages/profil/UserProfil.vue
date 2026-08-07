@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Group from '@chapelure/common/components/layout/Group.vue';
-import { useAlert } from '@chapelure/common/composables/popups/useAlert';
+import Card from '@chapelure/ui/layout/Card.vue';
+import { useAlert } from '@chapelure/ui/composables/useAlert';
 import { type InterestData } from '@features/users/composables/data/interests';
 
 const props = defineProps<{ interests?: InterestData[] }>();
@@ -10,7 +10,7 @@ alert.debug("WIP : Ajouter modification adresse mail, changement mot de passe, a
 </script>
 
 <template>
-    <Group>
+    <Card>
         <div class="flex items-center gap-4">
             <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
             <div class="flex flex-col gap-4">
@@ -18,5 +18,5 @@ alert.debug("WIP : Ajouter modification adresse mail, changement mot de passe, a
                 <div class="skeleton h-4 w-28"></div>
             </div>
         </div>
-    </Group>
+    </Card>
 </template>

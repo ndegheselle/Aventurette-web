@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import Dropdown from '@chapelure/common/components/popups/Dropdown.vue';
+import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
 import { useMaterials, type ActivityMaterialData } from '@features/activities/composables/data/materials';
-import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
+import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from '@chapelure/ui/icons';
 import { computed, onMounted, ref } from 'vue';
 
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });

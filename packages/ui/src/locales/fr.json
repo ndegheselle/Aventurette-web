@@ -1,0 +1,69 @@
+{
+    "settings": {
+        "theme": "Thème",
+        "language": "Langue",
+        "themes": {
+            "auto": "Automatique",
+            "dark": "Sombre",
+            "light": "Claire"
+        }
+    },
+    "validation": {
+        "errors": {
+            "default": "Une erreur est survenue.",
+            "validation_values_mismatch": "Les valeurs ne correspondent pas.",
+            "validation_required": "Valeur obligatoire.",
+            "validation_invalid_email": "Email invalide ou déjà utilisé.",
+            "validation_not_unique": "Cette valeur est déjà utilisé."
+        }
+    },
+    "actions": {
+        "select": "Sélectionner",
+        "search": "Rechercher ...",
+        "add": "Ajouter",
+        "save": "Sauvegarder",
+        "cancel": "Annuler",
+        "new": "Nouveau",
+        "update": "Modifier",
+        "confirm": "Confirmer",
+        "filter": "Filtrer",
+        "back": "Retour",
+        "previous": "Precédent",
+        "next": "Suivant",
+        "create": "Créer",
+        "reset": "Réinitialiser",
+        "browse": "Parcourir"
+    },
+    "inputs": {
+        "file": {
+            "upload": {
+                "label": "Choisir un fichier ou glisser-déposser ici",
+                "browse": "Parcourir",
+                "unsuported": "'{name}' à un format non supporté.",
+                "exceedSize": "'{name}' dépasse la limite de {maxSize} MB ({size})",
+                "exceedNumber": "Maximum {number} fichiers."
+            }
+        }
+    },
+    "confirmation": {
+        "remove": {
+            "title": "Confirmer la suppression",
+            "message": "Etes vous sure de vouloir supprimer {name} ?",
+            "messageSimple": "Etes vous sure de vouloir supprimer cette élément ?"
+        }
+    },
+    "data": {
+        "noData": "Aucunne données",
+        "created": "Crée avec succès !",
+        "minimum": "Min",
+        "maximum": "Max",
+        "updated": "Mis à jour avec succès !",
+        "pagination": {
+            "first": "Première page",
+            "last": "Dernière page",
+            "previous": "Page précédente",
+            "next": "Page suivante",
+            "of": "de"
+        }
+    }
+}

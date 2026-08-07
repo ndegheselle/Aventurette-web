@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import FieldLabel from '@chapelure/common/components/form/FieldLabel.vue';
-import Container from '@chapelure/common/components/layout/Container.vue';
-import Group from '@chapelure/common/components/layout/Group.vue';
+import Field from '@chapelure/ui/forms/Field.vue';
+import Container from '@chapelure/ui/layout/Container.vue';
+import Card from '@chapelure/ui/layout/Card.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
 import type { ActivityData } from '@features/activities/composables/data/activities';
 import { routesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon } from '@chapelure/ui/icons';
 
 defineProps<{
     activity: ActivityData;
@@ -33,18 +33,18 @@ defineProps<{
                 </span>
             </li>
         </ul>
-        <Group class="flex-1">
-            <FieldLabel label="activities.fields.name">
+        <Card class="flex-1">
+            <Field label="activities.fields.name">
                 <input class="input w-full" v-model="activity.name" />
-            </FieldLabel>
-            <FieldLabel label="activities.fields.summary">
+            </Field>
+            <Field label="activities.fields.summary">
                 <input class="input w-full" v-model="activity.summary" />
-            </FieldLabel>
+            </Field>
 
-            <FieldLabel label="activities.fields.description" class="flex-1">
+            <Field label="activities.fields.description" class="flex-1">
                 <TextEditor v-model="activity.description" class="flex-1" />
-            </FieldLabel>
-        </Group>
+            </Field>
+        </Card>
         <div class="mt-auto flex">
             <RouterLink class="btn" :to="{ name: routesNames.all }">
                 <ArrowLeftIcon />
