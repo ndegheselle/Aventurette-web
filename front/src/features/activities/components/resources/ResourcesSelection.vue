@@ -1,17 +1,16 @@
 <script setup lang="ts">
+import { fileUrls } from '@/backend';
 import FilesInput from '@chapelure/common/components/inputs/files/FilesInput.vue';
 import { useMultipleFiles } from '@chapelure/common/components/inputs/files/useFilesHandling';
-import { usePocketBase } from '@chapelure/api/pocketbase';
 import { type ActivityResourceData } from '@features/activities/composables/data/activities';
 import { CircleOffIcon, FileIcon, TrashIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 const selected = defineModel<ActivityResourceData[]>({ default: () => [] });
 
-const { pb } = usePocketBase();
 const { files, update: addFiles } = useMultipleFiles(10);
 
-export type NewResource = { file: File; name: string };
+type NewResource = { file: File; name: string };
 const newResources = ref<NewResource[]>([]);
 
 const PREVIEWABLE = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']);
@@ -41,7 +40,7 @@ function removeNew(entry: NewResource) {
 }
 
 function getExistingFileUrl(resource: ActivityResourceData): string {
-    return pb.files.getURL(resource, resource.file);
+    return fileUrls.getUrl(resource, resource.file);
 }
 
 function existingIsImage(resource: ActivityResourceData): boolean {

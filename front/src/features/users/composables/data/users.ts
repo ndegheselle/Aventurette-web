@@ -1,6 +1,6 @@
-import { useAuth } from "@chapelure/auth/composables/useAuth";
+import { type UsersResponse, UsersTypeOptions } from "@/backend/schema.g";
+import { useAuth } from "@features/auth/composables/useAuth";
 import type { ChildrenData } from "@features/users/composables/data/children";
-import { type UsersResponse, UsersTypeOptions } from "@shared/types.g.ts";
 
 export { UsersTypeOptions as UserProfilType };
 

@@ -1,7 +1,7 @@
-import { usePocketBaseCrud } from "@chapelure/api/pocketbase.ts";
+import { crud } from "@/backend";
+import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse, Collections } from "@/backend/schema.g";
 import type { BenefitData } from "@features/activities/composables/data/benefits";
 import type { ActivityMaterialData } from "@features/activities/composables/data/materials";
-import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse, Collections } from "@shared/types.g.ts";
 
 type ActivityExpand = {
     steps?: ActivityStepData[];
@@ -31,9 +31,9 @@ export function createEmptyStep() : ActivityStepData
 }
 
 export function useActivities() {
-    return usePocketBaseCrud<ActivityData>(Collections.Activities,
+    return crud<ActivityData>(Collections.Activities,
         [
-            "steps", "steps.benefits", "steps.benefits", "steps.materials", "steps.resources",
+            "steps", "steps.benefits", "steps.materials", "steps.resources",
             "resources", "materials"
         ]);
 }

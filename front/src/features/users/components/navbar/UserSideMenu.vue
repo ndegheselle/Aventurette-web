@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuth } from '@chapelure/auth/composables/useAuth.ts';
+import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as userRoutesNames } from '@features/users/routes';
 import { LogInIcon, LogOutIcon, UserIcon } from 'lucide-vue-next';
 const { isLoggedIn, logout } = useAuth();

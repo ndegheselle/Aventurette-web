@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuth } from '@chapelure/auth/composables/useAuth';
+import { useAuth } from '@features/auth/composables/useAuth';
 import List from '@chapelure/common/components/data/List.vue';
 import Group from '@chapelure/common/components/layout/Group.vue';
 import { useEditableList } from '@chapelure/common/composables/data/useEditableList';

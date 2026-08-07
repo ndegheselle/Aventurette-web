@@ -26,7 +26,6 @@ export default defineConfig({
             '@chapelure/pocketbase': fileURLToPath(new URL('../packages/pocketbase/src', import.meta.url)),
             '@chapelure/ui': fileURLToPath(new URL('../packages/ui/src', import.meta.url)),
             '@chapelure': fileURLToPath(new URL('./src/chapelure', import.meta.url)),
-            '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),
             '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },

@@ -1,9 +1,9 @@
-import { usePocketBaseCrud } from "@chapelure/api/pocketbase.ts";
-import { type InterestsResponse, Collections } from "@shared/types.g.ts";
+import { crud } from "@/backend";
+import { type InterestsResponse, Collections } from "@/backend/schema.g";
 
 export type InterestData = InterestsResponse;
 
 export function useInterests()
 {
-    return usePocketBaseCrud<InterestData>(Collections.Interests);
+    return crud<InterestData>(Collections.Interests);
 }

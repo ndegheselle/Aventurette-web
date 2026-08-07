@@ -1,39 +1,43 @@
-import { Paginated, PaginationOptions, SortDirection, type BaseEntity } from "@chapelure/core";
-import { usePocketBaseCrud, type IPocketBaseCrud } from "@chapelure/api/pocketbase";
+import { Paginated, PaginationOptions, SortDirection, type BaseEntity, type IDataCrud } from "@chapelure/core";
+import type PocketBase from 'pocketbase';
+import { createPocketBaseCrud } from "./crud";
 
-export type CachedState<TResponse extends BaseEntity> = {
-    cache: TResponse[];
-    isLoaded: boolean;
-    loadPromise: Promise<TResponse[]> | null;
-}
-
-export interface ICachedCrud<TResponse extends BaseEntity> extends IPocketBaseCrud<TResponse>
-{
+export interface ICachedCrud<TResponse extends BaseEntity> extends IDataCrud<TResponse> {
+    /** Drop the cache so the next read hits the server again. */
     invalidate(): void;
 }
 
 /**
- * A PocketBase CRUD service that caches data locally after the first fetch.
- * Subsequent calls to getAll, getById, and getList will use the local cache to avoid API calls.
- * Mutations (create, update, delete) will update both the server and the local cache.
+ * A CRUD service that fetches the whole collection once and serves reads from memory.
+ * Intended for small reference collections (tags, categories, benefits).
+ *
+ * Cache state is held per instance, so create one at module scope in a repository and share it.
+ * Writes go to the server and are reflected in the cache; `filter` always goes to the server.
  */
-export function usePocketBaseCached<TResponse extends BaseEntity>(state: CachedState<TResponse>, collectionName: string, expands: string[] | undefined = undefined)
-    : ICachedCrud<TResponse> {
+export function createPocketBaseCached<TResponse extends BaseEntity>(
+    client: PocketBase,
+    collectionName: string,
+    relations: string[] | undefined = undefined
+): ICachedCrud<TResponse> {
 
-    const crud = usePocketBaseCrud<TResponse>(collectionName, expands);
+    const crud = createPocketBaseCrud<TResponse>(client, collectionName, relations);
+
+    let cache: TResponse[] = [];
+    let isLoaded = false;
+    let loadPromise: Promise<TResponse[]> | null = null;
 
     async function ensureLoaded(): Promise<TResponse[]> {
-        if (state.isLoaded) return state.cache;
-        if (state.loadPromise) return state.loadPromise;
+        if (isLoaded) return cache;
+        if (loadPromise) return loadPromise;
 
-        state.loadPromise = crud.getAll().then((items) => {
-            state.cache = items;
-            state.isLoaded = true;
-            state.loadPromise = null;
+        loadPromise = crud.getAll().then((items) => {
+            cache = items;
+            isLoaded = true;
+            loadPromise = null;
             return items;
         });
 
-        return state.loadPromise;
+        return loadPromise;
     }
 
     async function getAll(): Promise<TResponse[]> {
@@ -48,7 +52,7 @@ export function usePocketBaseCached<TResponse extends BaseEntity>(state: CachedS
     async function getList(options: PaginationOptions): Promise<Paginated<TResponse>> {
         const allItems = await ensureLoaded();
 
-        let items = [...allItems];
+        const items = [...allItems];
         if (options.sortBy) {
             const dir = options.sortDirection === SortDirection.DESC ? -1 : 1;
             items.sort((a: any, b: any) => {
@@ -68,28 +72,28 @@ export function usePocketBaseCached<TResponse extends BaseEntity>(state: CachedS
 
     async function create(data: TResponse): Promise<TResponse> {
         const created = await crud.create(data);
-        state.cache.push(created);
+        cache.push(created);
         return created;
     }
 
     async function update(id: string, data: Partial<TResponse>): Promise<TResponse> {
         const updated = await crud.update(id, data);
-        const index = state.cache.findIndex((i) => i.id === id);
+        const index = cache.findIndex((i) => i.id === id);
         if (index !== -1) {
-            state.cache[index] = updated;
+            cache[index] = updated;
         }
         return updated;
     }
 
     async function remove(id: string): Promise<void> {
         await crud.remove(id);
-        state.cache = state.cache.filter((i) => i.id !== id);
+        cache = cache.filter((i) => i.id !== id);
     }
 
     function invalidate(): void {
-        state.isLoaded = false;
-        state.cache = [];
-        state.loadPromise = null;
+        isLoaded = false;
+        cache = [];
+        loadPromise = null;
     }
 
     return {
@@ -100,8 +104,6 @@ export function usePocketBaseCached<TResponse extends BaseEntity>(state: CachedS
         getById,
         getList,
         filter: crud.filter,
-        collection: crud.collection,
-        pb: crud.pb,
         invalidate,
-    }
+    };
 }

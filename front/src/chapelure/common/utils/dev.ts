@@ -1,21 +1,18 @@
-import type { ClientResponseError } from "pocketbase";
+import { ValidationError } from "@chapelure/core";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-
-type ValidationErrorMap = Record<string, {code?: string}>;
 
 /**
  * Handle errors from the API
  * @param defaultErrorKey The global error key to use by default
- * @param useGlobalErrorByDefault Use the global error if a field doesn't have an error 
- * @returns 
+ * @returns
  */
 export function useValidationErrors(defaultErrorKey: string = "validation.errors.default") {
 
     /**
      * List of errors grouped by properties
      */
-    const properties = ref<ValidationErrorMap | null>(null);
+    const properties = ref<Record<string, { code?: string }> | null>(null);
 
     /**
      * Global error with the default message
@@ -34,7 +31,9 @@ export function useValidationErrors(defaultErrorKey: string = "validation.errors
 
     function set(ex: unknown)
     {
-        properties.value = (ex as ClientResponseError)?.data.data ?? null;
+        // Backend adapters normalise their transport errors into ValidationError, so nothing
+        // here needs to know which backend produced it. Anything else has no field detail.
+        properties.value = ex instanceof ValidationError ? ex.fields : null;
         global.value = t(defaultErrorKey);
     }
 

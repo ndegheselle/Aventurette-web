@@ -1,15 +1,12 @@
-import { usePocketBaseCached, type CachedState } from "@chapelure/api/pocketbase.cached";
-import { Collections, type BenefitsResponse } from "@shared/types.g.ts";
+import { cachedCrud } from "@/backend";
+import { Collections, type BenefitsResponse } from "@/backend/schema.g";
 
 export type BenefitData = BenefitsResponse;
 
-const state: CachedState<BenefitData> = {
-    cache: [],
-    isLoaded: false,
-    loadPromise: null
-}
+// Module scope on purpose: one cache shared by every caller.
+const repository = cachedCrud<BenefitData>(Collections.Benefits);
 
 export function useBenefits()
 {
-    return usePocketBaseCached<BenefitData>(state, Collections.Benefits);
+    return repository;
 }

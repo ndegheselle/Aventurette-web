@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LoginForm from '@chapelure/auth/components/LoginForm.vue';
+import LoginForm from '@features/auth/components/LoginForm.vue';
 import { routesNames } from '@features/users/routes';
 </script>
 

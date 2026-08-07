@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import RegisterForm from '@chapelure/auth/components/RegisterForm.vue';
+import RegisterForm from '@features/auth/components/RegisterForm.vue';
 import { routesNames } from '@features/users/routes';
 </script>
 

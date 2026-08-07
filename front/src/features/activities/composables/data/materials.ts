@@ -1,15 +1,12 @@
-import { usePocketBaseCached, type CachedState } from "@chapelure/api/pocketbase.cached";
-import { Collections, type ActivitiesMaterialsResponse } from "@shared/types.g.ts";
+import { cachedCrud } from "@/backend";
+import { Collections, type ActivitiesMaterialsResponse } from "@/backend/schema.g";
 
 export type ActivityMaterialData = ActivitiesMaterialsResponse;
 
-const state: CachedState<ActivityMaterialData> = {
-    cache: [],
-    isLoaded: false,
-    loadPromise: null
-}
+// Module scope on purpose: one cache shared by every caller.
+const repository = cachedCrud<ActivityMaterialData>(Collections.ActivitiesMaterials);
 
 export function useMaterials()
 {
-    return usePocketBaseCached<ActivityMaterialData>(state, Collections.ActivitiesMaterials);
+    return repository;
 }

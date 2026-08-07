@@ -24,7 +24,6 @@
             "@chapelure/ui": [ "../packages/ui/src/index.ts" ],
             "@chapelure/ui/*": [ "../packages/ui/src/*" ],
             "@chapelure/*": [ "./src/chapelure/*" ],
-            "@shared/*": [ "./src/shared/*" ],
             "@features/*": [ "./src/features/*" ],
             "@/*": [ "./src/*" ]
         }
