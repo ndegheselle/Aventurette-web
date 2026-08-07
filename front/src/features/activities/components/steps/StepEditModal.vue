@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import Field from '@chapelure/ui/forms/Field.vue';
-import Modal from '@chapelure/ui/overlays/Modal.vue';
 import { useModal } from '@chapelure/ui/composables/useModal';
+import Field from '@chapelure/ui/forms/Field.vue';
+import { SaveIcon, XIcon } from '@chapelure/ui/icons';
+import Modal from '@chapelure/ui/overlays/Modal.vue';
+import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
 import ResourcesSelection from '@features/activities/components/resources/ResourcesSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
-import { type ActivityStepData, createEmptyStep } from '@features/activities/composables/data/activities';
-import { SaveIcon, XIcon } from '@chapelure/ui/icons';
+import { createEmptyStep, type ActivityStepData } from '@features/activities/composables/data/activities';
 import { ref } from 'vue';
 
 const controller = useModal<ActivityStepData>();
@@ -42,14 +43,14 @@ defineExpose({ show });
             </Field>
         </div>
         <template #actions>
-            <button class="btn" @click="controller.cancel">
+            <Button @click="controller.cancel">
                 <XIcon />
                 {{ $t('actions.cancel') }}
-            </button>
-            <button class="btn btn-primary" @click="confirm">
+            </Button>
+            <Button variant="primary" @click="confirm">
                 <SaveIcon />
                 {{ $t('actions.save') }}
-            </button>
+            </Button>
         </template>
     </Modal>
 </template>

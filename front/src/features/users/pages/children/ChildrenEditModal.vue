@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import FieldError from '@chapelure/ui/forms/FieldError.vue';
-import Field from '@chapelure/ui/forms/Field.vue';
-import Modal from '@chapelure/ui/overlays/Modal.vue';
 import { useEditModal } from '@chapelure/ui/composables/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/composables/useModal';
+import Field from '@chapelure/ui/forms/Field.vue';
+import FieldError from '@chapelure/ui/forms/FieldError.vue';
+import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
+import { SaveIcon, XIcon } from '@chapelure/ui/icons';
+import Modal from '@chapelure/ui/overlays/Modal.vue';
+import Button from '@chapelure/ui/primitives/Button.vue';
+import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import { useChildren, type ChildrenData } from '@features/users/composables/data/children';
 import InterestsSelect from '@features/users/pages/children/InterestsSelect.vue';
-import { SaveIcon, XIcon } from '@chapelure/ui/icons';
 import { computed } from 'vue';
 
 const controller = useModal<ChildrenData>();
@@ -23,31 +26,28 @@ defineExpose<IEditModal<ChildrenData>>({ show });
         </template>
 
         <div class="flex flex-1 flex-col">
-            <fieldset class="fieldset grow">
+            <Fieldset class="grow">
                 <Field label="children.form.name" :error="errors.get('name')">
-                    <input class="input w-full" v-model="children.name"
-                        :class="{ 'input-error': errors.get('name') }" />
+                    <TextInput v-model="children.name" :error="!!errors.get('name')" />
                 </Field>
                 <Field label="children.form.age" :error="errors.get('age')">
-                    <input type="number" v-model="children.age" class="input w-full"
-                        :class="{ 'input-error': errors.get('age') }" min="0" />
+                    <TextInput type="number" v-model="children.age" :error="!!errors.get('age')" min="0" />
                 </Field>
-            </fieldset>
+            </Fieldset>
 
             <InterestsSelect v-model:selected="children.interests" />
         </div>
         <FieldError :error="errors.global.value" />
 
         <template #actions>
-            <button class="btn" @click="cancel">
+            <Button @click="cancel">
                 <XIcon />
                 {{ $t('actions.cancel') }}
-            </button>
-            <button class="btn btn-primary" :disabled="isLoading" @click="confirm">
-                <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
+            </Button>
+            <Button variant="primary" :loading="isLoading" @click="confirm">
                 <SaveIcon />
                 {{ $t('actions.save') }}
-            </button>
+            </Button>
         </template>
     </Modal>
 </template>

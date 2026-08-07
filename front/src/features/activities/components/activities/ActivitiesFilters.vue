@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/core';
+import { useModal } from '@chapelure/ui/composables/useModal';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
+import Field from '@chapelure/ui/forms/Field.vue';
+import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
+import Label from '@chapelure/ui/forms/Label.vue';
+import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from '@chapelure/ui/icons';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
-import { useModal } from '@chapelure/ui/composables/useModal';
+import Badge from '@chapelure/ui/primitives/Badge.vue';
+import Button from '@chapelure/ui/primitives/Button.vue';
+import Checkbox from '@chapelure/ui/primitives/Checkbox.vue';
+import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import { type ActivityData } from '@features/activities/composables/data/activities';
 import { useBenefits, type BenefitData } from '@features/activities/composables/data/benefits';
 import { availablesEnvironments, useAgeDisplay } from '@features/activities/locales/helpers';
-import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from '@chapelure/ui/icons';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
-const controller = useModal({onCancel, onConfirm, onShow});
+const controller = useModal({ onCancel, onConfirm, onShow });
 const search = ref<string>('');
 const model = defineModel<FilterGroup<ActivityData>>();
 const availableBenefits = ref<BenefitData[]>([]);
@@ -97,12 +104,12 @@ onMounted(async () => {
 <template>
     <SearchInput @search="() => onChanged()" v-model="search" />
     <section class="flex gap-1">
-        <button class="btn btn-sm flex-1" @click="() => controller.show()">
+        <Button size="sm" class="flex-1" @click="() => controller.show()">
             <BabyIcon />
             {{ ageDisplay || $t('activities.fields.age') }}
             <ChevronRightIcon />
-        </button>
-        <button class="btn btn-sm flex-1" @click="() => controller.show()">
+        </Button>
+        <Button size="sm" class="flex-1" @click="() => controller.show()">
             <MapIcon />
             <span v-if="!current['environment'].length">
                 {{ $t('activities.fields.environment') }}
@@ -111,66 +118,73 @@ onMounted(async () => {
                 {{current['environment'].map((v) => $t(`activities.environment.${v}`)).join(', ')}}
             </span>
             <ChevronRightIcon />
-        </button>
-        <button class="btn btn-sm ms-auto" @click="() => controller.show()">
+        </Button>
+        <Button size="sm" class="ms-auto" @click="() => controller.show()">
             <FunnelIcon />
             {{ $t('actions.filter') }}
-            <span v-if="additionalFilters" class="badge badge-sm badge-primary">{{ additionalFilters }}</span>
-        </button>
+            <Badge v-if="additionalFilters" size="sm" variant="primary">{{ additionalFilters }}</Badge>
+        </Button>
     </section>
     <Modal :controller="controller">
         <template #title>
             {{ $t('actions.filter') }}
         </template>
         <section class="flex flex-col gap-2">
-            <fieldset class="fieldset">
-                <legend class="fieldset-legend justify-start">
-                    <BabyIcon /> {{ $t('activities.fields.age') }}
-                </legend>
-                <div class="flex gap-2 items-center">
-                    <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="pending['ageMin']" />
-                    <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="pending['ageMax']" />
-                </div>
+            <Fieldset>
+                <Field>
+                    <template #label>
+                        <span class="flex items-center gap-1"><BabyIcon /> {{ $t('activities.fields.age') }}</span>
+                    </template>
+                    <div class="flex gap-2 items-center">
+                        <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
+                        <TextInput type="number" size="sm" v-model="pending['ageMin']" />
+                        <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
+                        <TextInput type="number" size="sm" v-model="pending['ageMax']" />
+                    </div>
+                </Field>
 
-                <legend class="fieldset-legend justify-start">
-                    <ClockIcon /> {{ $t('activities.fields.durationMinutes') }}
-                </legend>
-                <div class="flex gap-2 items-center">
-                    <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="pending['durationMin']" />
-                    <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                    <input type="number" class="input input-sm w-full" v-model="pending['durationMax']" />
-                </div>
+                <Field>
+                    <template #label>
+                        <span class="flex items-center gap-1"><ClockIcon /> {{ $t('activities.fields.durationMinutes') }}</span>
+                    </template>
+                    <div class="flex gap-2 items-center">
+                        <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
+                        <TextInput type="number" size="sm" v-model="pending['durationMin']" />
+                        <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
+                        <TextInput type="number" size="sm" v-model="pending['durationMax']" />
+                    </div>
+                </Field>
 
-                <legend class="fieldset-legend justify-start">
-                    <MapIcon /> {{ $t('activities.fields.environment') }}
-                </legend>
-                <div class="flex gap-2 flex-col">
-                    <label v-for="choice in availablesEnvironments" :key="choice.value"
-                        class="label cursor-pointer gap-2">
-                        <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value" v-model="pending['environment']" />
-                        <span class="text-sm">{{ $t(choice.label) }}</span>
-                    </label>
-                </div>
+                <Field>
+                    <template #label>
+                        <span class="flex items-center gap-1"><MapIcon /> {{ $t('activities.fields.environment') }}</span>
+                    </template>
+                    <div class="flex gap-2 flex-col">
+                        <Label v-for="choice in availablesEnvironments" :key="choice.value"
+                               class="cursor-pointer gap-2">
+                            <Checkbox size="sm" :value="choice.value" v-model="pending['environment']" />
+                            <span class="text-sm">{{ $t(choice.label) }}</span>
+                        </Label>
+                    </div>
+                </Field>
 
-                <legend class="fieldset-legend justify-start">
-                    <TrendingUpIcon /> {{ $t('activities.fields.benefits') }}
-                </legend>
-                <TagSelect :items="availableBenefits" display-key="name" v-model="pendingBenefits" />
-
-            </fieldset>
+                <Field>
+                    <template #label>
+                        <span class="flex items-center gap-1"><TrendingUpIcon /> {{ $t('activities.fields.benefits') }}</span>
+                    </template>
+                    <TagSelect :items="availableBenefits" display-key="name" v-model="pendingBenefits" />
+                </Field>
+            </Fieldset>
         </section>
         <template #actions>
-            <button class="btn me-auto" @click="reset">
+            <Button class="me-auto" @click="reset">
                 <XIcon />
                 {{ $t("actions.reset") }}
-            </button>
-            <button class="btn btn-primary" @click="() => controller.confirm(true as any)">
+            </Button>
+            <Button variant="primary" @click="() => controller.confirm(true as any)">
                 <CheckIcon />
                 {{ $t("actions.filter") }}
-            </button>
+            </Button>
         </template>
     </Modal>
 </template>

@@ -2,13 +2,14 @@
 import { createGroup, Paginated, type FilterGroup } from '@chapelure/core';
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
+import { ArrowRightIcon, PlusIcon } from '@chapelure/ui/icons';
 import Container from '@chapelure/ui/layout/Container.vue';
-import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
+import Button from '@chapelure/ui/primitives/Button.vue';
 import ActivitiesFilters from '@features/activities/components/activities/ActivitiesFilters.vue';
+import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
 import { routesNames } from '@features/activities/routes';
-import { ArrowRightIcon, PlusIcon } from '@chapelure/ui/icons';
 import { onMounted, reactive, ref } from 'vue';
 
 const activities = useActivities();
@@ -26,11 +27,11 @@ async function onChanged() {
 
 <template>
     <Container>
-        <RouterLink :to="{ name: routesNames.edit.description, params: { id: 'new' } }"
-                    class="btn btn-primary">
+        <Button variant="primary"
+                :to="{ name: routesNames.edit.description, params: { id: 'new' } }">
             <PlusIcon />
             {{ $t('actions.add') }}
-        </RouterLink>
+        </Button>
         <ActivitiesFilters @change="onChanged"
                            v-model="group" />
         <List :items="paginated.items"
@@ -49,10 +50,12 @@ async function onChanged() {
                                  :benefits="item.expand.benefits" />
             </div>
 
-            <RouterLink :to="{ name: routesNames.page, params: { id: item.id } }"
-                        class="btn btn-square btn-ghost my-auto">
+            <Button shape="square"
+                    variant="ghost"
+                    class="my-auto"
+                    :to="{ name: routesNames.page, params: { id: item.id } }">
                 <ArrowRightIcon />
-            </RouterLink>
+            </Button>
         </List>
         <Pagination v-if="paginated.options.perPage < paginated.total"
                     v-model:page="paginated.options.page"

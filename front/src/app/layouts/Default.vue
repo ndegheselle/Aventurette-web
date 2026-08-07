@@ -1,31 +1,35 @@
 <script setup lang="ts">
-import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
+import { MenuIcon, TreesIcon } from '@chapelure/ui/icons';
+import Footer from '@chapelure/ui/layout/Footer.vue';
+import Navbar from '@chapelure/ui/layout/Navbar.vue';
+import Menu from '@chapelure/ui/navigation/Menu.vue';
 import AlertsContainer from '@chapelure/ui/overlays/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/ui/overlays/ConfirmationModal.vue';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
+import DropdownTrigger from '@chapelure/ui/overlays/DropdownTrigger.vue';
+import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
-import { MenuIcon, TreesIcon } from '@chapelure/ui/icons';
 </script>
 
 <template>
     <div class="min-h-screen flex flex-col">
-        <nav class="navbar bg-base-300 shadow-sm">
+        <Navbar>
             <div class="flex flex-1">
                 <Dropdown>
                     <template #summary>
-                        <summary class="btn btn-ghost btn-square">
+                        <DropdownTrigger>
                             <MenuIcon />
-                        </summary>
+                        </DropdownTrigger>
                     </template>
-                    <ul class="menu p-2">
+                    <Menu class="p-2">
                         <li>
                             <RouterLink :to="{ name: activitiesRoutesNames.all }">
                                 <TreesIcon /> {{ $t('activities.title') }}
                             </RouterLink>
                         </li>
                         <UserSideMenu />
-                    </ul>
+                    </Menu>
                 </Dropdown>
 
                 <img class="ms-1 my-auto"
@@ -38,7 +42,7 @@ import { MenuIcon, TreesIcon } from '@chapelure/ui/icons';
             <div class="flex">
                 <SettingsMenu />
             </div>
-        </nav>
+        </Navbar>
 
         <main class="flex flex-1 overflow-x-clip relative">
             <router-view v-slot="{ Component, route }">
@@ -51,13 +55,13 @@ import { MenuIcon, TreesIcon } from '@chapelure/ui/icons';
             </router-view>
         </main>
 
-        <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
+        <Footer>
             <aside>
                 <p>
                     Copyright © {{ new Date().getFullYear() }} - bigarrer
                 </p>
             </aside>
-        </footer>
+        </Footer>
 
         <ConfirmationModal />
         <AlertsContainer />

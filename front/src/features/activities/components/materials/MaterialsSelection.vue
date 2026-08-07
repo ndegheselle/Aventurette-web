@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import Menu from '@chapelure/ui/navigation/Menu.vue';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
+import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
 import { useMaterials, type ActivityMaterialData } from '@features/activities/composables/data/materials';
 import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from '@chapelure/ui/icons';
@@ -45,7 +47,7 @@ function openDropdown() {
                 </div>
             </summary>
         </template>
-        <ul class="menu p-2 w-full">
+        <Menu class="p-2 w-full">
             <li v-for="value in availableItems" @click="() => { }">
                 <a @click="() => addItem(value)"><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /> {{
                     value.name }}</a>
@@ -56,13 +58,13 @@ function openDropdown() {
                     <span>{{ $t('data.noData') }}</span>
                 </div>
             </li>
-        </ul>
+        </Menu>
     </Dropdown>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
         <MaterialDisplay :material="value" v-for="(value, index) in selected" class="relative">
-            <button class="btn btn-error btn-circle btn-xs absolute top-0 right-0" @click="() => removeItem(index)">
+            <Button variant="error" shape="circle" size="xs" class="absolute top-0 right-0" @click="() => removeItem(index)">
                 <TrashIcon class="icon-sm" />
-            </button>
+            </Button>
         </MaterialDisplay>
         <div v-if="!selected.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
             <CircleOffIcon />

@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { LogInIcon, LogOutIcon, UserIcon } from '@chapelure/ui/icons';
+import MenuTitle from '@chapelure/ui/navigation/MenuTitle.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as userRoutesNames } from '@features/users/routes';
-import { LogInIcon, LogOutIcon, UserIcon } from '@chapelure/ui/icons';
 const { isLoggedIn, logout } = useAuth();
 </script>
 
 <template>
-    <ul v-if="isLoggedIn">
-        <h2 class="menu-title">{{ $t('users.account') }}</h2>
+    <template v-if="isLoggedIn">
+        <MenuTitle>{{ $t('users.account') }}</MenuTitle>
         <li>
             <RouterLink :to="{ name: userRoutesNames.profil }">
                 <UserIcon />{{ $t('profil.title') }}
@@ -18,13 +19,13 @@ const { isLoggedIn, logout } = useAuth();
                 <LogOutIcon /> {{ $t('users.logout') }}
             </a>
         </li>
-    </ul>
-    <ul v-else>
-        <h2 class="menu-title">{{ $t('users.account') }}</h2>
+    </template>
+    <template v-else>
+        <MenuTitle>{{ $t('users.account') }}</MenuTitle>
         <li>
             <RouterLink :to="{ name: userRoutesNames.login }">
                 <LogInIcon /> {{ $t('users.login.title') }}
             </RouterLink>
         </li>
-    </ul>
+    </template>
 </template>

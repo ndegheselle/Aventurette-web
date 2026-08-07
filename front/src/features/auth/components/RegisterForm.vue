@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { NotImplementedError } from '@chapelure/core';
+import { useValidationErrors } from '@chapelure/ui/composables/useValidationErrors';
+import Field from '@chapelure/ui/forms/Field.vue';
+import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
+import { MailIcon } from '@chapelure/ui/icons';
+import Divider from '@chapelure/ui/layout/Divider.vue';
+import Button from '@chapelure/ui/primitives/Button.vue';
+import InputGroup from '@chapelure/ui/primitives/InputGroup.vue';
+import PasswordInput from '@chapelure/ui/primitives/PasswordInput.vue';
 import LoginProviders from '@features/auth/components/LoginProviders.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
-import Field from '@chapelure/ui/forms/Field.vue';
-import { useValidationErrors } from '@chapelure/ui/composables/useValidationErrors';
-import { NotImplementedError } from '@chapelure/core';
-import { EyeClosedIcon, EyeIcon, KeyRoundIcon, MailIcon } from '@chapelure/ui/icons';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -12,8 +17,6 @@ const auth = useAuth();
 const errors = useValidationErrors();
 const router = useRouter();
 
-const showPassword = ref(false);
-const showPasswordConfirm = ref(false);
 const credentials = reactive({
     email: 'test@example.com',
     password: '1234567890',
@@ -39,70 +42,50 @@ function handleProvider(_provider: string) {
     throw new NotImplementedError();
 }
 
-const props = defineProps<{
+const { loginRoute } = defineProps<{
     loginRoute: string;
 }>();
 </script>
 
 <template>
     <div class="flex flex-1 my-2">
-        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
-            <legend class="fieldset-legend">{{ $t('users.register') }}</legend>
+        <Fieldset :legend="$t('users.register')"
+                  class="bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
 
             <Field label="users.form.email"
-                        :error="errors.get('email')">
-                <label class="input">
+                   :error="errors.get('email')">
+                <InputGroup :error="!!errors.get('email')">
                     <MailIcon class="opacity-50" />
                     <input class="grow"
-                           v-model="credentials.email"
-                           :class="{ 'input-error': errors.get('email') }" />
-                </label>
+                           v-model="credentials.email" />
+                </InputGroup>
             </Field>
 
             <Field label="users.form.password"
-                        :error="errors.get('password')">
-                <label class="input">
-                    <KeyRoundIcon class="opacity-50" />
-                    <input class="grow"
-                           :type="showPassword ? 'text' : 'password'"
-                           v-model="credentials.password"
-                           :class="{ 'input-error': errors.get('password') }" />
-                    <button class="btn btn-ghost btn-circle absolute right-1 btn-sm"
-                            @click="showPassword = !showPassword">
-                        <EyeIcon v-if="showPassword" />
-                        <EyeClosedIcon v-else />
-                    </button>
-                </label>
+                   :error="errors.get('password')">
+                <PasswordInput v-model="credentials.password"
+                               :error="!!errors.get('password')" />
             </Field>
             <Field label="users.form.confirmPassword"
-                        :error="errors.get('passwordConfirm')">
-                <label class="input">
-                    <KeyRoundIcon class="opacity-50" />
-                    <input class="grow"
-                           :type="showPasswordConfirm ? 'text' : 'password'"
-                           v-model="credentials.password"
-                           :class="{ 'input-error': errors.get('passwordConfirm') }" />
-                    <button class="btn btn-ghost btn-circle absolute right-1 btn-sm"
-                            @click="showPasswordConfirm = !showPasswordConfirm">
-                        <EyeIcon v-if="showPasswordConfirm" />
-                        <EyeClosedIcon v-else />
-                    </button>
-                </label>
+                   :error="errors.get('passwordConfirm')">
+                <!-- was bound to credentials.password, so typing here edited the password -->
+                <PasswordInput v-model="credentials.passwordConfirm"
+                               :error="!!errors.get('passwordConfirm')" />
             </Field>
 
-            <div class="divider">{{ $t('users.form.withOauth2') }}</div>
+            <Divider>{{ $t('users.form.withOauth2') }}</Divider>
             <LoginProviders @provider-selected="handleProvider" />
 
-            <button class="btn btn-primary mt-4"
-                    :disabled="isLoading"
+            <Button variant="primary"
+                    class="mt-4"
+                    :loading="isLoading"
                     @click="onRegister">
-                <span v-if="isLoading"
-                      class="loading loading-spinner loading-sm"></span>
                 {{ $t('users.register') }}
-            </button>
-            <RouterLink :to="{ name: loginRoute }"
-                        class="btn btn-ghost">{{ $t('users.form.accountAlready') }}
-            </RouterLink>
-        </fieldset>
+            </Button>
+            <Button variant="ghost"
+                    :to="{ name: loginRoute }">
+                {{ $t('users.form.accountAlready') }}
+            </Button>
+        </Fieldset>
     </div>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Badge from '@chapelure/ui/primitives/Badge.vue';
 import { type ActivityStepData } from "@features/activities/composables/data/activities";
 
 const { index, step } = defineProps<{
@@ -11,13 +12,13 @@ const { index, step } = defineProps<{
     <div>
         <p class="text-xs"
            v-html="step.description"></p>
-        <span v-for="value in step.expand.materials"
-              class="badge">
+        <Badge v-for="value in step.expand.materials"
+               :key="value.id">
             {{ value.name }}
-        </span>
-        <span v-for="value in step.expand.resources"
-              class="badge">
+        </Badge>
+        <Badge v-for="value in step.expand.resources"
+               :key="value.id">
             {{ value.name }}
-        </span>
+        </Badge>
     </div>
 </template>

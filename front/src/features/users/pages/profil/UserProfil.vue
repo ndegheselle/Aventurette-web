@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import Card from '@chapelure/ui/layout/Card.vue';
-import { useAlert } from '@chapelure/ui/composables/useAlert';
-import { type InterestData } from '@features/users/composables/data/interests';
+import Panel from '@chapelure/ui/layout/Panel.vue';
+import Skeleton from '@chapelure/ui/primitives/Skeleton.vue';
 
-const props = defineProps<{ interests?: InterestData[] }>();
-const alert = useAlert();
-
-alert.debug("WIP : Ajouter modification adresse mail, changement mot de passe, afficher type de compte.");
+// XXX : WIP — still to add here: change email address, change password, show account type.
 </script>
 
 <template>
-    <Card>
+    <Panel>
         <div class="flex items-center gap-4">
-            <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
+            <Skeleton class="h-16 w-16 shrink-0 rounded-full" />
             <div class="flex flex-col gap-4">
-                <div class="skeleton h-4 w-20"></div>
-                <div class="skeleton h-4 w-28"></div>
+                <Skeleton class="h-4 w-20" />
+                <Skeleton class="h-4 w-28" />
             </div>
         </div>
-    </Card>
+    </Panel>
 </template>

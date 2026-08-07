@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Button from '@chapelure/ui/primitives/Button.vue';
 const emit = defineEmits(['provider-selected'])
 
 function emitProvider(provider: string) {
@@ -8,7 +9,7 @@ function emitProvider(provider: string) {
 
 <template>
     <div class="flex gap-2 justify-center">
-        <button class="btn h-auto" @click="emitProvider('google')">
+        <Button class="h-auto" @click="emitProvider('google')">
             <div class="flex flex-col items-center p-2">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="32" height="32"
                     xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
@@ -29,8 +30,8 @@ function emitProvider(provider: string) {
 
                 <span>Google</span>
             </div>
-        </button>
-        <button class="btn h-auto" @click="emitProvider('microsoft')">
+        </Button>
+        <Button class="h-auto" @click="emitProvider('microsoft')">
             <div class="flex flex-col items-center p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23" width="32" height="32">
                     <path fill="#f3f3f3" d="M0 0h23v23H0z" />
@@ -42,8 +43,8 @@ function emitProvider(provider: string) {
 
                 <span>Microsoft</span>
             </div>
-        </button>
-        <button class="btn h-auto" @click="emitProvider('apple')">
+        </Button>
+        <Button class="h-auto" @click="emitProvider('apple')">
             <div class="flex flex-col items-center p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 814 1000" width="32" height="32">
                     <path
@@ -51,6 +52,6 @@ function emitProvider(provider: string) {
                 </svg>
                 <span>Apple</span>
             </div>
-        </button>
+        </Button>
     </div>
 </template>

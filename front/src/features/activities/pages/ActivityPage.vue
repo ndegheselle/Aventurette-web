@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import List from '@chapelure/ui/data/List.vue';
+import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from '@chapelure/ui/icons';
 import Container from '@chapelure/ui/layout/Container.vue';
-import Card from '@chapelure/ui/layout/Card.vue';
+import Panel from '@chapelure/ui/layout/Panel.vue';
+import Button from '@chapelure/ui/primitives/Button.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
-import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
+import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from '@chapelure/ui/icons';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -26,29 +27,26 @@ watch(
 );
 </script>
 <template>
-    <div class="flex gap-2 justify-end">
-        <button></button>
-    </div>
     <Container>
         <div class="sticky top-0 flex gap-2 py-1 bg-base-100">
-            <RouterLink :to="{ name: activitiesRoutesNames.all }" class="btn btn-ghost">
+            <Button variant="ghost" :to="{ name: activitiesRoutesNames.all }">
                 <ArrowLeftIcon /> {{ $t('actions.back') }}
-            </RouterLink>
+            </Button>
 
-            <button class="btn ms-auto">
+            <Button class="ms-auto">
                 <HeartIcon />
                 {{ $t('activities.actions.favorite') }}
-            </button>
-            <button class="btn">
+            </Button>
+            <Button>
                 <CalendarIcon />
                 {{ $t('activities.actions.addToPlanning') }}
-            </button>
-            <button class="btn btn-primary">
+            </Button>
+            <Button variant="primary">
                 <MonitorPlayIcon />
                 {{ $t('activities.actions.start') }}
-            </button>
+            </Button>
         </div>
-        <Card>
+        <Panel>
             <img class="max-h-32 object-cover rounded-box" src="https://placeholder.pagebee.io/api/plain/800/200" />
             <div class="flex flex-1 gap-1 flex-col">
                 <div class="flex justify-between">
@@ -58,42 +56,42 @@ watch(
                 <p>{{ activity?.summary }}</p>
                 <BenefitsDisplay :benefits="activity?.expand.benefits" />
             </div>
-        </Card>
-        <Card>
+        </Panel>
+        <Panel>
             <h2 class="text-2xl flex items-center gap-2">
                 <PackageOpenIcon /> {{ $t('activities.steps.fields.materials.title') }}
             </h2>
             <div class="flex gap-2">
-                <div class="text-center" v-for="material in activity?.expand.materials">
+                <div class="text-center" v-for="material in activity?.expand.materials" :key="material.id">
                     <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
                     <span>{{ material.name }}</span>
                 </div>
             </div>
-        </Card>
-        <Card>
+        </Panel>
+        <Panel>
             <h2 class="text-2xl flex items-center gap-2">
                 <FileTextIcon /> {{ $t('activities.steps.fields.resources.title') }}
             </h2>
             <div class="flex gap-2">
-                <div class="text-center" v-for="material in activity?.expand.resources">
+                <div class="text-center" v-for="resource in activity?.expand.resources" :key="resource.id">
                     <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
-                    <span>{{ material.name }}</span>
+                    <span>{{ resource.name }}</span>
                 </div>
             </div>
-        </Card>
-        <Card>
+        </Panel>
+        <Panel>
             <h2 class="text-2xl flex items-center gap-2">
                 <ScrollTextIcon /> {{ $t('activities.description') }}
             </h2>
             <p v-html="activity?.description"></p>
-        </Card>
-        <Card>
+        </Panel>
+        <Panel>
             <h2 class="text-2xl flex items-center gap-2">
                 <ListOrderedIcon /> {{ $t('activities.steps.title') }}
             </h2>
             <List :items="activity?.expand.steps" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
             </List>
-        </Card>
+        </Panel>
     </Container>
 </template>

@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { useAuth } from '@features/auth/composables/useAuth';
-import List from '@chapelure/ui/data/List.vue';
-import Card from '@chapelure/ui/layout/Card.vue';
-import { useEditableList } from '@chapelure/ui/composables/useEditableList';
 import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
+import { useEditableList } from '@chapelure/ui/composables/useEditableList';
 import type { IEditModal } from '@chapelure/ui/composables/useModal';
+import List from '@chapelure/ui/data/List.vue';
+import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from '@chapelure/ui/icons';
+import Panel from '@chapelure/ui/layout/Panel.vue';
+import Button from '@chapelure/ui/primitives/Button.vue';
+import { useAuth } from '@features/auth/composables/useAuth';
 import { type ChildrenData, useChildren } from '@features/users/composables/data/children';
 import ChildrenEditModal from '@features/users/pages/children/ChildrenEditModal.vue';
 import InterestsList from '@features/users/pages/children/InterestsList.vue';
-import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from '@chapelure/ui/icons';
 import { onMounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const childrenApi = useChildren();
 const modal = useTemplateRef<IEditModal<ChildrenData>>('modal');
 const auth = useAuth();
-const {items, add, remove, edit} = useEditableList<ChildrenData>(modal, {onRemove: onRemove});
+const { items, add, remove, edit } = useEditableList<ChildrenData>(modal, { onRemove: onRemove });
 
 const confirm = useConfirmation();
 const { t } = useI18n();
@@ -32,14 +33,16 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Card>
+    <Panel>
         <div class="flex justify-between">
-            <h2 class="text-2xl flex items-center gap-2 ms-2"><UsersRoundIcon /> {{ $t('children.title') }}</h2>
-            <button class="btn btn-circle btn-primary" @click="() => add({ user: auth.currentId() } as ChildrenData)">
+            <h2 class="text-2xl flex items-center gap-2 ms-2">
+                <UsersRoundIcon /> {{ $t('children.title') }}
+            </h2>
+            <Button variant="primary" shape="circle" @click="() => add({ user: auth.currentId() } as ChildrenData)">
                 <PlusIcon />
-            </button>
+            </Button>
         </div>
-        
+
         <List :items="items" v-slot="{ item, index }">
             <div><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <div>
@@ -51,13 +54,13 @@ onMounted(async () => {
                 </div>
                 <InterestsList :interests="item.expand.interests" />
             </div>
-            <button class="btn btn-square btn-ghost" @click="() => remove(item, index)">
+            <Button shape="square" variant="ghost" @click="() => remove(item, index)">
                 <MinusIcon />
-            </button>
-            <button class="btn btn-square btn-ghost" @click="() => edit(item)">
+            </Button>
+            <Button shape="square" variant="ghost" @click="() => edit(item)">
                 <PenIcon />
-            </button>
+            </Button>
         </List>
-    </Card>
+    </Panel>
     <ChildrenEditModal ref="modal" />
 </template>

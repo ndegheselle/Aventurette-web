@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { ClockIcon, MapIcon, UserRoundIcon } from '@chapelure/ui/icons';
+import Badge from '@chapelure/ui/primitives/Badge.vue';
 import type { ActivityData } from '@features/activities/composables/data/activities';
 import { useAgeDisplay } from '@features/activities/locales/helpers';
-import { ClockIcon, MapIcon, UserRoundIcon } from '@chapelure/ui/icons';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -15,14 +16,14 @@ const ageDisplay = computed(() => useAgeDisplay(t, activity?.ageMin, activity?.a
 
 <template>
     <div class="flex gap-1">
-        <span class="badge">
+        <Badge>
             <MapIcon /> {{ $t("activities.environment." + activity?.environment) }}
-        </span>
-        <span class="badge">
+        </Badge>
+        <Badge>
             <UserRoundIcon /> {{ ageDisplay }}
-        </span>
-        <span class="badge">
+        </Badge>
+        <Badge>
             <ClockIcon /> {{ $t("activities.duration", { duration: activity?.durationMinutes }) }}
-        </span>
+        </Badge>
     </div>
 </template>
