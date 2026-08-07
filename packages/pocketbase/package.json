@@ -1,0 +1,20 @@
+{
+    "name": "@chapelure/pocketbase",
+    "version": "0.0.0",
+    "private": true,
+    "description": "PocketBase adapter implementing the @chapelure/core data, auth and file ports.",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./*": "./src/*"
+    },
+    "files": [
+        "src"
+    ],
+    "dependencies": {
+        "@chapelure/core": "*"
+    },
+    "peerDependencies": {
+        "pocketbase": "^0.26.8"
+    }
+}

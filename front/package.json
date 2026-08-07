@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chapelure/core": "*",
+    "@chapelure/pocketbase": "*",
+    "@chapelure/ui": "*",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",
     "@tiptap/pm": "^3.22.4",

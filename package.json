@@ -1,0 +1,15 @@
+{
+    "name": "aventurette-web",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "workspaces": [
+        "packages/*",
+        "front"
+    ],
+    "scripts": {
+        "dev": "npm run dev --workspace @sagace/front",
+        "build": "npm run build --workspace @sagace/front",
+        "preview": "npm run preview --workspace @sagace/front"
+    }
+}

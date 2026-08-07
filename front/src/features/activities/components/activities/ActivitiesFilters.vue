@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/api/filters';
+import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/core';
 import Search from '@chapelure/common/components/inputs/Search.vue';
 import TagSelect from '@chapelure/common/components/inputs/TagSelect.vue';
 import Modal from '@chapelure/common/components/popups/Modal.vue';

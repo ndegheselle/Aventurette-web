@@ -1,5 +1,5 @@
 {
-"extends": "@vue/tsconfig/tsconfig.dom.json",
+    "extends": "@vue/tsconfig/tsconfig.dom.json",
     "compilerOptions": {
         "lib": ["es2024", "DOM"],
         "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
@@ -13,7 +13,16 @@
         "erasableSyntaxOnly": false,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
+        /* Workspace packages resolve to source, so `vue-tsc -b` typechecks them too and
+           Vite gives cross-package HMR. Keep these in sync with vite.config.ts aliases.
+           The package entries must stay above the legacy "@chapelure/*" entry. */
         "paths": {
+            "@chapelure/core": [ "../packages/core/src/index.ts" ],
+            "@chapelure/core/*": [ "../packages/core/src/*" ],
+            "@chapelure/pocketbase": [ "../packages/pocketbase/src/index.ts" ],
+            "@chapelure/pocketbase/*": [ "../packages/pocketbase/src/*" ],
+            "@chapelure/ui": [ "../packages/ui/src/index.ts" ],
+            "@chapelure/ui/*": [ "../packages/ui/src/*" ],
             "@chapelure/*": [ "./src/chapelure/*" ],
             "@shared/*": [ "./src/shared/*" ],
             "@features/*": [ "./src/features/*" ],

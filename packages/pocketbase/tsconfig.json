@@ -1,0 +1,21 @@
+{
+    // Editor / standalone check only — see the note in packages/core/tsconfig.json.
+    "compilerOptions": {
+        "target": "es2024",
+        "lib": ["es2024", "DOM"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "verbatimModuleSyntax": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true,
+        "noEmit": true,
+        "paths": {
+            "@chapelure/core": ["../core/src/index.ts"],
+            "@chapelure/core/*": ["../core/src/*"]
+        }
+    },
+    "include": ["src/**/*.ts"]
+}

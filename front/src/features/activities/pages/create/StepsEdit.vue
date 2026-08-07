@@ -12,7 +12,9 @@ import { ArrowLeftIcon, ArrowRightIcon, FileTextIcon, LibraryIcon, ListTreeIcon,
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const { activity } = defineProps<{
+// XXX : the existing steps of `activity` are not seeded into the editable list yet,
+// and the 3-step create flow has no save step — see WIP note in the activities feature.
+defineProps<{
     activity: ActivityData;
 }>();
 

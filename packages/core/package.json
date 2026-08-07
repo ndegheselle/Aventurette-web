@@ -1,0 +1,14 @@
+{
+    "name": "@chapelure/core",
+    "version": "0.0.0",
+    "private": true,
+    "description": "Framework-agnostic and backend-agnostic contracts: data ports, filters, errors, utils.",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./*": "./src/*"
+    },
+    "files": [
+        "src"
+    ]
+}

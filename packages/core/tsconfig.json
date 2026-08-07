@@ -1,0 +1,19 @@
+{
+    // Editor / standalone check only. The authoritative typecheck is `vue-tsc -b` in front,
+    // which pulls these sources in through the path aliases.
+    // No "DOM" in lib on purpose: core must stay usable outside a browser.
+    "compilerOptions": {
+        "target": "es2024",
+        "lib": ["es2024"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "verbatimModuleSyntax": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true,
+        "noEmit": true
+    },
+    "include": ["src/**/*.ts"]
+}

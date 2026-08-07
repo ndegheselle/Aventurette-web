@@ -1,0 +1,19 @@
+{
+    // Editor / standalone check only — see the note in packages/core/tsconfig.json.
+    "extends": "@vue/tsconfig/tsconfig.dom.json",
+    "compilerOptions": {
+        "lib": ["es2024", "DOM"],
+        "types": ["vite/client"],
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noEmit": true,
+        "paths": {
+            "@chapelure/core": ["../core/src/index.ts"],
+            "@chapelure/core/*": ["../core/src/*"],
+            "@chapelure/ui/*": ["./src/*"]
+        }
+    },
+    "include": ["src/**/*.ts", "src/**/*.vue", "src/**/*.d.ts"]
+}

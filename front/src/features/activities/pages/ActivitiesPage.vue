@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Paginated } from '@chapelure/api/crud';
-import { createGroup, type FilterGroup } from '@chapelure/api/filters';
+import { createGroup, Paginated, type FilterGroup } from '@chapelure/core';
 import List from '@chapelure/common/components/data/List.vue';
 import Pagination from '@chapelure/common/components/data/Pagination.vue';
 import Container from '@chapelure/common/components/layout/Container.vue';

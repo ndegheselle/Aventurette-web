@@ -10,8 +10,8 @@ import { SaveIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 const controller = useModal<ChildrenData>();
-const children = useChildren();
-const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, children);
+const childrenRepository = useChildren();
+const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, childrenRepository);
 const children = computed(() => data.value);
 defineExpose<IEditModal<ChildrenData>>({ show });
 </script>
