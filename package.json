@@ -10,6 +10,8 @@
     "scripts": {
         "dev": "npm run dev --workspace @sagace/front",
         "build": "npm run build --workspace @sagace/front",
-        "preview": "npm run preview --workspace @sagace/front"
+        "preview": "npm run preview --workspace @sagace/front",
+        "lint:arch": "node scripts/lint-arch.mjs",
+        "check": "npm run lint:arch && npm run build"
     }
 }

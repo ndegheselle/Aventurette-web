@@ -1,19 +1,29 @@
+# The build context is the REPOSITORY ROOT, not front/, because the app depends on the
+# workspace packages under packages/ which live outside front/.
+#
+#   docker build -f front/Dockerfile -t aventurette-front .
+
 # -----------------------
 # 1. Build stage
 # -----------------------
 FROM node:alpine AS builder
 
-WORKDIR /app
+WORKDIR /repo
 
-# Install dependencies first (better caching)
-COPY package*.json ./
-RUN npm install
+# Manifests first, so the dependency layer is cached independently of source changes.
+# Every workspace member's package.json is needed for `npm ci` to resolve the workspace.
+COPY package.json package-lock.json ./
+COPY packages/core/package.json packages/core/
+COPY packages/pocketbase/package.json packages/pocketbase/
+COPY packages/ui/package.json packages/ui/
+COPY front/package.json front/
+RUN npm ci
 
-# Copy source
-COPY . .
+# Source
+COPY packages/ packages/
+COPY front/ front/
 
-# Build the app
-RUN npm run build
+RUN npm run build --workspace @sagace/front
 
 
 # -----------------------
@@ -25,11 +35,10 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy built app from builder
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /repo/front/dist /usr/share/nginx/html
 
-# Optional: custom nginx config
-# (recommended for SPA routing)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# SPA routing: unknown paths must fall back to index.html or deep links 404.
+COPY front/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

@@ -1,0 +1,9 @@
+# Build context is the repository root (see front/Dockerfile).
+**/node_modules
+**/dist
+.git
+.gitignore
+.vscode
+back/pb_data
+nginx/certbot
+**/*.log

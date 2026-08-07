@@ -1,19 +1,42 @@
+# Aventurette
+
+An npm workspace: the `front/` app on top of three `packages/`. See
+[ARCHITECTURE.md](ARCHITECTURE.md) for the layout and the boundaries between them.
+
 # First setup
 
 ## Setup
 
-Get the app :
+Get the app. The `chapelure` library used to be a git submodule and is now a workspace
+package, so no `--recurse-submodules` is needed:
+
 ```bash
 cd ~
-git clone https://github.com/ndegheselle/Aventurette-web.git  --recurse-submodules
-# or, if already cloned:
-git submodule update --init --recursive
+git clone https://github.com/ndegheselle/Aventurette-web.git
+```
+
+Install once from the repository root — the workspace owns the lockfile, so do not run
+`npm install` inside `front/`:
+
+```bash
+cd Aventurette-web
+npm install
 ```
 
 Create .env :
 ```bash
-cd /Aventurette-web/front
+cd front
+cp .env.example .env
 nano .env
+```
+
+## Develop
+
+```bash
+npm run dev         # dev server
+npm run build       # typecheck (app + packages) and build
+npm run lint:arch   # architecture boundaries
+npm run check       # both of the above
 ```
 
 ## Certificate generation
@@ -40,6 +63,17 @@ https://pocketbase.io/docs/going-to-production/#using-reverse-proxy
 ```bash
 docker compose up -d --build 
 ```
+
+The front image builds from the **repository root**, not `front/`, because the app depends on
+`packages/`:
+
+```bash
+docker build -f front/Dockerfile -t aventurette-front .
+```
+
+> Note: `compose.yml` builds `nginx/Dockerfile`, which does not exist, and declares no `front`
+> service — so the SPA is not currently deployed by the compose stack. That predates the
+> workspace change and is still open.
 
 Build without cache :
 ```bash
