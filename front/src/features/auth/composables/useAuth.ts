@@ -1,6 +1,6 @@
-import { authProvider } from '@/backend';
 import { NotAuthentifiedError, type BaseEntity } from '@chapelure/core';
-import { routesNames } from '@features/users/routes';
+import { sessionProvider } from '@features/auth/data/session';
+import { routesNames } from '@features/auth/routes';
 import { computed, readonly, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -9,7 +9,7 @@ const current = ref<BaseEntity | null>(null);
 
 export function useAuth<TUser extends BaseEntity>() {
 
-    const auth = authProvider<TUser>();
+    const auth = sessionProvider<TUser>();
     const router = useRouter();
     const isLoggedIn = computed(() => current.value !== null);
 

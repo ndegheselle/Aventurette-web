@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Badge from '@chapelure/ui/primitives/Badge.vue';
-import { type InterestData } from '@features/users/composables/data/interests';
+import { type InterestData } from '@features/users/model/interest';
 const props = defineProps<{ interests?: InterestData[] }>();
 </script>
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
+import { activitiesRepository as activities } from '@features/activities/data/activities.repository';
+import { type ActivityData } from '@features/activities/model/activity';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const activity = ref<ActivityData | null>(null);
-const activities = useActivities();
 
 watch(
     () => route.params.id,

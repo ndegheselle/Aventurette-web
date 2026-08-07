@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Badge from '@chapelure/ui/primitives/Badge.vue';
-import { type ActivityStepData } from "@features/activities/composables/data/activities";
+import { type ActivityStepData } from "@features/activities/model/activity";
 
 const { index, step } = defineProps<{
     index: number;

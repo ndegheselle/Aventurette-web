@@ -7,7 +7,7 @@ import Button from '@chapelure/ui/primitives/Button.vue';
 import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import EditSteps from '@features/activities/components/EditSteps.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
-import type { ActivityData } from '@features/activities/composables/data/activities';
+import type { ActivityData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';
 
 defineProps<{

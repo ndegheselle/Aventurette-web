@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { childrenRepository as childrenApi } from '@features/users/data/children.repository';
 import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
 import { useEditableList } from '@chapelure/ui/composables/useEditableList';
 import type { IEditModal } from '@chapelure/ui/composables/useModal';
@@ -7,13 +8,12 @@ import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
-import { type ChildrenData, useChildren } from '@features/users/composables/data/children';
-import ChildrenEditModal from '@features/users/pages/children/ChildrenEditModal.vue';
-import InterestsList from '@features/users/pages/children/InterestsList.vue';
+import { type ChildrenData } from '@features/users/model/child';
+import ChildrenEditModal from '@features/users/components/children/ChildrenEditModal.vue';
+import InterestsList from '@features/users/components/children/InterestsList.vue';
 import { onMounted, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const childrenApi = useChildren();
 const modal = useTemplateRef<IEditModal<ChildrenData>>('modal');
 const auth = useAuth();
 const { items, add, remove, edit } = useEditableList<ChildrenData>(modal, { onRemove: onRemove });

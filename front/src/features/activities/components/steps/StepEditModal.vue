@@ -7,7 +7,7 @@ import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
 import ResourcesSelection from '@features/activities/components/resources/ResourcesSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
-import { createEmptyStep, type ActivityStepData } from '@features/activities/composables/data/activities';
+import { createEmptyStep, type ActivityStepData } from '@features/activities/model/activity';
 import { ref } from 'vue';
 
 const controller = useModal<ActivityStepData>();

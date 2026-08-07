@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { fileUrls } from '@/backend';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
+import { activityResourceUrl } from '@features/activities/data/resources.repository';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import { useMultipleFiles } from '@chapelure/ui/files/useFiles';
-import { type ActivityResourceData } from '@features/activities/composables/data/activities';
+import { type ActivityResourceData } from '@features/activities/model/activity';
 import { CircleOffIcon, FileIcon, TrashIcon } from '@chapelure/ui/icons';
 import { ref, watch } from 'vue';
 
@@ -42,7 +42,7 @@ function removeNew(entry: NewResource) {
 }
 
 function getExistingFileUrl(resource: ActivityResourceData): string {
-    return fileUrls.getUrl(resource, resource.file);
+    return activityResourceUrl(resource);
 }
 
 function existingIsImage(resource: ActivityResourceData): boolean {

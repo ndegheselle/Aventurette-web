@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { activitiesRepository as activities } from '@features/activities/data/activities.repository';
 import List from '@chapelure/ui/data/List.vue';
 import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from '@chapelure/ui/icons';
 import Container from '@chapelure/ui/layout/Container.vue';
@@ -7,14 +8,13 @@ import Button from '@chapelure/ui/primitives/Button.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
-import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
+import { type ActivityData } from '@features/activities/model/activity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const activity = ref<ActivityData | null>(null);
-const activities = useActivities();
 
 watch(
     () => route.params.id,

@@ -1,7 +1,6 @@
-import { crud } from "@/backend";
-import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse, Collections } from "@/backend/schema.g";
-import type { BenefitData } from "@features/activities/composables/data/benefits";
-import type { ActivityMaterialData } from "@features/activities/composables/data/materials";
+import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse } from "@/backend/schema.g";
+import type { BenefitData } from "@features/activities/model/benefit";
+import type { ActivityMaterialData } from "@features/activities/model/material";
 
 type ActivityExpand = {
     steps?: ActivityStepData[];
@@ -18,22 +17,20 @@ type ActivityStepExpand = {
 export type ActivityData = ActivitiesResponse<ActivityExpand>;
 export type ActivityStepData = ActivitiesStepsResponse<ActivityStepExpand>;
 export type ActivityResourceData = ActivitiesResourcesResponse;
+
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 
-export function createEmptyStep() : ActivityStepData
-{
+/** Relations to fetch alongside an activity for the detail and edit screens. */
+export const ACTIVITY_RELATIONS = [
+    "steps", "steps.benefits", "steps.materials", "steps.resources",
+    "resources", "materials",
+];
+
+export function createEmptyStep(): ActivityStepData {
     return {
         expand: {
             materials: [],
             resources: []
         } as ActivityStepExpand
     } as ActivityStepData;
-}
-
-export function useActivities() {
-    return crud<ActivityData>(Collections.Activities,
-        [
-            "steps", "steps.benefits", "steps.materials", "steps.resources",
-            "resources", "materials"
-        ]);
 }

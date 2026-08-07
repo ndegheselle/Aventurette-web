@@ -9,7 +9,7 @@ import Button from '@chapelure/ui/primitives/Button.vue';
 import EditSteps from '@features/activities/components/EditSteps.vue';
 import StepEditModal from '@features/activities/components/steps/StepEditModal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
-import { createEmptyStep, type ActivityData } from '@features/activities/composables/data/activities';
+import { createEmptyStep, type ActivityData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';

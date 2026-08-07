@@ -5,7 +5,7 @@ import '@/backend';
 
 import { i18n } from '@/app/i18n';
 import { authGuard } from '@features/auth/guard';
-import { routesNames } from '@features/users/routes';
+import { routesNames as authRoutesNames } from '@features/auth/routes';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
@@ -15,7 +15,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
 });
-router.beforeEach(authGuard(routesNames));
+router.beforeEach(authGuard(authRoutesNames));
 
 createApp(App)
     .use(i18n)

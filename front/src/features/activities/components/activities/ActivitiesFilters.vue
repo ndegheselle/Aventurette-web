@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { benefitsRepository as benefits } from '@features/activities/data/benefits.repository';
 import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/core';
 import { useModal } from '@chapelure/ui/composables/useModal';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
@@ -12,9 +13,10 @@ import Badge from '@chapelure/ui/primitives/Badge.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import Checkbox from '@chapelure/ui/primitives/Checkbox.vue';
 import TextInput from '@chapelure/ui/primitives/TextInput.vue';
-import { type ActivityData } from '@features/activities/composables/data/activities';
-import { useBenefits, type BenefitData } from '@features/activities/composables/data/benefits';
-import { availablesEnvironments, useAgeDisplay } from '@features/activities/locales/helpers';
+import { type ActivityData } from '@features/activities/model/activity';
+import { type BenefitData } from '@features/activities/model/benefit';
+import { formatAgeRange } from '@features/activities/model/age';
+import { availablesEnvironments } from '@features/activities/model/environment';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -43,7 +45,7 @@ function emptyFilters() {
 const current = reactive(emptyFilters());
 const pending = reactive(emptyFilters());
 
-const ageDisplay = computed(() => useAgeDisplay(t, current["ageMin"], current["ageMax"]));
+const ageDisplay = computed(() => formatAgeRange(t, current["ageMin"], current["ageMax"]));
 const additionalFilters = computed(() => current["durationMin"] || current["durationMax"] || current["benefits"].length ? 1 : 0);
 
 const pendingBenefits = computed({
@@ -95,7 +97,6 @@ function reset() {
     Object.assign(pending, emptyFilters());
 }
 
-const benefits = useBenefits();
 onMounted(async () => {
     availableBenefits.value = await benefits.getAll();
 });

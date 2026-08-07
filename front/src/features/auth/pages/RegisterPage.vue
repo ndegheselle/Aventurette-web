@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RegisterForm from '@features/auth/components/RegisterForm.vue';
-import { routesNames } from '@features/users/routes';
+import { routesNames } from '@features/auth/routes';
 </script>
 
 <template>

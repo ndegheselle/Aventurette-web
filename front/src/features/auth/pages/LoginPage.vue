@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import LoginForm from '@features/auth/components/LoginForm.vue';
-import { routesNames } from '@features/users/routes';
+import { routesNames } from '@features/auth/routes';
 </script>
 
 <template>

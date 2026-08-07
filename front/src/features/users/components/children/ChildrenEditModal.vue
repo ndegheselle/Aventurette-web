@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { childrenRepository } from '@features/users/data/children.repository';
 import { useEditModal } from '@chapelure/ui/composables/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/composables/useModal';
 import Field from '@chapelure/ui/forms/Field.vue';
@@ -8,12 +9,11 @@ import { SaveIcon, XIcon } from '@chapelure/ui/icons';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import TextInput from '@chapelure/ui/primitives/TextInput.vue';
-import { useChildren, type ChildrenData } from '@features/users/composables/data/children';
-import InterestsSelect from '@features/users/pages/children/InterestsSelect.vue';
+import { type ChildrenData } from '@features/users/model/child';
+import InterestsSelect from '@features/users/components/children/InterestsSelect.vue';
 import { computed } from 'vue';
 
 const controller = useModal<ChildrenData>();
-const childrenRepository = useChildren();
 const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, childrenRepository);
 const children = computed(() => data.value);
 defineExpose<IEditModal<ChildrenData>>({ show });

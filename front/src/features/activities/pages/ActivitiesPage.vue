@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { activitiesRepository as activities } from '@features/activities/data/activities.repository';
 import { createGroup, Paginated, type FilterGroup } from '@chapelure/core';
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
@@ -8,11 +9,10 @@ import Button from '@chapelure/ui/primitives/Button.vue';
 import ActivitiesFilters from '@features/activities/components/activities/ActivitiesFilters.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
-import { useActivities, type ActivityData } from '@features/activities/composables/data/activities';
+import { type ActivityData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';
 import { onMounted, reactive, ref } from 'vue';
 
-const activities = useActivities();
 const paginated = ref<Paginated<ActivityData>>(new Paginated<ActivityData>([], 0, { page: 1, perPage: 5 }));
 let group = reactive<FilterGroup<ActivityData>>(createGroup<ActivityData>({}));
 

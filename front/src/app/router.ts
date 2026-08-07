@@ -1,21 +1,20 @@
 import Default from '@/app/layouts/Default.vue';
+import activitiesRoutes from '@features/activities/routes';
+import authRoutes from '@features/auth/routes';
+import homeRoutes from '@features/home/routes';
+import usersRoutes from '@features/users/routes';
 import type { RouteRecordRaw } from 'vue-router';
 
-import HomePage from '@/pages/HomePage.vue';
-import usersRoutes from '@features/users/routes';
-import activiesRoutes from '@features/activities/routes';
-
+// Each feature owns its route module; the app only decides the layout they hang under.
 const routes: RouteRecordRaw[] = [
     {
         path: '',
         component: Default,
         children: [
-            {
-                path: '',
-                component: HomePage,
-            },
+            ...homeRoutes,
+            ...authRoutes,
             ...usersRoutes,
-            ...activiesRoutes
+            ...activitiesRoutes,
         ]
     }
 ];

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ClockIcon, MapIcon, UserRoundIcon } from '@chapelure/ui/icons';
 import Badge from '@chapelure/ui/primitives/Badge.vue';
-import type { ActivityData } from '@features/activities/composables/data/activities';
-import { useAgeDisplay } from '@features/activities/locales/helpers';
+import type { ActivityData } from '@features/activities/model/activity';
+import { formatAgeRange } from '@features/activities/model/age';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -11,7 +11,7 @@ const { activity } = defineProps<{
     activity?: ActivityData
 }>();
 
-const ageDisplay = computed(() => useAgeDisplay(t, activity?.ageMin, activity?.ageMax));
+const ageDisplay = computed(() => formatAgeRange(t, activity?.ageMin, activity?.ageMax));
 </script>
 
 <template>

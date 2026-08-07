@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { materialsRepository as materials } from '@features/activities/data/materials.repository';
 import Menu from '@chapelure/ui/navigation/Menu.vue';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
-import { useMaterials, type ActivityMaterialData } from '@features/activities/composables/data/materials';
+import { type ActivityMaterialData } from '@features/activities/model/material';
 import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from '@chapelure/ui/icons';
 import { computed, onMounted, ref } from 'vue';
 
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });
-const materials = useMaterials();
 
 const availableMaterials = ref<ActivityMaterialData[]>([]);
 const open = ref<boolean>(false);

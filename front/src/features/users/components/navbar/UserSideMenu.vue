@@ -2,6 +2,7 @@
 import { LogInIcon, LogOutIcon, UserIcon } from '@chapelure/ui/icons';
 import MenuTitle from '@chapelure/ui/navigation/MenuTitle.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
+import { routesNames as authRoutesNames } from '@features/auth/routes';
 import { routesNames as userRoutesNames } from '@features/users/routes';
 const { isLoggedIn, logout } = useAuth();
 </script>
@@ -23,7 +24,7 @@ const { isLoggedIn, logout } = useAuth();
     <template v-else>
         <MenuTitle>{{ $t('users.account') }}</MenuTitle>
         <li>
-            <RouterLink :to="{ name: userRoutesNames.login }">
+            <RouterLink :to="{ name: authRoutesNames.login }">
                 <LogInIcon /> {{ $t('users.login.title') }}
             </RouterLink>
         </li>

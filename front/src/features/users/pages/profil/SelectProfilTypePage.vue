@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import Card from '@chapelure/ui/layout/Card.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
-import { UserProfilType, useUsers } from '@features/users/composables/data/users';
+import { useUsers } from '@features/users/composables/useUsers';
+import { UserProfilType } from '@features/users/model/user';
 import { routesNames } from '@features/users/routes';
 import { useRouter } from 'vue-router';
 

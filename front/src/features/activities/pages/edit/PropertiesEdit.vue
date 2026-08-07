@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { benefitsRepository as benefits } from '@features/activities/data/benefits.repository';
 import Field from '@chapelure/ui/forms/Field.vue';
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
@@ -11,14 +12,13 @@ import Button from '@chapelure/ui/primitives/Button.vue';
 import Select from '@chapelure/ui/primitives/Select.vue';
 import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import EditSteps from '@features/activities/components/EditSteps.vue';
-import type { ActivityData } from '@features/activities/composables/data/activities';
-import { useBenefits, type BenefitData } from '@features/activities/composables/data/benefits';
-import { availablesEnvironments } from '@features/activities/locales/helpers';
+import type { ActivityData } from '@features/activities/model/activity';
+import { type BenefitData } from '@features/activities/model/benefit';
+import { availablesEnvironments } from '@features/activities/model/environment';
 import { routesNames } from '@features/activities/routes';
 import { onMounted, ref } from 'vue';
 
 const availableBenefits = ref<BenefitData[]>([]);
-const benefits = useBenefits();
 const { files, update: updateImage } = useOneFile();
 
 // XXX : these inputs are not bound to `activity` yet, and the flow has no save step.
