@@ -103,7 +103,7 @@ Only changed images are rebuilt. The two things that hold state — `back/pb_dat
 The first certificate is issued once, with the stack already running:
 
 ```bash
-./scripts/init-certificate.sh && docker compose restart nginx
+sh scripts/init-certificate.sh && docker compose restart nginx
 ```
 
 One certificate covers both hostnames. Renewal is automatic from then on: the `certbot`

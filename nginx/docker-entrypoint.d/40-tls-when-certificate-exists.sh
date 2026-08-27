@@ -17,5 +17,5 @@ if [ -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
 else
     rm -f "$conf"
     echo "$0: no certificate for $DOMAIN yet — serving HTTP only."
-    echo "$0: issue one with scripts/init-certificate.sh, then: docker compose restart nginx"
+    echo "$0: issue one with 'sh scripts/init-certificate.sh', then: docker compose restart nginx"
 fi

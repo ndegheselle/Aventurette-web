@@ -5,7 +5,7 @@
 # on port 80 for the webroot challenge to succeed:
 #
 #   docker compose up -d --build
-#   ./scripts/init-certificate.sh
+#   sh scripts/init-certificate.sh
 #   docker compose restart nginx
 #
 # Renewals are handled by the certbot service and need no further action. Safe to re-run:

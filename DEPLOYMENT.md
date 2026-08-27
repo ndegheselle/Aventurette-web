@@ -239,7 +239,7 @@ One certificate covers both hostnames. Confirm DNS resolves before running this 
 Encrypt rate-limits failed attempts:
 
 ```bash
-./scripts/init-certificate.sh
+sh scripts/init-certificate.sh
 ```
 
 The script reads the same `.env` and asks certbot for `DOMAIN` and `API_DOMAIN` over the
@@ -378,7 +378,7 @@ curl http://lubriciel.ovh/.well-known/acme-challenge/test
 
 If that does not print `hello`, the problem is DNS, the firewall, or something else already
 holding port 80 (`sudo ss -tlnp | grep :80`) — not certbot. Fix that, then re-run
-`./scripts/init-certificate.sh`. Let's Encrypt allows 5 failures per hostname per hour, so
+`sh scripts/init-certificate.sh`. Let's Encrypt allows 5 failures per hostname per hour, so
 do not retry in a loop.
 
 **HTTPS still off after a successful request.** The vhosts are only installed on container
