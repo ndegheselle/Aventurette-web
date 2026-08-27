@@ -1,0 +1,30 @@
+{
+    "profil": {
+        "title": "Profile",
+        "selection": "Who are you?",
+        "personnal": {
+            "title": "A family",
+            "description": "A description for families."
+        },
+        "association": {
+            "title": "An association",
+            "description": "A description for associations."
+        },
+        "school": {
+            "title": "A school",
+            "description": "A description for schools."
+        }
+    },
+    "children":
+    {
+        "title": "Children",
+        "years": "{years} years old",
+        "interests": {
+            "title": "Interests"
+        },
+        "form": {
+            "name": "Name",
+            "age": "Age"
+        }
+    }
+}

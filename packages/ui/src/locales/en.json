@@ -1,0 +1,69 @@
+{
+    "settings": {
+        "theme": "Theme",
+        "language": "Language",
+        "themes": {
+            "auto": "Automatic",
+            "dark": "Dark",
+            "light": "Light"
+        }
+    },
+    "validation": {
+        "errors": {
+            "default": "Something went wrong.",
+            "validation_values_mismatch": "The values do not match.",
+            "validation_required": "This field is required.",
+            "validation_invalid_email": "Invalid email, or already in use.",
+            "validation_not_unique": "This value is already in use."
+        }
+    },
+    "actions": {
+        "select": "Select",
+        "search": "Search ...",
+        "add": "Add",
+        "save": "Save",
+        "cancel": "Cancel",
+        "new": "New",
+        "update": "Edit",
+        "confirm": "Confirm",
+        "filter": "Filter",
+        "back": "Back",
+        "previous": "Previous",
+        "next": "Next",
+        "create": "Create",
+        "reset": "Reset",
+        "browse": "Browse"
+    },
+    "inputs": {
+        "file": {
+            "upload": {
+                "label": "Choose a file or drag and drop it here",
+                "browse": "Browse",
+                "unsuported": "'{name}' has an unsupported format.",
+                "exceedSize": "'{name}' exceeds the {maxSize} MB limit ({size})",
+                "exceedNumber": "{number} files maximum."
+            }
+        }
+    },
+    "confirmation": {
+        "remove": {
+            "title": "Confirm deletion",
+            "message": "Are you sure you want to delete {name}?",
+            "messageSimple": "Are you sure you want to delete this item?"
+        }
+    },
+    "data": {
+        "noData": "No data",
+        "created": "Created successfully!",
+        "minimum": "Min",
+        "maximum": "Max",
+        "updated": "Updated successfully!",
+        "pagination": {
+            "first": "First page",
+            "last": "Last page",
+            "previous": "Previous page",
+            "next": "Next page",
+            "of": "of"
+        }
+    }
+}

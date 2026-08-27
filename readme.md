@@ -1,7 +1,11 @@
 # Aventurette
 
-An npm workspace: the `front/` app on top of three `packages/`. See
-[ARCHITECTURE.md](ARCHITECTURE.md) for the layout and the boundaries between them.
+An npm workspace: the `front/` app on top of three `packages/`, and a PocketBase backend in
+`back/`. See [ARCHITECTURE.md](ARCHITECTURE.md) for the layout and the boundaries between
+them, and [DEPLOYMENT.md](DEPLOYMENT.md) to put it on a server.
+
+Live at [lubriciel.ovh](https://lubriciel.ovh), with the API on
+[api.lubriciel.ovh](https://api.lubriciel.ovh).
 
 # First setup
 
@@ -11,7 +15,6 @@ Get the app. The `chapelure` library used to be a git submodule and is now a wor
 package, so no `--recurse-submodules` is needed:
 
 ```bash
-cd ~
 git clone https://github.com/ndegheselle/Aventurette-web.git
 ```
 
@@ -19,15 +22,14 @@ Install once from the repository root — the workspace owns the lockfile, so do
 `npm install` inside `front/`:
 
 ```bash
-cd Aventurette-web
-npm install
+cd Aventurette-web && npm install
 ```
 
-Create .env :
+Create the dev server's env file. This one points at a local PocketBase; the deployed domain
+lives in the root `.env` instead (see below):
+
 ```bash
-cd front
-cp .env.example .env
-nano .env
+cp front/.env.example front/.env
 ```
 
 ## Develop
@@ -39,59 +41,104 @@ npm run lint:arch   # architecture boundaries
 npm run check       # both of the above
 ```
 
-## Certificate generation
-
-```bash
-docker compose run --rm certbot certonly \
-  --webroot \
-  --webroot-path=/var/www/certbot \
-  -d aventurette.fr \
-  -d api.aventurette.fr \
-  --email nicolas@degheselle.com \
-  --agree-tos \
-  --no-eff-email
-```
-
-## Pocketbase setup
-
-https://pocketbase.io/docs/going-to-production/#using-reverse-proxy
+The API runs separately, from `back/` — see [back/readme.md](back/readme.md).
 
 # Deploy
 
-## Build and start
+**Setting up a new server: follow [DEPLOYMENT.md](DEPLOYMENT.md).** It goes from a bare VPS
+to a working HTTPS site. What follows is the summary and the day-to-day commands.
+
+## The stack
+
+`compose.yml` runs four containers on one internal network. Only `nginx` publishes ports, so
+neither the SPA nor PocketBase is reachable from the internet except through it:
+
+| Service | Built from | Role |
+|---|---|---|
+| `nginx` | `nginx/Dockerfile` | TLS termination, ACME challenge, routing by hostname |
+| `front` | `front/Dockerfile` | the built SPA, on the internal network only |
+| `api` | `back/Dockerfile` | PocketBase, compiled from `back/` |
+| `certbot` | `certbot/certbot` | certificate renewal, every 12h |
+
+## Configuration
+
+One file, the root `.env`, holds everything site-specific:
 
 ```bash
-docker compose up -d --build 
+cp .env.example .env
 ```
 
-The front image builds from the **repository root**, not `front/`, because the app depends on
-`packages/`:
+```
+DOMAIN=lubriciel.ovh
+API_DOMAIN=api.lubriciel.ovh
+CERTBOT_EMAIL=nicolas@degheselle.com
+```
+
+The domain is written nowhere else. `DOMAIN` and `API_DOMAIN` are substituted into
+`nginx/templates/*.template` when the nginx container starts, used by
+`scripts/init-certificate.sh` to request the certificate, and combined into the
+`VITE_API_URL` that Vite inlines into the front bundle.
+
+Because Vite inlines it at *build* time, changing the domain needs a rebuild of the front
+image, not just a restart:
 
 ```bash
-docker build -f front/Dockerfile -t aventurette-front .
+docker compose up -d --build front
 ```
 
-> Note: `compose.yml` builds `nginx/Dockerfile`, which does not exist, and declares no `front`
-> service — so the SPA is not currently deployed by the compose stack. That predates the
-> workspace change and is still open.
+> `front/.env` is a different file, for the local dev server only. It is kept out of the
+> Docker build context so a localhost value can never end up in a production bundle.
 
-Build without cache :
+## Deploy an update
+
 ```bash
-docker compose build --no-cache
+git pull && docker compose up -d --build
 ```
+
+Only changed images are rebuilt. The two things that hold state — `back/pb_data` and
+`nginx/certbot` — are host directories, so no rebuild can lose them.
+
+## HTTPS
+
+The first certificate is issued once, with the stack already running:
+
+```bash
+./scripts/init-certificate.sh && docker compose restart nginx
+```
+
+One certificate covers both hostnames. Renewal is automatic from then on: the `certbot`
+container renews every 12h and the nginx container reloads on the same cadence.
+
+nginx will not start if `ssl_certificate` points at a file that does not exist, and Let's
+Encrypt only issues that file once nginx is answering the challenge on port 80. So
+`nginx/docker-entrypoint.d/40-tls-when-certificate-exists.sh` keeps the HTTPS vhosts out of
+`conf.d` until the certificate is on disk — which is why the certificate step comes after
+the first `up`, and why nginx needs a restart afterwards. It re-checks on every start, so
+this never has to be done twice.
 
 # Debug
 
-Check logs
+Check what is running, and what it said:
+
 ```bash
-docker container ls
-docker logs <container-id>
+docker compose ps
 ```
 
-Reset everything
 ```bash
-# Stop, remove, delete volumes for all containers
-docker stop $(docker ps -a -q)
-docker image prune
-docker volume prune
+docker compose logs -f nginx
 ```
+
+Check the nginx config, rendered with your domain substituted in:
+
+```bash
+docker compose exec nginx nginx -t
+```
+
+Rebuild from nothing. Containers and images are disposable; `back/pb_data` and
+`nginx/certbot` are untouched:
+
+```bash
+docker compose down && docker compose build --no-cache && docker compose up -d
+```
+
+More symptoms and fixes in [DEPLOYMENT.md](DEPLOYMENT.md#when-something-is-wrong).

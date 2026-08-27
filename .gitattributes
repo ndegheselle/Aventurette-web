@@ -1,0 +1,12 @@
+# core.autocrlf is on for this checkout, which is fine for source files but not for anything
+# that runs inside a Linux container: a CRLF shebang makes the kernel look for an
+# interpreter named "/bin/sh\r" and the script fails with "no such file or directory".
+* text=auto
+
+*.sh            text eol=lf
+Dockerfile      text eol=lf
+*.conf          text eol=lf
+*.template      text eol=lf
+*.yml           text eol=lf
+.dockerignore   text eol=lf
+.env.example    text eol=lf

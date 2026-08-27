@@ -1,0 +1,64 @@
+# Port 443, for the site and for PocketBase.
+#
+# Rendered on every container start by /docker-entrypoint.d/20-render-vhosts.sh, then
+# removed again by 40-tls-when-certificate-exists.sh while no certificate exists — nginx
+# will not start if ssl_certificate points at a missing file.
+#
+# Both hostnames are on one certificate, issued for ${DOMAIN}, hence the single live/ path.
+
+# Shared TLS settings.
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_prefer_server_ciphers off;
+ssl_session_cache shared:SSL:10m;
+ssl_session_timeout 1d;
+ssl_session_tickets off;
+
+# The site.
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+
+    # The built SPA lives in the front container, which owns the history-mode fallback
+    # (see front/nginx.conf). Nothing is served from this container's filesystem.
+    location / {
+        proxy_pass http://front:80;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# The API.
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${API_DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+
+    # PocketBase accepts file uploads; the nginx default of 1M is too small for them.
+    client_max_body_size 50M;
+
+    location / {
+        proxy_pass http://api:8090/;  # keep the trailing slash
+
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection        "";  # keepalive to the upstream
+
+        # PocketBase realtime is server-sent events: buffering swallows them, and the
+        # connection is meant to stay open.
+        proxy_buffering    off;
+        proxy_cache        off;
+        proxy_read_timeout 1d;
+    }
+}

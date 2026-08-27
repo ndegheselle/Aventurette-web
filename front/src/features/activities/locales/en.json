@@ -1,0 +1,56 @@
+{
+    "activities": {
+        "title": "Activities",
+        "description": "Description",
+        "steps": {
+            "title": "Steps",
+            "fields": {
+                "description": "Description",
+                "resources": {
+                    "title": "Resources",
+                    "constraints": "PNG, JPEG, JPG and PDF formats. 10 files max, 2MB max per file.",
+                    "empty": "No resources"
+                },
+                "materials": {
+                    "title": "Materials",
+                    "notNeeded": "No materials required"
+                }
+            }
+        },
+        "actions": {
+            "favorite": "Favourites",
+            "addToPlanning": "Add to planner",
+            "start": "Start"
+        },
+        "fields": {
+            "name": "Name",
+            "environment": "Environment",
+            "age": "Age",
+            "durationMinutes": "Duration (minutes)",
+            "summary": "Short description",
+            "description": "Description",
+            "picture": "Image",
+            "benefits": "Benefits"
+        },
+        "contraints": {
+            "picture": "PNG, JPEG and JPG formats. 2MB maximum"
+        },
+        "edit": {
+            "description": "Description",
+            "steps": "Steps",
+            "properties": "Details"
+        },
+        "duration": "{duration} min",
+        "age": {
+            "range": "Ages {min}-{max}",
+            "minOnly": "Ages {min} and up",
+            "maxOnly": "Ages up to {max}"
+        },
+        "environment": {
+            "INDOOR": "Indoors",
+            "OUTDOOR": "Outdoors",
+            "CLASSROOM": "Classroom",
+            "CAR": "Car"
+        }
+    }
+}

@@ -5,7 +5,7 @@
         "themes": {
             "auto": "Automatique",
             "dark": "Sombre",
-            "light": "Claire"
+            "light": "Clair"
         }
     },
     "validation": {
@@ -14,7 +14,7 @@
             "validation_values_mismatch": "Les valeurs ne correspondent pas.",
             "validation_required": "Valeur obligatoire.",
             "validation_invalid_email": "Email invalide ou déjà utilisé.",
-            "validation_not_unique": "Cette valeur est déjà utilisé."
+            "validation_not_unique": "Cette valeur est déjà utilisée."
         }
     },
     "actions": {
@@ -28,7 +28,7 @@
         "confirm": "Confirmer",
         "filter": "Filtrer",
         "back": "Retour",
-        "previous": "Precédent",
+        "previous": "Précédent",
         "next": "Suivant",
         "create": "Créer",
         "reset": "Réinitialiser",
@@ -37,9 +37,9 @@
     "inputs": {
         "file": {
             "upload": {
-                "label": "Choisir un fichier ou glisser-déposser ici",
+                "label": "Choisir un fichier ou glisser-déposer ici",
                 "browse": "Parcourir",
-                "unsuported": "'{name}' à un format non supporté.",
+                "unsuported": "'{name}' a un format non supporté.",
                 "exceedSize": "'{name}' dépasse la limite de {maxSize} MB ({size})",
                 "exceedNumber": "Maximum {number} fichiers."
             }
@@ -48,13 +48,13 @@
     "confirmation": {
         "remove": {
             "title": "Confirmer la suppression",
-            "message": "Etes vous sure de vouloir supprimer {name} ?",
-            "messageSimple": "Etes vous sure de vouloir supprimer cette élément ?"
+            "message": "Êtes-vous sûr de vouloir supprimer {name} ?",
+            "messageSimple": "Êtes-vous sûr de vouloir supprimer cet élément ?"
         }
     },
     "data": {
-        "noData": "Aucunne données",
-        "created": "Crée avec succès !",
+        "noData": "Aucune donnée",
+        "created": "Créé avec succès !",
         "minimum": "Min",
         "maximum": "Max",
         "updated": "Mis à jour avec succès !",

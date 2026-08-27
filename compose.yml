@@ -1,40 +1,85 @@
-version: "3.9"
+# Production stack for a single host. See DEPLOYMENT.md for the full procedure.
+#
+# Four containers on one internal network. Only nginx publishes ports; front and api are
+# reachable by service name from inside the network and from nowhere else.
+#
+# Everything site-specific comes from the .env file next to this one — the domain is set
+# there once and reaches nginx, the certificate and the front bundle from that single place.
+name: lubriciel
 
 services:
-  nginx:
-    build:
-      context: .
-      dockerfile: nginx/Dockerfile
-    container_name: nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/certbot/www:/var/www/certbot
-      - ./nginx/certbot/conf:/etc/letsencrypt
-    depends_on:
-      - api
-    restart: unless-stopped
+    # The edge: TLS termination, the ACME challenge, and routing by hostname.
+    nginx:
+        build:
+            context: .
+            dockerfile: nginx/Dockerfile
+        container_name: lubriciel-nginx
+        ports:
+            - '80:80'
+            - '443:443'
+        environment:
+            # Substituted into nginx/templates/*.template on start, and used by the
+            # entrypoint to find /etc/letsencrypt/live/$DOMAIN.
+            DOMAIN: ${DOMAIN:?set DOMAIN in .env, see .env.example}
+            API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN in .env, see .env.example}
+        volumes:
+            - ./nginx/certbot/www:/var/www/certbot
+            - ./nginx/certbot/conf:/etc/letsencrypt
+        # No `command:` override on purpose. The base image's entrypoint only runs the
+        # scripts in /docker-entrypoint.d/ when the command starts with `nginx`, and those
+        # scripts are what render the vhosts, gate HTTPS on the certificate, and start the
+        # reload loop that picks renewals up.
 
-  api:
-    image: alpine:latest
-    container_name: pocketbase
-    working_dir: /app
-    volumes:
-      - ./pocketbase:/app
-    command: ["./pocketbase", "serve", "--http=0.0.0.0:3000"]
-    restart: unless-stopped
+        # Started, not healthy: the edge must come up even when the API does not, or a
+        # broken api container would also take down the ACME challenge on port 80.
+        depends_on:
+            - front
+            - api
+        restart: unless-stopped
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - ./nginx/certbot/www:/var/www/certbot
-      - ./nginx/certbot/conf:/etc/letsencrypt
-    entrypoint: >
-      sh -c "trap exit TERM;
-             while :; do
-               certbot renew;
-               sleep 12h & wait $${!};
-             done"
-    restart: unless-stopped
+    # The built SPA, served by its own nginx (front/nginx.conf owns the history-mode fallback).
+    front:
+        build:
+            context: . # the repository root: the app depends on packages/
+            dockerfile: front/Dockerfile
+            args:
+                # Vite inlines this into the JS bundle, so it is a build input, not a runtime
+                # one: changing the domain needs `docker compose up -d --build front`.
+                VITE_API_URL: https://${API_DOMAIN}
+        container_name: lubriciel-front
+        expose:
+            - '80'
+        restart: unless-stopped
+
+    # PocketBase, compiled from back/. pb_data holds the database, the uploaded files and the
+    # instance settings — it is the only state on the host, so it is the only thing to back up.
+    api:
+        build:
+            context: ./back
+        container_name: lubriciel-api
+        expose:
+            - '8090'
+        volumes:
+            - ./back/pb_data:/app/pb_data
+        healthcheck:
+            test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:8090/api/health']
+            interval: 10s
+            timeout: 3s
+            retries: 10
+            start_period: 15s
+        restart: unless-stopped
+
+    # Renewal only, every 12h. The first certificate is issued by scripts/init-certificate.sh.
+    certbot:
+        image: certbot/certbot
+        container_name: lubriciel-certbot
+        volumes:
+            - ./nginx/certbot/www:/var/www/certbot
+            - ./nginx/certbot/conf:/etc/letsencrypt
+        entrypoint: >
+            sh -c "trap exit TERM;
+                   while :; do
+                     certbot renew --webroot --webroot-path=/var/www/certbot;
+                     sleep 12h & wait $${!};
+                   done"
+        restart: unless-stopped

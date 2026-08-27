@@ -55,7 +55,7 @@ import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
         <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
             <aside>
                 <p>
-                    Copyright © {{ new Date().getFullYear() }} - bigarrer
+                    Copyright © {{ new Date().getFullYear() }} - aventurette
                 </p>
             </aside>
         </footer>

@@ -1,0 +1,21 @@
+{
+    "users": {
+        "account": "Account",
+        "title": "User",
+        "logout": "Log out",
+        "login": {
+            "title": "Log in",
+            "defaultError": "Wrong credentials."
+        },
+        "register": "Sign up",
+        "form": {
+            "withOauth2": "or log in with",
+            "email": "Email",
+            "password": "Password",
+            "confirmPassword": "Confirm password",
+            "accountNew": "Create a new account",
+            "accountAlready": "I already have an account",
+            "rememberMe": "Stay logged in"
+        }
+    }
+}

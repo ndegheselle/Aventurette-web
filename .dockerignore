@@ -1,9 +1,12 @@
-# Build context is the repository root (see front/Dockerfile).
+# Build context is the repository root (see front/Dockerfile and nginx/Dockerfile).
 **/node_modules
 **/dist
 .git
 .gitignore
 .vscode
-back/pb_data
+back
 nginx/certbot
 **/*.log
+# The dev server's API URL. VITE_API_URL is passed as a build arg instead, so keeping this
+# out of the image also keeps a local value from ever reaching a production bundle.
+front/.env

@@ -1,7 +1,7 @@
 {
     "profil": {
         "title": "Profil",
-        "selection": "Qui êtes vous ?",
+        "selection": "Qui êtes-vous ?",
         "personnal": {
             "title": "Une famille",
             "description": "Une description pour la famille."
@@ -20,11 +20,11 @@
         "title": "Enfants",
         "years": "{years} ans",
         "interests": {
-            "title": "Centre d'intêrets"
+            "title": "Centres d'intérêt"
         },
         "form": {
             "name": "Nom",
-            "age": "Age"
+            "age": "Âge"
         }
     }
 }

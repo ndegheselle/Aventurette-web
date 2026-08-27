@@ -55,7 +55,7 @@ const { currentLanguage, changeTheme, changeLang } = useSettings();
                     <a @click="changeLang('fr')">Français (France)</a>
                 </li>
                 <li>
-                    <a @click="changeLang('eng')">English (US)</a>
+                    <a @click="changeLang('en')">English (US)</a>
                 </li>
             </ul>
         </Dropdown>
