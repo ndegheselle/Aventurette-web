@@ -49,14 +49,18 @@ Every feature has the same six folders, so you never have to guess:
 ### `packages/ui`
 
 `primitives/` (Button, TextInput, Badge…), `layout/`, `forms/`, `data/`, `overlays/`,
-`navigation/`, `files/`, `settings/`, `composables/`, `directives/`, `styles/`, `locales/`,
-and `icons.ts`.
+`navigation/`, `files/`, `settings/`, `composables/`, `directives/`, `styles/` and `locales/`.
 
 Components are deep-imported so bundlers can drop what is unused:
 
 ```ts
 import Button from '@chapelure/ui/primitives/Button.vue';
-import { XIcon } from '@chapelure/ui/icons';
+```
+
+Icons come straight from `lucide-vue-next`, by their real names, everywhere:
+
+```ts
+import { XIcon } from 'lucide-vue-next';
 ```
 
 ## The rules, and what each one buys
@@ -70,14 +74,17 @@ import { XIcon } from '@chapelure/ui/icons';
 | `features/*/model` and `features/*/data` import no framework | Domain and data survive a framework change |
 | `packages/ui` imports neither the app nor the adapter | The design system stays reusable |
 | daisyUI **component** classes only in `packages/ui` | Change CSS library = a `packages/ui` job |
-| `lucide-vue-next` only in `packages/ui/src/icons.ts` | Change icon set = one file |
 
-Two deliberate compromises:
+Three deliberate compromises:
 
 - **Tailwind utilities and daisyUI *tokens*** (`flex`, `gap-2`, `bg-base-100`, `rounded-box`)
   are allowed everywhere. Only *component* classes (`btn`, `modal`, `card`…) are confined.
   Full purity is unreachable, and tokens are the layer a replacement would have to provide
   anyway.
+- **`lucide-vue-next` is imported wherever an icon is used.** A re-export barrel would confine
+  it to one file, but it also hides which icons exist: with the real names in the imports, an
+  icon is findable by its own name, in this codebase and in lucide's documentation alike.
+  Swapping icon sets is a find-and-replace over the import lines.
 - **The view layer is Vue, and stays Vue.** The achievable goal is that `core/`,
   `features/*/model` and `features/*/data` are framework-free — roughly the part of a
   framework migration that is worth protecting. Components would be rewritten either way.

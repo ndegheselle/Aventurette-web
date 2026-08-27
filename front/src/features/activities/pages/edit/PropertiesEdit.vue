@@ -5,7 +5,7 @@ import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import FilesList from '@chapelure/ui/files/FilesList.vue';
 import { useOneFile } from '@chapelure/ui/files/useFiles';
-import { ArrowLeftIcon, ArrowRightIcon } from '@chapelure/ui/icons';
+import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';

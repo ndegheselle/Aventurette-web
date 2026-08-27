@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { debounce } from '@chapelure/core';
-import { SearchIcon, XIcon } from '@chapelure/ui/icons';
+import { SearchIcon, XIcon } from 'lucide-vue-next';
 
 const props = withDefaults(defineProps<{
     delay?: number;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Field from '@chapelure/ui/forms/Field.vue';
-import { ArrowLeftIcon, ArrowRightIcon } from '@chapelure/ui/icons';
+import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';

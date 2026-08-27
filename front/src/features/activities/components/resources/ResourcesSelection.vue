@@ -5,7 +5,7 @@ import Button from '@chapelure/ui/primitives/Button.vue';
 import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import { useMultipleFiles } from '@chapelure/ui/files/useFiles';
 import { type ActivityResourceData } from '@features/activities/model/activity';
-import { CircleOffIcon, FileIcon, TrashIcon } from '@chapelure/ui/icons';
+import { CircleOffIcon, FileIcon, TrashIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 const selected = defineModel<ActivityResourceData[]>({ default: () => [] });

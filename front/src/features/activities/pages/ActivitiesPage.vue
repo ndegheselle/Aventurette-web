@@ -3,7 +3,7 @@ import { activitiesRepository as activities } from '@features/activities/data/ac
 import { createGroup, Paginated, type FilterGroup } from '@chapelure/core';
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
-import { ArrowRightIcon, PlusIcon } from '@chapelure/ui/icons';
+import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import ActivitiesFilters from '@features/activities/components/activities/ActivitiesFilters.vue';

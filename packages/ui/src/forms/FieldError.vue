@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { TriangleAlert } from '@chapelure/ui/icons';
+import { TriangleAlert } from 'lucide-vue-next';
 
 defineProps<{
     error?: string

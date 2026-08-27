@@ -2,7 +2,6 @@
 //
 // Components are deep-imported so bundlers can drop what an app does not use:
 //   import Modal from '@chapelure/ui/overlays/Modal.vue';
-//   import { XIcon } from '@chapelure/ui/icons';
 //
 // This barrel carries the non-component surface: composables, directives and their types.
 

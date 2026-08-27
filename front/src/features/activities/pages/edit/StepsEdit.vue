@@ -2,7 +2,7 @@
 import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
 import { useEditableList } from '@chapelure/ui/composables/useEditableList';
 import List from '@chapelure/ui/data/List.vue';
-import { ArrowLeftIcon, ArrowRightIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from '@chapelure/ui/icons';
+import { ArrowLeftIcon, ArrowRightIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';

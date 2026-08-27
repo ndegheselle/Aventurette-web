@@ -5,7 +5,7 @@ import { useModal, type IEditModal } from '@chapelure/ui/composables/useModal';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
-import { SaveIcon, XIcon } from '@chapelure/ui/icons';
+import { SaveIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import TextInput from '@chapelure/ui/primitives/TextInput.vue';

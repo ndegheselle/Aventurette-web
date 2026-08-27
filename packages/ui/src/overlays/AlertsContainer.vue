@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { EnumAlertType, useAlert } from '@chapelure/ui/composables/useAlert';
-import { BrushCleaningIcon, CircleAlertIcon, CircleCheckIcon, TriangleAlertIcon, XIcon } from '@chapelure/ui/icons';
+import { BrushCleaningIcon, CircleAlertIcon, CircleCheckIcon, TriangleAlertIcon, XIcon } from 'lucide-vue-next';
 import { useTemplateRef, watchEffect } from 'vue';
 
 const { alerts, close } = useAlert();

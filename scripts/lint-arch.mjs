@@ -114,12 +114,6 @@ const RULES = [
             && daisyComponentClasses(f.text).length > 0,
         detail: f => [...new Set(daisyComponentClasses(f.text))].join(' '),
     },
-    {
-        name: 'the icon set has a single import site',
-        why: 'Swapping icon libraries should be one file, not every component.',
-        check: f => f.path !== 'packages/ui/src/icons.ts'
-            && /from ['"]lucide-vue-next['"]/.test(f.text),
-    },
 ];
 
 let failed = 0;

@@ -5,7 +5,7 @@ import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
 import { type ActivityMaterialData } from '@features/activities/model/material';
-import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from '@chapelure/ui/icons';
+import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });

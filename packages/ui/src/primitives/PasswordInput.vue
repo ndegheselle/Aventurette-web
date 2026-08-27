@@ -1,6 +1,6 @@
 <!-- Password field with a reveal toggle. -->
 <script setup lang="ts">
-import { EyeClosedIcon, EyeIcon, KeyRoundIcon } from '@chapelure/ui/icons';
+import { EyeClosedIcon, EyeIcon, KeyRoundIcon } from 'lucide-vue-next';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import InputGroup from '@chapelure/ui/primitives/InputGroup.vue';
 import { ref } from 'vue';

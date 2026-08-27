@@ -10,7 +10,7 @@
                     @change="refresh" />
 -->
 <script setup lang="ts">
-import { ChevronFirstIcon, ChevronLastIcon, ChevronLeftIcon, ChevronRightIcon } from '@chapelure/ui/icons';
+import { ChevronFirstIcon, ChevronLastIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-vue-next';
 import { computed, watch } from 'vue';
 
 const capacityOptions = [5, 10, 25, 50, 100];

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ClockIcon, MapIcon, UserRoundIcon } from '@chapelure/ui/icons';
+import { ClockIcon, MapIcon, UserRoundIcon } from 'lucide-vue-next';
 import Badge from '@chapelure/ui/primitives/Badge.vue';
 import type { ActivityData } from '@features/activities/model/activity';
 import { formatAgeRange } from '@features/activities/model/age';

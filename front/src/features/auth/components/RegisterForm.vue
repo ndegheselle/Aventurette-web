@@ -3,7 +3,7 @@ import { NotImplementedError } from '@chapelure/core';
 import { useValidationErrors } from '@chapelure/ui/composables/useValidationErrors';
 import Field from '@chapelure/ui/forms/Field.vue';
 import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
-import { MailIcon } from '@chapelure/ui/icons';
+import { MailIcon } from 'lucide-vue-next';
 import Divider from '@chapelure/ui/layout/Divider.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import InputGroup from '@chapelure/ui/primitives/InputGroup.vue';

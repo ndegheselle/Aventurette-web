@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MenuIcon, TreesIcon } from '@chapelure/ui/icons';
+import { MenuIcon, TreesIcon } from 'lucide-vue-next';
 import Footer from '@chapelure/ui/layout/Footer.vue';
 import Navbar from '@chapelure/ui/layout/Navbar.vue';
 import Menu from '@chapelure/ui/navigation/Menu.vue';

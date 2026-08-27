@@ -10,7 +10,7 @@
     <FilesList :files />
 -->
 <script setup lang="ts">
-import { FileIcon, XIcon } from '@chapelure/ui/icons';
+import { FileIcon, XIcon } from 'lucide-vue-next';
 
 const {files = []} = defineProps<{ files: File[] }>();
 const PREVIEWABLE_TYPES = new Set([

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useModal } from '@chapelure/ui/composables/useModal';
 import Field from '@chapelure/ui/forms/Field.vue';
-import { SaveIcon, XIcon } from '@chapelure/ui/icons';
+import { SaveIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';

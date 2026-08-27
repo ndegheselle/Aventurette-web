@@ -18,7 +18,7 @@
 -->
 <script setup lang="ts">
 import { useAlert } from '@chapelure/ui/composables/useAlert';
-import { FolderOpenIcon, UploadIcon } from '@chapelure/ui/icons';
+import { FolderOpenIcon, UploadIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

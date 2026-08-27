@@ -12,7 +12,7 @@ import {
     RedoIcon,
     StrikethroughIcon,
     UndoIcon,
-} from '@chapelure/ui/icons';
+} from 'lucide-vue-next';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import ButtonGroup from '@chapelure/ui/primitives/ButtonGroup.vue';
 import StarterKit from '@tiptap/starter-kit';

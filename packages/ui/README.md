@@ -57,14 +57,14 @@ is missing, rather than throwing.
 | `files/` | FilesInput, FilesList, `useFiles` |
 | `settings/` | SettingsMenu, `useSettings` |
 | `composables/` | `useModal`, `useAlert`, `useConfirmation`, `useEditModal`, `useEditableList`, `useValidationErrors` |
-| `icons.ts` | the single `lucide-vue-next` import in the workspace |
 
-Components are deep-imported; the barrel carries composables and types.
+Components are deep-imported; the barrel carries composables and types. Icons are imported from
+`lucide-vue-next` directly, under their real names.
 
 ```ts
 import Button from '@chapelure/ui/primitives/Button.vue';
-import { XIcon } from '@chapelure/ui/icons';
 import { useModal } from '@chapelure/ui';
+import { XIcon } from 'lucide-vue-next';
 ```
 
 `Panel` is a plain titled surface. `Card` is daisyUI's card, with `#media` / `#actions` slots.

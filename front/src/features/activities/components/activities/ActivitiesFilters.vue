@@ -7,7 +7,7 @@ import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import Field from '@chapelure/ui/forms/Field.vue';
 import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
 import Label from '@chapelure/ui/forms/Label.vue';
-import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from '@chapelure/ui/icons';
+import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
 import Badge from '@chapelure/ui/primitives/Badge.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';

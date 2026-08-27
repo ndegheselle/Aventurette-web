@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T">
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
-import { CircleQuestionMarkIcon, XIcon } from '@chapelure/ui/icons';
+import { CircleQuestionMarkIcon, XIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 const { items = [], displayKey } = defineProps<{

@@ -3,7 +3,7 @@
   Was copy-pasted into all three edit pages, each with its own hand-maintained `step-primary`s.
 -->
 <script setup lang="ts">
-import { FileTextIcon, LibraryIcon, ListTreeIcon } from '@chapelure/ui/icons';
+import { FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
 import Step from '@chapelure/ui/layout/Step.vue';
 import Steps from '@chapelure/ui/layout/Steps.vue';
 import { computed } from 'vue';

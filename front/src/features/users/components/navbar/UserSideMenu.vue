@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LogInIcon, LogOutIcon, UserIcon } from '@chapelure/ui/icons';
+import { LogInIcon, LogOutIcon, UserIcon } from 'lucide-vue-next';
 import MenuTitle from '@chapelure/ui/navigation/MenuTitle.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as authRoutesNames } from '@features/auth/routes';

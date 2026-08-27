@@ -5,7 +5,7 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
 import Label from '@chapelure/ui/forms/Label.vue';
-import { MailIcon } from '@chapelure/ui/icons';
+import { MailIcon } from 'lucide-vue-next';
 import Divider from '@chapelure/ui/layout/Divider.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import Checkbox from '@chapelure/ui/primitives/Checkbox.vue';
