@@ -4,7 +4,6 @@ import { useValidationErrors } from '@chapelure/ui/composables/useValidationErro
 import Field from '@chapelure/ui/forms/Field.vue';
 import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
 import { MailIcon } from 'lucide-vue-next';
-import Divider from '@chapelure/ui/layout/Divider.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import InputGroup from '@chapelure/ui/primitives/InputGroup.vue';
 import PasswordInput from '@chapelure/ui/primitives/PasswordInput.vue';
@@ -73,7 +72,7 @@ const { loginRoute } = defineProps<{
                                :error="!!errors.get('passwordConfirm')" />
             </Field>
 
-            <Divider>{{ $t('users.form.withOauth2') }}</Divider>
+            <div class="divider">{{ $t('users.form.withOauth2') }}</div>
             <LoginProviders @provider-selected="handleProvider" />
 
             <Button variant="primary"

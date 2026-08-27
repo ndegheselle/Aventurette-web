@@ -49,7 +49,14 @@ Every feature has the same six folders, so you never have to guess:
 ### `packages/ui`
 
 `primitives/` (Button, TextInput, Badge…), `layout/`, `forms/`, `data/`, `overlays/`,
-`navigation/`, `files/`, `settings/`, `composables/`, `directives/`, `styles/` and `locales/`.
+`files/`, `settings/`, `composables/`, `directives/`, `styles/` and `locales/`.
+
+A component belongs here when it carries behaviour — `<Button :to>` renders a router link,
+`<Modal>` owns a promise, `<FilesInput>` validates what was dropped on it — or when it
+composes a design decision the app repeats, such as `<Panel>`'s surface or `<Container>`'s
+page shell. Renaming a single daisyUI class is not enough: `<Divider>` wrapping
+`class="divider"` bought one level of indirection and nothing else, so the app now writes
+that class itself.
 
 Components are deep-imported so bundlers can drop what is unused:
 
@@ -73,14 +80,15 @@ import { XIcon } from 'lucide-vue-next';
 | `packages/core` imports no `vue`, no SDK, no app | Contracts survive any framework or backend change |
 | `features/*/model` and `features/*/data` import no framework | Domain and data survive a framework change |
 | `packages/ui` imports neither the app nor the adapter | The design system stays reusable |
-| daisyUI **component** classes only in `packages/ui` | Change CSS library = a `packages/ui` job |
 
 Three deliberate compromises:
 
-- **Tailwind utilities and daisyUI *tokens*** (`flex`, `gap-2`, `bg-base-100`, `rounded-box`)
-  are allowed everywhere. Only *component* classes (`btn`, `modal`, `card`…) are confined.
-  Full purity is unreachable, and tokens are the layer a replacement would have to provide
-  anyway.
+- **daisyUI classes are allowed everywhere**, component classes (`btn`, `modal`, `card`…)
+  included. Confining them to `packages/ui` was a lint rule once, and it held — by breeding
+  one-line wrapper components whose entire body was the class being hidden. Ten of those were
+  deleted and their classes inlined; swapping the CSS library is now a find-and-replace across
+  the app instead of a `packages/ui` job, which is the right trade for a library that is not
+  going to be replaced.
 - **`lucide-vue-next` is imported wherever an icon is used.** A re-export barrel would confine
   it to one file, but it also hides which icons exist: with the real names in the imports, an
   icon is findable by its own name, in this codebase and in lucide's documentation alike.

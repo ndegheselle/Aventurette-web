@@ -41,29 +41,6 @@ const files = walk(join(ROOT, 'front', 'src'))
         },
     }));
 
-/**
- * daisyUI *component* classes. Token utilities (bg-base-*, text-base-content, rounded-box,
- * border-base-*) are intentionally not listed: those are the theme layer, and any replacement
- * CSS library would have to provide equivalents anyway.
- */
-const DAISY_COMPONENT = /^(btn|input|select|checkbox|radio|toggle|badge|modal|alert|card|steps|step|menu|navbar|table|toast|join|fieldset|skeleton|list|dropdown|loading|tabs|tab|divider|footer|kbd|progress|avatar|indicator|collapse|drawer|hero|stat|swap|range|textarea|file-input|label|form-control|list-row|modal-box|modal-action|modal-backdrop|fieldset-legend|menu-title|join-item|dropdown-content|label-text|card-body|card-title|card-actions|footer-center)(-[a-z0-9]+)*$/;
-const CLASS_ATTR = /(?:^|\s):?class="([^"]*)"/gs;
-const QUOTED = /'([^']*)'/g;
-
-function daisyComponentClasses(text) {
-    const found = [];
-    for (const match of text.matchAll(CLASS_ATTR)) {
-        const body = match[1];
-        const tokens = /[{[]/.test(body)
-            ? [...body.matchAll(QUOTED)].flatMap(q => q[1].split(/\s+/))
-            : body.split(/\s+/);
-        for (const token of tokens) {
-            if (token && DAISY_COMPONENT.test(token)) found.push(token);
-        }
-    }
-    return found;
-}
-
 /** Each rule reports the files that violate it. */
 const RULES = [
     {
@@ -106,14 +83,9 @@ const RULES = [
         check: f => f.path.startsWith('packages/ui/')
             && /from ['"](@\/|@features\/|@chapelure\/pocketbase)/.test(f.text),
     },
-    {
-        name: 'daisyUI component classes live only in the design system',
-        why: 'This is what makes swapping the CSS library a packages/ui job.',
-        check: f => f.path.endsWith('.vue')
-            && !f.path.startsWith('packages/ui/')
-            && daisyComponentClasses(f.text).length > 0,
-        detail: f => [...new Set(daisyComponentClasses(f.text))].join(' '),
-    },
+    // There is deliberately no rule confining daisyUI component classes to packages/ui.
+    // It held, but only by breeding one-line wrapper components whose entire body was the
+    // class name being hidden. See the compromises section of ARCHITECTURE.md.
 ];
 
 let failed = 0;

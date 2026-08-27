@@ -1,7 +1,10 @@
 # @chapelure/ui
 
-Vue 3 design system: Tailwind + daisyUI, with the CSS library confined to this package so it
-can be replaced without touching the app.
+Vue 3 design system: Tailwind + daisyUI.
+
+Components live here when they carry behaviour, or when they compose a design decision the app
+repeats. A component that only renames one daisyUI class does not earn a file — the app writes
+`class="divider"` rather than importing a `<Divider>` whose body was exactly that.
 
 Peer dependencies: `vue`, `vue-i18n`, `vue-router`, `tailwindcss`, `daisyui`, `lucide-vue-next`.
 
@@ -49,9 +52,9 @@ is missing, rather than throwing.
 
 | Folder | |
 |---|---|
-| `primitives/` | Button, ButtonGroup, TextInput, InputGroup, PasswordInput, Select, Checkbox, Badge, Spinner, Skeleton |
-| `layout/` | Container, Panel, Card, Steps, Step, Divider, Navbar, Footer |
-| `forms/` | Field, FieldError, Fieldset, Label |
+| `primitives/` | Button, ButtonGroup, TextInput, InputGroup, PasswordInput, Select, Checkbox, Badge |
+| `layout/` | Container, Panel, Card |
+| `forms/` | Field, FieldError, Fieldset |
 | `data/` | List, Pagination, SearchInput, TagSelect |
 | `overlays/` | Modal, Dropdown, DropdownTrigger, ConfirmationModal, AlertsContainer |
 | `files/` | FilesInput, FilesList, `useFiles` |

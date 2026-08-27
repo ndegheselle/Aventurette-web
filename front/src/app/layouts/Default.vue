@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { MenuIcon, TreesIcon } from 'lucide-vue-next';
-import Footer from '@chapelure/ui/layout/Footer.vue';
-import Navbar from '@chapelure/ui/layout/Navbar.vue';
-import Menu from '@chapelure/ui/navigation/Menu.vue';
 import AlertsContainer from '@chapelure/ui/overlays/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/ui/overlays/ConfirmationModal.vue';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
@@ -14,7 +11,7 @@ import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
 
 <template>
     <div class="min-h-screen flex flex-col">
-        <Navbar>
+        <nav class="navbar bg-base-300 shadow-sm">
             <div class="flex flex-1">
                 <Dropdown>
                     <template #summary>
@@ -22,14 +19,14 @@ import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
                             <MenuIcon />
                         </DropdownTrigger>
                     </template>
-                    <Menu class="p-2">
+                    <ul class="menu p-2">
                         <li>
                             <RouterLink :to="{ name: activitiesRoutesNames.all }">
                                 <TreesIcon /> {{ $t('activities.title') }}
                             </RouterLink>
                         </li>
                         <UserSideMenu />
-                    </Menu>
+                    </ul>
                 </Dropdown>
 
                 <img class="ms-1 my-auto"
@@ -42,7 +39,7 @@ import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
             <div class="flex">
                 <SettingsMenu />
             </div>
-        </Navbar>
+        </nav>
 
         <main class="flex flex-1 overflow-x-clip relative">
             <router-view v-slot="{ Component, route }">
@@ -55,13 +52,13 @@ import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
             </router-view>
         </main>
 
-        <Footer>
+        <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
             <aside>
                 <p>
                     Copyright © {{ new Date().getFullYear() }} - bigarrer
                 </p>
             </aside>
-        </Footer>
+        </footer>
 
         <ConfirmationModal />
         <AlertsContainer />

@@ -6,7 +6,6 @@ import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import Field from '@chapelure/ui/forms/Field.vue';
 import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
-import Label from '@chapelure/ui/forms/Label.vue';
 import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
 import Badge from '@chapelure/ui/primitives/Badge.vue';
@@ -161,11 +160,11 @@ onMounted(async () => {
                         <span class="flex items-center gap-1"><MapIcon /> {{ $t('activities.fields.environment') }}</span>
                     </template>
                     <div class="flex gap-2 flex-col">
-                        <Label v-for="choice in availablesEnvironments" :key="choice.value"
-                               class="cursor-pointer gap-2">
+                        <label v-for="choice in availablesEnvironments" :key="choice.value"
+                               class="label cursor-pointer gap-2">
                             <Checkbox size="sm" :value="choice.value" v-model="pending['environment']" />
                             <span class="text-sm">{{ $t(choice.label) }}</span>
-                        </Label>
+                        </label>
                     </div>
                 </Field>
 

@@ -4,8 +4,6 @@
 -->
 <script setup lang="ts">
 import { FileTextIcon, LibraryIcon, ListTreeIcon } from 'lucide-vue-next';
-import Step from '@chapelure/ui/layout/Step.vue';
-import Steps from '@chapelure/ui/layout/Steps.vue';
 import { computed } from 'vue';
 
 const ORDER = ['description', 'steps', 'properties'] as const;
@@ -20,15 +18,24 @@ const isReached = (step: EditStep) => ORDER.indexOf(step) <= reachedUpTo.value;
 </script>
 
 <template>
-    <Steps>
-        <Step :done="isReached('description')">
-            <FileTextIcon /> {{ $t('activities.edit.description') }}
-        </Step>
-        <Step :done="isReached('steps')">
-            <ListTreeIcon /> {{ $t('activities.edit.steps') }}
-        </Step>
-        <Step :done="isReached('properties')">
-            <LibraryIcon /> {{ $t('activities.edit.properties') }}
-        </Step>
-    </Steps>
+    <ul class="steps">
+        <li class="step"
+            :class="{ 'step-primary': isReached('description') }">
+            <span class="flex gap-2 items-center">
+                <FileTextIcon /> {{ $t('activities.edit.description') }}
+            </span>
+        </li>
+        <li class="step"
+            :class="{ 'step-primary': isReached('steps') }">
+            <span class="flex gap-2 items-center">
+                <ListTreeIcon /> {{ $t('activities.edit.steps') }}
+            </span>
+        </li>
+        <li class="step"
+            :class="{ 'step-primary': isReached('properties') }">
+            <span class="flex gap-2 items-center">
+                <LibraryIcon /> {{ $t('activities.edit.properties') }}
+            </span>
+        </li>
+    </ul>
 </template>

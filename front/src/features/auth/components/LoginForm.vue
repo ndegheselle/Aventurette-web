@@ -4,9 +4,7 @@ import { useValidationErrors } from '@chapelure/ui/composables/useValidationErro
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
-import Label from '@chapelure/ui/forms/Label.vue';
 import { MailIcon } from 'lucide-vue-next';
-import Divider from '@chapelure/ui/layout/Divider.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import Checkbox from '@chapelure/ui/primitives/Checkbox.vue';
 import InputGroup from '@chapelure/ui/primitives/InputGroup.vue';
@@ -74,12 +72,12 @@ const { registerRoute } = defineProps<{
 
             <FieldError :error="errors.global.value" />
 
-            <Label>
+            <label class="label">
                 <Checkbox v-model="rememberMe" />
                 {{ $t('users.form.rememberMe') }}
-            </Label>
+            </label>
 
-            <Divider>{{ $t('users.form.withOauth2') }}</Divider>
+            <div class="divider">{{ $t('users.form.withOauth2') }}</div>
             <LoginProviders @provider-selected="handleProvider" />
 
             <Button variant="primary"

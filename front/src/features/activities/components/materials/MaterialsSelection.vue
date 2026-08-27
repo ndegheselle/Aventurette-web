@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { materialsRepository as materials } from '@features/activities/data/materials.repository';
-import Menu from '@chapelure/ui/navigation/Menu.vue';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
@@ -47,7 +46,7 @@ function openDropdown() {
                 </div>
             </summary>
         </template>
-        <Menu class="p-2 w-full">
+        <ul class="menu p-2 w-full">
             <li v-for="value in availableItems" @click="() => { }">
                 <a @click="() => addItem(value)"><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /> {{
                     value.name }}</a>
@@ -58,7 +57,7 @@ function openDropdown() {
                     <span>{{ $t('data.noData') }}</span>
                 </div>
             </li>
-        </Menu>
+        </ul>
     </Dropdown>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
         <MaterialDisplay :material="value" v-for="(value, index) in selected" class="relative">
