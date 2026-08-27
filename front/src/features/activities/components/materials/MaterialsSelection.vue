@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { materialsRepository as materials } from '@features/activities/data/materials.repository';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
 import { type ActivityMaterialData } from '@features/activities/model/material';
 import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
@@ -61,9 +60,9 @@ function openDropdown() {
     </Dropdown>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
         <MaterialDisplay :material="value" v-for="(value, index) in selected" class="relative">
-            <Button variant="error" shape="circle" size="xs" class="absolute top-0 right-0" @click="() => removeItem(index)">
+            <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="() => removeItem(index)">
                 <TrashIcon class="icon-sm" />
-            </Button>
+            </button>
         </MaterialDisplay>
         <div v-if="!selected.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
             <CircleOffIcon />

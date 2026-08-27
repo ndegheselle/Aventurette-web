@@ -3,8 +3,6 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
-import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import EditSteps from '@features/activities/components/EditSteps.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
 import type { ActivityData } from '@features/activities/model/activity';
@@ -20,10 +18,10 @@ defineProps<{
         <EditSteps current="description" />
         <Panel class="flex-1">
             <Field label="activities.fields.name">
-                <TextInput v-model="activity.name" />
+                <input type="text" class="input w-full" v-model="activity.name" />
             </Field>
             <Field label="activities.fields.summary">
-                <TextInput v-model="activity.summary" />
+                <input type="text" class="input w-full" v-model="activity.summary" />
             </Field>
 
             <Field label="activities.fields.description" class="flex-1">
@@ -31,14 +29,14 @@ defineProps<{
             </Field>
         </Panel>
         <div class="mt-auto flex">
-            <Button :to="{ name: routesNames.all }">
+            <RouterLink class="btn" :to="{ name: routesNames.all }">
                 <ArrowLeftIcon />
                 {{ $t('actions.cancel') }}
-            </Button>
-            <Button variant="primary" class="ms-auto" :to="{ name: routesNames.edit.steps }">
+            </RouterLink>
+            <RouterLink class="btn btn-primary ms-auto" :to="{ name: routesNames.edit.steps }">
                 <ArrowRightIcon />
                 {{ $t('actions.next') }}
-            </Button>
+            </RouterLink>
         </div>
     </Container>
 </template>

@@ -5,7 +5,6 @@ import List from '@chapelure/ui/data/List.vue';
 import { ArrowLeftIcon, ArrowRightIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
 import EditSteps from '@features/activities/components/EditSteps.vue';
 import StepEditModal from '@features/activities/components/steps/StepEditModal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
@@ -36,31 +35,31 @@ async function onRemove() {
     <Container>
         <EditSteps current="steps" />
         <Panel class="flex-1">
-            <Button variant="primary" @click="() => add(createEmptyStep())">
+            <button class="btn btn-primary" @click="() => add(createEmptyStep())">
                 <PlusIcon />
                 {{ $t("actions.add") }}
-            </Button>
+            </button>
             <List class="flex-1" :items="items" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
 
-                <Button shape="square" variant="ghost" @click="() => remove(item, index)">
+                <button class="btn btn-ghost btn-square" @click="() => remove(item, index)">
                     <MinusIcon />
-                </Button>
-                <Button shape="square" variant="ghost" @click="() => edit(item)">
+                </button>
+                <button class="btn btn-ghost btn-square" @click="() => edit(item)">
                     <PenIcon />
-                </Button>
+                </button>
             </List>
         </Panel>
 
         <div class="mt-auto flex">
-            <Button :to="{ name: routesNames.edit.description }">
+            <RouterLink class="btn" :to="{ name: routesNames.edit.description }">
                 <ArrowLeftIcon />
                 {{ $t('actions.previous') }}
-            </Button>
-            <Button variant="primary" class="ms-auto" :to="{ name: routesNames.edit.properties }">
+            </RouterLink>
+            <RouterLink class="btn btn-primary ms-auto" :to="{ name: routesNames.edit.properties }">
                 <ArrowRightIcon />
                 {{ $t('actions.next') }}
-            </Button>
+            </RouterLink>
         </div>
     </Container>
     <StepEditModal ref="modal" />

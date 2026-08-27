@@ -13,8 +13,6 @@ import {
     StrikethroughIcon,
     UndoIcon,
 } from 'lucide-vue-next';
-import Button from '@chapelure/ui/primitives/Button.vue';
-import ButtonGroup from '@chapelure/ui/primitives/ButtonGroup.vue';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
@@ -46,65 +44,65 @@ onBeforeUnmount(() => {
 <template>
     <div class="border border-base-300 rounded-box overflow-hidden flex flex-col h-full">
         <div v-if="editor" class="flex flex-wrap gap-1 p-0.5 border-b border-base-300">
-            <ButtonGroup>
-                <Button shape="square" :active="editor.isActive('bold')"
+            <div class="join">
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('bold') }"
                     @click="editor.chain().focus().toggleBold().run()">
                     <BoldIcon />
-                </Button>
-                <Button shape="square" :active="editor.isActive('italic')"
+                </button>
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('italic') }"
                     @click="editor.chain().focus().toggleItalic().run()">
                     <ItalicIcon />
-                </Button>
-                <Button shape="square" :active="editor.isActive('strike')"
+                </button>
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('strike') }"
                     @click="editor.chain().focus().toggleStrike().run()">
                     <StrikethroughIcon />
-                </Button>
-                <Button shape="square" :active="editor.isActive('code')"
+                </button>
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('code') }"
                     @click="editor.chain().focus().toggleCode().run()">
                     <CodeIcon />
-                </Button>
-            </ButtonGroup>
+                </button>
+            </div>
 
-            <ButtonGroup>
-                <Button shape="square" :active="editor.isActive('heading', { level: 1 })"
+            <div class="join">
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('heading', { level: 1 }) }"
                     @click="editor.chain().focus().toggleHeading({ level: 1 }).run()">
                     <Heading1Icon />
-                </Button>
-                <Button shape="square" :active="editor.isActive('heading', { level: 2 })"
+                </button>
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('heading', { level: 2 }) }"
                     @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">
                     <Heading2Icon />
-                </Button>
-                <Button shape="square" :active="editor.isActive('heading', { level: 3 })"
+                </button>
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('heading', { level: 3 }) }"
                     @click="editor.chain().focus().toggleHeading({ level: 3 }).run()">
                     <Heading3Icon />
-                </Button>
-            </ButtonGroup>
+                </button>
+            </div>
 
-            <ButtonGroup>
-                <Button shape="square" :active="editor.isActive('bulletList')"
+            <div class="join">
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('bulletList') }"
                     @click="editor.chain().focus().toggleBulletList().run()">
                     <ListIcon />
-                </Button>
-                <Button shape="square" :active="editor.isActive('orderedList')"
+                </button>
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('orderedList') }"
                     @click="editor.chain().focus().toggleOrderedList().run()">
                     <ListOrderedIcon />
-                </Button>
-                <Button shape="square" :active="editor.isActive('blockquote')"
+                </button>
+                <button class="btn btn-square join-item" :class="{ 'btn-active': editor.isActive('blockquote') }"
                     @click="editor.chain().focus().toggleBlockquote().run()">
                     <QuoteIcon />
-                </Button>
-            </ButtonGroup>
+                </button>
+            </div>
 
-            <ButtonGroup class="ms-auto">
-                <Button shape="square" :disabled="!editor.can().undo()"
+            <div class="join ms-auto">
+                <button class="btn btn-square join-item" :disabled="!editor.can().undo()"
                     @click="editor.chain().focus().undo().run()">
                     <UndoIcon />
-                </Button>
-                <Button shape="square" :disabled="!editor.can().redo()"
+                </button>
+                <button class="btn btn-square join-item" :disabled="!editor.can().redo()"
                     @click="editor.chain().focus().redo().run()">
                     <RedoIcon />
-                </Button>
-            </ButtonGroup>
+                </button>
+            </div>
         </div>
         <!-- `prose` comes from @tailwindcss/typography, not daisyUI: it styles the
              user-authored rich text rendered by tiptap. -->

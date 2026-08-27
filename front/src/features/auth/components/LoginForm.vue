@@ -3,11 +3,7 @@ import { NotImplementedError } from '@chapelure/core';
 import { useValidationErrors } from '@chapelure/ui/composables/useValidationErrors';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
-import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
 import { MailIcon } from 'lucide-vue-next';
-import Button from '@chapelure/ui/primitives/Button.vue';
-import Checkbox from '@chapelure/ui/primitives/Checkbox.vue';
-import InputGroup from '@chapelure/ui/primitives/InputGroup.vue';
 import PasswordInput from '@chapelure/ui/primitives/PasswordInput.vue';
 import LoginProviders from '@features/auth/components/LoginProviders.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
@@ -52,16 +48,17 @@ const { registerRoute } = defineProps<{
 <template>
     <div class="flex flex-1 my-2">
 
-        <Fieldset :legend="$t('users.login.title')"
-                  class="bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
+            <legend class="fieldset-legend">{{ $t('users.login.title') }}</legend>
 
             <Field label="users.form.email"
                    :error="errors.get('email')">
-                <InputGroup :error="!!errors.get('email')">
+                <label class="input"
+                       :class="{ 'input-error': !!errors.get('email') }">
                     <MailIcon class="opacity-50" />
                     <input class="grow"
                            v-model="credentials.email" />
-                </InputGroup>
+                </label>
             </Field>
 
             <Field label="users.form.password"
@@ -73,23 +70,23 @@ const { registerRoute } = defineProps<{
             <FieldError :error="errors.global.value" />
 
             <label class="label">
-                <Checkbox v-model="rememberMe" />
+                <input type="checkbox" class="checkbox" v-model="rememberMe" />
                 {{ $t('users.form.rememberMe') }}
             </label>
 
             <div class="divider">{{ $t('users.form.withOauth2') }}</div>
             <LoginProviders @provider-selected="handleProvider" />
 
-            <Button variant="primary"
-                    class="mt-4"
-                    :loading="isLoading"
+            <button class="btn btn-primary mt-4"
+                    :disabled="isLoading"
                     @click="onLogin">
+                <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
                 {{ $t('users.login.title') }}
-            </Button>
-            <Button variant="ghost"
-                    :to="{ name: registerRoute }">
+            </button>
+            <RouterLink class="btn btn-ghost"
+                        :to="{ name: registerRoute }">
                 {{ $t('users.form.accountNew') }}
-            </Button>
-        </Fieldset>
+            </RouterLink>
+        </fieldset>
     </div>
 </template>

@@ -8,7 +8,7 @@ Aventurette-web/
 ├── packages/
 │   ├── core/          @chapelure/core        contracts. no framework, no backend, no deps
 │   ├── pocketbase/    @chapelure/pocketbase  the backend adapter
-│   └── ui/            @chapelure/ui          the design system (Vue + Tailwind + daisyUI)
+│   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, files
 ├── front/             @sagace/front          the app
 ├── back/                                     PocketBase data and migrations
 └── nginx/                                    TLS termination and API proxy
@@ -48,20 +48,24 @@ Every feature has the same six folders, so you never have to guess:
 
 ### `packages/ui`
 
-`primitives/` (Button, TextInput, Badge…), `layout/`, `forms/`, `data/`, `overlays/`,
-`files/`, `settings/`, `composables/`, `directives/`, `styles/` and `locales/`.
+`overlays/`, `data/`, `files/`, `forms/`, `composables/`, `settings/`, `layout/`,
+`primitives/` (just PasswordInput), `directives/`, `styles/` and `locales/`.
 
-A component belongs here when it carries behaviour — `<Button :to>` renders a router link,
-`<Modal>` owns a promise, `<FilesInput>` validates what was dropped on it — or when it
-composes a design decision the app repeats, such as `<Panel>`'s surface or `<Container>`'s
-page shell. Renaming a single daisyUI class is not enough: `<Divider>` wrapping
-`class="divider"` bought one level of indirection and nothing else, so the app now writes
-that class itself.
+This is not a design system — it is the behaviour the app should not hand-write twice:
+`<Modal>` owning a promise, `<FilesInput>` validating what was dropped on it, `<Pagination>`
+and its two-way page state, `useEditModal` sequencing a create-or-update.
+
+Styling is not its job. A component whose whole body was a daisyUI class with a props table
+in front of it does not belong here, however typed that props table was: `<Button
+variant="primary" size="sm">` mapped to `btn btn-primary btn-sm` and bought only the
+indirection, so the app writes the classes. What survives in `layout/` and `primitives/` is
+there for something else — `<Panel>` for a surface repeated a dozen times, `<PasswordInput>`
+for its reveal toggle.
 
 Components are deep-imported so bundlers can drop what is unused:
 
 ```ts
-import Button from '@chapelure/ui/primitives/Button.vue';
+import Modal from '@chapelure/ui/overlays/Modal.vue';
 ```
 
 Icons come straight from `lucide-vue-next`, by their real names, everywhere:
@@ -83,12 +87,14 @@ import { XIcon } from 'lucide-vue-next';
 
 Three deliberate compromises:
 
-- **daisyUI classes are allowed everywhere**, component classes (`btn`, `modal`, `card`…)
-  included. Confining them to `packages/ui` was a lint rule once, and it held — by breeding
-  one-line wrapper components whose entire body was the class being hidden. Ten of those were
-  deleted and their classes inlined; swapping the CSS library is now a find-and-replace across
-  the app instead of a `packages/ui` job, which is the right trade for a library that is not
-  going to be replaced.
+- **daisyUI classes are written where they are used**, component classes (`btn`, `modal`,
+  `card`…) included. Confining them to `packages/ui` was a lint rule once, and it held — by
+  breeding wrapper components that existed only to hold the class being hidden. Twenty of them
+  were deleted and their classes inlined, `<Button>` and its 50 call sites included. The cost
+  is real: a variant is a class you have to know rather than a prop autocomplete offers you,
+  and swapping the CSS library became a find-and-replace across the app instead of a
+  `packages/ui` job. The gain is that a component reads as the markup it produces, and that
+  `packages/ui` now holds only behaviour — which is what it is actually good at.
 - **`lucide-vue-next` is imported wherever an icon is used.** A re-export barrel would confine
   it to one file, but it also hides which icons exist: with the real names in the imports, an
   icon is findable by its own name, in this codebase and in lucide's documentation alike.

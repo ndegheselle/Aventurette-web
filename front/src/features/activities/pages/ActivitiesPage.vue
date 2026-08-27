@@ -5,7 +5,6 @@ import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
 import ActivitiesFilters from '@features/activities/components/activities/ActivitiesFilters.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
@@ -27,11 +26,11 @@ async function onChanged() {
 
 <template>
     <Container>
-        <Button variant="primary"
-                :to="{ name: routesNames.edit.description, params: { id: 'new' } }">
+        <RouterLink class="btn btn-primary"
+                    :to="{ name: routesNames.edit.description, params: { id: 'new' } }">
             <PlusIcon />
             {{ $t('actions.add') }}
-        </Button>
+        </RouterLink>
         <ActivitiesFilters @change="onChanged"
                            v-model="group" />
         <List :items="paginated.items"
@@ -50,12 +49,10 @@ async function onChanged() {
                                  :benefits="item.expand.benefits" />
             </div>
 
-            <Button shape="square"
-                    variant="ghost"
-                    class="my-auto"
-                    :to="{ name: routesNames.page, params: { id: item.id } }">
+            <RouterLink class="btn btn-ghost btn-square my-auto"
+                        :to="{ name: routesNames.page, params: { id: item.id } }">
                 <ArrowRightIcon />
-            </Button>
+            </RouterLink>
         </List>
         <Pagination v-if="paginated.options.perPage < paginated.total"
                     v-model:page="paginated.options.page"

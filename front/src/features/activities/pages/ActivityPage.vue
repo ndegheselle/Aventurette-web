@@ -4,7 +4,6 @@ import List from '@chapelure/ui/data/List.vue';
 import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
@@ -29,22 +28,22 @@ watch(
 <template>
     <Container>
         <div class="sticky top-0 flex gap-2 py-1 bg-base-100">
-            <Button variant="ghost" :to="{ name: activitiesRoutesNames.all }">
+            <RouterLink class="btn btn-ghost" :to="{ name: activitiesRoutesNames.all }">
                 <ArrowLeftIcon /> {{ $t('actions.back') }}
-            </Button>
+            </RouterLink>
 
-            <Button class="ms-auto">
+            <button class="btn ms-auto">
                 <HeartIcon />
                 {{ $t('activities.actions.favorite') }}
-            </Button>
-            <Button>
+            </button>
+            <button class="btn">
                 <CalendarIcon />
                 {{ $t('activities.actions.addToPlanning') }}
-            </Button>
-            <Button variant="primary">
+            </button>
+            <button class="btn btn-primary">
                 <MonitorPlayIcon />
                 {{ $t('activities.actions.start') }}
-            </Button>
+            </button>
         </div>
         <Panel>
             <img class="max-h-32 object-cover rounded-box" src="https://placeholder.pagebee.io/api/plain/800/200" />

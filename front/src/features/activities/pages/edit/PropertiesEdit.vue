@@ -8,9 +8,6 @@ import { useOneFile } from '@chapelure/ui/files/useFiles';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
-import Select from '@chapelure/ui/primitives/Select.vue';
-import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import EditSteps from '@features/activities/components/EditSteps.vue';
 import type { ActivityData } from '@features/activities/model/activity';
 import { type BenefitData } from '@features/activities/model/benefit';
@@ -48,24 +45,24 @@ onMounted(async () => {
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                        <TextInput type="number" />
+                        <input type="number" class="input w-full" />
                     </div>
                     <div>
                         <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                        <TextInput type="number" />
+                        <input type="number" class="input w-full" />
                     </div>
                 </div>
             </Field>
             <div class="grid grid-cols-2 gap-2">
                 <Field label="activities.fields.environment">
-                    <Select>
+                    <select class="select w-full">
                         <option v-for="env in availablesEnvironments" :key="env.value" :value="env.value">
                             {{ $t(env.label) }}
                         </option>
-                    </Select>
+                    </select>
                 </Field>
                 <Field label="activities.fields.durationMinutes">
-                    <TextInput type="number" />
+                    <input type="number" class="input w-full" />
                 </Field>
             </div>
             <Field label="activities.fields.benefits">
@@ -74,14 +71,14 @@ onMounted(async () => {
         </Panel>
 
         <div class="mt-auto flex">
-            <Button :to="{ name: routesNames.edit.steps }">
+            <RouterLink class="btn" :to="{ name: routesNames.edit.steps }">
                 <ArrowLeftIcon />
                 {{ $t('actions.previous') }}
-            </Button>
-            <Button variant="primary" class="ms-auto" :to="{ name: routesNames.edit.properties }">
+            </RouterLink>
+            <RouterLink class="btn btn-primary ms-auto" :to="{ name: routesNames.edit.properties }">
                 <ArrowRightIcon />
                 {{ $t('actions.create') }}
-            </Button>
+            </RouterLink>
         </div>
     </Container>
 </template>

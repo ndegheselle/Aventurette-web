@@ -3,7 +3,6 @@ import { useModal } from '@chapelure/ui/composables/useModal';
 import Field from '@chapelure/ui/forms/Field.vue';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
 import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
 import ResourcesSelection from '@features/activities/components/resources/ResourcesSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
@@ -43,14 +42,14 @@ defineExpose({ show });
             </Field>
         </div>
         <template #actions>
-            <Button @click="controller.cancel">
+            <button class="btn" @click="controller.cancel">
                 <XIcon />
                 {{ $t('actions.cancel') }}
-            </Button>
-            <Button variant="primary" @click="confirm">
+            </button>
+            <button class="btn btn-primary" @click="confirm">
                 <SaveIcon />
                 {{ $t('actions.save') }}
-            </Button>
+            </button>
         </template>
     </Modal>
 </template>

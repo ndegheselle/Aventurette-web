@@ -6,7 +6,6 @@ import type { IEditModal } from '@chapelure/ui/composables/useModal';
 import List from '@chapelure/ui/data/List.vue';
 import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { type ChildrenData } from '@features/users/model/child';
 import ChildrenEditModal from '@features/users/components/children/ChildrenEditModal.vue';
@@ -38,9 +37,9 @@ onMounted(async () => {
             <h2 class="text-2xl flex items-center gap-2 ms-2">
                 <UsersRoundIcon /> {{ $t('children.title') }}
             </h2>
-            <Button variant="primary" shape="circle" @click="() => add({ user: auth.currentId() } as ChildrenData)">
+            <button class="btn btn-primary btn-circle" @click="() => add({ user: auth.currentId() } as ChildrenData)">
                 <PlusIcon />
-            </Button>
+            </button>
         </div>
 
         <List :items="items" v-slot="{ item, index }">
@@ -54,12 +53,12 @@ onMounted(async () => {
                 </div>
                 <InterestsList :interests="item.expand.interests" />
             </div>
-            <Button shape="square" variant="ghost" @click="() => remove(item, index)">
+            <button class="btn btn-ghost btn-square" @click="() => remove(item, index)">
                 <MinusIcon />
-            </Button>
-            <Button shape="square" variant="ghost" @click="() => edit(item)">
+            </button>
+            <button class="btn btn-ghost btn-square" @click="() => edit(item)">
                 <PenIcon />
-            </Button>
+            </button>
         </List>
     </Panel>
     <ChildrenEditModal ref="modal" />

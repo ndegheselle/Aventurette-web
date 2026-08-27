@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ClockIcon, MapIcon, UserRoundIcon } from 'lucide-vue-next';
-import Badge from '@chapelure/ui/primitives/Badge.vue';
 import type { ActivityData } from '@features/activities/model/activity';
 import { formatAgeRange } from '@features/activities/model/age';
 import { computed } from 'vue';
@@ -16,14 +15,14 @@ const ageDisplay = computed(() => formatAgeRange(t, activity?.ageMin, activity?.
 
 <template>
     <div class="flex gap-1">
-        <Badge>
+        <span class="badge">
             <MapIcon /> {{ $t("activities.environment." + activity?.environment) }}
-        </Badge>
-        <Badge>
+        </span>
+        <span class="badge">
             <UserRoundIcon /> {{ ageDisplay }}
-        </Badge>
-        <Badge>
+        </span>
+        <span class="badge">
             <ClockIcon /> {{ $t("activities.duration", { duration: activity?.durationMinutes }) }}
-        </Badge>
+        </span>
     </div>
 </template>

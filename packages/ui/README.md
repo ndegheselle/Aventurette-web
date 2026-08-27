@@ -1,15 +1,15 @@
 # @chapelure/ui
 
-Vue 3 design system: Tailwind + daisyUI.
+Vue 3 behaviour library: the components and composables that are worth *not* hand-writing —
+promise-driven modals, a paged list, file input with validation, alerts, settings.
 
-Components live here when they carry behaviour, or when they compose a design decision the app
-repeats. A component that only renames one daisyUI class does not earn a file — the app writes
-`class="divider"` rather than importing a `<Divider>` whose body was exactly that.
+It is deliberately not a design system. Anything whose whole job was to put a daisyUI class on
+an element lives at the call site instead: the app writes `<button class="btn btn-primary">`,
+not `<Button variant="primary">`. What earns a file here is behaviour — `<Modal>` owning a
+promise, `<FilesInput>` validating what was dropped on it, `useEditModal` sequencing a
+create-or-update — or a composition the app repeats, like `<Panel>`'s surface.
 
-Peer dependencies: `vue`, `vue-i18n`, `vue-router`, `tailwindcss`, `daisyui`, `lucide-vue-next`.
-
-`vue-router` is a peer because `<Button :to>` renders a router link — the alternative was
-hand-writing `<RouterLink class="btn btn-primary">` at every call site.
+Peer dependencies: `vue`, `vue-i18n`, `tailwindcss`, `daisyui`, `lucide-vue-next`.
 
 ## Setup in a consuming app
 
@@ -52,25 +52,26 @@ is missing, rather than throwing.
 
 | Folder | |
 |---|---|
-| `primitives/` | Button, ButtonGroup, TextInput, InputGroup, PasswordInput, Select, Checkbox, Badge |
-| `layout/` | Container, Panel, Card |
-| `forms/` | Field, FieldError, Fieldset |
-| `data/` | List, Pagination, SearchInput, TagSelect |
 | `overlays/` | Modal, Dropdown, DropdownTrigger, ConfirmationModal, AlertsContainer |
+| `data/` | List, Pagination, SearchInput, TagSelect |
 | `files/` | FilesInput, FilesList, `useFiles` |
-| `settings/` | SettingsMenu, `useSettings` |
+| `forms/` | Field, FieldError |
 | `composables/` | `useModal`, `useAlert`, `useConfirmation`, `useEditModal`, `useEditableList`, `useValidationErrors` |
+| `settings/` | SettingsMenu, `useSettings` |
+| `layout/` | Container, Panel |
+| `primitives/` | PasswordInput |
 
 Components are deep-imported; the barrel carries composables and types. Icons are imported from
 `lucide-vue-next` directly, under their real names.
 
 ```ts
-import Button from '@chapelure/ui/primitives/Button.vue';
+import Modal from '@chapelure/ui/overlays/Modal.vue';
 import { useModal } from '@chapelure/ui';
 import { XIcon } from 'lucide-vue-next';
 ```
 
-`Panel` is a plain titled surface. `Card` is daisyUI's card, with `#media` / `#actions` slots.
+`Container` is the page shell, `Panel` a titled surface. `PasswordInput` is the one input left:
+it is here for the reveal toggle, not for the `input` class.
 
 ## Patterns
 

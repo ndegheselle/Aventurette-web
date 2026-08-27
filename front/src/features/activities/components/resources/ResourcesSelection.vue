@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import { activityResourceUrl } from '@features/activities/data/resources.repository';
-import Button from '@chapelure/ui/primitives/Button.vue';
-import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import { useMultipleFiles } from '@chapelure/ui/files/useFiles';
 import { type ActivityResourceData } from '@features/activities/model/activity';
 import { CircleOffIcon, FileIcon, TrashIcon } from 'lucide-vue-next';
@@ -69,10 +67,10 @@ defineExpose({ newResources });
                     <FileIcon class="m-auto icon-lg" />
                 </div>
             </a>
-            <TextInput size="sm" class="flex-1" v-model="resource.name" />
-            <Button variant="error" shape="circle" size="xs" class="shrink-0" @click="removeExisting(index)">
+            <input type="text" class="input input-sm w-full flex-1" v-model="resource.name" />
+            <button class="btn btn-error btn-xs btn-circle shrink-0" @click="removeExisting(index)">
                 <TrashIcon class="icon-sm" />
-            </Button>
+            </button>
         </div>
         <div v-for="entry in newResources" :key="entry.file.name"
             class="p-1 items-center bg-base-100 rounded-box flex gap-2">
@@ -81,10 +79,10 @@ defineExpose({ newResources });
             <div v-else class="size-10 flex bg-base-200 rounded-box shrink-0">
                 <FileIcon class="m-auto icon-lg" />
             </div>
-            <TextInput size="sm" class="flex-1" v-model="entry.name" />
-            <Button variant="error" shape="circle" size="xs" class="shrink-0" @click="removeNew(entry)">
+            <input type="text" class="input input-sm w-full flex-1" v-model="entry.name" />
+            <button class="btn btn-error btn-xs btn-circle shrink-0" @click="removeNew(entry)">
                 <TrashIcon class="icon-sm" />
-            </Button>
+            </button>
         </div>
         <div v-if="!selected.length && !newResources.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
             <CircleOffIcon />

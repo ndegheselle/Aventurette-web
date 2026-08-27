@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { interestsRepository as interests } from '@features/users/data/interests.repository';
 import Field from '@chapelure/ui/forms/Field.vue';
-import Badge from '@chapelure/ui/primitives/Badge.vue';
 import { type InterestData } from '@features/users/model/interest';
 import { onMounted, ref, watch } from 'vue';
 
@@ -40,13 +39,13 @@ const toggle = (interest: InterestData & { isSelected: boolean }) => {
 <template>
     <Field label="children.interests.title">
         <div class="flex flex-wrap gap-1">
-            <Badge v-for="interest in list"
-                   :key="interest.id"
-                   :variant="interest.isSelected ? 'primary' : 'default'"
-                   class="cursor-pointer"
-                   @click="toggle(interest)">
+            <span v-for="interest in list"
+                  :key="interest.id"
+                  class="badge cursor-pointer"
+                  :class="{ 'badge-primary': interest.isSelected }"
+                  @click="toggle(interest)">
                 {{ interest.name }}
-            </Badge>
+            </span>
         </div>
     </Field>
 </template>

@@ -5,13 +5,8 @@ import { useModal } from '@chapelure/ui/composables/useModal';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import Field from '@chapelure/ui/forms/Field.vue';
-import Fieldset from '@chapelure/ui/forms/Fieldset.vue';
 import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
-import Badge from '@chapelure/ui/primitives/Badge.vue';
-import Button from '@chapelure/ui/primitives/Button.vue';
-import Checkbox from '@chapelure/ui/primitives/Checkbox.vue';
-import TextInput from '@chapelure/ui/primitives/TextInput.vue';
 import { type ActivityData } from '@features/activities/model/activity';
 import { type BenefitData } from '@features/activities/model/benefit';
 import { formatAgeRange } from '@features/activities/model/age';
@@ -104,12 +99,12 @@ onMounted(async () => {
 <template>
     <SearchInput @search="() => onChanged()" v-model="search" />
     <section class="flex gap-1">
-        <Button size="sm" class="flex-1" @click="() => controller.show()">
+        <button class="btn btn-sm flex-1" @click="() => controller.show()">
             <BabyIcon />
             {{ ageDisplay || $t('activities.fields.age') }}
             <ChevronRightIcon />
-        </Button>
-        <Button size="sm" class="flex-1" @click="() => controller.show()">
+        </button>
+        <button class="btn btn-sm flex-1" @click="() => controller.show()">
             <MapIcon />
             <span v-if="!current['environment'].length">
                 {{ $t('activities.fields.environment') }}
@@ -118,28 +113,28 @@ onMounted(async () => {
                 {{current['environment'].map((v) => $t(`activities.environment.${v}`)).join(', ')}}
             </span>
             <ChevronRightIcon />
-        </Button>
-        <Button size="sm" class="ms-auto" @click="() => controller.show()">
+        </button>
+        <button class="btn btn-sm ms-auto" @click="() => controller.show()">
             <FunnelIcon />
             {{ $t('actions.filter') }}
-            <Badge v-if="additionalFilters" size="sm" variant="primary">{{ additionalFilters }}</Badge>
-        </Button>
+            <span v-if="additionalFilters" class="badge badge-primary badge-sm">{{ additionalFilters }}</span>
+        </button>
     </section>
     <Modal :controller="controller">
         <template #title>
             {{ $t('actions.filter') }}
         </template>
         <section class="flex flex-col gap-2">
-            <Fieldset>
+            <fieldset class="fieldset">
                 <Field>
                     <template #label>
                         <span class="flex items-center gap-1"><BabyIcon /> {{ $t('activities.fields.age') }}</span>
                     </template>
                     <div class="flex gap-2 items-center">
                         <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                        <TextInput type="number" size="sm" v-model="pending['ageMin']" />
+                        <input type="number" class="input input-sm w-full" v-model="pending['ageMin']" />
                         <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                        <TextInput type="number" size="sm" v-model="pending['ageMax']" />
+                        <input type="number" class="input input-sm w-full" v-model="pending['ageMax']" />
                     </div>
                 </Field>
 
@@ -149,9 +144,9 @@ onMounted(async () => {
                     </template>
                     <div class="flex gap-2 items-center">
                         <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                        <TextInput type="number" size="sm" v-model="pending['durationMin']" />
+                        <input type="number" class="input input-sm w-full" v-model="pending['durationMin']" />
                         <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                        <TextInput type="number" size="sm" v-model="pending['durationMax']" />
+                        <input type="number" class="input input-sm w-full" v-model="pending['durationMax']" />
                     </div>
                 </Field>
 
@@ -162,7 +157,7 @@ onMounted(async () => {
                     <div class="flex gap-2 flex-col">
                         <label v-for="choice in availablesEnvironments" :key="choice.value"
                                class="label cursor-pointer gap-2">
-                            <Checkbox size="sm" :value="choice.value" v-model="pending['environment']" />
+                            <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value" v-model="pending['environment']" />
                             <span class="text-sm">{{ $t(choice.label) }}</span>
                         </label>
                     </div>
@@ -174,17 +169,17 @@ onMounted(async () => {
                     </template>
                     <TagSelect :items="availableBenefits" display-key="name" v-model="pendingBenefits" />
                 </Field>
-            </Fieldset>
+            </fieldset>
         </section>
         <template #actions>
-            <Button class="me-auto" @click="reset">
+            <button class="btn me-auto" @click="reset">
                 <XIcon />
                 {{ $t("actions.reset") }}
-            </Button>
-            <Button variant="primary" @click="() => controller.confirm(true as any)">
+            </button>
+            <button class="btn btn-primary" @click="() => controller.confirm(true as any)">
                 <CheckIcon />
                 {{ $t("actions.filter") }}
-            </Button>
+            </button>
         </template>
     </Modal>
 </template>
