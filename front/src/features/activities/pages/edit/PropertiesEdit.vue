@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { benefitsRepository as benefits } from '@features/activities/data/benefits.repository';
+import { benefitsApi as benefits } from '@features/activities/api/benefits.api';
 import Field from '@chapelure/ui/forms/Field.vue';
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';

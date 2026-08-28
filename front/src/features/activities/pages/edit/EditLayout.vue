@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activitiesRepository as activities } from '@features/activities/data/activities.repository';
+import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import { type ActivityData } from '@features/activities/model/activity';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';

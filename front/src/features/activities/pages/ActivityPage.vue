@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activitiesRepository as activities } from '@features/activities/data/activities.repository';
+import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import List from '@chapelure/ui/data/List.vue';
 import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';

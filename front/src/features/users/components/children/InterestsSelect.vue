@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { interestsRepository as interests } from '@features/users/data/interests.repository';
+import { interestsApi as interests } from '@features/users/api/interests.api';
 import Field from '@chapelure/ui/forms/Field.vue';
 import { type InterestData } from '@features/users/model/interest';
 import { onMounted, ref, watch } from 'vue';

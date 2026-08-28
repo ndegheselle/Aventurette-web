@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activitiesRepository as activities } from '@features/activities/data/activities.repository';
+import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import { createGroup, Paginated, type FilterGroup } from '@chapelure/core';
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';

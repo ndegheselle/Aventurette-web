@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { childrenRepository as childrenApi } from '@features/users/data/children.repository';
+import { childrenApi } from '@features/users/api/children.api';
 import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
 import { useEditableList } from '@chapelure/ui/composables/useEditableList';
 import type { IEditModal } from '@chapelure/ui/composables/useModal';

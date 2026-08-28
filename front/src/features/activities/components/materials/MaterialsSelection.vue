@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { materialsRepository as materials } from '@features/activities/data/materials.repository';
+import { materialsApi as materials } from '@features/activities/api/materials.api';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
 import { type ActivityMaterialData } from '@features/activities/model/material';

@@ -1,5 +1,5 @@
 import { NotAuthentifiedError, type BaseEntity } from '@chapelure/core';
-import { sessionProvider } from '@features/auth/data/session';
+import { sessionProvider } from '@features/auth/api/session';
 import { routesNames } from '@features/auth/routes';
 import { computed, readonly, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';

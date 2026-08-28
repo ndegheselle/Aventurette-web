@@ -40,7 +40,7 @@ Every feature has the same six folders, so you never have to guess:
 | | |
 |---|---|
 | `model/` | types, factories, domain rules — **no framework imports** |
-| `data/` | `*.repository.ts` — the only place `@/backend` may be imported |
+| `api/` | `*.api.ts` — the only place `@/backend` may be imported |
 | `components/` | feature components |
 | `pages/` | route targets, and nothing else |
 | `locales/` | translations, and nothing else |
@@ -80,9 +80,9 @@ import { XIcon } from 'lucide-vue-next';
 |---|---|
 | `@chapelure/pocketbase` is imported only by `front/src/backend/index.ts` | Change backend = rewrite one file plus one package |
 | The `pocketbase` SDK appears only inside `packages/pocketbase` | ditto |
-| `@/backend` is imported only from `features/*/data/**` | Components never hold a backend client |
+| `@/backend` is imported only from `features/*/api/**` | Components never hold a backend client |
 | `packages/core` imports no `vue`, no SDK, no app | Contracts survive any framework or backend change |
-| `features/*/model` and `features/*/data` import no framework | Domain and data survive a framework change |
+| `features/*/model` and `features/*/api` import no framework | Domain and data survive a framework change |
 | `packages/ui` imports neither the app nor the adapter | The design system stays reusable |
 
 Three deliberate compromises:
@@ -100,7 +100,7 @@ Three deliberate compromises:
   icon is findable by its own name, in this codebase and in lucide's documentation alike.
   Swapping icon sets is a find-and-replace over the import lines.
 - **The view layer is Vue, and stays Vue.** The achievable goal is that `core/`,
-  `features/*/model` and `features/*/data` are framework-free — roughly the part of a
+  `features/*/model` and `features/*/api` are framework-free — roughly the part of a
   framework migration that is worth protecting. Components would be rewritten either way.
 
 ## Mechanics worth knowing

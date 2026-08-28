@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { benefitsRepository as benefits } from '@features/activities/data/benefits.repository';
+import { benefitsApi as benefits } from '@features/activities/api/benefits.api';
 import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/core';
 import { useModal } from '@chapelure/ui/composables/useModal';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';

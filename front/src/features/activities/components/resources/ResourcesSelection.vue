@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
-import { activityResourceUrl } from '@features/activities/data/resources.repository';
+import { activityResourceUrl } from '@features/activities/api/resources.api';
 import { useMultipleFiles } from '@chapelure/ui/files/useFiles';
 import { type ActivityResourceData } from '@features/activities/model/activity';
 import { CircleOffIcon, FileIcon, TrashIcon } from 'lucide-vue-next';

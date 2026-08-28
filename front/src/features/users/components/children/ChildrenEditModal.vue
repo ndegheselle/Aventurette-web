@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { childrenRepository } from '@features/users/data/children.repository';
+import { childrenApi } from '@features/users/api/children.api';
 import { useEditModal } from '@chapelure/ui/composables/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/composables/useModal';
 import Field from '@chapelure/ui/forms/Field.vue';
@@ -11,7 +11,7 @@ import InterestsSelect from '@features/users/components/children/InterestsSelect
 import { computed } from 'vue';
 
 const controller = useModal<ChildrenData>();
-const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, childrenRepository);
+const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, childrenApi);
 const children = computed(() => data.value);
 defineExpose<IEditModal<ChildrenData>>({ show });
 </script>
