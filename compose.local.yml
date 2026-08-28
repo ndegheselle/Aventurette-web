@@ -1,0 +1,29 @@
+# Local smoke test of the production images. Never used on the server — compose only reads
+# it when it is passed explicitly, which is why it is not named compose.override.yml.
+#
+#   docker compose -f compose.yml -f compose.local.yml up -d --build front api
+#
+# nginx and certbot are left out on purpose: with no certificate on disk the edge serves
+# the port 80 vhost only, and that one redirects everything to https (see
+# nginx/docker-entrypoint.d/40-tls-when-certificate-exists.sh). Testing the edge itself
+# needs a self-signed certificate instead — see readme.md.
+#
+# A root .env is still required, because compose.yml declares DOMAIN and API_DOMAIN as
+# mandatory. The values do not matter here; API_DOMAIN is overridden below anyway.
+services:
+    # Published on the host, unlike in production where the SPA is reachable only through
+    # the edge nginx on the internal network.
+    front:
+        build:
+            args:
+                # Overrides https://${API_DOMAIN}: Vite inlines this into the bundle, so the
+                # browser has to be given the port published below, not the public domain.
+                VITE_API_URL: http://localhost:8090
+        ports:
+            - '8080:80'
+
+    # Published so the admin UI at http://localhost:8090/_/ is reachable without the edge.
+    # This writes a real back/pb_data on the host — delete it to start from an empty base.
+    api:
+        ports:
+            - '8090:8090'
