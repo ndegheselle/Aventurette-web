@@ -5,6 +5,5 @@ import Container from '@chapelure/ui/layout/Container.vue';
 
 <template>
     <Container>
-        <span>{{ $t('settings.theme') }}</span>
     </Container>
 </template>

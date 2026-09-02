@@ -1,7 +1,6 @@
 import Default from '@/app/layouts/Default.vue';
-import activitiesRoutes from '@features/activities/routes';
+import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import authRoutes from '@features/auth/routes';
-import homeRoutes from '@features/home/routes';
 import usersRoutes from '@features/users/routes';
 import type { RouteRecordRaw } from 'vue-router';
 
@@ -11,7 +10,8 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: Default,
         children: [
-            ...homeRoutes,
+            // For now redirect homeRoutes (will add a dashboard later)
+            { path: '', redirect: { name: activitiesRoutesNames.all } },
             ...authRoutes,
             ...usersRoutes,
             ...activitiesRoutes,
