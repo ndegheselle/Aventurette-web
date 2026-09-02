@@ -1,54 +1,48 @@
 <script setup lang="ts">
+import { resourcesApi as resources } from '@features/activities/api/resources.api';
+import { useAlert } from '@chapelure/ui/composables/useAlert';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
-import { fileUrls } from '@/backend';
-import { useMultipleFiles } from '@chapelure/ui/files/useFiles';
-import { type ActivityResourceData } from '@features/activities/model/activity';
-import { CircleOffIcon, FileIcon, TrashIcon } from 'lucide-vue-next';
-import { ref, watch } from 'vue';
+import ResourceDisplay from '@features/activities/components/resources/ResourceDisplay.vue';
+import { isUploadedResource, type StepResourceData } from '@features/activities/model/activity';
+import { CircleOffIcon, TrashIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
 
-const selected = defineModel<ActivityResourceData[]>({ default: () => [] });
+/** Kept in step with the `constraints` string below. */
+const MAX_FILES = 10;
 
-const { files, update: addFiles } = useMultipleFiles(10);
+const selected = defineModel<StepResourceData[]>({ default: () => [] });
 
-type NewResource = { file: File; name: string };
-const newResources = ref<NewResource[]>([]);
+const { t } = useI18n();
+const alert = useAlert();
 
-const PREVIEWABLE = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif']);
-const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']);
-
-watch(files, (current) => {
-    newResources.value = newResources.value.filter(r => current.includes(r.file));
-    const tracked = newResources.value.map(r => r.file);
-    for (const file of current) {
-        if (!tracked.includes(file)) {
-            newResources.value.push({ file, name: file.name });
-        }
+/**
+ * Picked files go straight into the model — the step is what owns its resources, so a file
+ * waiting to be uploaded has to travel with it and not sit in a ref this component keeps.
+ * FilesInput has already turned down anything of the wrong format or size.
+ */
+function addFiles(added: File[]) {
+    const room = MAX_FILES - selected.value.length;
+    if (added.length > room) {
+        alert.error(t('inputs.file.upload.exceedNumber', { number: MAX_FILES }));
+        added = added.slice(0, Math.max(room, 0));
     }
-}, { deep: true });
+    if (!added.length) return;
 
-function removeExisting(index: number) {
+    selected.value = [...selected.value, ...added.map(file => ({ file, name: file.name }))];
+}
+
+function removeItem(index: number) {
     selected.value = selected.value.filter((_, i) => i !== index);
 }
 
-function toObjectUrl(file: File): string {
-    return URL.createObjectURL(file);
+/** What the tile previews: the url of a stored file, or the file itself while it is pending. */
+function sourceOf(resource: StepResourceData): string | File {
+    return isUploadedResource(resource) ? resources.getFileUrl(resource) : resource.file;
 }
 
-function removeNew(entry: NewResource) {
-    const idx = files.value.indexOf(entry.file);
-    if (idx !== -1) files.value.splice(idx, 1);
+function keyOf(resource: StepResourceData): string {
+    return isUploadedResource(resource) ? resource.id : resource.file.name;
 }
-
-function getExistingFileUrl(resource: ActivityResourceData): string {
-    return fileUrls.getUrl(resource, resource.file);
-}
-
-function existingIsImage(resource: ActivityResourceData): boolean {
-    const ext = resource.file.split('.').pop()?.toLowerCase() ?? '';
-    return IMAGE_EXTENSIONS.has(ext);
-}
-
-defineExpose({ newResources });
 </script>
 
 <template>
@@ -57,34 +51,14 @@ defineExpose({ newResources });
             {{ $t('activities.steps.fields.resources.constraints') }}
         </template>
     </FilesInput>
-    <div class="flex flex-col mt-1 bg-base-200 rounded-box gap-1 p-1">
-        <div v-for="(resource, index) in selected" :key="resource.id"
-            class="p-1 items-center bg-base-100 rounded-box flex gap-2">
-            <a :href="getExistingFileUrl(resource)" target="_blank" rel="noopener noreferrer" class="shrink-0">
-                <img v-if="existingIsImage(resource)" :src="getExistingFileUrl(resource)"
-                    class="size-10 object-cover rounded-box" />
-                <div v-else class="size-10 flex bg-base-200 rounded-box">
-                    <FileIcon class="m-auto icon-lg" />
-                </div>
-            </a>
-            <input type="text" class="input input-sm w-full flex-1" v-model="resource.name" />
-            <button class="btn btn-error btn-xs btn-circle shrink-0" @click="removeExisting(index)">
+    <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
+        <ResourceDisplay v-for="(resource, index) in selected" :key="keyOf(resource)" :source="sourceOf(resource)"
+            v-model:name="resource.name" class="relative">
+            <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="removeItem(index)">
                 <TrashIcon class="icon-sm" />
             </button>
-        </div>
-        <div v-for="entry in newResources" :key="entry.file.name"
-            class="p-1 items-center bg-base-100 rounded-box flex gap-2">
-            <img v-if="PREVIEWABLE.has(entry.file.type)" :src="toObjectUrl(entry.file)"
-                class="size-10 object-cover rounded-box shrink-0" />
-            <div v-else class="size-10 flex bg-base-200 rounded-box shrink-0">
-                <FileIcon class="m-auto icon-lg" />
-            </div>
-            <input type="text" class="input input-sm w-full flex-1" v-model="entry.name" />
-            <button class="btn btn-error btn-xs btn-circle shrink-0" @click="removeNew(entry)">
-                <TrashIcon class="icon-sm" />
-            </button>
-        </div>
-        <div v-if="!selected.length && !newResources.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
+        </ResourceDisplay>
+        <div v-if="!selected.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
             <CircleOffIcon />
             <span>{{ $t('activities.steps.fields.resources.empty') }}</span>
         </div>

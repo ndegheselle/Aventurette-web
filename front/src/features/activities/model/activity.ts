@@ -12,10 +12,24 @@ export type ActivityData = Expanded<ActivitiesResponse, {
 
 export type ActivityStepData = Expanded<ActivitiesStepsResponse, {
     materials: ActivityMaterialData[];
-    resources: ActivityResourceData[];
+    resources: StepResourceData[];
 }>;
 
 export type ActivityResourceData = ActivitiesResourcesResponse;
+
+/**
+ * A resource the user just picked. No record exists for it yet, so `file` holds the upload
+ * itself where a saved resource holds the name of the stored file.
+ */
+export type NewActivityResourceData = { name: string; file: File; };
+
+/** What a step being edited carries: resources already stored, and files not uploaded yet. */
+export type StepResourceData = ActivityResourceData | NewActivityResourceData;
+
+/** Tells the two apart by their `file`: the name of a stored file, or the file to upload. */
+export function isUploadedResource(resource: StepResourceData): resource is ActivityResourceData {
+    return typeof resource.file === "string";
+}
 
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 
@@ -28,6 +42,6 @@ export const ACTIVITY_RELATIONS = [
 export function createEmptyStep(): ActivityStepData {
     return {
         materials: [] as ActivityMaterialData[],
-        resources: [] as ActivityResourceData[],
+        resources: [] as StepResourceData[],
     } as ActivityStepData;
 }
