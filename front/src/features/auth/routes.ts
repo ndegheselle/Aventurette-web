@@ -1,5 +1,5 @@
-import LoginPage from '@features/auth/pages/LoginPage.vue';
-import RegisterPage from '@features/auth/pages/RegisterPage.vue';
+import LoginPage from '@features/auth/pages/Login.page.vue';
+import RegisterPage from '@features/auth/pages/Register.page.vue';
 import type { RouteRecordRaw } from 'vue-router';
 
 export const routesNames = {

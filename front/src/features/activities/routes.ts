@@ -1,12 +1,12 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import ActivitiesPage from '@features/activities/pages/ActivitiesPage.vue';
-import ActivityPage from '@features/activities/pages/ActivityPage.vue';
+import ActivitiesPage from '@features/activities/pages/Activities.page.vue';
+import ActivityPage from '@features/activities/pages/Activity.page.vue';
 
-import EditLayout from '@features/activities/pages/edit/EditLayout.vue';
-import DescriptionEdit from '@features/activities/pages/edit/DescriptionEdit.vue';
-import StepsEdit from '@features/activities/pages/edit/StepsEdit.vue';
-import PropertiesEdit from '@features/activities/pages/edit/PropertiesEdit.vue';
+import EditLayout from '@features/activities/pages/edit/_layout.vue';
+import DescriptionEdit from '@features/activities/pages/edit/DescriptionEdit.page.vue';
+import StepsEdit from '@features/activities/pages/edit/StepsEdit.page.vue';
+import PropertiesEdit from '@features/activities/pages/edit/PropertiesEdit.page.vue';
 
 export const routesNames = {
     page: 'activities.page',

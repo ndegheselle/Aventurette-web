@@ -5,7 +5,7 @@ import List from '@chapelure/ui/data/List.vue';
 import { ArrowLeftIcon, ArrowRightIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import EditSteps from '@features/activities/components/EditSteps.vue';
+import EditSteps from '@features/activities/pages/edit/_components/EditSteps.vue';
 import StepEditModal from '@features/activities/components/steps/StepEditModal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
 import { createEmptyStep, type ActivityData } from '@features/activities/model/activity';

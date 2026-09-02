@@ -58,10 +58,10 @@ const RULES = [
             && /from ['"]pocketbase['"]/.test(f.text),
     },
     {
-        name: 'backend wiring is consumed through a feature data layer',
-        why: "Components must not import @/backend; go through features/<name>/data/.",
+        name: 'backend wiring is consumed through a feature api layer',
+        why: "Components must not import @/backend; go through features/<name>/api/.",
         check: f => f.path.startsWith('front/src/')
-            && !/^front\/src\/features\/[^/]+\/data\//.test(f.path)
+            && !/^front\/src\/features\/[^/]+\/api\//.test(f.path)
             && f.path !== 'front/src/backend/index.ts'
             && /from ['"]@\/backend['"]/.test(f.text),
     },
@@ -72,9 +72,9 @@ const RULES = [
             && /from ['"](vue|vue-i18n|vue-router|pocketbase|@\/|@features\/)/.test(f.text),
     },
     {
-        name: 'feature model/ and data/ are framework-free',
+        name: 'feature model/ and api/ are framework-free',
         why: 'Domain types and repositories should outlive the view layer.',
-        check: f => /^front\/src\/features\/[^/]+\/(model|data)\//.test(f.path)
+        check: f => /^front\/src\/features\/[^/]+\/(model|api)\//.test(f.path)
             && /from ['"](vue|vue-i18n|vue-router|@chapelure\/ui)/.test(f.text),
     },
     {

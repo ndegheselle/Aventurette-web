@@ -1,5 +1,5 @@
-import ProfilPage from '@features/users/pages/profil/ProfilPage.vue';
-import SelectProfilTypePage from '@features/users/pages/profil/SelectProfilTypePage.vue';
+import ProfilPage from '@features/users/pages/profil/Profil.page.vue';
+import SelectProfilTypePage from '@features/users/pages/profil/SelectProfilType.page.vue';
 import type { RouteRecordRaw } from 'vue-router';
 
 export const routesNames = {

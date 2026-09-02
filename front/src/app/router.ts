@@ -1,4 +1,4 @@
-import Default from '@/app/layouts/Default.vue';
+import Default from '@/app/Default.layout.vue';
 import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import authRoutes from '@features/auth/routes';
 import usersRoutes from '@features/users/routes';

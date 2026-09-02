@@ -8,7 +8,6 @@ import { useOneFile } from '@chapelure/ui/files/useFiles';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import EditSteps from '@features/activities/components/EditSteps.vue';
 import type { ActivityData } from '@features/activities/model/activity';
 import { type BenefitData } from '@features/activities/model/benefit';
 import { availablesEnvironments } from '@features/activities/model/environment';

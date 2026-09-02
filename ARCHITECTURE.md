@@ -42,9 +42,31 @@ Every feature has the same six folders, so you never have to guess:
 | `model/` | types, factories, domain rules — **no framework imports** |
 | `api/` | `*.api.ts` — the only place `@/backend` may be imported |
 | `components/` | feature components |
-| `pages/` | route targets, and nothing else |
+| `pages/` | route targets, plus the structural files only they use — see below |
 | `locales/` | translations, and nothing else |
 | `routes.ts` | the route records plus a `routesNames` map |
+
+#### `pages/`
+
+A file belongs in `pages/` when nothing outside its own folder — or that folder's children —
+has a reason to import it. Route targets qualify by definition; so does the layout wrapping
+them, and the odd component that exists only to cut one page into readable pieces. The moment
+a second part of the feature wants that component, it is no longer scoped to the page and
+belongs in `components/`.
+
+Three markers, so a filename says which it is:
+
+| | |
+|---|---|
+| `Name.page.vue` | a route target — something `routes.ts` names as a `component` |
+| `_layout.vue` | the layout wrapping this folder's pages and those of its children |
+| `_folder/` | scoped to this folder's pages, and not itself part of the route tree |
+
+`_` reads as "structural, not a page". It also floats these to the top of the file list in
+VS Code.
+
+One layout to a folder is just `_layout.vue`. A folder that needs several names them —
+`_Edit.layout.vue`, `_Preview.layout.vue` — and keeps the prefix.
 
 ### `packages/ui`
 

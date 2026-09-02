@@ -1,4 +1,4 @@
-import HomePage from '@features/home/pages/HomePage.vue';
+import HomePage from '@features/home/pages/Home.page.vue';
 import type { RouteRecordRaw } from 'vue-router';
 
 export const routesNames = {

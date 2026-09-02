@@ -3,7 +3,7 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import EditSteps from '@features/activities/components/EditSteps.vue';
+import EditSteps from '@features/activities/pages/edit/_components/EditSteps.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
 import type { ActivityData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';
