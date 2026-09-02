@@ -15,13 +15,13 @@ const ageDisplay = computed(() => formatAgeRange(t, activity?.ageMin, activity?.
 
 <template>
     <div class="flex gap-1">
-        <span class="badge">
+        <span class="badge badge-soft badge-primary">
             <MapIcon /> {{ $t("activities.environment." + activity?.environment) }}
         </span>
-        <span class="badge">
+        <span class="badge badge-soft badge-primary">
             <UserRoundIcon /> {{ ageDisplay }}
         </span>
-        <span class="badge">
+        <span class="badge badge-soft badge-primary">
             <ClockIcon /> {{ $t("activities.duration", { duration: activity?.durationMinutes }) }}
         </span>
     </div>

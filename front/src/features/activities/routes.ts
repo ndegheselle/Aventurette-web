@@ -4,9 +4,9 @@ import ActivitiesPage from '@features/activities/pages/Activities.page.vue';
 import ActivityPage from '@features/activities/pages/Activity.page.vue';
 
 import EditLayout from '@features/activities/pages/edit/_layout.vue';
-import DescriptionEdit from '@features/activities/pages/edit/DescriptionEdit.page.vue';
-import StepsEdit from '@features/activities/pages/edit/StepsEdit.page.vue';
-import PropertiesEdit from '@features/activities/pages/edit/PropertiesEdit.page.vue';
+import DescriptionEdit from '@features/activities/pages/edit/Step1Description.page.vue';
+import StepsEdit from '@features/activities/pages/edit/Step2Steps.page.vue';
+import PropertiesEdit from '@features/activities/pages/edit/Step3Properties.page.vue';
 
 export const routesNames = {
     page: 'activities.page',

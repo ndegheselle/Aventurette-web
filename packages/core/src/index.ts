@@ -3,7 +3,7 @@
 // Nothing in this package may import vue, a backend SDK, or the consuming app.
 // That is what makes it the one layer a framework or backend migration does not touch.
 
-export type { BaseEntity } from './data/entity';
+export type { BaseEntity, Expanded } from './data/entity';
 
 export {
     Paginated,

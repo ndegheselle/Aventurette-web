@@ -1,11 +1,9 @@
-import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse } from "@/backend/schema.g";
+import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse } from "@/backend/schema.g.ts";
 import type { BenefitData } from "@features/activities/model/benefit";
 import type { ActivityMaterialData } from "@features/activities/model/material";
 
 type ActivityExpand = {
     steps?: ActivityStepData[];
-    materials?: ActivityMaterialData[];
-    resources?: ActivityResourceData[];
     benefits?: BenefitData[];
 };
 

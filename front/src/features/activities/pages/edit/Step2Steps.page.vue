@@ -6,7 +6,7 @@ import { ArrowLeftIcon, ArrowRightIcon, MinusIcon, PenIcon, PlusIcon, TriangleAl
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import EditSteps from '@features/activities/pages/edit/_components/EditSteps.vue';
-import StepEditModal from '@features/activities/components/steps/StepEditModal.vue';
+import StepEditModal from '@features/activities/pages/edit/_components/StepEditModal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
 import { createEmptyStep, type ActivityData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';

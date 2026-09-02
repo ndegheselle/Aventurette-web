@@ -117,7 +117,6 @@ export type ActivitiesRecord = {
 	environment: ActivitiesEnvironmentOptions
 	id: string
 	name: string
-	resources?: RecordIdString[]
 	steps?: RecordIdString[]
 	updated: IsoAutoDateString
 	user: RecordIdString

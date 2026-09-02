@@ -20,10 +20,6 @@ defineProps<{
             <Field label="activities.fields.name">
                 <input type="text" class="input w-full" v-model="activity.name" />
             </Field>
-            <Field label="activities.fields.summary">
-                <input type="text" class="input w-full" v-model="activity.summary" />
-            </Field>
-
             <Field label="activities.fields.description" class="flex-1">
                 <TextEditor v-model="activity.description" class="flex-1" />
             </Field>

@@ -66,7 +66,7 @@ function onConfirm()
 }
 
 function onChanged() {
-    const searchFilter = createSearchFilter<ActivityData>(search.value, ['name', 'summary', 'description']);
+    const searchFilter = createSearchFilter<ActivityData>(search.value, ['name', 'description']);
     let group = createGroup({
         filters: [
             createFilter<ActivityData>({ key: 'ageMin', value: current["ageMin"], operator: FilterOperator.GreaterThan }),
