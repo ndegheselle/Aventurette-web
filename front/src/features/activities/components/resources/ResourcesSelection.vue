@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
-import { activityResourceUrl } from '@features/activities/api/resources.api';
+import { fileUrls } from '@/backend';
 import { useMultipleFiles } from '@chapelure/ui/files/useFiles';
 import { type ActivityResourceData } from '@features/activities/model/activity';
 import { CircleOffIcon, FileIcon, TrashIcon } from 'lucide-vue-next';
@@ -40,7 +40,7 @@ function removeNew(entry: NewResource) {
 }
 
 function getExistingFileUrl(resource: ActivityResourceData): string {
-    return activityResourceUrl(resource);
+    return fileUrls.getUrl(resource, resource.file);
 }
 
 function existingIsImage(resource: ActivityResourceData): boolean {

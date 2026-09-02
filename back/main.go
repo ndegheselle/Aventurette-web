@@ -7,6 +7,7 @@ import (
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/osutils"
 
+	"backend/hooks"
 	_ "backend/migrations"
 )
 
@@ -16,6 +17,8 @@ func main() {
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
 		Automigrate: osutils.IsProbablyGoRun(),
 	})
+
+	hooks.Register(app)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
