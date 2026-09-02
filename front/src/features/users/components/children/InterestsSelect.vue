@@ -4,20 +4,24 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import { type InterestData } from '@features/users/model/interest';
 import { onMounted, ref, watch } from 'vue';
 
-const props = defineProps<{ selected?: string[] }>();
-const emit = defineEmits<{ (e: 'update:selected', value: string[]): void }>();
+// `selected` carries whole interests, not ids: that is the shape the child record now holds,
+// and the shape it is saved back in.
+const props = defineProps<{ selected?: InterestData[] }>();
+const emit = defineEmits<{ (e: 'update:selected', value: InterestData[]): void }>();
 const list = ref<(InterestData & { isSelected: boolean })[]>([]);
 
 onMounted(async () => {
     const data = await interests.getAll();
     list.value = data.map(item => ({ ...item, isSelected: false }));
+    applySelected();
 });
 
 const applySelected = () => {
     if (props.selected) {
+        const selectedIds = new Set(props.selected.map(item => item.id));
         list.value = list.value.map(item => ({
             ...item,
-            isSelected: props.selected!.includes(item.id),
+            isSelected: selectedIds.has(item.id),
         }));
     }
 };
@@ -32,7 +36,9 @@ watch(
 
 const toggle = (interest: InterestData & { isSelected: boolean }) => {
     interest.isSelected = !interest.isSelected;
-    emit('update:selected', list.value.filter(i => i.isSelected).map(x => x.id));
+    emit('update:selected', list.value
+        .filter(i => i.isSelected)
+        .map(({ isSelected, ...item }) => item));
 };
 </script>
 

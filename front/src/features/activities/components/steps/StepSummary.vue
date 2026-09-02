@@ -12,12 +12,12 @@ const { index, step } = defineProps<{
         <p class="text-xs"
            v-html="step.description"></p>
         <span class="badge"
-              v-for="value in step.expand.materials"
+              v-for="value in step.materials"
               :key="value.id">
             {{ value.name }}
         </span>
         <span class="badge"
-              v-for="value in step.expand.resources"
+              v-for="value in step.resources"
               :key="value.id">
             {{ value.name }}
         </span>

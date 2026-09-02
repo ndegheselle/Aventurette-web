@@ -53,7 +53,7 @@ watch(
                     <AcitivityMetadaDisplay :activity="activity ?? undefined" />
                 </div>
                 <p>{{ activity?.summary }}</p>
-                <BenefitsDisplay :benefits="activity?.expand.benefits" />
+                <BenefitsDisplay :benefits="activity?.benefits" />
             </div>
         </Panel>
         <Panel>
@@ -61,7 +61,7 @@ watch(
                 <PackageOpenIcon /> {{ $t('activities.steps.fields.materials.title') }}
             </h2>
             <div class="flex gap-2">
-                <div class="text-center" v-for="material in activity?.expand.materials" :key="material.id">
+                <div class="text-center" v-for="material in activity?.materials" :key="material.id">
                     <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
                     <span>{{ material.name }}</span>
                 </div>
@@ -72,7 +72,7 @@ watch(
                 <FileTextIcon /> {{ $t('activities.steps.fields.resources.title') }}
             </h2>
             <div class="flex gap-2">
-                <div class="text-center" v-for="resource in activity?.expand.resources" :key="resource.id">
+                <div class="text-center" v-for="resource in activity?.resources" :key="resource.id">
                     <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
                     <span>{{ resource.name }}</span>
                 </div>
@@ -88,7 +88,7 @@ watch(
             <h2 class="text-2xl flex items-center gap-2">
                 <ListOrderedIcon /> {{ $t('activities.steps.title') }}
             </h2>
-            <List :items="activity?.expand.steps" v-slot="{ item, index }">
+            <List :items="activity?.steps" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
             </List>
         </Panel>

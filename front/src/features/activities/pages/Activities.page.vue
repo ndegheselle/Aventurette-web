@@ -46,7 +46,7 @@ async function onChanged() {
                 <p class="text-xs"
                    v-html="item.description"></p>
                 <BenefitsDisplay class="mt-1"
-                                 :benefits="item.expand.benefits" />
+                                 :benefits="item.benefits" />
             </div>
 
             <RouterLink class="btn btn-ghost btn-square my-auto"

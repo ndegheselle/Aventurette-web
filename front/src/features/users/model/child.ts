@@ -1,10 +1,9 @@
-import type { ChildrenResponse } from "@/backend/schema.g";
+import type { ChildrensResponse } from "@/backend/schema.g";
+import type { Expanded } from "@chapelure/core";
 import type { InterestData } from "@features/users/model/interest";
 
-type ChildrenExpand = {
-    interests?: InterestData[];
-};
-
-export type ChildrenData = ChildrenResponse<ChildrenExpand>;
+export type ChildrenData = Expanded<ChildrensResponse, {
+    interests: InterestData[];
+}>;
 
 export const CHILD_RELATIONS = ["interests"];

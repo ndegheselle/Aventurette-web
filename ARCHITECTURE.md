@@ -131,6 +131,13 @@ Three deliberate compromises:
   `front/tsconfig.json` + `front/vite.config.ts` point at `src/`, so `vue-tsc` typechecks
   them with the app and HMR works across package boundaries. Keep those two alias lists in
   sync.
+- **Relations come back inlined, not on the side.** PocketBase returns expanded records in a
+  separate `expand` object; `packages/pocketbase/src/relations.ts` folds them into the record
+  on read and turns them back into ids on write, so `activity.steps` is the steps in both
+  directions. Models declare that with `Expanded<Response, { ... }>` from `@chapelure/core`,
+  and the fields they list must match the `relations` argument the api layer passes — nothing
+  checks the two against each other. Saving a parent still persists ids only.
+
 - **Tailwind v4 ignores `node_modules`,** and workspace packages are symlinked there. So
   `front/src/app/styles/index.css` declares `@source "../../../../packages/ui/src"`. Remove
   it and every class used only inside the design system silently vanishes from the bundle.

@@ -10,6 +10,16 @@ admin@test.local
 test1234admin
 ```
 
+Update the version of pocketbase :
+```
+go get -u github.com/pocketbase/pocketbase@latest
+go mod tidy
+```
+Get the current version :
+```
+go list -m github.com/pocketbase/pocketbase
+```
+
 ## Migrations
 Migrate changes :
 ```bash

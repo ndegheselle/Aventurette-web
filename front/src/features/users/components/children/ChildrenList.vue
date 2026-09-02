@@ -51,7 +51,7 @@ onMounted(async () => {
                         $t("children.years",
                             { years: item.age }) }} </div>
                 </div>
-                <InterestsList :interests="item.expand.interests" />
+                <InterestsList :interests="item.interests" />
             </div>
             <button class="btn btn-ghost btn-square" @click="() => remove(item, index)">
                 <MinusIcon />

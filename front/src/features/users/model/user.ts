@@ -1,10 +1,6 @@
 import { UsersTypeOptions, type UsersResponse } from "@/backend/schema.g";
-import type { ChildrenData } from "@features/users/model/child";
 
 export { UsersTypeOptions as UserProfilType };
 
-type UserExpand = {
-    childrens?: ChildrenData[];
-};
-
-export type UserData = UsersResponse<UserExpand>;
+// No Expanded wrapper: the auth provider never asks for relations, so `childrens` is ids.
+export type UserData = UsersResponse;

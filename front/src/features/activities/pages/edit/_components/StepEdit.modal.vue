@@ -35,10 +35,10 @@ defineExpose({ show });
                 <TextEditor v-model="data.description" class="min-h-64" />
             </Field>
             <Field label="activities.steps.fields.materials.title">
-                <MaterialsSelection v-model="data.expand.materials" />
+                <MaterialsSelection v-model="data.materials" />
             </Field>
             <Field label="activities.steps.fields.resources.title">
-                <ResourcesSelection v-model="data.expand.resources" />
+                <ResourcesSelection v-model="data.resources" />
             </Field>
         </div>
         <template #actions>
