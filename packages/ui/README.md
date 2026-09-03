@@ -56,7 +56,7 @@ is missing, rather than throwing.
 | `data/` | List, Pagination, SearchInput, TagSelect |
 | `files/` | FilesInput, FilesList, `useFiles` |
 | `forms/` | Field, FieldError |
-| `composables/` | `useModal`, `useAlert`, `useConfirmation`, `useEditModal`, `useEditableList`, `useValidationErrors` |
+| `composables/` | `useModal`, `useAlert`, `useConfirmation`, `useEditModal`, `useValidationErrors` |
 | `settings/` | SettingsMenu, `useSettings` |
 | `layout/` | Container, Panel |
 | `primitives/` | PasswordInput |

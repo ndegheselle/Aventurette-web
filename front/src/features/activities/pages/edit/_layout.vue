@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { type ActivityData } from '@features/activities/model/activity';
+import { type ActivityData, createEmptyActivity } from '@features/activities/model/activity';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -15,7 +15,7 @@ watch(
 
         // New item created
         if (id == 'new')
-            activity.value = {} as ActivityData;
+            activity.value = createEmptyActivity();
         else
             activity.value = await activities.getById(id);
     },

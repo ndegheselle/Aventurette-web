@@ -7,8 +7,6 @@
 
 export { Alert, EnumAlertType, useAlert } from './composables/useAlert';
 export { useConfirmation } from './composables/useConfirmation';
-export { useEditableList } from './composables/useEditableList';
-export type { IEditableListOptions } from './composables/useEditableList';
 export { useEditModal } from './composables/useEditModal';
 export { useModal } from './composables/useModal';
 export type { IEditModal, IModalController, IModalOptions } from './composables/useModal';

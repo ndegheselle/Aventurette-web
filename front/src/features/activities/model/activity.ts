@@ -39,6 +39,13 @@ export const ACTIVITY_RELATIONS = [
     "steps", "steps.materials", "steps.resources",
 ];
 
+export function createEmptyActivity(): ActivityData {
+    return {
+        benefits: [] as BenefitData[],
+        steps: [] as ActivityStepData[]
+    } as ActivityData;
+}
+
 export function createEmptyStep(): ActivityStepData {
     return {
         materials: [] as ActivityMaterialData[],

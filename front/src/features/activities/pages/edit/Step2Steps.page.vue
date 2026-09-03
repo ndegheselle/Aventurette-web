@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
-import { useEditableList } from '@chapelure/ui/composables/useEditableList';
+import type { IEditModal } from '@chapelure/ui/composables/useModal';
 import List from '@chapelure/ui/data/List.vue';
 import { ArrowLeftIcon, ArrowRightIcon, MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
@@ -8,26 +8,36 @@ import Panel from '@chapelure/ui/layout/Panel.vue';
 import EditSteps from '@features/activities/pages/edit/_components/EditSteps.vue';
 import StepEditModal from '@features/activities/pages/edit/_components/StepEdit.modal.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
-import { createEmptyStep, type ActivityData } from '@features/activities/model/activity';
+import { createEmptyStep, type ActivityData, type ActivityStepData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-// XXX : the existing steps of `activity` are not seeded into the editable list yet,
-// and the 3-step create flow has no save step — see WIP note in the activities feature.
-defineProps<{
+// XXX : the 3-step create flow has no save step — see WIP note in the activities feature.
+const { activity } = defineProps<{
     activity: ActivityData;
 }>();
 
 const { t } = useI18n();
-const modal = useTemplateRef('modal');
-const { items, add, edit, remove } = useEditableList(modal, { onRemove: onRemove });
 const confirm = useConfirmation();
+const modal = useTemplateRef<IEditModal<ActivityStepData>>('modal');
 
-async function onRemove() {
+// The steps are edited where they live, on the activity.
+async function add() {
+    const step = await modal.value?.show(createEmptyStep());
+    if (step) activity.steps = [...activity.steps, step];
+}
+
+async function edit(step: ActivityStepData) {
+    const updated = await modal.value?.show(step);
+    if (updated) Object.assign(step, updated);
+}
+
+async function remove(index: number) {
     if (await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.messageSimple'), TriangleAlertIcon) !== true)
-        return false;
-    return true;
+        return;
+
+    activity.steps = activity.steps.filter((_, i) => i !== index);
 }
 </script>
 
@@ -35,14 +45,14 @@ async function onRemove() {
     <Container>
         <EditSteps current="steps" />
         <Panel class="flex-1">
-            <button class="btn btn-primary" @click="() => add(createEmptyStep())">
+            <button class="btn btn-primary" @click="add">
                 <PlusIcon />
                 {{ $t("actions.add") }}
             </button>
-            <List class="flex-1" :items="items" v-slot="{ item, index }">
+            <List class="flex-1" :items="activity.steps" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
 
-                <button class="btn btn-ghost btn-square" @click="() => remove(item, index)">
+                <button class="btn btn-ghost btn-square" @click="() => remove(index)">
                     <MinusIcon />
                 </button>
                 <button class="btn btn-ghost btn-square" @click="() => edit(item)">
