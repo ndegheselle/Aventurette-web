@@ -1,103 +1,47 @@
 <script setup lang="ts">
-import { benefitsApi as benefits } from '@features/activities/api/benefits.api';
-import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/core';
+import type { FilterGroup } from '@chapelure/core';
 import { useModal } from '@chapelure/ui/composables/useModal';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import Field from '@chapelure/ui/forms/Field.vue';
-import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
+import { useActivityFilters } from '@features/activities/composables/useActivityFilters';
 import { type ActivityData } from '@features/activities/model/activity';
-import { type BenefitData } from '@features/activities/model/benefit';
 import { formatAgeRange } from '@features/activities/model/age';
 import { availablesEnvironments } from '@features/activities/model/environment';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
-const controller = useModal({ onCancel, onConfirm, onShow });
-const search = ref<string>('');
 const model = defineModel<FilterGroup<ActivityData>>();
-const availableBenefits = ref<BenefitData[]>([]);
 
 const emit = defineEmits<{
     (e: 'change', value: FilterGroup<ActivityData>): void;
 }>();
 
-/* Filter values */
-function emptyFilters() {
-    return {
-        ageMin: null as number | null,
-        ageMax: null as number | null,
-        durationMin: null as number | null,
-        durationMax: null as number | null,
-        environment: [] as string[],
-        benefits: [] as string[],
-    };
-}
-
-const current = reactive(emptyFilters());
-const pending = reactive(emptyFilters());
-
-const ageDisplay = computed(() => formatAgeRange(t, current["ageMin"], current["ageMax"]));
-const additionalFilters = computed(() => current["durationMin"] || current["durationMax"] || current["benefits"].length ? 1 : 0);
-
-const pendingBenefits = computed({
-    get: () => availableBenefits.value.filter(b => pending.benefits.includes(b.id)),
-    set: (items) => {
-        pending.benefits = Array.isArray(items) ? items.map(i => i.id) : [];
-    }
-});
-
-function onShow() {
-    // Initialize the temporary state (pending) with the currently applied filters
-    Object.assign(pending, current);
-}
-
-function onCancel()
-{
-    Object.assign(pending, current);
-}
-
-function onConfirm()
-{
-    Object.assign(current, pending);
-    onChanged();
-}
-
-function onChanged() {
-    const searchFilter = createSearchFilter<ActivityData>(search.value, ['name', 'description']);
-    let group = createGroup({
-        filters: [
-            createFilter<ActivityData>({ key: 'ageMin', value: current["ageMin"], operator: FilterOperator.GreaterThan }),
-            createFilter<ActivityData>({ key: 'ageMax', value: current["ageMax"], operator: FilterOperator.LessThan }),
-            createFilter<ActivityData>({ key: 'durationMinutes', value: current["durationMin"], operator: FilterOperator.GreaterThan }),
-            createFilter<ActivityData>({ key: 'durationMinutes', value: current["durationMax"], operator: FilterOperator.LessThan }),
-            createFilter<ActivityData>({ key: 'environment', value: [...current["environment"]], operator: FilterOperator.Equals }),
-            createFilter<ActivityData>({ key: 'benefits', value: [...current["benefits"]], operator: FilterOperator.AnyEquals }),
-        ],
-    });
-
-    if (searchFilter)
-        group.filters.push(searchFilter);
-
-    group = removeEmptyFilters(group);
+// Destructured so the template sees plain bindings: a ref reached through an object is not
+// unwrapped in templates, only a top-level one is.
+const {
+    search, applied, draft, availableBenefits, draftBenefits, showsAdvancedBadge,
+    apply, openDraft, discardDraft, applyDraft, resetDraft,
+} = useActivityFilters(group => {
     model.value = group;
     emit('change', group);
-}
-
-function reset() {
-    search.value = '';
-    Object.assign(pending, emptyFilters());
-}
-
-onMounted(async () => {
-    availableBenefits.value = await benefits.getAll();
 });
+
+// The modal is only a way to edit the draft; the composable owns what that means.
+const controller = useModal({
+    onShow: openDraft,
+    onCancel: discardDraft,
+    onConfirm: applyDraft,
+});
+
+const ageDisplay = computed(() => formatAgeRange(t, applied.ageMin, applied.ageMax));
 </script>
 
 <template>
-    <SearchInput @search="() => onChanged()" v-model="search" />
+    <SearchInput @search="() => apply()" v-model="search" />
     <section class="flex gap-1">
         <button class="btn btn-sm flex-1" @click="() => controller.show()">
             <BabyIcon />
@@ -106,18 +50,19 @@ onMounted(async () => {
         </button>
         <button class="btn btn-sm flex-1" @click="() => controller.show()">
             <MapIcon />
-            <span v-if="!current['environment'].length">
+            <span v-if="!applied.environment.length">
                 {{ $t('activities.fields.environment') }}
             </span>
             <span v-else>
-                {{current['environment'].map((v) => $t(`activities.environment.${v}`)).join(', ')}}
+                {{ applied.environment.map((v) => $t(`activities.environment.${v}`)).join(', ') }}
             </span>
             <ChevronRightIcon />
         </button>
         <button class="btn btn-sm ms-auto" @click="() => controller.show()">
             <FunnelIcon />
             {{ $t('actions.filter') }}
-            <span v-if="additionalFilters" class="badge badge-primary badge-sm">{{ additionalFilters }}</span>
+            <!-- An indicator, not a count — see hasAdvancedCriteria in model/filters.ts. -->
+            <span v-if="showsAdvancedBadge" class="badge badge-primary badge-sm">1</span>
         </button>
     </section>
     <Modal :controller="controller">
@@ -132,9 +77,9 @@ onMounted(async () => {
                     </template>
                     <div class="flex gap-2 items-center">
                         <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                        <input type="number" class="input input-sm w-full" v-model="pending['ageMin']" />
+                        <input type="number" class="input input-sm w-full" v-model="draft.ageMin" />
                         <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                        <input type="number" class="input input-sm w-full" v-model="pending['ageMax']" />
+                        <input type="number" class="input input-sm w-full" v-model="draft.ageMax" />
                     </div>
                 </Field>
 
@@ -144,9 +89,9 @@ onMounted(async () => {
                     </template>
                     <div class="flex gap-2 items-center">
                         <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                        <input type="number" class="input input-sm w-full" v-model="pending['durationMin']" />
+                        <input type="number" class="input input-sm w-full" v-model="draft.durationMin" />
                         <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                        <input type="number" class="input input-sm w-full" v-model="pending['durationMax']" />
+                        <input type="number" class="input input-sm w-full" v-model="draft.durationMax" />
                     </div>
                 </Field>
 
@@ -157,7 +102,7 @@ onMounted(async () => {
                     <div class="flex gap-2 flex-col">
                         <label v-for="choice in availablesEnvironments" :key="choice.value"
                                class="label cursor-pointer gap-2">
-                            <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value" v-model="pending['environment']" />
+                            <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value" v-model="draft.environment" />
                             <span class="text-sm">{{ $t(choice.label) }}</span>
                         </label>
                     </div>
@@ -167,12 +112,12 @@ onMounted(async () => {
                     <template #label>
                         <span class="flex items-center gap-1"><TrendingUpIcon /> {{ $t('activities.fields.benefits') }}</span>
                     </template>
-                    <TagSelect :items="availableBenefits" display-key="name" v-model="pendingBenefits" />
+                    <TagSelect :items="availableBenefits" display-key="name" v-model="draftBenefits" />
                 </Field>
             </fieldset>
         </section>
         <template #actions>
-            <button class="btn me-auto" @click="reset">
+            <button class="btn me-auto" @click="resetDraft">
                 <XIcon />
                 {{ $t("actions.reset") }}
             </button>

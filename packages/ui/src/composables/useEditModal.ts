@@ -1,7 +1,7 @@
 import type { BaseEntity, IDataCrud } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/composables/useAlert';
 import type { IModalController } from '@chapelure/ui/composables/useModal';
-import { useValidationErrors } from '@chapelure/ui/composables/useValidationErrors';
+import { useSubmit } from '@chapelure/ui/composables/useSubmit';
 import { computed, ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -9,7 +9,7 @@ import { useI18n } from 'vue-i18n';
  * Edit modal logic to edit and create
  * @param modal controller of the modal
  * @param crud crud service to save and update the data
- * @returns 
+ * @returns
  */
 export function useEditModal<T extends BaseEntity>(modal: IModalController<T>, crud: IDataCrud<T>) {
     const alert = useAlert();
@@ -17,30 +17,21 @@ export function useEditModal<T extends BaseEntity>(modal: IModalController<T>, c
     const data = ref<T>({} as T);
     const isNew = computed(() => data.value?.id == null);
 
-    const isLoading = ref(false);
-    const errors = useValidationErrors();
     const { t } = useI18n();
+
+    // The busy/reset/report cycle is useSubmit's; what is left here is what saving means.
+    const { isLoading, errors, submit } = useSubmit(async () => {
+        const result = isNew.value
+            ? await crud.create(data.value)
+            : await crud.update(data.value.id, data.value);
+
+        alert.success(t(isNew.value ? 'data.created' : 'data.updated'));
+        modal.confirm(result);
+    });
 
     async function confirm() {
         if (!data.value) return;
-
-        isLoading.value = true;
-        errors.reset();
-        try {
-            let result;
-            if (isNew.value) {
-                result = await crud.create(data.value);
-                alert.success(t('data.created'));
-            } else {
-                result = await crud.update(data.value.id, data.value);
-                alert.success(t('data.updated'));
-            }
-            modal.confirm(result);
-        } catch (e: any) {
-            errors.set(e);
-        } finally {
-            isLoading.value = false;
-        }
+        await submit();
     }
 
     function show(child: T) {

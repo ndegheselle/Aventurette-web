@@ -1,29 +1,15 @@
 <script setup lang="ts">
-import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import List from '@chapelure/ui/data/List.vue';
-import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import StepSummary from '@features/activities/components/steps/StepSummary.vue';
-import { type ActivityData } from '@features/activities/model/activity';
+import { useActivity } from '@features/activities/composables/useActivity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';
 
-const route = useRoute();
-const activity = ref<ActivityData | null>(null);
-
-watch(
-    () => route.params.id,
-    async (id) => {
-        if (typeof id != 'string')
-            return;
-        activity.value = await activities.getById(id);
-    },
-    { immediate: true }
-);
+const { activity, materials, resources } = useActivity();
 </script>
 <template>
     <Container>
@@ -52,7 +38,7 @@ watch(
                     <h2 class="text-2xl">{{ activity?.name }}</h2>
                     <AcitivityMetadaDisplay :activity="activity ?? undefined" />
                 </div>
-                <p>{{ activity?.summary }}</p>
+                <p v-html="activity?.description"></p>
                 <BenefitsDisplay :benefits="activity?.benefits" />
             </div>
         </Panel>
@@ -61,7 +47,7 @@ watch(
                 <PackageOpenIcon /> {{ $t('activities.steps.fields.materials.title') }}
             </h2>
             <div class="flex gap-2">
-                <div class="text-center" v-for="material in activity?.materials" :key="material.id">
+                <div class="text-center" v-for="material in materials" :key="material.id">
                     <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
                     <span>{{ material.name }}</span>
                 </div>
@@ -72,7 +58,7 @@ watch(
                 <FileTextIcon /> {{ $t('activities.steps.fields.resources.title') }}
             </h2>
             <div class="flex gap-2">
-                <div class="text-center" v-for="resource in activity?.resources" :key="resource.id">
+                <div class="text-center" v-for="resource in resources" :key="resource.id">
                     <img class="size-24 rounded-box" src="https://placeholder.pagebee.io/api/plain/128/128" />
                     <span>{{ resource.name }}</span>
                 </div>
