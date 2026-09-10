@@ -13,6 +13,13 @@ export default defineConfig({
         // fraction of the time. Nothing here needs jsdom's fuller browser surface.
         environment: 'happy-dom',
         setupFiles: ['./tests/setup.ts'],
+        env: {
+            // front/src/backend/index.ts refuses to load without this, and a deep component
+            // tree pulls it in through some feature's api module. A client that is constructed
+            // but never called is harmless; anything that would actually reach the network
+            // fails loudly, which is the reminder to mock that feature's api module instead.
+            VITE_API_URL: 'http://pocketbase.test',
+        },
         include: [
             'front/src/**/*.spec.ts',
             'packages/*/src/**/*.spec.ts',

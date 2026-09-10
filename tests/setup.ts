@@ -1,12 +1,12 @@
 import { config } from '@vue/test-utils';
 import { afterEach, beforeEach, expect, vi } from 'vitest';
 import { h } from 'vue';
-import { createTestI18n } from './i18n';
+import { TEST_LOCALE, testI18n } from './i18n';
 
 /*
  * Every mounted component gets the app's real translations. See tests/i18n.ts.
  */
-config.global.plugins = [createTestI18n()];
+config.global.plugins = [testI18n];
 
 /**
  * `<RouterLink>` without a router.
@@ -63,6 +63,10 @@ function watchConsole(method: 'warn' | 'error') {
 beforeEach(() => {
     captured = [];
     spies = [watchConsole('warn'), watchConsole('error')];
+
+    // Switching language is global by design, so a test that exercises it would otherwise
+    // leave every test after it in the other locale.
+    testI18n.global.locale.value = TEST_LOCALE;
 });
 
 afterEach(() => {

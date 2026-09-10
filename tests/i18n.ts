@@ -18,3 +18,11 @@ export function createTestI18n() {
         messages,
     });
 }
+
+/**
+ * The one instance every test in a file mounts against.
+ *
+ * Held here so tests/setup.ts can put its locale back between tests: switching language is
+ * global by design, so a test that exercises it would otherwise leave the next one in French.
+ */
+export const testI18n = createTestI18n();

@@ -46,6 +46,18 @@ export function fakePocketBase(records: Record<string, unknown>[] = []): FakePoc
     }
 
     const collection = {
+        async authWithPassword(email: string, password: string) {
+            record('authWithPassword', [email, password]);
+            return { record: fake.records[0] ?? { id: 'usr1', email }, token: 'fake-token' };
+        },
+        async authRefresh() {
+            record('authRefresh', []);
+            return { record: fake.records[0], token: 'fake-token' };
+        },
+        async requestVerification(email: string) {
+            record('requestVerification', [email]);
+            return true;
+        },
         async create(data: Record<string, unknown>, options?: unknown) {
             record('create', [data, options]);
             const created = { id: `pb${fake.records.length + 1}`, ...data };
@@ -82,6 +94,17 @@ export function fakePocketBase(records: Record<string, unknown>[] = []): FakePoc
         },
     };
 
-    fake.client = { collection: () => collection } as unknown as PocketBase;
+    const authStore = {
+        clear() { record('authStore.clear', []); },
+    };
+
+    const files = {
+        getURL(model: unknown, filename: string, options?: unknown) {
+            record('files.getURL', [model, filename, options]);
+            return `https://pb.test/api/files/${(model as { id: string }).id}/${filename}`;
+        },
+    };
+
+    fake.client = { collection: () => collection, authStore, files } as unknown as PocketBase;
     return fake;
 }

@@ -1,8 +1,15 @@
 # Aventurette
 
 An npm workspace: the `front/` app on top of three `packages/`, and a PocketBase backend in
-`back/`. See [ARCHITECTURE.md](ARCHITECTURE.md) for the layout and the boundaries between
-them, and [DEPLOYMENT.md](DEPLOYMENT.md) to put it on a server.
+`back/`.
+
+| | |
+|---|---|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | the layout, and the boundaries between the parts |
+| [docs/adr/](docs/adr/README.md) | why it is that way — one file per decision |
+| [docs/features/](docs/features/README.md) | what each feature does, and what is not finished |
+| [docs/testing.md](docs/testing.md) | how to test any of it |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | putting it on a server |
 
 Live at [lubriciel.ovh](https://lubriciel.ovh), with the API on
 [api.lubriciel.ovh](https://api.lubriciel.ovh).
@@ -35,10 +42,12 @@ cp front/.env.example front/.env
 ## Develop
 
 ```bash
-npm run dev         # dev server
-npm run build       # typecheck (app + packages) and build
-npm run lint:arch   # architecture boundaries
-npm run check       # both of the above
+npm run dev            # dev server
+npm run build          # typecheck (app, packages and specs) and build
+npm run test           # the test suite
+npm run test:watch     # the suite, while working
+npm run lint:arch      # architecture boundaries
+npm run check          # all three — what CI runs
 ```
 
 The API runs separately, from `back/` — see [back/readme.md](back/readme.md).

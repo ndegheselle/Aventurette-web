@@ -38,7 +38,9 @@ export function aMaterial(overrides: Partial<ActivityMaterialData> = {}): Activi
     return { ...SYSTEM, id: nextId('mat'), name: 'Rope', ...overrides } as ActivityMaterialData;
 }
 
-export function aResource(overrides: Partial<ActivityResourceData> = {}): ActivityResourceData {
+export function aResource(
+    overrides: Partial<Omit<ActivityResourceData, 'file'>> & { file?: string } = {},
+): ActivityResourceData {
     return {
         ...SYSTEM,
         id: nextId('res'),
