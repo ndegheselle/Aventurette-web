@@ -1,7 +1,7 @@
 # Architecture decisions
 
 One file per decision, numbered in the order they were taken. An ADR records *why* something
-is the way it is — the constraint at the time, the alternatives, and what the choice costs —
+is the way it is - the constraint at the time, the alternatives, and what the choice costs -
 so that changing it later is a decision rather than an accident.
 
 `ARCHITECTURE.md` describes the shape of the code as it stands today. These describe how it
@@ -25,8 +25,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 ## Writing a new one
 
 Copy the shape of any of the above: **Context** (what forced a choice), **Decision** (what was
-chosen, in the present tense), **Consequences** (what it buys, and what it costs — the cost
-section is the one that earns the document).
+chosen, in the present tense), **Consequences** (what it buys, and what it costs).
 
 Number it next in sequence. A decision that replaces an earlier one does not edit it: mark the
 old one `Superseded by NNNN` and say so in the new one, so the reasoning stays readable.
