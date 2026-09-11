@@ -4,9 +4,8 @@
 
 ## Context
 
-The app had no tests at all. The goal is a net that makes automated changes safe to accept,
-which means it has to be fast enough to run on every change and precise enough that a failure
-names the cause.
+The goal is a net that makes automated changes safe to accept, which means it has to be fast 
+enough to run on every change and precise enough that a failure names the cause.
 
 End-to-end tests in a real browser have the highest fidelity. They also need PocketBase
 running with known data, they are slow, they flake, and a failure says "the page did not load"
