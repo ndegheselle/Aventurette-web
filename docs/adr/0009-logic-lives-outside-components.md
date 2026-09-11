@@ -4,11 +4,7 @@
 
 ## Context
 
-Logic accumulated in `<script setup>` blocks because that is the path of least resistance:
-the filter toolbar held a hundred lines building a query and juggling two copies of the
-criteria; the login and register forms each hand-rolled the same busy/reset/report cycle; the
-step editor enforced its file limit inline.
-
+Logic accumulated in `<script setup>` blocks because that is the path of least resistance. 
 None of it was reachable without mounting a component, which meant none of it was cheap to
 test, and the same cycle written three times had already drifted once.
 
