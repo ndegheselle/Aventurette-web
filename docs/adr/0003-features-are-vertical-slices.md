@@ -38,5 +38,3 @@ Specs sit next to what they cover: `filters.ts` and `filters.spec.ts` in the sam
 - Cross-feature imports are possible and not forbidden — `users` reads the session from `auth`.
   What keeps this honest is that features import each other's `model/`, `composables/` and
   `components/`, never each other's `pages/`.
-- `composables/` was added after the fact. Before it, this state lived in component `<script
-  setup>` blocks, which is what [0009](0009-logic-lives-outside-components.md) is about.
