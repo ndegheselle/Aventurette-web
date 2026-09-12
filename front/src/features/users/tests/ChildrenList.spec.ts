@@ -4,7 +4,7 @@ import { aChild, aUser, fakeAuthProvider, fakeCrud, mountWithRouter } from '@tes
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ChildrenData } from '@features/users/model/child';
-import ChildrenList from './ChildrenList.vue';
+import ChildrenList from '@features/users/components/children/ChildrenList.vue';
 
 const children = fakeCrud<ChildrenData>();
 

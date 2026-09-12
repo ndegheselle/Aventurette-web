@@ -17,7 +17,7 @@ A feature reaches the backend only through `features/<name>/api/*.api.ts`
 ([0002](0002-backend-behind-core-ports.md)), so swapping it is one `vi.mock` of that module:
 
 ```ts
-vi.mock('@features/activities/api/benefits.api', () => ({
+vi.mock('@features/activities/api/activities.api', () => ({
     get benefitsApi() { return benefits; },
 }));
 ```

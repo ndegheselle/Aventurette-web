@@ -1,15 +1,9 @@
 import { useAlert } from '@chapelure/ui/composables/useAlert';
 import { useSubmit } from '@chapelure/ui/composables/useSubmit';
-import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { benefitsApi as benefits } from '@features/activities/api/benefits.api';
+import { activitiesApi as activities, benefitsApi as benefits } from '@features/activities/api/activities.api';
 import { stepsApi as steps } from '@features/activities/api/steps.api';
-import {
-    createEmptyActivity,
-    createEmptyStep,
-    type ActivityData,
-    type ActivityStepData,
-} from '@features/activities/model/activity';
-import type { BenefitData } from '@features/activities/model/benefit';
+import { createEmptyActivity, type ActivityData, type BenefitData } from '@features/activities/model/activity';
+import { createEmptyStep, type ActivityStepData } from '@features/activities/model/step';
 import { routesNames } from '@features/activities/routes';
 import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

@@ -58,6 +58,7 @@ Every feature has the same shape, so you never have to guess:
 | `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
 | `components/` | feature components |
 | `pages/` | route targets, plus the structural files only they use — see below |
+| `tests/` | the feature's specs, and the only place they may live |
 | `locales/` | translations, and nothing else |
 | `routes.ts` | the route records plus a `routesNames` map |
 
@@ -66,7 +67,14 @@ Where behaviour goes between these is the one thing worth reading before writing
 a component is wiring and markup. [ADR 0009](docs/adr/0009-logic-lives-outside-components.md)
 has the reasoning; a feature with no logic needs no composable.
 
-Specs sit beside what they cover — `filters.ts` next to `filters.spec.ts`.
+Within a folder the unit is an **entity or a screen, not a concept**: `model/activity.ts` holds
+the activity's types, factory, enums and formatters together, and `useActivitiesList` owns the
+list screen — its results, its filters and its add button. Splitting finer than that was tried
+and produced `model/benefit.ts`, three lines long.
+
+Specs do **not** sit beside what they cover. They live in the feature's `tests/`, and there are
+fewer of them than there were — [ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)
+says which code earns one.
 
 #### `pages/`
 
@@ -130,6 +138,7 @@ import { XIcon } from 'lucide-vue-next';
 | `features/*/model` and `features/*/api` import no framework | Domain and data survive a framework change |
 | `packages/ui` imports neither the app nor the adapter | The design system stays reusable |
 | Nothing that ships imports `@tests` or the SDK test double | Builders and fakes stay out of the bundle |
+| A feature's `.spec.ts` files are all under its `tests/` | Source folders list source, not half tests |
 | `scripts/aliases.mjs` and the `paths` in `front/tsconfig.json` agree | The two resolvers cannot drift apart |
 
 Three deliberate compromises:
@@ -180,8 +189,12 @@ Vitest on happy-dom, with Vue Test Utils. The suite is component-level: no brows
 backend, seconds to run — see [ADR 0010](docs/adr/0010-component-tests-over-end-to-end.md) for
 what that covers and what it does not.
 
-Two things about it are unusual enough to mention here, both deliberate:
+Three things about it are unusual enough to mention here, all deliberate:
 
+- **There are fewer specs than you may expect, and coverage is not a target.** A spec is
+  written for code with a decision in it — a branch, a dedup, a limit, an ordering constraint.
+  Formatters, factories, type aliases, `api/` wrappers and components get none
+  ([ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)).
 - **Vue warnings fail the test that produced them.** A prop of the wrong type or a missing
   injection is a failure, not console noise.
 - **Components mount against the app's real translations**, so an assertion reads as what a

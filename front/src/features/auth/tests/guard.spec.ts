@@ -1,8 +1,8 @@
 import { aUser, fakeAuthProvider } from '@tests';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
-import { authGuard } from './guard';
-import { routesNames } from './routes';
+import { authGuard } from '@features/auth/guard';
+import { routesNames } from '@features/auth/routes';
 
 const provider = fakeAuthProvider(aUser());
 

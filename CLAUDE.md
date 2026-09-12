@@ -25,10 +25,17 @@ down, which is what makes it testable without mounting anything.
 | `features/<name>/composables/` | reactive state and orchestration | `vue`, the feature's `api/` and `model/` |
 | `features/<name>/components/` | markup and bindings | anything above |
 | `features/<name>/pages/` | route targets, and what only they use | anything above |
+| `features/<name>/tests/` | the feature's specs — and the only place they may live | anything |
 
-Adding behaviour usually means: a pure function in `model/` with a spec, then a line in a
-composable, then a binding in the template. If you find yourself writing a `computed` that
-makes a decision inside `<script setup>`, it belongs in `model/`.
+Adding behaviour usually means: a pure function in `model/`, then a line in a composable, then
+a binding in the template. If you find yourself writing a `computed` that makes a decision
+inside `<script setup>`, it belongs in `model/`.
+
+**One file per entity or screen, not per concept.** `model/activity.ts` holds the activity's
+types, its factory, its enums and its formatters together; `model/step.ts` does the same for a
+step and the materials and resources hanging off it. A three-line type alias is not a file.
+A composable covers a screen — `useActivitiesList` owns the list, its filters and its add
+button — rather than one slice of one.
 
 Full reasoning in [ADR 0009](docs/adr/0009-logic-lives-outside-components.md); the rest of the
 decisions are in [docs/adr/](docs/adr/README.md), and each feature is documented in
@@ -38,7 +45,13 @@ decisions are in [docs/adr/](docs/adr/README.md), and each feature is documented
 
 [docs/testing.md](docs/testing.md) is the guide. In short:
 
-- Specs sit next to what they cover: `filters.ts` → `filters.spec.ts`.
+- **Specs live in `features/<name>/tests/`**, never beside what they cover. `lint:arch` fails
+  on a `.spec.ts` anywhere else under a feature.
+- **Write one only for code with a decision in it** — a branch over data, a dedup, a limit, an
+  ordering constraint, a translation between two shapes. Type aliases, factories, formatters,
+  `api/` wrappers, components and one-call composables get none. A composable earns a spec only
+  for multi-step orchestration with an ordering or rollback rule
+  ([ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)).
 - Prefer a pure test over a mounted one. Mount only to test the wiring.
 - Import builders, fakes and mount helpers from `@tests`.
 - Fake the **port**, never the SDK: `vi.mock` the feature's `api/` module with a `fakeCrud`.

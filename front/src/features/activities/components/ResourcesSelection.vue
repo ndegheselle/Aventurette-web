@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
-import { resourcesApi as resources } from '@features/activities/api/resources.api';
-import ResourceDisplay from '@features/activities/components/resources/ResourceDisplay.vue';
-import { useStepResources } from '@features/activities/composables/useStepResources';
-import type { ActivityResourceData } from '@features/activities/model/activity';
-import { ACCEPTED_RESOURCE_TYPES } from '@features/activities/model/resource';
+import { resourcesApi as resources } from '@features/activities/api/steps.api';
+import ResourceDisplay from '@features/activities/components/ResourceDisplay.vue';
+import { useStepResources } from '@features/activities/composables/useStepEdit';
+import { ACCEPTED_RESOURCE_TYPES, type ActivityResourceData } from '@features/activities/model/step';
 import { CircleOffIcon, TrashIcon } from 'lucide-vue-next';
 
 /** The step these belong to: a resource is written against it as soon as it is picked. */

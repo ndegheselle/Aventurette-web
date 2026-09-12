@@ -1,6 +1,6 @@
 import { anInterest } from '@tests';
 import { describe, expect, it } from 'vitest';
-import { selectionOf, withSelection } from './interest';
+import { selectionOf, withSelection } from '@features/users/model/interest';
 
 const dinosaurs = anInterest({ name: 'Dinosaurs' });
 const painting = anInterest({ name: 'Painting' });

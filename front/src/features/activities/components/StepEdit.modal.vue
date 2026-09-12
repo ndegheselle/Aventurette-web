@@ -6,10 +6,10 @@ import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
 import { stepsApi } from '@features/activities/api/steps.api';
-import MaterialsSelection from '@features/activities/components/materials/MaterialsSelection.vue';
-import ResourcesSelection from '@features/activities/components/resources/ResourcesSelection.vue';
+import MaterialsSelection from '@features/activities/components/MaterialsSelection.vue';
+import ResourcesSelection from '@features/activities/components/ResourcesSelection.vue';
 import TextEditor from '@features/activities/components/TextEditor.vue';
-import { type ActivityStepData } from '@features/activities/model/activity';
+import { type ActivityStepData } from '@features/activities/model/step';
 import { computed } from 'vue';
 
 // A step is written blank when it is added, so this only ever updates one — what it opens on

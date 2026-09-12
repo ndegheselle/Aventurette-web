@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ClockIcon, MapIcon, UserRoundIcon } from 'lucide-vue-next';
 import type { ActivityData } from '@features/activities/model/activity';
-import { formatAgeRange } from '@features/activities/model/age';
+import { formatAgeRange } from '@features/activities/model/activity';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 

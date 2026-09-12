@@ -12,11 +12,13 @@ import {
     ActivityEnvironment,
     ActivityState,
     type ActivityData,
-    type ActivityResourceData,
-    type ActivityStepData,
+    type BenefitData,
 } from '@features/activities/model/activity';
-import type { BenefitData } from '@features/activities/model/benefit';
-import type { ActivityMaterialData } from '@features/activities/model/material';
+import type {
+    ActivityMaterialData,
+    ActivityResourceData,
+    ActivityStepData,
+} from '@features/activities/model/step';
 import type { ChildrenData } from '@features/users/model/child';
 import type { InterestData } from '@features/users/model/interest';
 import type { UserData } from '@features/users/model/user';

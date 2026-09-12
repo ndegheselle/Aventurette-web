@@ -29,7 +29,8 @@ holds things scoped to those pages. A file belongs in `pages/` when nothing outs
 folder has a reason to import it; the moment a second part of the feature wants it, it moves
 to `components/`.
 
-Specs sit next to what they cover: `filters.ts` and `filters.spec.ts` in the same folder.
+Specs sat next to what they cover when this was written. They live in the feature's
+`tests/` folder now — see [0013](0013-specs-live-in-a-feature-tests-folder.md).
 
 ## Consequences
 

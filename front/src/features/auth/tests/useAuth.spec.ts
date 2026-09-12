@@ -4,7 +4,7 @@ import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { UserData } from '@features/users/model/user';
 import { routesNames } from '@features/auth/routes';
-import { useAuth } from './useAuth';
+import { useAuth } from '@features/auth/composables/useAuth';
 
 const user = aUser({ email: 'parent@example.com' });
 const provider = fakeAuthProvider<UserData>(user);
