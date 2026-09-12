@@ -2,9 +2,9 @@
 import List from '@chapelure/ui/data/List.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
+import AcitivityMetadaDisplay from '@features/activities/components/ActivityMetadataDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
-import StepSummary from '@features/activities/components/steps/StepSummary.vue';
+import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivity } from '@features/activities/composables/useActivity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, CalendarIcon, FileTextIcon, HeartIcon, ListOrderedIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon } from 'lucide-vue-next';

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ActivityMaterialData } from "@features/activities/model/material";
+import { type ActivityMaterialData } from "@features/activities/model/step";
 
 const { material } = defineProps<{
     material: ActivityMaterialData;

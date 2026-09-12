@@ -1,7 +1,12 @@
-import { ActivitiesEnvironmentOptions, ActivitiesStateOptions, type ActivitiesResponse, type ActivitiesStepsResponse, type StepsResourcesResponse } from "@/backend/schema.g.ts";
+import { ActivitiesEnvironmentOptions, ActivitiesStateOptions, type ActivitiesResponse, type BenefitsResponse } from "@/backend/schema.g";
 import type { Expanded } from "@chapelure/core";
-import type { BenefitData } from "@features/activities/model/benefit";
-import type { ActivityMaterialData } from "@features/activities/model/material";
+import {
+    EMPTY_DESCRIPTION,
+    STEP_RELATIONS,
+    type ActivityMaterialData,
+    type ActivityResourceData,
+    type ActivityStepData,
+} from "@features/activities/model/step";
 
 // Relations arrive inlined — `activity.steps` holds the steps themselves. What is listed here
 // has to match ACTIVITY_RELATIONS below; nothing checks that for us.
@@ -10,24 +15,15 @@ export type ActivityData = Expanded<ActivitiesResponse, {
     steps: ActivityStepData[];
 }>;
 
-export type ActivityStepData = Expanded<ActivitiesStepsResponse, {
-    materials: ActivityMaterialData[];
-    resources: ActivityResourceData[];
-}>;
-
-/**
- * A resource is always a record: a picked file is uploaded the moment it is chosen, so `file`
- * only ever holds the name of a stored file — never the upload itself. It belongs to the step
- * it was uploaded for, which is what `step` says.
- */
-export type ActivityResourceData = StepsResourcesResponse;
+export type BenefitData = BenefitsResponse;
 
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 
 export const ActivityState = ActivitiesStateOptions;
 
-/** Relations to fetch alongside a step, and to write back as ids when one is saved. */
-export const STEP_RELATIONS = ["materials", "resources"];
+// Both an activity and a step seed their description with this. It is declared in `step.ts`
+// because this file imports that one and not the other way round.
+export { EMPTY_DESCRIPTION };
 
 /** Relations to fetch alongside an activity for the detail and edit screens. */
 export const ACTIVITY_RELATIONS = [
@@ -35,8 +31,23 @@ export const ACTIVITY_RELATIONS = [
     "steps", ...STEP_RELATIONS.map(relation => `steps.${relation}`),
 ];
 
-/** What a required editor field holds when there is nothing in it yet. */
-export const EMPTY_DESCRIPTION = "<p></p>";
+/**
+ * The environments offered in filters and the edit form, in display order.
+ * `label` is a translation key — this is domain data, not translations, which is why it
+ * does not live under locales/.
+ */
+export const availablesEnvironments = [
+    { label: 'activities.environment.INDOOR', value: ActivityEnvironment.INDOOR },
+    { label: 'activities.environment.OUTDOOR', value: ActivityEnvironment.OUTDOOR },
+    { label: 'activities.environment.CLASSROOM', value: ActivityEnvironment.CLASSROOM },
+    { label: 'activities.environment.CAR', value: ActivityEnvironment.CAR },
+];
+
+/**
+ * A translation lookup. Declared structurally rather than importing vue-i18n's
+ * ComposerTranslation, so the model layer stays free of framework types.
+ */
+export type Translate = (key: string, params?: Record<string, unknown>) => string;
 
 /**
  * A blank activity: what is written when the user starts one, and what the edit form binds to
@@ -60,20 +71,17 @@ export function createEmptyActivity(): ActivityData {
     } as ActivityData;
 }
 
-/**
- * A blank step, written the moment one is added.
- *
- * `description` is seeded for the same reason an activity's is: the collection requires it,
- * and the step exists before it is filled in. `activity` is the owner the collection requires
- * too — a step is not a free-floating record that an activity later points at.
- */
-export function createEmptyStep(activity: string): ActivityStepData {
-    return {
-        activity,
-        description: EMPTY_DESCRIPTION,
-        materials: [] as ActivityMaterialData[],
-        resources: [] as ActivityResourceData[],
-    } as ActivityStepData;
+/** Render an age range, tolerating either bound being missing. */
+export function formatAgeRange(t: Translate, ageMin?: number | null, ageMax?: number | null): string | null {
+    if (ageMin && ageMax) {
+        return t('activities.age.range', { min: ageMin, max: ageMax });
+    } else if (ageMin) {
+        return t('activities.age.minOnly', { min: ageMin });
+    } else if (ageMax) {
+        return t('activities.age.maxOnly', { max: ageMax });
+    }
+
+    return null;
 }
 
 /**

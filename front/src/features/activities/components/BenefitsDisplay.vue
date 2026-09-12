@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BenefitData } from '@features/activities/model/benefit';
+import type { BenefitData } from '@features/activities/model/activity';
 
 const { benefits } = defineProps<{
     benefits?: BenefitData[]

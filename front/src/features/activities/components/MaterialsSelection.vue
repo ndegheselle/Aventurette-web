@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
-import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
-import { useStepMaterials } from '@features/activities/composables/useStepMaterials';
-import { type ActivityMaterialData } from '@features/activities/model/material';
+import MaterialDisplay from '@features/activities/components/MaterialDisplay.vue';
+import { useStepMaterials } from '@features/activities/composables/useStepEdit';
+import { type ActivityMaterialData } from '@features/activities/model/step';
 import { CircleOffIcon, CircleQuestionMarkIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 

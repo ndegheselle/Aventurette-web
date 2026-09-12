@@ -1,34 +1,29 @@
 <script setup lang="ts">
-import type { FilterGroup } from '@chapelure/core';
 import { useModal } from '@chapelure/ui/composables/useModal';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import Field from '@chapelure/ui/forms/Field.vue';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
-import { useActivityFilters } from '@features/activities/composables/useActivityFilters';
-import { type ActivityData } from '@features/activities/model/activity';
-import { formatAgeRange } from '@features/activities/model/age';
-import { availablesEnvironments } from '@features/activities/model/environment';
+import type { ActivityFilters } from '@features/activities/composables/useActivitiesList';
+import { availablesEnvironments, formatAgeRange } from '@features/activities/model/activity';
 import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
-const model = defineModel<FilterGroup<ActivityData>>();
 
-const emit = defineEmits<{
-    (e: 'change', value: FilterGroup<ActivityData>): void;
-}>();
+/**
+ * The list screen's filter state, owned by `useActivitiesList`. Handed down whole rather than
+ * as ten props — and rebuilt into a query there, next to the call that sends it.
+ */
+const props = defineProps<{ filters: ActivityFilters }>();
 
 // Destructured so the template sees plain bindings: a ref reached through an object is not
 // unwrapped in templates, only a top-level one is.
 const {
     search, applied, draft, availableBenefits, draftBenefits, showsAdvancedBadge,
     apply, openDraft, discardDraft, applyDraft, resetDraft,
-} = useActivityFilters(group => {
-    model.value = group;
-    emit('change', group);
-});
+} = props.filters;
 
 // The modal is only a way to edit the draft; the composable owns what that means.
 const controller = useModal({
@@ -61,7 +56,7 @@ const ageDisplay = computed(() => formatAgeRange(t, applied.ageMin, applied.ageM
         <button class="btn btn-sm ms-auto" @click="() => controller.show()">
             <FunnelIcon />
             {{ $t('actions.filter') }}
-            <!-- An indicator, not a count — see hasAdvancedCriteria in model/filters.ts. -->
+            <!-- An indicator, not a count — see hasAdvancedCriteria in model/activity.filters.ts. -->
             <span v-if="showsAdvancedBadge" class="badge badge-primary badge-sm">1</span>
         </button>
     </section>

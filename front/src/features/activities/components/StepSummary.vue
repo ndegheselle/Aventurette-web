@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ActivityStepData } from "@features/activities/model/activity";
+import { type ActivityStepData } from "@features/activities/model/step";
 
 const { index, step } = defineProps<{
     index: number;
