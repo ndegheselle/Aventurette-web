@@ -36,7 +36,7 @@ config.global.stubs = {
  * fail the test that produced them.
  *
  * vue-i18n's warnings are deliberately not in this list: an untranslated key is allowed to
- * render as its own path, so it is not a defect. See ADR 0013.
+ * render as its own path, so it is not a defect. See ADR 0011.
  *
  * Add to ALLOWED only for a warning that is genuinely the environment talking, with a comment
  * saying which. Anything else belongs fixed, not silenced.

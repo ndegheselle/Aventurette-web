@@ -91,7 +91,7 @@ is in `tests/setup.ts`; add to its `ALLOWED` only for a warning that is genuinel
 environment talking, with a comment saying which.
 
 vue-i18n's warnings are **not** in that list. An untranslated key renders as its own path and
-fails nothing ([ADR 0013](adr/0013-translations-may-be-incomplete.md)).
+fails nothing ([ADR 0011](adr/0011-tests-fail-on-vue-warnings.md)).
 
 ## Translations are real, but not required to be complete
 

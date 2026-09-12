@@ -46,8 +46,8 @@ decisions are in [docs/adr/](docs/adr/README.md), and each feature is documented
 
 A **Vue warning** fails a test on purpose — a wrong prop type, a missing injection. vue-i18n's
 warnings do not: an untranslated key renders as its own path and fails nothing
-([ADR 0013](docs/adr/0013-translations-may-be-incomplete.md)). Components still mount against
-the app's real catalogue, so assertions are on the copy a user would read.
+([ADR 0011](docs/adr/0011-tests-fail-on-vue-warnings.md)). Components still mount against the
+app's real catalogue, so assertions are on the copy a user would read.
 
 ## Conventions
 

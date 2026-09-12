@@ -19,9 +19,8 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0008](0008-boundaries-are-enforced-by-a-script.md) | The boundaries are enforced by a script, not by convention | Accepted |
 | [0009](0009-logic-lives-outside-components.md) | Logic lives in `model/` and `composables/`, not in components | Accepted |
 | [0010](0010-component-tests-over-end-to-end.md) | The suite is component tests, not end-to-end | Accepted |
-| [0011](0011-tests-fail-on-warnings-and-missing-translations.md) | Tests use the real translations and fail on warnings | Superseded by 0013 |
+| [0011](0011-tests-fail-on-vue-warnings.md) | Tests fail on Vue warnings, and use the real translations | Accepted |
 | [0012](0012-fakes-at-the-port-not-the-sdk.md) | Tests fake the port, never the SDK | Accepted |
-| [0013](0013-translations-may-be-incomplete.md) | Translations may be incomplete | Accepted |
 
 ## Writing a new one
 

@@ -187,7 +187,7 @@ Two things about it are unusual enough to mention here, both deliberate:
 - **Components mount against the app's real translations**, so an assertion reads as what a
   user would see. Completeness is not enforced: locales may be uneven and an untranslated key
   renders as its own path
-  ([ADR 0013](docs/adr/0013-translations-may-be-incomplete.md)).
+  ([ADR 0011](docs/adr/0011-tests-fail-on-vue-warnings.md)).
 
 The toolkit — builders, in-memory fakes for the `@chapelure/core` ports, and the mount
 helpers — is in `tests/`, imported as `@tests`, and cannot reach the bundle.

@@ -8,4 +8,4 @@
 export * from './builders';
 export * from './fakes';
 export * from './mount';
-export { TEST_LOCALE, createTestI18n } from './i18n';
+export { TEST_LOCALE, testI18n } from './i18n';

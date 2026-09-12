@@ -1,6 +1,63 @@
 import { SETTINGS_STORAGE_KEYS } from '@chapelure/ui/settings/useSettings';
 import { createI18n } from 'vue-i18n';
-import { DEFAULT_LOCALE, messages } from '@/app/messages';
+
+// The design system ships its own strings (actions, data, validation, settings, inputs...).
+// The app imports them explicitly rather than the library globbing the app's folders, which
+// is what used to make @chapelure/ui depend on this project's layout.
+import uiEn from '@chapelure/ui/locales/en.json';
+import uiFr from '@chapelure/ui/locales/fr.json';
+
+/** Every string exists here, so it is both the boot default and the fallback for any gap. */
+export const DEFAULT_LOCALE = 'fr';
+
+type Messages = Record<string, any>;
+
+// Feature translations are colocated with their feature and picked up automatically.
+const featureFiles = import.meta.glob('@/features/**/locales/*.json', { eager: true });
+
+/**
+ * Recursive merge. A shallow spread would let two files that share a top-level key silently
+ * drop each other's subtrees (features/auth owns "users", and any feature could add one).
+ */
+function mergeMessages(target: Messages, source: Messages): Messages {
+    for (const [key, value] of Object.entries(source)) {
+        const existing = target[key];
+        if (isPlainObject(existing) && isPlainObject(value)) {
+            mergeMessages(existing, value);
+        } else {
+            target[key] = value;
+        }
+    }
+    return target;
+}
+
+function isPlainObject(value: unknown): value is Messages {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * The whole catalogue: design system strings first, then every feature's, merged in.
+ *
+ * Exported because the test suite mounts components against these same messages, so an
+ * assertion reads as the copy a user would see rather than as a key path.
+ */
+export const messages: Record<string, Messages> = {
+    fr: mergeMessages({}, uiFr),
+    en: mergeMessages({}, uiEn),
+};
+
+for (const path in featureFiles) {
+    const match = path.match(/\/locales\/([\w-]+)\.json$/);
+    if (!match) continue;
+
+    const locale = match[1];
+    if (!locale) continue;
+
+    const mod = featureFiles[path] as { default: Messages };
+
+    messages[locale] ??= {};
+    mergeMessages(messages[locale], mod.default);
+}
 
 /**
  * A stored value can outlive the locale it names (renamed code, removed translation). Falling
