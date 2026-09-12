@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { resourcesApi as resources } from '@features/activities/api/resources.api';
 import { useAlert } from '@chapelure/ui/composables/useAlert';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
+import { resourcesApi as resources } from '@features/activities/api/resources.api';
 import ResourceDisplay from '@features/activities/components/resources/ResourceDisplay.vue';
 import { isUploadedResource, type StepResourceData } from '@features/activities/model/activity';
+import {
+    ACCEPTED_RESOURCE_TYPES,
+    addResourcesWithinLimit,
+    MAX_STEP_RESOURCES,
+    resourceKey,
+} from '@features/activities/model/resource';
 import { CircleOffIcon, TrashIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
-
-/** Kept in step with the `constraints` string below. */
-const MAX_FILES = 10;
 
 const selected = defineModel<StepResourceData[]>({ default: () => [] });
 
@@ -18,17 +21,16 @@ const alert = useAlert();
 /**
  * Picked files go straight into the model — the step is what owns its resources, so a file
  * waiting to be uploaded has to travel with it and not sit in a ref this component keeps.
- * FilesInput has already turned down anything of the wrong format or size.
+ * FilesInput has already turned down anything of the wrong format or size; what is left to
+ * enforce is how many one step may hold.
  */
 function addFiles(added: File[]) {
-    const room = MAX_FILES - selected.value.length;
-    if (added.length > room) {
-        alert.error(t('inputs.file.upload.exceedNumber', { number: MAX_FILES }));
-        added = added.slice(0, Math.max(room, 0));
-    }
-    if (!added.length) return;
+    const { resources: next, rejected } = addResourcesWithinLimit(selected.value, added);
 
-    selected.value = [...selected.value, ...added.map(file => ({ file, name: file.name }))];
+    if (rejected)
+        alert.error(t('inputs.file.upload.exceedNumber', { number: MAX_STEP_RESOURCES }));
+
+    selected.value = next;
 }
 
 function removeItem(index: number) {
@@ -39,20 +41,16 @@ function removeItem(index: number) {
 function sourceOf(resource: StepResourceData): string | File {
     return isUploadedResource(resource) ? resources.getFileUrl(resource) : resource.file;
 }
-
-function keyOf(resource: StepResourceData): string {
-    return isUploadedResource(resource) ? resource.id : resource.file.name;
-}
 </script>
 
 <template>
-    <FilesInput accept=".png,.jpeg,.jpg,.pdf" multiple @change="addFiles">
+    <FilesInput :accept="ACCEPTED_RESOURCE_TYPES" multiple @change="addFiles">
         <template #constraints>
             {{ $t('activities.steps.fields.resources.constraints') }}
         </template>
     </FilesInput>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
-        <ResourceDisplay v-for="(resource, index) in selected" :key="keyOf(resource)" :source="sourceOf(resource)"
+        <ResourceDisplay v-for="(resource, index) in selected" :key="resourceKey(resource)" :source="sourceOf(resource)"
             v-model:name="resource.name" class="relative">
             <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="removeItem(index)">
                 <TrashIcon class="icon-sm" />

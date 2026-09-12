@@ -1,45 +1,36 @@
 <script setup lang="ts">
-import { interestsApi as interests } from '@features/users/api/interests.api';
 import Field from '@chapelure/ui/forms/Field.vue';
-import { type InterestData } from '@features/users/model/interest';
+import { interestsApi as interests } from '@features/users/api/interests.api';
+import {
+    selectionOf,
+    withSelection,
+    type InterestData,
+    type SelectableInterest,
+} from '@features/users/model/interest';
 import { onMounted, ref, watch } from 'vue';
 
 // `selected` carries whole interests, not ids: that is the shape the child record now holds,
 // and the shape it is saved back in.
 const props = defineProps<{ selected?: InterestData[] }>();
 const emit = defineEmits<{ (e: 'update:selected', value: InterestData[]): void }>();
-const list = ref<(InterestData & { isSelected: boolean })[]>([]);
+
+const available = ref<InterestData[]>([]);
+const list = ref<SelectableInterest[]>([]);
 
 onMounted(async () => {
-    const data = await interests.getAll();
-    list.value = data.map(item => ({ ...item, isSelected: false }));
-    applySelected();
+    available.value = await interests.getAll();
+    list.value = withSelection(available.value, props.selected);
 });
 
-const applySelected = () => {
-    if (props.selected) {
-        const selectedIds = new Set(props.selected.map(item => item.id));
-        list.value = list.value.map(item => ({
-            ...item,
-            isSelected: selectedIds.has(item.id),
-        }));
-    }
-};
+// Re-mark whenever the child being edited changes under us.
+watch(() => props.selected, () => {
+    list.value = withSelection(available.value, props.selected);
+});
 
-watch(
-    () => props.selected,
-    () => {
-        applySelected();
-    },
-    { immediate: true }
-);
-
-const toggle = (interest: InterestData & { isSelected: boolean }) => {
+function toggle(interest: SelectableInterest) {
     interest.isSelected = !interest.isSelected;
-    emit('update:selected', list.value
-        .filter(i => i.isSelected)
-        .map(({ isSelected, ...item }) => item));
-};
+    emit('update:selected', selectionOf(list.value));
+}
 </script>
 
 <template>
