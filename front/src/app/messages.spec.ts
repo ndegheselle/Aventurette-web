@@ -1,11 +1,12 @@
 /**
- * Translation catalogue guard rails.
+ * The merge is the part with a rule in it: two files sharing a top-level key must not clobber
+ * each other's subtrees.
  *
- * Adding a feature means adding strings, and the failure mode is silent: the key renders as its
- * own path in whichever locale was forgotten. These tests are what makes that loud instead.
+ * Nothing here checks that the catalogue is *complete*. Locales are allowed to be uneven, and
+ * an untranslated key renders as its own path — see ADR 0013.
  */
-import { collectLocaleFiles, mergeMessages, messages } from '@/app/messages';
 import { describe, expect, it } from 'vitest';
+import { collectLocaleFiles, mergeMessages, messages } from './messages';
 
 type Tree = Record<string, unknown>;
 
@@ -21,38 +22,17 @@ function isTree(value: unknown): value is Tree {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-describe('the translation catalogue', () => {
-    it('has the locales the app offers', () => {
-        expect(Object.keys(messages).sort()).toEqual(['en', 'fr']);
+describe('the assembled catalogue', () => {
+    it('picks up the feature translations, so a broken glob cannot pass silently', () => {
+        // The design system's own strings are imported explicitly and would still be here if
+        // import.meta.glob stopped matching. A feature's would not, and nothing else would fail.
+        expect(Object.keys(messages.fr ?? {})).toEqual(expect.arrayContaining(['activities', 'users']));
     });
 
-    it('says the same things in every locale', () => {
-        const [reference, ...others] = Object.keys(messages);
-        const expected = keysOf(messages[reference!]!).sort();
-
-        for (const locale of others)
-            expect(keysOf(messages[locale!]!).sort(), `${locale} is not level with ${reference}`)
-                .toEqual(expected);
-    });
-
-    it('translates something, so a broken glob cannot pass silently', () => {
-        // The feature files are picked up by import.meta.glob. If that ever stops matching, the
-        // catalogue collapses to the design system's strings alone and nothing else would fail.
-        expect(keysOf(messages.fr!)).toContain('activities.fields.age');
-        expect(keysOf(messages.fr!).length).toBeGreaterThan(50);
-    });
-
-    it('leaves no key holding an empty string', () => {
-        const blanks = Object.entries(messages).flatMap(([locale, tree]) =>
-            keysOf(tree).filter(key => resolve(tree, key) === '').map(key => `${locale}:${key}`));
-
-        expect(blanks).toEqual([]);
+    it('keeps the design system\'s strings alongside them', () => {
+        expect(keysOf(messages.fr ?? {})).toContain('actions.search');
     });
 });
-
-function resolve(tree: Tree, path: string): unknown {
-    return path.split('.').reduce<unknown>((node, key) => (node as Tree)?.[key], tree);
-}
 
 describe('mergeMessages', () => {
     it('keeps both subtrees when two files share a top-level key', () => {
@@ -109,6 +89,16 @@ describe('collectLocaleFiles', () => {
         );
 
         expect(collected.en).toEqual({ actions: { save: 'Save' }, users: { title: 'U' } });
+    });
+
+    it('accepts a locale present in one feature and not another', () => {
+        // Locales need not be even. A feature may ship `fr` only.
+        const collected = collectLocaleFiles({
+            '/src/features/activities/locales/en.json': { default: { activities: { title: 'A' } } },
+            '/src/features/users/locales/fr.json': { default: { users: { title: 'U' } } },
+        });
+
+        expect(collected).toEqual({ en: { activities: { title: 'A' } }, fr: { users: { title: 'U' } } });
     });
 
     it('ignores a json file that is not a locale', () => {

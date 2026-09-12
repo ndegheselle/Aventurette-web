@@ -1,6 +1,10 @@
 # 0011 — Tests use the real translations and fail on warnings
 
-**Status:** Accepted
+**Status:** Superseded by [0013](0013-translations-may-be-incomplete.md)
+
+> The half of this decision about Vue warnings still stands. The half about translations was
+> reversed: locales are allowed to be uneven, and an untranslated key is not a test failure.
+> Read [0013](0013-translations-may-be-incomplete.md) for the position that holds today.
 
 ## Context
 

@@ -44,9 +44,10 @@ decisions are in [docs/adr/](docs/adr/README.md), and each feature is documented
 - Fake the **port**, never the SDK: `vi.mock` the feature's `api/` module with a `fakeCrud`.
 - Use `mountWithRouter` when the subject navigates or reads a route param.
 
-Two things will fail a test on purpose: a Vue or vue-i18n **warning**, and a **missing
-translation** — components mount against the app's real catalogue, and `en` and `fr` must hold
-the same keys.
+A **Vue warning** fails a test on purpose — a wrong prop type, a missing injection. vue-i18n's
+warnings do not: an untranslated key renders as its own path and fails nothing
+([ADR 0013](docs/adr/0013-translations-may-be-incomplete.md)). Components still mount against
+the app's real catalogue, so assertions are on the copy a user would read.
 
 ## Conventions
 
@@ -56,8 +57,9 @@ the same keys.
 - **Icons** come straight from `lucide-vue-next` by their real names
   ([ADR 0005](docs/adr/0005-icons-imported-directly.md)).
 - **Imports are non-relative** across folders: `@/`, `@features/`, `@chapelure/*`.
-- **Every user-facing string is a translation key**, added to both `en.json` and `fr.json` in
-  the feature's `locales/`.
+- **Every user-facing string is a translation key**, in the feature's `locales/`. Add it to
+  both `en.json` and `fr.json` where you can — but this is a convention, not a gate, and a
+  locale is allowed to lag. `fr` is the fallback, so a key missing from `en` renders in French.
 - **Destructure a composable** in `<script setup>` — a ref reached through an object is not
   unwrapped in a template.
 - Comments explain *why*, not what. The codebase's existing comments are the register to match.

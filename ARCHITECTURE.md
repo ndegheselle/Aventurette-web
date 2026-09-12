@@ -180,13 +180,14 @@ Vitest on happy-dom, with Vue Test Utils. The suite is component-level: no brows
 backend, seconds to run — see [ADR 0010](docs/adr/0010-component-tests-over-end-to-end.md) for
 what that covers and what it does not.
 
-Two things about it are unusual enough to mention here, both deliberate
-([ADR 0011](docs/adr/0011-tests-fail-on-warnings-and-missing-translations.md)):
+Two things about it are unusual enough to mention here, both deliberate:
 
-- **Vue and vue-i18n warnings fail the test that produced them.** A prop of the wrong type or a
-  missing injection is a failure, not console noise.
-- **Components mount against the app's real translations**, so a missing key fails a test
-  rather than rendering as its own path. A separate spec keeps `en` and `fr` level.
+- **Vue warnings fail the test that produced them.** A prop of the wrong type or a missing
+  injection is a failure, not console noise.
+- **Components mount against the app's real translations**, so an assertion reads as what a
+  user would see. Completeness is not enforced: locales may be uneven and an untranslated key
+  renders as its own path
+  ([ADR 0013](docs/adr/0013-translations-may-be-incomplete.md)).
 
 The toolkit — builders, in-memory fakes for the `@chapelure/core` ports, and the mount
 helpers — is in `tests/`, imported as `@tests`, and cannot reach the bundle.

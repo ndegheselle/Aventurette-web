@@ -83,17 +83,24 @@ It returns the router, so assert where a navigation landed rather than that a fu
 called. `<RouterLink>` stays stubbed even then — assert on link targets with `linkTarget`, and
 navigate with `router.push`.
 
-## Two things that will fail your test
+## Vue warnings are failures
 
-Both are deliberate. See [ADR 0011](adr/0011-tests-fail-on-warnings-and-missing-translations.md).
+Any `[Vue warn]` during a test fails it — a prop of the wrong type, a missing injection, a bad
+template ref. A missing injection usually means the subject needs `mountWithRouter`. The list
+is in `tests/setup.ts`; add to its `ALLOWED` only for a warning that is genuinely the
+environment talking, with a comment saying which.
 
-**Warnings are failures.** Any `[Vue warn]` or vue-i18n missing-key warning during a test fails
-it. A missing injection usually means the subject needs `mountWithRouter`; a missing key means
-a translation was not added.
+vue-i18n's warnings are **not** in that list. An untranslated key renders as its own path and
+fails nothing ([ADR 0013](adr/0013-translations-may-be-incomplete.md)).
 
-**Translations are real.** Components mount against the app's own catalogue at locale `en`, so
-assertions are on English copy. `tests/locales.spec.ts` separately requires `en` and `fr` to
-hold the same keys — add a string to one and the suite tells you about the other.
+## Translations are real, but not required to be complete
+
+Components mount against the app's own catalogue at locale `en`, so assertions read as what a
+user would see. Nothing requires `en` and `fr` to hold the same keys.
+
+One thing to know when a copy assertion fails oddly: `fallbackLocale` is `fr`, so a key missing
+from `en` renders in French rather than as a key path. The failure reads as a wrong-copy
+mismatch, not as a missing translation.
 
 ## Gotchas
 

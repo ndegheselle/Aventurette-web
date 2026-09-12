@@ -4,9 +4,12 @@ import { DEFAULT_LOCALE, messages } from '@/app/messages';
 /**
  * The app's own catalogue, not a stub of it.
  *
- * Mounting against the real strings is what turns a forgotten translation into a failing
- * test: vue-i18n warns on a missing key, and tests/setup.ts fails the test on that warning.
- * Tests therefore assert on English copy, and the locales parity spec keeps `fr` level with it.
+ * Mounting against the real strings means a test asserts on what a user would actually read,
+ * so `wrapper.text()` is checked against English copy rather than against key paths.
+ *
+ * Completeness is not enforced — an untranslated key renders as its own path and no test fails
+ * for it (ADR 0013). `en` is missing a string only a French-first catalogue has: vue-i18n falls
+ * back to `fr`, so such a key renders in French here.
  */
 export const TEST_LOCALE = 'en';
 

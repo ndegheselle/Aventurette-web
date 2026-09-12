@@ -31,17 +31,18 @@ config.global.stubs = {
 };
 
 /*
- * Warnings that mean the code under test is wrong — a missing translation, a prop of the wrong
- * type, a bad template ref — are silent in a normal run and easy to accumulate. Here they fail
- * the test that produced them.
+ * Warnings that mean the code under test is wrong — a prop of the wrong type, a missing
+ * injection, a bad template ref — are silent in a normal run and easy to accumulate. Here they
+ * fail the test that produced them.
+ *
+ * vue-i18n's warnings are deliberately not in this list: an untranslated key is allowed to
+ * render as its own path, so it is not a defect. See ADR 0013.
  *
  * Add to ALLOWED only for a warning that is genuinely the environment talking, with a comment
  * saying which. Anything else belongs fixed, not silenced.
  */
 const FATAL = [
     /\[Vue warn\]/,
-    /\[intlify\]/,
-    /Not found '.+' key in/,
 ];
 
 const ALLOWED: RegExp[] = [];
