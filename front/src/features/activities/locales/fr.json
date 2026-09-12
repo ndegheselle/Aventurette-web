@@ -9,11 +9,13 @@
                 "resources": {
                     "title": "Ressources",
                     "constraints": "Formats PNG, JPEG, JPG et PDF. 10 fichiers max, 2MB max par fichier.",
-                    "empty": "Aucune ressource"
+                    "empty": "Aucune ressource",
+                    "uploadFailed": "L'envoi du fichier a échoué."
                 },
                 "materials": {
                     "title": "Matériel",
-                    "notNeeded": "Aucun matériel requis"
+                    "notNeeded": "Aucun matériel requis",
+                    "create": "Créer « {name} »"
                 }
             }
         },
@@ -51,6 +53,7 @@
             "OUTDOOR": "Extérieur",
             "CLASSROOM": "Classe",
             "CAR": "Voiture"
-        }
+        },
+        "untitled": "Nouvelle activité"
     }
 }

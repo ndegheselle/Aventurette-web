@@ -1,58 +1,34 @@
 <script setup lang="ts">
-import { useAlert } from '@chapelure/ui/composables/useAlert';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import { resourcesApi as resources } from '@features/activities/api/resources.api';
 import ResourceDisplay from '@features/activities/components/resources/ResourceDisplay.vue';
-import { isUploadedResource, type StepResourceData } from '@features/activities/model/activity';
-import {
-    ACCEPTED_RESOURCE_TYPES,
-    addResourcesWithinLimit,
-    MAX_STEP_RESOURCES,
-    resourceKey,
-} from '@features/activities/model/resource';
+import { useStepResources } from '@features/activities/composables/useStepResources';
+import type { ActivityResourceData } from '@features/activities/model/activity';
+import { ACCEPTED_RESOURCE_TYPES } from '@features/activities/model/resource';
 import { CircleOffIcon, TrashIcon } from 'lucide-vue-next';
-import { useI18n } from 'vue-i18n';
 
-const selected = defineModel<StepResourceData[]>({ default: () => [] });
-
-const { t } = useI18n();
-const alert = useAlert();
+/** The step these belong to: a resource is written against it as soon as it is picked. */
+const props = defineProps<{ step: string }>();
 
 /**
- * Picked files go straight into the model — the step is what owns its resources, so a file
- * waiting to be uploaded has to travel with it and not sit in a ref this component keeps.
- * FilesInput has already turned down anything of the wrong format or size; what is left to
- * enforce is how many one step may hold.
+ * A picked file is uploaded on the spot, so what this binds is a list of records — the step
+ * never carries an upload waiting for it to be saved.
  */
-function addFiles(added: File[]) {
-    const { resources: next, rejected } = addResourcesWithinLimit(selected.value, added);
+const selected = defineModel<ActivityResourceData[]>({ default: () => [] });
 
-    if (rejected)
-        alert.error(t('inputs.file.upload.exceedNumber', { number: MAX_STEP_RESOURCES }));
-
-    selected.value = next;
-}
-
-function removeItem(index: number) {
-    selected.value = selected.value.filter((_, i) => i !== index);
-}
-
-/** What the tile previews: the url of a stored file, or the file itself while it is pending. */
-function sourceOf(resource: StepResourceData): string | File {
-    return isUploadedResource(resource) ? resources.getFileUrl(resource) : resource.file;
-}
+const { add, remove } = useStepResources(selected, () => props.step);
 </script>
 
 <template>
-    <FilesInput :accept="ACCEPTED_RESOURCE_TYPES" multiple @change="addFiles">
+    <FilesInput :accept="ACCEPTED_RESOURCE_TYPES" multiple @change="add">
         <template #constraints>
             {{ $t('activities.steps.fields.resources.constraints') }}
         </template>
     </FilesInput>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
-        <ResourceDisplay v-for="(resource, index) in selected" :key="resourceKey(resource)" :source="sourceOf(resource)"
-            v-model:name="resource.name" class="relative">
-            <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="removeItem(index)">
+        <ResourceDisplay v-for="(resource, index) in selected" :key="resource.id"
+            :source="resources.getFileUrl(resource)" v-model:name="resource.name" class="relative">
+            <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="remove(index)">
                 <TrashIcon class="icon-sm" />
             </button>
         </ResourceDisplay>

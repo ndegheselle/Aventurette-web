@@ -9,11 +9,13 @@
                 "resources": {
                     "title": "Resources",
                     "constraints": "PNG, JPEG, JPG and PDF formats. 10 files max, 2MB max per file.",
-                    "empty": "No resources"
+                    "empty": "No resources",
+                    "uploadFailed": "The file could not be uploaded."
                 },
                 "materials": {
                     "title": "Materials",
-                    "notNeeded": "No materials required"
+                    "notNeeded": "No materials required",
+                    "create": "Add \"{name}\""
                 }
             }
         },
@@ -51,6 +53,7 @@
             "OUTDOOR": "Outdoors",
             "CLASSROOM": "Classroom",
             "CAR": "Car"
-        }
+        },
+        "untitled": "New activity"
     }
 }

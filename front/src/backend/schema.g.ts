@@ -12,12 +12,12 @@ export const Collections = {
 	Otps: "_otps",
 	Superusers: "_superusers",
 	Activities: "activities",
-	ActivitiesMaterials: "activities_materials",
-	ActivitiesResources: "activities_resources",
 	ActivitiesSteps: "activities_steps",
 	Benefits: "benefits",
 	Childrens: "childrens",
 	Interests: "interests",
+	StepsMaterials: "steps_materials",
+	StepsResources: "steps_resources",
 	Users: "users",
 } as const
 export type Collections = typeof Collections[keyof typeof Collections]
@@ -107,6 +107,12 @@ export const ActivitiesEnvironmentOptions = {
 	"CAR": "CAR",
 } as const
 export type ActivitiesEnvironmentOptions = typeof ActivitiesEnvironmentOptions[keyof typeof ActivitiesEnvironmentOptions]
+
+export const ActivitiesStateOptions = {
+	"DRAFT": "DRAFT",
+	"VALIDATED": "VALIDATED",
+} as const
+export type ActivitiesStateOptions = typeof ActivitiesStateOptions[keyof typeof ActivitiesStateOptions]
 export type ActivitiesRecord = {
 	ageMax?: number
 	ageMin?: number
@@ -117,27 +123,14 @@ export type ActivitiesRecord = {
 	environment: ActivitiesEnvironmentOptions
 	id: string
 	name: string
+	state: ActivitiesStateOptions
 	steps?: RecordIdString[]
 	updated: IsoAutoDateString
 	user: RecordIdString
 }
 
-export type ActivitiesMaterialsRecord = {
-	created: IsoAutoDateString
-	id: string
-	name: string
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesResourcesRecord = {
-	created: IsoAutoDateString
-	file?: FileNameString
-	id: string
-	name: string
-	updated: IsoAutoDateString
-}
-
 export type ActivitiesStepsRecord = {
+	activity: RecordIdString
 	created: IsoAutoDateString
 	description: HTMLString
 	id: string
@@ -170,6 +163,23 @@ export type InterestsRecord = {
 	updated: IsoAutoDateString
 }
 
+export type StepsMaterialsRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	step: RecordIdString
+	updated: IsoAutoDateString
+}
+
+export type StepsResourcesRecord = {
+	created: IsoAutoDateString
+	file?: FileNameString
+	id: string
+	name: string
+	step: RecordIdString
+	updated: IsoAutoDateString
+}
+
 export const UsersTypeOptions = {
 	"PERSONNAL": "PERSONNAL",
 	"ASSOCIATION": "ASSOCIATION",
@@ -196,12 +206,12 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
-export type ActivitiesMaterialsResponse<Texpand = unknown> = Required<ActivitiesMaterialsRecord> & BaseSystemFields<Texpand>
-export type ActivitiesResourcesResponse<Texpand = unknown> = Required<ActivitiesResourcesRecord> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
 export type BenefitsResponse<Texpand = unknown> = Required<BenefitsRecord> & BaseSystemFields<Texpand>
 export type ChildrensResponse<Texpand = unknown> = Required<ChildrensRecord> & BaseSystemFields<Texpand>
 export type InterestsResponse<Texpand = unknown> = Required<InterestsRecord> & BaseSystemFields<Texpand>
+export type StepsMaterialsResponse<Texpand = unknown> = Required<StepsMaterialsRecord> & BaseSystemFields<Texpand>
+export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -213,12 +223,12 @@ export type CollectionRecords = {
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
 	activities: ActivitiesRecord
-	activities_materials: ActivitiesMaterialsRecord
-	activities_resources: ActivitiesResourcesRecord
 	activities_steps: ActivitiesStepsRecord
 	benefits: BenefitsRecord
 	childrens: ChildrensRecord
 	interests: InterestsRecord
+	steps_materials: StepsMaterialsRecord
+	steps_resources: StepsResourcesRecord
 	users: UsersRecord
 }
 
@@ -229,12 +239,12 @@ export type CollectionResponses = {
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
 	activities: ActivitiesResponse
-	activities_materials: ActivitiesMaterialsResponse
-	activities_resources: ActivitiesResourcesResponse
 	activities_steps: ActivitiesStepsResponse
 	benefits: BenefitsResponse
 	childrens: ChildrensResponse
 	interests: InterestsResponse
+	steps_materials: StepsMaterialsResponse
+	steps_resources: StepsResourcesResponse
 	users: UsersResponse
 }
 

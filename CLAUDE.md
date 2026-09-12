@@ -69,6 +69,11 @@ app's real catalogue, so assertions are on the copy a user would read.
 - `ACTIVITY_RELATIONS` and what `Expanded<>` declares on `ActivityData` must match, and nothing
   checks them against each other ([ADR 0007](docs/adr/0007-relations-are-inlined-by-the-adapter.md)).
 - Relations read as records but **write as ids**. Saving a parent does not save its children.
+- Most relations in the schema have **`cascadeDelete` on, and it points the other way than you
+  would guess**: deleting a record deletes whatever points at it, and only once that leaves the
+  pointing record with no references left. Deleting an activity's *last* step deletes the
+  activity; deleting a material takes every step it was the only material of. Unlink first,
+  then delete.
 - Adding an alias means adding it in `scripts/aliases.mjs` *and* `front/tsconfig.json`;
   `lint:arch` fails if they drift.
 - Tailwind does not scan `node_modules`, so `front/src/app/styles/index.css` declares

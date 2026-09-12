@@ -10,6 +10,7 @@
 import { UsersTypeOptions } from '@/backend/schema.g';
 import {
     ActivityEnvironment,
+    ActivityState,
     type ActivityData,
     type ActivityResourceData,
     type ActivityStepData,
@@ -35,7 +36,13 @@ export function aBenefit(overrides: Partial<BenefitData> = {}): BenefitData {
 }
 
 export function aMaterial(overrides: Partial<ActivityMaterialData> = {}): ActivityMaterialData {
-    return { ...SYSTEM, id: nextId('mat'), name: 'Rope', ...overrides } as ActivityMaterialData;
+    return {
+        ...SYSTEM,
+        id: nextId('mat'),
+        name: 'Rope',
+        step: nextId('stp'),
+        ...overrides,
+    } as ActivityMaterialData;
 }
 
 export function aResource(
@@ -46,6 +53,7 @@ export function aResource(
         id: nextId('res'),
         name: 'Rules sheet',
         file: 'rules.pdf',
+        step: nextId('stp'),
         ...overrides,
     } as ActivityResourceData;
 }
@@ -54,6 +62,7 @@ export function aStep(overrides: Partial<ActivityStepData> = {}): ActivityStepDa
     return {
         ...SYSTEM,
         id: nextId('stp'),
+        activity: nextId('act'),
         description: '<p>Line everyone up.</p>',
         materials: [],
         resources: [],
@@ -68,6 +77,7 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
         name: 'Treasure hunt',
         description: '<p>Hide, then seek.</p>',
         environment: ActivityEnvironment.OUTDOOR,
+        state: ActivityState.DRAFT,
         ageMin: 6,
         ageMax: 10,
         durationMinutes: 45,

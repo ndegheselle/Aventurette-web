@@ -6,19 +6,25 @@ import ActivitiesFilters from '@features/activities/components/activities/Activi
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
+import { useNewActivity } from '@features/activities/composables/useNewActivity';
 import { routesNames } from '@features/activities/routes';
 import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 
 const { paginated, filters, refresh } = useActivitiesList();
+
+// Adding one writes it straight away and opens the editor on it — see `useNewActivity`.
+const { isLoading, start } = useNewActivity();
 </script>
 
 <template>
     <Container>
-        <RouterLink class="btn btn-primary"
-                    :to="{ name: routesNames.edit.description, params: { id: 'new' } }">
+        <button class="btn btn-primary"
+                :disabled="isLoading"
+                @click="start">
+            <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
             <PlusIcon />
             {{ $t('actions.add') }}
-        </RouterLink>
+        </button>
         <ActivitiesFilters @change="refresh"
                            v-model="filters" />
         <List :items="paginated.items"

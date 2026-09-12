@@ -1,27 +1,30 @@
-import { aMaterial, aPickedFile, aResource, aStep, anActivity } from '@tests';
+import { aMaterial, aResource, aStep, anActivity } from '@tests';
 import { describe, expect, it } from 'vitest';
-import { createEmptyStep, isUploadedResource, materialsOf, resourcesOf } from './activity';
+import { createEmptyActivity, createEmptyStep, EMPTY_DESCRIPTION, materialsOf, resourcesOf } from './activity';
 
-describe('isUploadedResource', () => {
-    it('recognises a saved resource by its stored filename', () => {
-        expect(isUploadedResource(aResource({ file: 'rules.pdf' }))).toBe(true);
-    });
+describe('createEmptyActivity', () => {
+    it('fills in what the collection requires, so an activity can be created before it is written', () => {
+        const activity = createEmptyActivity();
 
-    it('recognises one still waiting to be uploaded by its File', () => {
-        expect(isUploadedResource({ file: aPickedFile('map.png'), name: 'map.png' })).toBe(false);
+        expect(activity.description).toBe(EMPTY_DESCRIPTION);
+        expect(activity.environment).toBeDefined();
     });
 });
 
 describe('createEmptyStep', () => {
     it('starts with room for materials and resources, so the editor can push into them', () => {
-        const step = createEmptyStep();
+        const step = createEmptyStep('act-1');
 
         expect(step.materials).toEqual([]);
         expect(step.resources).toEqual([]);
     });
 
+    it('belongs to the activity it was created for, which the collection requires', () => {
+        expect(createEmptyStep('act-1').activity).toBe('act-1');
+    });
+
     it('gives each call its own arrays', () => {
-        expect(createEmptyStep().materials).not.toBe(createEmptyStep().materials);
+        expect(createEmptyStep('act-1').materials).not.toBe(createEmptyStep('act-1').materials);
     });
 });
 
@@ -63,11 +66,10 @@ describe('resourcesOf', () => {
         expect(resourcesOf(activity).map(r => r.name)).toEqual(['Rules sheet', 'Map']);
     });
 
-    it('leaves out files not uploaded yet, which have no url to show', () => {
+    it('lists a resource shared by two steps once', () => {
+        const sheet = aResource({ name: 'Rules sheet' });
         const activity = anActivity({
-            steps: [aStep({
-                resources: [aResource(), { file: aPickedFile('pending.png'), name: 'pending.png' }],
-            })],
+            steps: [aStep({ resources: [sheet] }), aStep({ resources: [{ ...sheet }] })],
         });
 
         expect(resourcesOf(activity)).toHaveLength(1);

@@ -8,38 +8,56 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
-const (
-	stepsCollection     = "activities_steps"
-	resourcesCollection = "activities_resources"
-	resourcesField      = "resources"
-)
+const stepsCollection = "activities_steps"
+
+// What a step owns: the field listing them on the step, and the collection they live in.
+// Both are written by the editor as a list on the step, so dropping one from that list is what
+// says it is no longer needed.
+var stepChildren = map[string]string{
+	"resources": "steps_resources",
+	"materials": "steps_materials",
+}
 
 // Register binds every application hook. Called once from main.
 func Register(app core.App) {
-	registerResourceCleanup(app)
+	registerStepChildrenCleanup(app)
 }
 
-// registerResourceCleanup deletes an activity resource once no step points at it any more.
-func registerResourceCleanup(app core.App) {
+// registerStepChildrenCleanup deletes a step's resources and materials once no step points at
+// them any more.
+//
+// The editor only ever unlinks: deleting the record from the client would mean deleting one a
+// step still lists, and `activities_steps.resources` / `.materials` cascade — which would take
+// the step itself down with the last of them.
+func registerStepChildrenCleanup(app core.App) {
 	app.OnRecordUpdate(stepsCollection).BindFunc(func(e *core.RecordEvent) error {
-		previous := e.Record.Original().GetStringSlice(resourcesField)
+		previous := make(map[string][]string, len(stepChildren))
+		for field := range stepChildren {
+			previous[field] = e.Record.Original().GetStringSlice(field)
+		}
 
 		if err := e.Next(); err != nil {
 			return err
 		}
 
-		return deleteUnreferenced(e.App, previous)
+		for field, collection := range stepChildren {
+			if err := deleteUnreferenced(e.App, field, collection, previous[field]); err != nil {
+				return err
+			}
+		}
+
+		return nil
 	})
 }
 
-// deleteUnreferenced removes each of the given resources that no step links to any more.
-func deleteUnreferenced(app core.App, ids []string) error {
+// deleteUnreferenced removes each of the given records that no step links to any more.
+func deleteUnreferenced(app core.App, field string, collection string, ids []string) error {
 	for _, id := range ids {
-		// "resources.id ?=" and not "resources ?=": on a multi-relation the bare field name
+		// "<field>.id ?=" and not "<field> ?=": on a multi-relation the bare field name
 		// compares against the whole stored list and matches nothing.
 		referencing, err := app.FindRecordsByFilter(
 			stepsCollection,
-			resourcesField+".id ?= {:id}",
+			field+".id ?= {:id}",
 			"",
 			1,
 			0,
@@ -52,7 +70,7 @@ func deleteUnreferenced(app core.App, ids []string) error {
 			continue
 		}
 
-		resource, err := app.FindRecordById(resourcesCollection, id)
+		record, err := app.FindRecordById(collection, id)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				continue // already gone, nothing to reclaim
@@ -60,7 +78,7 @@ func deleteUnreferenced(app core.App, ids []string) error {
 			return err
 		}
 
-		if err := app.Delete(resource); err != nil {
+		if err := app.Delete(record); err != nil {
 			return err
 		}
 	}

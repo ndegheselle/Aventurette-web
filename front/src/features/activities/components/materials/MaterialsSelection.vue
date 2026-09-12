@@ -1,36 +1,19 @@
 <script setup lang="ts">
-import { materialsApi as materials } from '@features/activities/api/materials.api';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import MaterialDisplay from '@features/activities/components/materials/MaterialDisplay.vue';
+import { useStepMaterials } from '@features/activities/composables/useStepMaterials';
 import { type ActivityMaterialData } from '@features/activities/model/material';
-import { CircleOffIcon, CircleQuestionMarkIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
-import { computed, onMounted, ref } from 'vue';
+import { CircleOffIcon, CircleQuestionMarkIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
+import { ref } from 'vue';
+
+/** The step these belong to: choosing a name writes a row of its own against it. */
+const props = defineProps<{ step: string }>();
 
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });
 
-const availableMaterials = ref<ActivityMaterialData[]>([]);
+const { search, suggestions, isNewName, add, remove } = useStepMaterials(selected, () => props.step);
+
 const open = ref<boolean>(false);
-const search = ref<string>("");
-
-const availableItems = computed(() => availableMaterials.value.filter(
-    x => !selected.value.find((s) => s.id == x.id) && x.name.toLowerCase().includes(search.value.toLowerCase())
-));
-
-onMounted(async () => {
-    availableMaterials.value = await materials.getAll();
-});
-
-function addItem(item: ActivityMaterialData) {
-    selected.value = [...selected.value, item];
-}
-
-function removeItem(index: number) {
-    selected.value = selected.value.filter((_, i) => i !== index);
-}
-
-function openDropdown() {
-    open.value = true;
-}
 </script>
 
 <template>
@@ -41,16 +24,23 @@ function openDropdown() {
                 <div class="flex-1 flex items-center">
                     <SearchIcon class="opacity-50" />
                     <input type="text" class="w-full outline-hidden ps-1" :placeholder="$t('actions.search')"
-                        @focus="openDropdown" v-model="search" />
+                        @focus="open = true" @keyup.enter="isNewName && add(search)" v-model="search" />
                 </div>
             </summary>
         </template>
         <ul class="menu p-2 w-full">
-            <li v-for="value in availableItems" @click="() => { }">
-                <a @click="() => addItem(value)"><img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /> {{
-                    value.name }}</a>
+            <!-- A name nobody has used yet is worth offering: the row is this step's either way. -->
+            <li v-if="isNewName">
+                <a @click="() => add(search)">
+                    <PlusIcon class="icon-sm" />
+                    {{ $t('activities.steps.fields.materials.create', { name: search.trim() }) }}
+                </a>
             </li>
-            <li class="opacity-30" v-if="!availableItems.length">
+            <li v-for="name in suggestions" :key="name">
+                <a @click="() => add(name)"><img class="size-10 rounded-box"
+                        src="https://placeholder.pagebee.io/api/plain/64/64" /> {{ name }}</a>
+            </li>
+            <li class="opacity-30" v-if="!suggestions.length && !isNewName">
                 <div class="flex justify-center">
                     <CircleQuestionMarkIcon />
                     <span>{{ $t('data.noData') }}</span>
@@ -59,8 +49,8 @@ function openDropdown() {
         </ul>
     </Dropdown>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
-        <MaterialDisplay :material="value" v-for="(value, index) in selected" class="relative">
-            <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="() => removeItem(index)">
+        <MaterialDisplay :material="value" v-for="(value, index) in selected" :key="value.id" class="relative">
+            <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="() => remove(index)">
                 <TrashIcon class="icon-sm" />
             </button>
         </MaterialDisplay>

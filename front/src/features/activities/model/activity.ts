@@ -1,4 +1,4 @@
-import { ActivitiesEnvironmentOptions, type ActivitiesResourcesResponse, type ActivitiesResponse, type ActivitiesStepsResponse } from "@/backend/schema.g.ts";
+import { ActivitiesEnvironmentOptions, ActivitiesStateOptions, type ActivitiesResponse, type ActivitiesStepsResponse, type StepsResourcesResponse } from "@/backend/schema.g.ts";
 import type { Expanded } from "@chapelure/core";
 import type { BenefitData } from "@features/activities/model/benefit";
 import type { ActivityMaterialData } from "@features/activities/model/material";
@@ -12,44 +12,67 @@ export type ActivityData = Expanded<ActivitiesResponse, {
 
 export type ActivityStepData = Expanded<ActivitiesStepsResponse, {
     materials: ActivityMaterialData[];
-    resources: StepResourceData[];
+    resources: ActivityResourceData[];
 }>;
 
-export type ActivityResourceData = ActivitiesResourcesResponse;
-
 /**
- * A resource the user just picked. No record exists for it yet, so `file` holds the upload
- * itself where a saved resource holds the name of the stored file.
+ * A resource is always a record: a picked file is uploaded the moment it is chosen, so `file`
+ * only ever holds the name of a stored file — never the upload itself. It belongs to the step
+ * it was uploaded for, which is what `step` says.
  */
-export type NewActivityResourceData = { name: string; file: File; };
-
-/** What a step being edited carries: resources already stored, and files not uploaded yet. */
-export type StepResourceData = ActivityResourceData | NewActivityResourceData;
-
-/** Tells the two apart by their `file`: the name of a stored file, or the file to upload. */
-export function isUploadedResource(resource: StepResourceData): resource is ActivityResourceData {
-    return typeof resource.file === "string";
-}
+export type ActivityResourceData = StepsResourcesResponse;
 
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
+
+export const ActivityState = ActivitiesStateOptions;
+
+/** Relations to fetch alongside a step, and to write back as ids when one is saved. */
+export const STEP_RELATIONS = ["materials", "resources"];
 
 /** Relations to fetch alongside an activity for the detail and edit screens. */
 export const ACTIVITY_RELATIONS = [
     "benefits",
-    "steps", "steps.materials", "steps.resources",
+    "steps", ...STEP_RELATIONS.map(relation => `steps.${relation}`),
 ];
 
+/** What a required editor field holds when there is nothing in it yet. */
+export const EMPTY_DESCRIPTION = "<p></p>";
+
+/**
+ * A blank activity: what is written when the user starts one, and what the edit form binds to
+ * until the real record arrives.
+ *
+ * `description`, `environment` and `state` are seeded because the collection requires them —
+ * an activity is created before it is filled in, so it has to be valid while still empty, and
+ * `DRAFT` is what an activity nobody has finished is. The `<select>` shows its first option
+ * for an unmatched value anyway, which is the other reason not to leave the environment
+ * undefined: it would save something other than what is on screen. `name` is left to the
+ * caller, which is the one that can translate a placeholder.
+ */
 export function createEmptyActivity(): ActivityData {
     return {
+        name: "",
+        description: EMPTY_DESCRIPTION,
+        environment: ActivityEnvironment.INDOOR,
+        state: ActivityState.DRAFT,
         benefits: [] as BenefitData[],
         steps: [] as ActivityStepData[]
     } as ActivityData;
 }
 
-export function createEmptyStep(): ActivityStepData {
+/**
+ * A blank step, written the moment one is added.
+ *
+ * `description` is seeded for the same reason an activity's is: the collection requires it,
+ * and the step exists before it is filled in. `activity` is the owner the collection requires
+ * too — a step is not a free-floating record that an activity later points at.
+ */
+export function createEmptyStep(activity: string): ActivityStepData {
     return {
+        activity,
+        description: EMPTY_DESCRIPTION,
         materials: [] as ActivityMaterialData[],
-        resources: [] as StepResourceData[],
+        resources: [] as ActivityResourceData[],
     } as ActivityStepData;
 }
 
@@ -66,11 +89,7 @@ export function materialsOf(activity: ActivityData | null | undefined): Activity
 
 /** Every distinct resource attached to an activity's steps. See `materialsOf`. */
 export function resourcesOf(activity: ActivityData | null | undefined): ActivityResourceData[] {
-    return distinctById(
-        (activity?.steps ?? [])
-            .flatMap(step => step.resources ?? [])
-            .filter(isUploadedResource),
-    );
+    return distinctById((activity?.steps ?? []).flatMap(step => step.resources ?? []));
 }
 
 function distinctById<T extends { id: string }>(items: T[]): T[] {
