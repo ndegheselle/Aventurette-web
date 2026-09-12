@@ -106,6 +106,13 @@ const RULES = [
             && /from ['"][^'"]*\/testing['"]/.test(f.text),
     },
     {
+        name: "a feature's specs live in its tests/ folder",
+        why: 'A spec next to what it covers doubles the length of every folder listing, and '
+            + 'source folders should hold production code. See ADR 0013.',
+        check: f => /^front\/src\/features\/[^/]+\/.*\.spec\.ts$/.test(f.path)
+            && !/^front\/src\/features\/[^/]+\/tests\//.test(f.path),
+    },
+    {
         name: 'feature composables/ go through their own api layer',
         why: 'A composable is Vue, but it is still not where a backend client belongs.',
         check: f => /^front\/src\/features\/[^/]+\/composables\//.test(f.path)

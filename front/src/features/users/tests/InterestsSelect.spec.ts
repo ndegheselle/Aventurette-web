@@ -2,7 +2,7 @@ import { anInterest, fakeCrud } from '@tests';
 import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { InterestData } from '@features/users/model/interest';
-import InterestsSelect from './InterestsSelect.vue';
+import InterestsSelect from '@features/users/components/children/InterestsSelect.vue';
 
 const interests = fakeCrud<InterestData>();
 

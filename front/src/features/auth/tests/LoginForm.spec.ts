@@ -1,7 +1,7 @@
 import { aUser, fakeAuthProvider, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import LoginForm from './LoginForm.vue';
+import LoginForm from '@features/auth/components/LoginForm.vue';
 
 const user = aUser({ email: 'parent@example.com' });
 const auth = fakeAuthProvider(user);

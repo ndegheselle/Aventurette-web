@@ -1,7 +1,7 @@
 import { aUser, fakeAuthProvider, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import RegisterForm from './RegisterForm.vue';
+import RegisterForm from '@features/auth/components/RegisterForm.vue';
 
 const user = aUser();
 const auth = fakeAuthProvider(user);
