@@ -1,27 +1,15 @@
 <script setup lang="ts">
-import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { createGroup, Paginated, type FilterGroup } from '@chapelure/core';
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
-import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 import Container from '@chapelure/ui/layout/Container.vue';
 import ActivitiesFilters from '@features/activities/components/activities/ActivitiesFilters.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/activities/ActivityMetadaDisplay.vue';
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
-import { type ActivityData } from '@features/activities/model/activity';
+import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
 import { routesNames } from '@features/activities/routes';
-import { onMounted, reactive, ref } from 'vue';
+import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
 
-const paginated = ref<Paginated<ActivityData>>(new Paginated<ActivityData>([], 0, { page: 1, perPage: 5 }));
-let group = reactive<FilterGroup<ActivityData>>(createGroup<ActivityData>({}));
-
-onMounted(async () => {
-    paginated.value = await activities.getList(paginated.value.options);
-});
-
-async function onChanged() {
-    paginated.value = await activities.filter(group, paginated.value.options);
-}
+const { paginated, filters, refresh } = useActivitiesList();
 </script>
 
 <template>
@@ -31,8 +19,8 @@ async function onChanged() {
             <PlusIcon />
             {{ $t('actions.add') }}
         </RouterLink>
-        <ActivitiesFilters @change="onChanged"
-                           v-model="group" />
+        <ActivitiesFilters @change="refresh"
+                           v-model="filters" />
         <List :items="paginated.items"
               v-slot="{ item }"
               class="flex-1">
@@ -58,6 +46,6 @@ async function onChanged() {
                     v-model:page="paginated.options.page"
                     v-model:perPage="paginated.options.perPage"
                     :total="paginated.total"
-                    @change="onChanged" />
+                    @change="refresh" />
     </Container>
 </template>

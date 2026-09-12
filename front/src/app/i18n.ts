@@ -8,7 +8,7 @@ import uiEn from '@chapelure/ui/locales/en.json';
 import uiFr from '@chapelure/ui/locales/fr.json';
 
 /** Every string exists here, so it is both the boot default and the fallback for any gap. */
-const DEFAULT_LOCALE = 'fr';
+export const DEFAULT_LOCALE = 'fr';
 
 type Messages = Record<string, any>;
 
@@ -35,7 +35,13 @@ function isPlainObject(value: unknown): value is Messages {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-const messages: Record<string, Messages> = {
+/**
+ * The whole catalogue: design system strings first, then every feature's, merged in.
+ *
+ * Exported because the test suite mounts components against these same messages, so an
+ * assertion reads as the copy a user would see rather than as a key path.
+ */
+export const messages: Record<string, Messages> = {
     fr: mergeMessages({}, uiFr),
     en: mergeMessages({}, uiEn),
 };

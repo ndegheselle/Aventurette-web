@@ -1,7 +1,7 @@
 import { NotAuthentifiedError, type BaseEntity } from '@chapelure/core';
 import { sessionProvider } from '@features/auth/api/session';
 import { routesNames } from '@features/auth/routes';
-import { computed, readonly, ref, type Ref } from 'vue';
+import { computed, getCurrentInstance, readonly, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Shared across every caller: one session per app.
@@ -10,8 +10,13 @@ const current = ref<BaseEntity | null>(null);
 export function useAuth<TUser extends BaseEntity>() {
 
     const auth = sessionProvider<TUser>();
-    const router = useRouter();
     const isLoggedIn = computed(() => current.value !== null);
+
+    // `useRouter` is an inject, so it only works while a component is being set up. The route
+    // guard calls this composable outside of one — it only needs `isLoggedIn` and `refresh` —
+    // and reaching for the router there warned on every guarded navigation. Nothing outside a
+    // component calls `logout`, which is the only thing that navigates.
+    const router = getCurrentInstance() ? useRouter() : null;
 
     async function update(data: Partial<TUser>) {
         if (!current.value) return;
@@ -29,7 +34,7 @@ export function useAuth<TUser extends BaseEntity>() {
     async function logout() {
         auth.logout();
         current.value = null;
-        router.push({ name: routesNames.login });
+        router?.push({ name: routesNames.login });
     }
 
     async function refresh() {

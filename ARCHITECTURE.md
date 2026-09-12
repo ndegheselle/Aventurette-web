@@ -3,6 +3,11 @@
 An npm workspace: one app (`front/`) on top of three packages (`packages/`).
 `npm run lint:arch` checks the rules below on every build.
 
+This describes the code as it stands. *Why* it is this way is in
+[docs/adr/](docs/adr/README.md) — one file per decision, including the costs each one accepts.
+What each feature does is in [docs/features/](docs/features/README.md), and how to test any of
+it is in [docs/testing.md](docs/testing.md).
+
 ```
 Aventurette-web/
 ├── packages/
@@ -10,6 +15,8 @@ Aventurette-web/
 │   ├── pocketbase/    @chapelure/pocketbase  the backend adapter
 │   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, files
 ├── front/             @sagace/front          the app
+├── tests/                                    the test toolkit: builders, fakes, mount helpers
+├── docs/                                     ADRs, feature docs, testing guide
 ├── back/                                     PocketBase data and migrations
 └── nginx/                                    TLS termination and API proxy
 ```
@@ -20,6 +27,13 @@ Aventurette-web/
 front/app  ──►  front/features  ──►  @chapelure/ui  ──►  @chapelure/core
                       │                                        ▲
                       └──► front/backend ──► @chapelure/pocketbase
+```
+
+Within a feature, the same applies one level down:
+
+```
+pages/ ──► components/ ──► composables/ ──► api/ ──► @/backend
+                                 └────────► model/
 ```
 
 Nothing points left. `core` imports nothing of ours; `ui` never learns which backend exists;
@@ -35,16 +49,24 @@ the app's `backend/` folder is the only thing that does.
 | `backend/` | `index.ts`, `schema.g.ts` | The backend seam, and the pocketbase-typegen output. |
 | `features/<name>/` | one vertical slice | Same shape every time, see below. |
 
-Every feature has the same six folders, so you never have to guess:
+Every feature has the same shape, so you never have to guess:
 
 | | |
 |---|---|
 | `model/` | types, factories, domain rules — **no framework imports** |
 | `api/` | `*.api.ts` — the only place `@/backend` may be imported |
+| `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
 | `components/` | feature components |
 | `pages/` | route targets, plus the structural files only they use — see below |
 | `locales/` | translations, and nothing else |
 | `routes.ts` | the route records plus a `routesNames` map |
+
+Where behaviour goes between these is the one thing worth reading before writing any:
+`model/` holds rules that hold whatever renders them, `composables/` holds reactive state, and
+a component is wiring and markup. [ADR 0009](docs/adr/0009-logic-lives-outside-components.md)
+has the reasoning; a feature with no logic needs no composable.
+
+Specs sit beside what they cover — `filters.ts` next to `filters.spec.ts`.
 
 #### `pages/`
 
@@ -103,9 +125,12 @@ import { XIcon } from 'lucide-vue-next';
 | `@chapelure/pocketbase` is imported only by `front/src/backend/index.ts` | Change backend = rewrite one file plus one package |
 | The `pocketbase` SDK appears only inside `packages/pocketbase` | ditto |
 | `@/backend` is imported only from `features/*/api/**` | Components never hold a backend client |
+| `features/*/composables` never import `@/backend` | A composable is Vue, but still not where a client belongs |
 | `packages/core` imports no `vue`, no SDK, no app | Contracts survive any framework or backend change |
 | `features/*/model` and `features/*/api` import no framework | Domain and data survive a framework change |
 | `packages/ui` imports neither the app nor the adapter | The design system stays reusable |
+| Nothing that ships imports `@tests` or the SDK test double | Builders and fakes stay out of the bundle |
+| `scripts/aliases.mjs` and the `paths` in `front/tsconfig.json` agree | The two resolvers cannot drift apart |
 
 Three deliberate compromises:
 
@@ -127,10 +152,11 @@ Three deliberate compromises:
 
 ## Mechanics worth knowing
 
-- **Packages are source-only.** No per-package build step: `exports` and the aliases in
-  `front/tsconfig.json` + `front/vite.config.ts` point at `src/`, so `vue-tsc` typechecks
-  them with the app and HMR works across package boundaries. Keep those two alias lists in
-  sync.
+- **Packages are source-only.** No per-package build step: `exports` and the aliases point at
+  `src/`, so `vue-tsc` typechecks them with the app and HMR works across package boundaries.
+  The alias map lives in `scripts/aliases.mjs` and is imported by `front/vite.config.ts` and
+  `vitest.config.ts`. TypeScript cannot read a JS module for its `paths`, so
+  `front/tsconfig.json` repeats it — and `lint:arch` fails if the two disagree.
 - **Relations come back inlined, not on the side.** PocketBase returns expanded records in a
   separate `expand` object; `packages/pocketbase/src/relations.ts` folds them into the record
   on read and turns them back into ids on write, so `activity.steps` is the steps in both
@@ -148,11 +174,33 @@ Three deliberate compromises:
 - **Docker builds from the repository root**, not `front/`, because the app needs
   `packages/`: `docker build -f front/Dockerfile .`
 
+## Tests
+
+Vitest on happy-dom, with Vue Test Utils. The suite is component-level: no browser, no running
+backend, seconds to run — see [ADR 0010](docs/adr/0010-component-tests-over-end-to-end.md) for
+what that covers and what it does not.
+
+Two things about it are unusual enough to mention here, both deliberate:
+
+- **Vue warnings fail the test that produced them.** A prop of the wrong type or a missing
+  injection is a failure, not console noise.
+- **Components mount against the app's real translations**, so an assertion reads as what a
+  user would see. Completeness is not enforced: locales may be uneven and an untranslated key
+  renders as its own path
+  ([ADR 0011](docs/adr/0011-tests-fail-on-vue-warnings.md)).
+
+The toolkit — builders, in-memory fakes for the `@chapelure/core` ports, and the mount
+helpers — is in `tests/`, imported as `@tests`, and cannot reach the bundle.
+[docs/testing.md](docs/testing.md) is the guide.
+
 ## Commands
 
 ```bash
-npm run dev         # dev server
-npm run build       # vue-tsc -b && vite build, typechecks packages too
-npm run lint:arch   # the rules above
-npm run check       # lint:arch + build
+npm run dev            # dev server
+npm run build          # vue-tsc -b && vite build, typechecks packages and specs too
+npm run test           # the suite
+npm run test:watch     # the suite, while working
+npm run test:coverage  # with a coverage report
+npm run lint:arch      # the rules above
+npm run check          # lint:arch + build + test — what CI runs
 ```

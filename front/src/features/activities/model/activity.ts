@@ -52,3 +52,30 @@ export function createEmptyStep(): ActivityStepData {
         resources: [] as StepResourceData[],
     } as ActivityStepData;
 }
+
+/**
+ * Every distinct material used across an activity's steps.
+ *
+ * Materials and resources hang off steps, not off the activity — the detail screen shows them
+ * for the activity as a whole, so it has to gather them. Deduplicated by id, because two steps
+ * needing the same rope should list it once, and kept in first-use order.
+ */
+export function materialsOf(activity: ActivityData | null | undefined): ActivityMaterialData[] {
+    return distinctById((activity?.steps ?? []).flatMap(step => step.materials ?? []));
+}
+
+/** Every distinct resource attached to an activity's steps. See `materialsOf`. */
+export function resourcesOf(activity: ActivityData | null | undefined): ActivityResourceData[] {
+    return distinctById(
+        (activity?.steps ?? [])
+            .flatMap(step => step.resources ?? [])
+            .filter(isUploadedResource),
+    );
+}
+
+function distinctById<T extends { id: string }>(items: T[]): T[] {
+    const byId = new Map<string, T>();
+    for (const item of items)
+        if (!byId.has(item.id)) byId.set(item.id, item);
+    return [...byId.values()];
+}
