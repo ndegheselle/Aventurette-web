@@ -45,7 +45,7 @@ One rule, in one place.
 
 ## Rules that hold
 
-*`composables/useAuth.spec.ts`, `guard.spec.ts`*
+*`tests/useAuth.spec.ts`, `tests/guard.spec.ts`*
 
 - One session is shared by every caller.
 - A rejected login reaches the caller rather than being swallowed, and leaves the session empty.
@@ -54,7 +54,7 @@ One rule, in one place.
 - The guard lets login and register through, sends an anonymous visitor to login, admits a
   visitor whose stored session is valid, and does not ask the backend again once signed in.
 
-*`components/LoginForm.spec.ts`, `components/RegisterForm.spec.ts`*
+*`tests/LoginForm.spec.ts`, `tests/RegisterForm.spec.ts`*
 
 - The submit button is disabled while the request is in flight, and enabled again after.
 - A field error from the backend appears against that field; a failure with no detail shows the

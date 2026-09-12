@@ -7,13 +7,42 @@ npm run test:coverage    # with a coverage report
 npm run check           # boundaries, typecheck and build, then tests — what CI runs
 ```
 
-Specs live next to what they cover: `filters.ts` and `filters.spec.ts` in the same folder.
-They are typechecked with the app, so a spec that no longer compiles fails `npm run build`.
+Specs live in their feature's `tests/` folder — `features/activities/tests/step.spec.ts`
+covers `features/activities/model/step.ts`. They import through aliases like everything else,
+and `npm run lint:arch` fails on a `.spec.ts` found anywhere else under a feature. They are
+typechecked with the app, so a spec that no longer compiles fails `npm run build`.
+
+`packages/` is the exception and keeps co-located specs: there the spec is the documentation of
+a contract, and the folders are not ones anyone navigates daily.
+
+## Which tests to write
+
+The question is not "is this code correct" — it all is — but **"could this be wrong in a way
+review would miss"**. That narrows to code with a decision in it:
+
+> A function earns a spec when it contains a **decision** — a branch over data, a dedup, a
+> limit, an ordering constraint, or a translation between two shapes — such that getting it
+> wrong produces a plausible, silent bug.
+>
+> These get none, ever: type aliases, factories that fill required fields, formatters,
+> pass-through `api/` wrappers, components, and composables that are a `ref` plus one call.
+>
+> A composable earns one only for **multi-step orchestration with an ordering or rollback
+> rule**.
+
+A formatter choosing between four translation keys is wrong *visibly*, on screen, the first
+time anyone looks at it. `detachStep` unlinking a step after deleting it instead of before is
+wrong *invisibly*, in a way that takes the whole activity with it. Only the second is worth a
+spec. The reasoning, and what the rule costs, is in
+[ADR 0013](adr/0013-specs-live-in-a-feature-tests-folder.md).
+
+The `activities` feature has four specs for 21 files, and that is the intended ratio — not a
+gap to fill. Coverage is a diagnostic, never a target.
 
 ## Which kind of test to write
 
-Reach for the cheapest one that can express the rule. Most behaviour should be testable
-without mounting anything — that is what
+Once something has earned a spec: reach for the cheapest kind that can express the rule. Most
+behaviour should be testable without mounting anything — that is what
 [ADR 0009](adr/0009-logic-lives-outside-components.md) is for.
 
 **Pure** — `model/`, `@chapelure/core`, the adapter. Import the function, call it, assert.
@@ -26,16 +55,16 @@ it('searches name and description, either of which may match', () => {
 });
 ```
 
-**Composable** — state and orchestration. `withSetup` runs it inside a real component instance,
-which composables using `onMounted` or `inject` need.
+**Composable** — orchestration with an order to it. `withSetup` runs it inside a real component
+instance, which composables using `onMounted` or `inject` need.
 
 ```ts
-const [filters] = withSetup(() => useActivityFilters(onChange));
+const [subject] = withSetup(() => useActivityEdit(), router);
 ```
 
-**Component** — the wiring. Mount it, click and type, assert on what is rendered and emitted.
-Keep these about the component: that the modal seeds its inputs, that the error reaches the
-field, that the right event carries the right payload. Rules belong a layer down.
+**Component** — the wiring, and rarely. Mount it, click and type, assert on what is rendered
+and emitted. A component spec has to justify itself against the rule above: "it renders" is not
+a decision. Rules belong a layer down.
 
 ## The toolkit
 
@@ -59,7 +88,7 @@ through its `api/` module, so swapping it is one line:
 ```ts
 const benefits = fakeCrud<BenefitData>();
 
-vi.mock('@features/activities/api/benefits.api', () => ({
+vi.mock('@features/activities/api/activities.api', () => ({
     get benefitsApi() { return benefits; },   // a getter: vi.mock is hoisted above the const
 }));
 ```

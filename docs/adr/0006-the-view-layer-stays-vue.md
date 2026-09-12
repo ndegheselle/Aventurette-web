@@ -23,6 +23,6 @@ import no framework at all. `npm run lint:arch` checks it.
   where it meets reactivity. That split is what makes most logic testable without mounting
   anything — see [0009](0009-logic-lives-outside-components.md).
 - `model/` sometimes takes a small structural type instead of importing Vue's or vue-i18n's.
-  `Translate` in `features/activities/model/age.ts` is one: a two-line function type standing
+  `Translate` in `features/activities/model/activity.ts` is one: a two-line function type standing
   in for `ComposerTranslation`, so a formatter can take a translator without the model layer
   importing vue-i18n.

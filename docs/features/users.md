@@ -45,13 +45,13 @@ trivial than it looks, both in `model/interest.ts`:
 
 ## Rules that hold
 
-*`model/interest.spec.ts`*
+*`tests/interest.spec.ts`*
 
 - Marking is by id, and keeps the offered order rather than the selection order.
 - An interest the child has that is no longer offered is ignored rather than reappearing.
 - The source records are copied, not tagged: nothing gains an `isSelected` property.
 
-*`components/children/ChildrenList.spec.ts`, `components/children/InterestsSelect.spec.ts`*
+*`tests/ChildrenList.spec.ts`, `tests/InterestsSelect.spec.ts`*
 
 - Removing a child asks first; declining keeps it on screen and on the server; accepting
   deletes it on the server and takes it off the list.
