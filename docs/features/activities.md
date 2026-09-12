@@ -1,7 +1,6 @@
 # activities
 
-Browsing, filtering and authoring activities. The largest feature, and the one with the most
-behaviour outside its components.
+Browsing, filtering and authoring activities.
 
 ## Routes
 
@@ -23,8 +22,7 @@ bar. `/` redirects to `activities`.
 steps themselves, each with its own `materials` and `resources`.
 
 `ACTIVITY_RELATIONS` lists what is fetched alongside an activity, and **must** stay in step
-with what `Expanded<>` declares on `ActivityData`; nothing checks the two against each other,
-which is why they sit in the same file.
+with what `Expanded<>` declares on `ActivityData`.
 
 A step's resources are of two kinds at once. A saved one is a record whose `file` is the name
 of a stored file; one the user just picked has no record yet, so its `file` is the `File`
@@ -33,15 +31,12 @@ goes through it.
 
 ## Filtering
 
-The one piece worth reading before changing anything here.
-
 Criteria are a flat form-shaped object (`ActivityCriteria`), not a query. `buildActivityFilters`
 turns them into a `FilterGroup`, and that is the only place that translation happens.
 
 The toolbar holds **two** copies of the criteria. `applied` is what the list is showing;
 `draft` is what the modal's inputs are bound to. Opening the modal copies applied → draft,
 confirming copies draft → applied and re-queries, cancelling copies applied → draft again.
-Without the split, typing in the modal and then cancelling would still have re-queried.
 
 Search is the exception: it sits outside the modal and applies as soon as it is submitted.
 
