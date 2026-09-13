@@ -62,9 +62,9 @@ async function remove(step: ActivityStepData) {
 
 <template>
     <Container>
-        <div class="sticky top-0 flex gap-2 py-1 bg-base-100">
+        <div class="sticky top-0 flex gap-2 py-2 bg-base-100 z-10">
             <RouterLink class="btn btn-ghost" :to="{ name: routesNames.all }">
-                <ArrowLeftIcon /> {{ $t('actions.cancel') }}
+                <ArrowLeftIcon /> {{ $t('actions.back') }}
             </RouterLink>
 
             <button class="btn btn-primary ms-auto" :disabled="isLoading" @click="save">

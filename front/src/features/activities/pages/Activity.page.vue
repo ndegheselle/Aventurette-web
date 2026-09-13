@@ -42,7 +42,7 @@ const { activity, materials, resources } = useActivity();
                 <BenefitsDisplay :benefits="activity?.benefits" />
             </div>
         </Panel>
-        <Panel>
+        <Panel v-if="materials.length">
             <h2 class="text-2xl flex items-center gap-2">
                 <PackageOpenIcon /> {{ $t('activities.steps.fields.materials.title') }}
             </h2>
@@ -53,7 +53,7 @@ const { activity, materials, resources } = useActivity();
                 </div>
             </div>
         </Panel>
-        <Panel>
+        <Panel v-if="resources.length">
             <h2 class="text-2xl flex items-center gap-2">
                 <FileTextIcon /> {{ $t('activities.steps.fields.resources.title') }}
             </h2>

@@ -6,14 +6,14 @@ import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import DropdownTrigger from '@chapelure/ui/overlays/DropdownTrigger.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
+import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
 </script>
 
 <template>
     <div class="min-h-screen flex flex-col">
         <nav class="navbar bg-base-300 shadow-sm">
             <div class="flex flex-1">
-                <Dropdown>
+                <Dropdown class="md:hidden">
                     <template #summary>
                         <DropdownTrigger>
                             <MenuIcon />
@@ -25,30 +25,39 @@ import UserSideMenu from '@features/users/components/navbar/UserSideMenu.vue';
                                 <TreesIcon /> {{ $t('activities.title') }}
                             </RouterLink>
                         </li>
-                        <UserSideMenu />
                     </ul>
                 </Dropdown>
 
-                <img class="ms-1 my-auto"
-                     src="https://placeholder.pagebee.io/api/plain/32/32"
-                     style="height: 32px;" />
-                <RouterLink to="/"
-                            class="ms-2 my-auto text-xl">Aventurette</RouterLink>
+                <RouterLink to="/" class="flex">
+                    <img class="my-auto" src="https://placeholder.pagebee.io/api/plain/32/32" style="height: 32px;" />
+                    <span class="ms-2 my-auto text-xl hidden md:block">Aventurette</span>
+                </RouterLink>
             </div>
 
-            <div class="flex">
-                <SettingsMenu />
+            <div class="navbar-center hidden md:flex">
+                <ul class="menu menu-horizontal px-1">
+                    <li>
+                        <RouterLink :to="{ name: activitiesRoutesNames.all }">
+                            <TreesIcon /> {{ $t('activities.title') }}
+                        </RouterLink>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="navbar-end">
+                <ul>
+                    <SettingsMenu />
+                    <AuthMenu />
+                </ul>
             </div>
         </nav>
 
         <main class="flex flex-1 overflow-x-clip relative">
             <router-view v-slot="{ Component, route }">
-                <transition v-if="route.meta.transition"
-                            :name="route.meta.transition">
+                <transition v-if="route.meta.transition" :name="route.meta.transition">
                     <component :is="Component" />
                 </transition>
-                <component v-else
-                           :is="Component" />
+                <component v-else :is="Component" />
             </router-view>
         </main>
 

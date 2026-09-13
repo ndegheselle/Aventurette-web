@@ -49,11 +49,11 @@ const ageDisplay = computed(() => formatAgeRange(t, applied.ageMin, applied.ageM
                 {{ $t('activities.fields.environment') }}
             </span>
             <span v-else>
-                {{ applied.environment.map((v) => $t(`activities.environment.${v}`)).join(', ') }}
+                {{applied.environment.map((v) => $t(`activities.environment.${v}`)).join(', ')}}
             </span>
             <ChevronRightIcon />
         </button>
-        <button class="btn btn-sm ms-auto" @click="() => controller.show()">
+        <button class="btn btn-sm" @click="() => controller.show()">
             <FunnelIcon />
             {{ $t('actions.filter') }}
             <!-- An indicator, not a count — see hasAdvancedCriteria in model/activity.filters.ts. -->
@@ -68,7 +68,9 @@ const ageDisplay = computed(() => formatAgeRange(t, applied.ageMin, applied.ageM
             <fieldset class="fieldset">
                 <Field>
                     <template #label>
-                        <span class="flex items-center gap-1"><BabyIcon /> {{ $t('activities.fields.age') }}</span>
+                        <span class="flex items-center gap-1">
+                            <BabyIcon /> {{ $t('activities.fields.age') }}
+                        </span>
                     </template>
                     <div class="flex gap-2 items-center">
                         <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
@@ -80,7 +82,9 @@ const ageDisplay = computed(() => formatAgeRange(t, applied.ageMin, applied.ageM
 
                 <Field>
                     <template #label>
-                        <span class="flex items-center gap-1"><ClockIcon /> {{ $t('activities.fields.durationMinutes') }}</span>
+                        <span class="flex items-center gap-1">
+                            <ClockIcon /> {{ $t('activities.fields.durationMinutes') }}
+                        </span>
                     </template>
                     <div class="flex gap-2 items-center">
                         <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
@@ -92,12 +96,15 @@ const ageDisplay = computed(() => formatAgeRange(t, applied.ageMin, applied.ageM
 
                 <Field>
                     <template #label>
-                        <span class="flex items-center gap-1"><MapIcon /> {{ $t('activities.fields.environment') }}</span>
+                        <span class="flex items-center gap-1">
+                            <MapIcon /> {{ $t('activities.fields.environment') }}
+                        </span>
                     </template>
                     <div class="flex gap-2 flex-col">
                         <label v-for="choice in availablesEnvironments" :key="choice.value"
-                               class="label cursor-pointer gap-2">
-                            <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value" v-model="draft.environment" />
+                            class="label cursor-pointer gap-2">
+                            <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value"
+                                v-model="draft.environment" />
                             <span class="text-sm">{{ $t(choice.label) }}</span>
                         </label>
                     </div>
@@ -105,7 +112,9 @@ const ageDisplay = computed(() => formatAgeRange(t, applied.ageMin, applied.ageM
 
                 <Field>
                     <template #label>
-                        <span class="flex items-center gap-1"><TrendingUpIcon /> {{ $t('activities.fields.benefits') }}</span>
+                        <span class="flex items-center gap-1">
+                            <TrendingUpIcon /> {{ $t('activities.fields.benefits') }}
+                        </span>
                     </template>
                     <TagSelect :items="availableBenefits" display-key="name" v-model="draftBenefits" />
                 </Field>
