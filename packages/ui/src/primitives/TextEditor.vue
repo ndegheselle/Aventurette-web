@@ -105,7 +105,9 @@ onBeforeUnmount(() => {
             </div>
         </div>
         <!-- `prose` comes from @tailwindcss/typography, not daisyUI: it styles the
-             user-authored rich text rendered by tiptap. -->
+             user-authored rich text rendered by tiptap. The plugin is registered by the
+             consuming app's stylesheet, the same way daisyUI is — without it the editor
+             renders unstyled. -->
         <editor-content :editor="editor" class="prose prose-p:my-1 max-w-none bg-base-100 px-2 flex-1" />
     </div>
 </template>

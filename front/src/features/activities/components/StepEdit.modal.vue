@@ -5,10 +5,10 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
+import TextEditor from '@chapelure/ui/primitives/TextEditor.vue';
 import { stepsApi } from '@features/activities/api/steps.api';
 import MaterialsSelection from '@features/activities/components/MaterialsSelection.vue';
 import ResourcesSelection from '@features/activities/components/ResourcesSelection.vue';
-import TextEditor from '@features/activities/components/TextEditor.vue';
 import { type ActivityStepData } from '@features/activities/model/step';
 import { computed } from 'vue';
 
