@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LogInIcon, LogOutIcon, UserIcon } from 'lucide-vue-next';
+import { LogOutIcon } from 'lucide-vue-next';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as authRoutesNames } from '@features/auth/routes';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
