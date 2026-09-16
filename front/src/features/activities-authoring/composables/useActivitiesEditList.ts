@@ -30,7 +30,7 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     /** Re-query for the current tab and page. */
     async function refresh() {
         paginated.value = await activities.filter(
-            buildAuthoredFilters(state.value),
+            buildAuthoredFilters(currentId(), state.value),
             paginated.value.options,
         );
     }

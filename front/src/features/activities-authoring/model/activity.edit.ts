@@ -43,12 +43,14 @@ export function stateTransition(state: ActivityData['state']): StateTransition {
 }
 
 /**
- * What the authoring list asks for, narrowed to one state when a tab other than "all" is picked.
- * `null` drops the filter entirely, so the "all" tab and a chosen one take the same path.
+ * What the authoring list asks for: the author's own activities, narrowed to one state when a
+ * tab other than "all" is picked. `null` drops the state filter entirely, so the "all" tab and a
+ * chosen one take the same path — `user` is never dropped, it is what makes the list theirs.
  */
-export function buildAuthoredFilters(state: ActivityStateFilter): FilterGroup<ActivityData> {
+export function buildAuthoredFilters(user: string, state: ActivityStateFilter): FilterGroup<ActivityData> {
     return removeEmptyFilters(createGroup<ActivityData>({
         filters: [
+            createFilter<ActivityData>({ key: 'user', value: user, operator: FilterOperator.Equals }),
             createFilter<ActivityData>({ key: 'state', value: state, operator: FilterOperator.Equals }),
         ],
     }));
