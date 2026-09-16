@@ -2,10 +2,8 @@ import { ValidationError, type FieldErrors } from '@chapelure/core';
 import type { ClientResponseError } from 'pocketbase';
 
 /**
- * Translate a PocketBase transport error into the backend-neutral ValidationError.
- *
- * Returns undefined for anything that is not a PocketBase response error (network failures,
- * aborts, programming errors) so callers can rethrow those untouched rather than mislabel them.
+ * Translate a PocketBase transport error into a ValidationError. Undefined for anything that is
+ * not a response error (network failure, abort, bug) — rethrow those untouched.
  */
 export function toValidationError(error: unknown): ValidationError | undefined {
     if (!error || typeof error !== 'object') return undefined;
@@ -13,7 +11,7 @@ export function toValidationError(error: unknown): ValidationError | undefined {
     const response = error as Partial<ClientResponseError>;
     if (typeof response.status !== 'number') return undefined;
 
-    // PocketBase nests per-field errors under response.data (aliased as .data.data on the error).
+    // PocketBase nests per-field errors under response.data.
     const fields = (response.response?.data ?? {}) as FieldErrors;
     return new ValidationError(fields, response.message);
 }

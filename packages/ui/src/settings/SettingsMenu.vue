@@ -18,11 +18,9 @@ const { currentLanguage, changeTheme, changeLang } = useSettings();
             <li>
                 <a @click="changeTheme(EnumTheme.auto)">
                     <span class="w-4 h-4 rounded border border-base-content/5 overflow-hidden relative">
-                        <!-- Light half -->
                         <span data-theme="dark" class="absolute inset-0 bg-base-100"
                             style="clip-path: polygon(0 0, 100% 0, 0 100%)">
                         </span>
-                        <!-- Dark half -->
                         <span data-theme="light" class="absolute inset-0 bg-base-100"
                             style="clip-path: polygon(100% 0, 100% 100%, 0 100%)">
                         </span>

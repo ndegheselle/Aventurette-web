@@ -6,7 +6,7 @@ import { type ActivityMaterialData } from '@features/activities/model/step';
 import { CircleOffIcon, CircleQuestionMarkIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-/** The step these belong to: choosing a name writes a row of its own against it. */
+/** The step these belong to: choosing a name writes a row against it. */
 const props = defineProps<{ step: string }>();
 
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });
@@ -29,7 +29,7 @@ const open = ref<boolean>(false);
             </summary>
         </template>
         <ul class="menu p-2 w-full">
-            <!-- A name nobody has used yet is worth offering: the row is this step's either way. -->
+            <!-- An unused name is still worth offering: the row is this step's either way. -->
             <li v-if="isNewName">
                 <a @click="() => add(search)">
                     <PlusIcon class="icon-sm" />

@@ -39,7 +39,6 @@ const { loginRoute } = defineProps<{
             </Field>
             <Field label="users.form.confirmPassword"
                    :error="errors.get('passwordConfirm')">
-                <!-- was bound to credentials.password, so typing here edited the password -->
                 <PasswordInput v-model="credentials.passwordConfirm"
                                :error="!!errors.get('passwordConfirm')" />
             </Field>

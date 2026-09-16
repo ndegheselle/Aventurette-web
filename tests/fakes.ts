@@ -1,9 +1,6 @@
 /**
- * In-memory stand-ins for the `@chapelure/core` ports.
- *
- * A feature imports its backend through `features/<name>/api/*.api.ts`, so a test swaps the
- * backend by mocking that one module with one of these — never by reaching for the PocketBase
- * SDK. That the seam makes this a one-liner is the boundary paying for itself:
+ * In-memory stand-ins for the `@chapelure/core` ports. Swap a feature's backend by mocking its
+ * api module with one of these — never by reaching for the PocketBase SDK:
  *
  *     vi.mock('@features/activities/api/activities.api', () => ({
  *         activitiesApi: fakeCrud<ActivityData>([anActivity()]),
@@ -22,9 +19,9 @@ import {
 } from '@chapelure/core';
 
 export interface FakeCrud<T extends BaseEntity> extends IDataCrud<T> {
-    /** Current contents, for arranging a case or asserting on the result of a write. */
+    /** Current contents, to arrange a case or assert on the result of a write. */
     items: T[];
-    /** The last group handed to `filter`, so a test can assert what was actually asked for. */
+    /** The last group handed to `filter` — what the subject actually asked for. */
     lastFilter: FilterGroup<T> | null;
     /** Make the next write fail the way a backend rejection does. */
     failNextWith(fields: FieldErrors, message?: string): void;
@@ -84,8 +81,7 @@ export function fakeCrud<T extends BaseEntity>(seed: T[] = []): FakeCrud<T> {
         },
 
         async filter(group: FilterGroup<T>, options: PaginationOptions) {
-            // Deliberately not a filter engine: the query language is the adapter's job and is
-            // tested there. What matters here is that the component asked for the right group.
+            // Not a filter engine: the query language is the adapter's, and tested there.
             fake.lastFilter = group;
             return page(fake.items, options);
         },
@@ -100,7 +96,7 @@ function page<T>(items: T[], options: PaginationOptions): Paginated<T> {
 }
 
 export interface FakeAuth<TUser extends BaseEntity> extends IAuthProvider<TUser> {
-    /** The session the provider will revive, or null for a signed-out start. */
+    /** The session `refresh` revives. Null for a signed-out start. */
     session: TUser | null;
     /** Make the next login or register fail the way rejected credentials do. */
     failNextWith(fields: FieldErrors, message?: string): void;
@@ -153,7 +149,7 @@ export function fakeAuthProvider<TUser extends BaseEntity>(user: TUser): FakeAut
     return fake;
 }
 
-/** File urls without a backend: stable, and obviously fake when one shows up in a snapshot. */
+/** File urls without a backend: stable, and obviously fake in a snapshot. */
 export function fakeFileUrls(): IFileUrlResolver {
     return {
         getUrl: (record, filename) => `https://files.test/${record.id}/${filename}`,

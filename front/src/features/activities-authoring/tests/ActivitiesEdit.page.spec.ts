@@ -7,11 +7,8 @@ import { anActivity, aUser, fakeAuthProvider, fakeCrud, mountWithRouter } from '
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-/**
- * The screen's wiring, which is what mounting is for: a delete that is confirmed before it
- * writes, and a tab that re-queries. What each of those *decides* is tested without a screen
- * in `activity.edit.spec.ts`.
- */
+// The screen's wiring: a delete confirmed before it writes, and a tab that re-queries. What
+// each of those decides is tested without a screen in `activity.edit.spec.ts`.
 
 const activities = fakeCrud<ActivityData>();
 const author = aUser();
@@ -25,10 +22,7 @@ vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => fakeAuthPr
 const draft = anActivity({ name: 'Treasure hunt', state: ActivityState.DRAFT, user: author.id });
 const published = anActivity({ name: 'Leaf hunt', state: ActivityState.PUBLISHED, user: author.id });
 
-/**
- * Stand in for the app-wide <ConfirmationModal />, answering every prompt the same way.
- * Without one registered, useConfirmation declines by default.
- */
+/** Stand in for the app-wide <ConfirmationModal />; without one, every prompt is declined. */
 function answerConfirmationsWith(answer: boolean) {
     const controller = useModal();
     useConfirmation().registerModal(controller);
@@ -40,8 +34,7 @@ beforeEach(async () => {
     activities.items = [draft, published];
     activities.lastFilter = null;
 
-    // The screen is behind the auth guard and relies on it: `currentId()` throws rather than
-    // querying unscoped. The fake provider starts signed out, so sign in before mounting.
+    // `currentId()` throws when there is no session, and the fake provider starts signed out.
     await useAuth().login(author.email, 'password');
 });
 
@@ -57,7 +50,7 @@ const removeLink = (wrapper: any, index: number) => rows(wrapper)[index]!.find('
 const tab = (wrapper: any, label: string) =>
     wrapper.findAll('[role="tab"]').find((t: any) => t.text() === label)!;
 
-/** The value the last query narrowed a field to, or undefined if it did not. */
+/** What the last query narrowed a field to, or undefined if it did not. */
 function queriedValue(key: string) {
     return (activities.lastFilter?.filters as any[])?.find(f => f.key === key)?.value;
 }

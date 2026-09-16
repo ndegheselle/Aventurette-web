@@ -1,8 +1,5 @@
-// @chapelure/pocketbase — the PocketBase adapter for the @chapelure/core ports.
-//
-// This is the only package that may import the pocketbase SDK. The consuming app should
-// import it from exactly one place (its composition root) and pass the resulting ports
-// around, so swapping backends means rewriting that file and this package.
+// @chapelure/pocketbase — the PocketBase adapter. The only package that may import the SDK,
+// and the app imports it from one file only: front/src/backend/index.ts.
 
 export { getPocketBase, initPocketBase } from './client';
 export { createPocketBaseAuth } from './auth';

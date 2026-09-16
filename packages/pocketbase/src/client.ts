@@ -2,10 +2,7 @@ import PocketBase from 'pocketbase';
 
 let client: PocketBase | null = null;
 
-/**
- * Connect to a PocketBase instance. Idempotent — later calls return the first client.
- * The consuming app should do this once, from its composition root.
- */
+/** Connect once, from the app's composition root. Later calls return the first client. */
 export function initPocketBase(url: string): PocketBase {
     client ??= new PocketBase(url);
     return client;

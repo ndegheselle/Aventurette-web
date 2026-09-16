@@ -3,26 +3,20 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 /**
- * Handle errors from the API
- * @param defaultErrorKey The global error key to use by default
- * @returns
+ * Field errors from a rejected write. Feed a caught error to `set`, read a field's message with
+ * `get`, and bind `global` for the message shown when the backend sent no per-field detail.
+ *
+ * @param defaultErrorKey translation key for that global message
  */
 export function useValidationErrors(defaultErrorKey: string = "validation.errors.default") {
 
-    /**
-     * List of errors grouped by properties
-     */
+    /** Error codes by field name. */
     const properties = ref<Record<string, { code?: string }> | null>(null);
 
-    /**
-     * Global error with the default message
-     */
     const global = ref<string | undefined>(undefined);
 
     const { t } = useI18n();
-    /**
-     * Get the error text from the code
-     */
+
     function get(fieldName: string): string | undefined {
         if (!properties.value) return undefined;
         let code = properties.value[fieldName]?.code;
@@ -31,8 +25,8 @@ export function useValidationErrors(defaultErrorKey: string = "validation.errors
 
     function set(ex: unknown)
     {
-        // Backend adapters normalise their transport errors into ValidationError, so nothing
-        // here needs to know which backend produced it. Anything else has no field detail.
+        // Adapters normalise a rejected write into ValidationError; anything else has no
+        // field detail to show.
         properties.value = ex instanceof ValidationError ? ex.fields : null;
         global.value = t(defaultErrorKey);
     }

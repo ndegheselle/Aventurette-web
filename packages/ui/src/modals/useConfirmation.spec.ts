@@ -12,8 +12,7 @@ describe('useConfirmation', () => {
     it('declines, rather than throwing, when no dialog is mounted', async () => {
         const error = vi.spyOn(console, 'error').mockImplementation(() => { });
 
-        // Resolving to null reads as "cancelled" to every caller, so a missing dialog turns
-        // the action down instead of taking down whatever asked for it.
+        // Null reads as "cancelled", so a missing dialog declines instead of throwing.
         await expect(useConfirmation().show('Remove?', 'Are you sure?')).resolves.toBeNull();
         expect(error).toHaveBeenCalled();
 

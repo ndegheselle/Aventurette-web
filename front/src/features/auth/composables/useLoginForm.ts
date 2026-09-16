@@ -6,8 +6,7 @@ import { useRouter } from 'vue-router';
 /**
  * The login form's state and what submitting it does.
  *
- * XXX : the credentials are pre-filled with a development account. That is deliberate for now
- * and has to go before this is in front of real users.
+ * XXX : pre-filled with a development account. Has to go before real users see this.
  */
 export function useLoginForm() {
     const auth = useAuth();
@@ -18,8 +17,7 @@ export function useLoginForm() {
         password: '1234567890',
     });
 
-    // XXX : bound to the checkbox but not yet sent anywhere — the session's lifetime is
-    // whatever the auth provider decides.
+    // XXX : bound to the checkbox but sent nowhere — the provider decides the session's lifetime.
     const rememberMe = ref(true);
 
     const { isLoading, errors, submit } = useSubmit(

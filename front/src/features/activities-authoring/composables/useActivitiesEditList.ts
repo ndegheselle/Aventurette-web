@@ -27,13 +27,7 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     const { t } = useI18n();
     const { currentId } = useAuth();
 
-    /**
-     * Re-query for the current tab and page.
-     *
-     * `currentId` throws rather than returning nothing when there is no session, which is what
-     * keeps an unscoped query — every author's activities, with a delete button beside each —
-     * from being the failure mode of signing out. The route is behind the guard anyway.
-     */
+    /** Re-query for the current tab and page. */
     async function refresh() {
         paginated.value = await activities.filter(
             buildAuthoredFilters(state.value),
@@ -41,7 +35,7 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
         );
     }
 
-    /** Switch tab, back to the first page: page 3 of the drafts is not page 3 of anything else. */
+    /** Switch tab, back to the first page: page 3 of the drafts is page 3 of nothing else. */
     async function selectState(next: ActivityStateFilter) {
         state.value = next;
         paginated.value.options.page = 1;
@@ -49,15 +43,9 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     }
 
     /**
-     * Starting a new activity.
-     *
-     * The record is written before the editor opens, empty but for what the collection
-     * requires, and everything after that is an update. That is what lets a step and the files
-     * under it be saved the moment they are added: each is a record of its own, and a record
-     * needs a parent that already exists to belong to.
-     *
-     * This used to sit on the public list. It belongs here: that screen is for reading, and an
-     * activity is written by the person whose list this is.
+     * Start a new activity: write the record, then open the editor on it. Everything after this
+     * is an update — which is what lets a step, and the files under it, be saved as they are
+     * added, each needing a parent that already exists.
      */
     const { isLoading: isCreating, submit: createActivity } = useSubmit(async () => {
         const created = await activities.create({
@@ -70,14 +58,10 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     });
 
     /**
-     * Delete an activity outright — no unlinking first, unlike a step.
+     * Delete an activity outright — no unlinking first, unlike a step. `activities_steps.activity`
+     * cascades, so the steps go with it, and their materials and resources with them.
      *
-     * `activities_steps.activity` cascades, so the steps go with it, and their materials and
-     * resources go with the steps. The direction that makes deleting a *step* delicate is the
-     * other relation, `activities.steps`, which no longer cascades at all.
-     *
-     * The list is re-queried rather than filtered in place, because what refills the page is a
-     * record the query has not returned yet.
+     * Re-queried rather than filtered in place: what refills the page has not been returned yet.
      */
     async function removeActivity(activity: ActivityData) {
         try {

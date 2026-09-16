@@ -12,29 +12,25 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 
 /**
- * The list screen's filter state, owned by `useActivitiesList`. Handed down whole rather than
- * as ten props — and rebuilt into a query there, next to the call that sends it.
- *
- * Nothing here knows what an activity can be narrowed by: the form and the chips are both
- * generated from the criteria, so a new filter appears in each without this file changing.
+ * The list screen's filter state, owned by `useActivitiesList`. Nothing here knows what an
+ * activity can be narrowed by — the form and the chips are generated from the criteria, so a
+ * new filter appears in both without this file changing.
  */
 const props = defineProps<{ filters: Filters }>();
 
-// Destructured so the template sees plain bindings: a ref reached through an object is not
-// unwrapped in templates, only a top-level one is.
+// Destructured: a ref reached through an object is not unwrapped in a template.
 const {
     search, applied, draft,
     apply, openDraft, discardDraft, applyDraft, resetDraft, clearApplied, removeCriterion,
 } = props.filters;
 
-// The modal is only a way to edit the draft; the composable owns what that means.
 const controller = useModal({
     onShow: openDraft,
     onCancel: discardDraft,
     onConfirm: applyDraft,
 });
 
-/** Only what the user has set: untouched criteria show no chip, and the row collapses. */
+/** Untouched criteria show no chip, so the row collapses when nothing is set. */
 const activeCriteria = computed(() => applied.value.filter(isCriterionSet));
 </script>
 

@@ -10,7 +10,7 @@ vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => provider }
 
 const guard = authGuard(routesNames);
 
-/** Only the guard's own inputs matter; the rest of a route location does not. */
+/** Only the fields the guard reads; the rest of a route location does not matter. */
 const going = (name: string) => ({ name } as RouteLocationNormalized);
 
 beforeEach(() => {

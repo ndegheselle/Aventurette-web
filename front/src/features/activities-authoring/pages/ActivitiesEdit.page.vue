@@ -11,8 +11,6 @@ import { authoredStateTabs } from '@features/activities-authoring/model/activity
 import { PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 
-// One composable for the screen: the author's activities, the state tab narrowing them, and
-// the buttons that add and delete.
 const {
     paginated,
     state,
@@ -26,8 +24,7 @@ const {
 const { t } = useI18n();
 const confirm = useConfirmation();
 
-// The confirmation is the screen's, the write is the composable's — same split as the step
-// list in the editor.
+// The confirmation is the screen's; the write is the composable's.
 async function remove(activity: ActivityData) {
     if (await confirm.show(
         t('confirmation.remove.title'),

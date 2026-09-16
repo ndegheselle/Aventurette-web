@@ -5,12 +5,9 @@ import { anActivity, aStep, createTestRouter, fakeCrud, withSetup } from '@tests
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-/**
- * The one composable here with a spec, because it is the one with an order in it:
- * `activities.steps` cascades on delete, so unlinking a step before removing it is the
- * difference between deleting a step and deleting the whole activity. Everything else here is
- * a ref and a call.
- */
+// The one composable here with an order in it: `activities.steps` cascades on delete, so
+// unlinking a step before removing it is the difference between deleting a step and deleting the
+// whole activity. Everything else is a ref and a call.
 
 const activities = fakeCrud<ActivityData>();
 const steps = fakeCrud<ActivityStepData>();
@@ -71,8 +68,7 @@ describe('addStep', () => {
 describe('detachStep', () => {
     it('unlinks the step before deleting it, never the other way round', async () => {
         // activities.steps cascades: PocketBase deletes the record *holding* the relation once
-        // the deleted id leaves it with none, so removing an activity's last step while it is
-        // still linked would take the activity with it.
+        // the deleted id leaves it with none, so a still-linked last step takes the activity too.
         const step = aStep({ id: 'stp-1' });
         activities.items = [anActivity({ id: 'act-1', steps: [step] })];
         steps.items = [step];
@@ -90,8 +86,7 @@ describe('detachStep', () => {
     });
 
     it('puts the list back and deletes nothing when the unlink fails', async () => {
-        // Leaving the screen claiming a step the record no longer has would be worse than
-        // reporting the failure and showing what is actually stored.
+        // Better to report the failure than leave the screen claiming a link that was never made.
         const step = aStep({ id: 'stp-1' });
         activities.items = [anActivity({ id: 'act-1', steps: [step] })];
         steps.items = [step];
@@ -107,8 +102,7 @@ describe('detachStep', () => {
     });
 
     it('leaves the step off the activity when the unlink landed but the delete did not', async () => {
-        // What is left behind is an unreferenced record — worth reporting, not worth putting
-        // the step back for.
+        // An unreferenced record is worth reporting, not worth putting the step back for.
         const step = aStep({ id: 'stp-1' });
         activities.items = [anActivity({ id: 'act-1', steps: [step] })];
         steps.items = [step];

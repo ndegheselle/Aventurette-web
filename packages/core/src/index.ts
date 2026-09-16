@@ -1,7 +1,4 @@
-// @chapelure/core — framework-free, backend-free contracts.
-//
-// Nothing in this package may import vue, a backend SDK, or the consuming app.
-// That is what makes it the one layer a framework or backend migration does not touch.
+// @chapelure/core — the contracts. Never import vue, a backend SDK or the app from here.
 
 export type { BaseEntity, Expanded } from './data/entity';
 

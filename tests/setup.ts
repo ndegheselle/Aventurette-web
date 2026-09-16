@@ -3,22 +3,13 @@ import { afterEach, beforeEach, expect, vi } from 'vitest';
 import { h } from 'vue';
 import { TEST_LOCALE, testI18n } from './i18n';
 
-/*
- * Every mounted component gets the app's real translations. See tests/i18n.ts.
- */
+// Every mounted component gets the app's real translations. See tests/i18n.ts.
 config.global.plugins = [testI18n];
 
 /**
- * `<RouterLink>` without a router.
- *
- * Renders an anchor carrying its destination as `data-to`, so a test can assert where a link
- * points — with `linkTarget` from @tests — without standing up route records for a component
- * whose subject is not routing.
- *
- * It stays in place under `mountWithRouter` too: that helper exists to give `useRouter` and
- * `useRoute` something real, and a test that navigates does so by calling `router.push`, not by
- * clicking an anchor. Keeping the stub means a link to a route the test did not declare renders
- * instead of warning.
+ * `<RouterLink>` without a router: an anchor carrying its destination as `data-to`, which
+ * `linkTarget` from @tests reads. In place under `mountWithRouter` too, so a link to a route the
+ * test did not declare renders instead of warning.
  */
 config.global.stubs = {
     RouterLink: {
@@ -31,15 +22,11 @@ config.global.stubs = {
 };
 
 /*
- * Warnings that mean the code under test is wrong — a prop of the wrong type, a missing
- * injection, a bad template ref — are silent in a normal run and easy to accumulate. Here they
- * fail the test that produced them.
+ * A Vue warning means the code under test is wrong — a prop of the wrong type, a missing
+ * injection, a bad template ref — so it fails the test that produced it. vue-i18n's warnings are
+ * deliberately not here: an untranslated key renders as its own path, which is allowed (ADR 0011).
  *
- * vue-i18n's warnings are deliberately not in this list: an untranslated key is allowed to
- * render as its own path, so it is not a defect. See ADR 0011.
- *
- * Add to ALLOWED only for a warning that is genuinely the environment talking, with a comment
- * saying which. Anything else belongs fixed, not silenced.
+ * Add to ALLOWED only for a warning that is the environment talking, with a comment saying which.
  */
 const FATAL = [
     /\[Vue warn\]/,
@@ -65,8 +52,7 @@ beforeEach(() => {
     captured = [];
     spies = [watchConsole('warn'), watchConsole('error')];
 
-    // Switching language is global by design, so a test that exercises it would otherwise
-    // leave every test after it in the other locale.
+    // Switching language is global, so put the locale back for the test after this one.
     testI18n.global.locale.value = TEST_LOCALE;
 });
 

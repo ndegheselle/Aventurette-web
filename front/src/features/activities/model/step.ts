@@ -1,41 +1,37 @@
 import type { ActivitiesStepsResponse, StepsMaterialsResponse, StepsResourcesResponse } from "@/backend/schema.g";
 import type { Expanded } from "@chapelure/core";
 
-// Relations arrive inlined — `step.materials` holds the materials themselves. What is listed
-// here has to match STEP_RELATIONS below; nothing checks that for us.
+// Relations arrive inlined: `step.materials` holds the materials. Keep this in step with
+// STEP_RELATIONS below — nothing checks the two against each other.
 export type ActivityStepData = Expanded<ActivitiesStepsResponse, {
     materials: ActivityMaterialData[];
     resources: ActivityResourceData[];
 }>;
 
-/** A material belongs to the step that needs it: `step` is what owns this record. */
+/** A material belongs to one step — `step` is its owner, never a catalogue entry. */
 export type ActivityMaterialData = StepsMaterialsResponse;
 
 /**
- * A resource is always a record: a picked file is uploaded the moment it is chosen, so `file`
- * only ever holds the name of a stored file — never the upload itself. It belongs to the step
- * it was uploaded for, which is what `step` says.
+ * A file uploaded for one step. `file` holds the stored file's name, never an upload waiting to
+ * be sent: a picked file is uploaded the moment it is chosen.
  */
 export type ActivityResourceData = StepsResourcesResponse;
 
 /** Relations to fetch alongside a step, and to write back as ids when one is saved. */
 export const STEP_RELATIONS = ["materials", "resources"];
 
-/** What a required editor field holds when there is nothing in it yet. */
+/** What an empty rich-text field holds — the collection requires a value. */
 export const EMPTY_DESCRIPTION = "<p></p>";
 
-/** How many files one step may carry. Referenced by the constraints line the input shows. */
+/** How many files one step may carry. Also what the input's constraints line names. */
 export const MAX_STEP_RESOURCES = 10;
 
-/** What the file types accepted for a step resource are, in `<input accept>` syntax. */
+/** File types accepted for a step resource, in `<input accept>` syntax. */
 export const ACCEPTED_RESOURCE_TYPES = '.png,.jpeg,.jpg,.pdf';
 
 /**
- * A blank step, written the moment one is added.
- *
- * `description` is seeded because the collection requires it and the step exists before it is
- * filled in. `activity` is the owner the collection requires too — a step is not a
- * free-floating record that an activity later points at.
+ * A blank step, written the moment one is added. `description` and `activity` are seeded
+ * because the collection requires both, and the step exists before it is filled in.
  */
 export function createEmptyStep(activity: string): ActivityStepData {
     return {
@@ -47,14 +43,11 @@ export function createEmptyStep(activity: string): ActivityStepData {
 }
 
 /**
- * The names to offer for a step's materials.
+ * The names to offer for a step's materials: distinct names used anywhere, minus the ones this
+ * step has, narrowed by what the user typed. Picking one writes a new row rather than linking
+ * someone else's.
  *
- * A material belongs to one step, so the same rope is a row per step and there is no catalogue
- * to pick from. What is worth offering is the distinct *names* already used anywhere, minus the
- * ones this step has, narrowed by what the user typed — picking one writes a new row rather
- * than linking someone else's.
- *
- * Names are matched case-insensitively, and the first spelling seen is the one offered.
+ * Matched case-insensitively; the first spelling seen is the one offered.
  */
 export function materialNameSuggestions(
     available: ActivityMaterialData[],
@@ -80,10 +73,8 @@ export function materialNameSuggestions(
 }
 
 /**
- * Whether what the user typed is worth offering to create.
- *
- * Not when the step already has that material, and not when it is one of the suggestions —
- * picking that one creates the same row.
+ * Whether what the user typed is worth offering to create — not when the step already has it,
+ * and not when it is already a suggestion.
  */
 export function canCreateMaterial(
     search: string,
@@ -105,13 +96,10 @@ export interface AcceptedFiles {
 }
 
 /**
- * How many of the files just picked a step can still take.
+ * Split a pick into what the step can still take and what it cannot — over the limit, the files
+ * that fit are kept and the rest reported.
  *
- * Over the limit, the files that fit are still taken and the rest reported — dropping the
- * whole pick because the last file did not fit would be worse than partial success.
- *
- * The caller has already had the files validated for type and size by `<FilesInput>`; what is
- * left is the count, which only the step knows.
+ * Type and size are `<FilesInput>`'s to validate; only the step knows the count.
  */
 export function filesWithinLimit(
     current: unknown[],
@@ -124,7 +112,7 @@ export function filesWithinLimit(
     return { accepted, rejected: picked.length - accepted.length };
 }
 
-/** What two spellings of the same material have in common. */
+/** Comparison key: two spellings of the same material share one. */
 function key(name: string | undefined): string {
     return (name ?? "").trim().toLowerCase();
 }

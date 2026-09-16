@@ -9,10 +9,7 @@ import { CircleOffIcon, TrashIcon } from 'lucide-vue-next';
 /** The step these belong to: a resource is written against it as soon as it is picked. */
 const props = defineProps<{ step: string }>();
 
-/**
- * A picked file is uploaded on the spot, so what this binds is a list of records — the step
- * never carries an upload waiting for it to be saved.
- */
+/** Records, not uploads: a picked file is stored on the spot. */
 const selected = defineModel<ActivityResourceData[]>({ default: () => [] });
 
 const { add, remove } = useStepResources(selected, () => props.step);

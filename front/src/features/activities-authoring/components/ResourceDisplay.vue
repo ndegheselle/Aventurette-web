@@ -1,9 +1,6 @@
 <!--
-  ResourceDisplay — one resource tile: a thumbnail, its editable name, and whatever the
-  parent slots in (a remove button, typically).
-
-  `source` is the url of the stored file. Anything the browser cannot show inline falls back
-  to an icon.
+  One resource tile: a thumbnail, its editable name, and whatever the parent slots in (a remove
+  button, typically). `source` is the stored file's url; anything unpreviewable falls back to an icon.
 -->
 <script setup lang="ts">
 import { FileIcon, FileTextIcon } from 'lucide-vue-next';

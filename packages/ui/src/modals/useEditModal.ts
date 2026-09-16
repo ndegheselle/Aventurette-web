@@ -6,10 +6,11 @@ import { computed, ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 /**
- * Edit modal logic to edit and create
- * @param modal controller of the modal
- * @param crud crud service to save and update the data
- * @returns
+ * A modal that creates or updates one record: `show` clones what it is handed, `confirm` saves
+ * it. Which of the two it does depends on whether the record has an id.
+ *
+ * @param modal the modal's controller
+ * @param crud where the record is saved
  */
 export function useEditModal<T extends BaseEntity>(modal: IModalController<T>, crud: IDataCrud<T>) {
     const alert = useAlert();
@@ -19,7 +20,6 @@ export function useEditModal<T extends BaseEntity>(modal: IModalController<T>, c
 
     const { t } = useI18n();
 
-    // The busy/reset/report cycle is useSubmit's; what is left here is what saving means.
     const { isLoading, errors, submit } = useSubmit(async () => {
         const result = isNew.value
             ? await crud.create(data.value)

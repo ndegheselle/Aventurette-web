@@ -1,6 +1,6 @@
 import './styles/index.css';
 
-// Imported for its side effect: connects to the backend before any api is used.
+// Side effect: connects to the backend before any api module is used.
 import '@/backend';
 
 import { i18n } from '@/app/i18n';

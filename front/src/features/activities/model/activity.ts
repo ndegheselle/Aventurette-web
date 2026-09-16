@@ -8,8 +8,8 @@ import {
     type ActivityStepData,
 } from "@features/activities/model/step";
 
-// Relations arrive inlined — `activity.steps` holds the steps themselves. What is listed here
-// has to match ACTIVITY_RELATIONS below; nothing checks that for us.
+// Relations arrive inlined: `activity.steps` holds the steps. Keep this in step with
+// ACTIVITY_RELATIONS below — nothing checks the two against each other.
 export type ActivityData = Expanded<ActivitiesResponse, {
     benefits: BenefitData[];
     steps: ActivityStepData[];
@@ -21,8 +21,7 @@ export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 
 export const ActivityState = ActivitiesStateOptions;
 
-// Both an activity and a step seed their description with this. It is declared in `step.ts`
-// because this file imports that one and not the other way round.
+// Declared in `step.ts`, re-exported here: an activity seeds its description with it too.
 export { EMPTY_DESCRIPTION };
 
 /** Relations to fetch alongside an activity for the detail and edit screens. */
@@ -31,11 +30,7 @@ export const ACTIVITY_RELATIONS = [
     "steps", ...STEP_RELATIONS.map(relation => `steps.${relation}`),
 ];
 
-/**
- * The environments offered in filters and the edit form, in display order.
- * `label` is a translation key — this is domain data, not translations, which is why it
- * does not live under locales/.
- */
+/** The environments offered in filters and the edit form, in display order. */
 export const availablesEnvironments = [
     { label: 'activities.environment.INDOOR', value: ActivityEnvironment.INDOOR },
     { label: 'activities.environment.OUTDOOR', value: ActivityEnvironment.OUTDOOR },
@@ -44,15 +39,12 @@ export const availablesEnvironments = [
 ];
 
 /**
- * A blank activity: what is written when the user starts one, and what the edit form binds to
- * until the real record arrives.
+ * A blank activity: written when the user starts one, and bound to the edit form until the real
+ * record arrives.
  *
- * `description`, `environment` and `state` are seeded because the collection requires them —
- * an activity is created before it is filled in, so it has to be valid while still empty, and
- * `DRAFT` is what an activity nobody has finished is. The `<select>` shows its first option
- * for an unmatched value anyway, which is the other reason not to leave the environment
- * undefined: it would save something other than what is on screen. `name` is left to the
- * caller, which is the one that can translate a placeholder.
+ * `description`, `environment` and `state` are seeded because the collection requires them, and
+ * an activity is created before it is filled in. `name` is the caller's — only it can translate
+ * a placeholder.
  */
 export function createEmptyActivity(): ActivityData {
     return {
@@ -65,18 +57,12 @@ export function createEmptyActivity(): ActivityData {
     } as ActivityData;
 }
 
-/**
- * A translation lookup. Declared structurally rather than importing vue-i18n's
- * ComposerTranslation, so the model layer stays free of framework types.
- */
+/** A translation lookup. Structural, so `model/` stays free of framework types. */
 export type Translate = (key: string, params?: Record<string, unknown>) => string;
 
 /**
- * Render an age range, tolerating either bound being missing.
- *
- * The same three cases as `formatRange` in `@chapelure/ui/filter`, spelled out again because
- * `model/` may not import the view layer. It is four lines, and it is what the detail screen
- * reads — the filter chip gets its own from the criterion.
+ * Render an age range, tolerating either bound being missing. What the detail screen reads;
+ * a filter chip gets its own from the criterion.
  */
 export function formatAgeRange(t: Translate, ageMin?: number | null, ageMax?: number | null): string | null {
     if (ageMin && ageMax) {
@@ -91,17 +77,14 @@ export function formatAgeRange(t: Translate, ageMin?: number | null, ageMax?: nu
 }
 
 /**
- * Every distinct material used across an activity's steps.
- *
- * Materials and resources hang off steps, not off the activity — the detail screen shows them
- * for the activity as a whole, so it has to gather them. Deduplicated by id, because two steps
- * needing the same rope should list it once, and kept in first-use order.
+ * Every material used across an activity's steps — they hang off steps, not off the activity.
+ * Deduplicated by id, in first-use order.
  */
 export function materialsOf(activity: ActivityData | null | undefined): ActivityMaterialData[] {
     return distinctById((activity?.steps ?? []).flatMap(step => step.materials ?? []));
 }
 
-/** Every distinct resource attached to an activity's steps. See `materialsOf`. */
+/** Every resource attached to an activity's steps. See `materialsOf`. */
 export function resourcesOf(activity: ActivityData | null | undefined): ActivityResourceData[] {
     return distinctById((activity?.steps ?? []).flatMap(step => step.resources ?? []));
 }

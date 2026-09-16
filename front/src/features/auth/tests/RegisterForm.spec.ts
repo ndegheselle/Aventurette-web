@@ -40,8 +40,7 @@ describe('RegisterForm', () => {
     });
 
     it('edits the confirmation independently of the password', async () => {
-        // These were bound to the same field once: typing a confirmation rewrote the password,
-        // so the two could never disagree and the check was dead.
+        // These were bound to the same field once, so the two could never disagree.
         const { wrapper } = await mountForm();
         const [password, confirmation] = wrapper.findAll('input[type="password"]');
 

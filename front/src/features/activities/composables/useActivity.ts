@@ -4,11 +4,8 @@ import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 /**
- * One activity, loaded from the `id` in the route and reloaded whenever it changes.
- *
- * Watching the param rather than loading once on mount matters because vue-router reuses the
- * component when only the parameter changes — navigating from one activity to another would
- * otherwise leave the previous one on screen.
+ * One activity, loaded from the `id` in the route and reloaded whenever it changes. Watched
+ * rather than loaded on mount: vue-router reuses the component when only the param changes.
  */
 export function useActivity() {
     const route = useRoute();

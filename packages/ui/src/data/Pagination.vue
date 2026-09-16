@@ -1,8 +1,5 @@
 <!--
-    Pager for a server-side list.
-
-    `page` and `perPage` are two-way (the control owns them); `total` is a plain prop because
-    only the server knows it. A `change` event fires whenever a new query is needed.
+    Pager for a server-side list. Re-query on `change`.
 
         <Pagination v-model:page="options.page"
                     v-model:perPage="options.perPage"
@@ -46,8 +43,7 @@ watch(perPage, () => {
     emit('change');
 });
 
-// Keep the page inside range when the result set shrinks. Re-runs once with page === totalPages,
-// which no longer satisfies the condition, so this settles immediately.
+// Keep the page inside range when the result set shrinks. Settles after one re-run.
 watch([page, totalPages], ([currentPage, maxPages]) => {
     if (currentPage > maxPages) {
         page.value = maxPages;

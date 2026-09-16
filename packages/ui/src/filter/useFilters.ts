@@ -9,22 +9,18 @@ import {
 import { markRaw, ref } from 'vue';
 
 /**
- * What a list is narrowed by, and what the modal editing it is holding.
+ * What a list is narrowed by, in two copies: `applied` is what the list shows, `draft` is what
+ * the modal's inputs are bound to. Bind the modal's show/cancel/confirm to `openDraft`,
+ * `discardDraft` and `applyDraft`.
  *
- * Two copies of the criteria, because the filters live behind a modal: `applied` is what the
- * list is showing, `draft` is what the modal's inputs are bound to. Opening copies applied →
- * draft, confirming copies draft → applied, cancelling copies applied → draft again. Without
- * the split, typing in the modal and then cancelling would still have re-queried.
+ * `onApply` fires whenever what the list shows changes, and only then — editing the draft is
+ * not a change, confirming it is.
  *
- * `onApply` is called whenever what the list is showing changes — and only then. Editing the
- * draft is not a change; confirming it is.
- *
- * @param criteria what can be narrowed by, in the order the form shows them.
- * @param onApply re-query with the applied criteria, usually the screen's own `refresh`.
+ * @param criteria what can be narrowed by, in the order the form shows them
+ * @param onApply re-query with the applied criteria, usually the screen's own `refresh`
  */
 export function useFilters(criteria: Criterion[], onApply: () => void) {
-    // Icons are components, and both refs below are deep: one turned into a reactive proxy is a
-    // Vue warning. `markRaw` is what keeps them out of the reactive graph.
+    // Both refs below are deep, and a component turned into a reactive proxy warns.
     const declared = criteria.map(criterion => criterion.icon
         ? { ...criterion, icon: markRaw(criterion.icon) }
         : criterion);
@@ -49,21 +45,15 @@ export function useFilters(criteria: Criterion[], onApply: () => void) {
         onApply();
     }
 
-    /**
-     * Clear the form. Note this does not re-query on its own: it empties the inputs, and the
-     * user still confirms — the same as any other edit made in the modal.
-     */
+    /** Empty the modal's inputs. Does not re-query — the user still confirms. */
     function resetDraft() {
         search.value = '';
         draft.value = clearedCriteria(draft.value);
     }
 
     /**
-     * Drop everything the list is narrowed by — the chip row's clear button.
-     *
-     * Unlike `resetDraft` this one re-queries: nothing is left to confirm, since it empties what
-     * is applied and not just what the modal is showing. Removing one criterion is the same
-     * move, narrowed to a single chip's cross.
+     * Drop everything the list is narrowed by — the chip row's clear button. Re-queries, unlike
+     * `resetDraft`: there is nothing left to confirm.
      */
     function clearApplied() {
         search.value = '';
@@ -76,12 +66,7 @@ export function useFilters(criteria: Criterion[], onApply: () => void) {
         onApply();
     }
 
-    /**
-     * Fill in what a `tags` criterion offers, once whatever loads it has answered.
-     *
-     * Both copies are given the same choices — the modal has to offer them, and a chip has to
-     * be able to name what is already applied.
-     */
+    /** Fill in what a `tags` criterion offers, once its api call has answered. */
     function setChoices(key: string, choices: CriterionChoice[]) {
         applied.value = withChoices(applied.value, key, choices);
         draft.value = withChoices(draft.value, key, choices);
@@ -103,5 +88,5 @@ export function useFilters(criteria: Criterion[], onApply: () => void) {
     };
 }
 
-/** What a filter bar is handed: the whole state, as one object. */
+/** What a filter bar is handed: the whole state, as one prop. */
 export type Filters = ReturnType<typeof useFilters>;

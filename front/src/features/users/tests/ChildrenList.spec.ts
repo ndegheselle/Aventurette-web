@@ -18,10 +18,7 @@ vi.mock('@features/users/api/interests.api', () => ({ interestsApi: fakeCrud([])
 const camille = aChild({ name: 'Camille' });
 const remy = aChild({ name: 'Rémy' });
 
-/**
- * Stand in for the app-wide <ConfirmationModal />, answering every prompt the same way.
- * Without one registered, useConfirmation declines by default.
- */
+/** Stand in for the app-wide <ConfirmationModal />; without one, every prompt is declined. */
 function answerConfirmationsWith(answer: boolean) {
     const controller = useModal();
     useConfirmation().registerModal(controller);

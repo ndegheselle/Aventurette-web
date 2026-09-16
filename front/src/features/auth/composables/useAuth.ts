@@ -4,7 +4,7 @@ import { routesNames } from '@features/auth/routes';
 import { computed, getCurrentInstance, readonly, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Shared across every caller: one session per app.
+// Module state: one session, shared by every caller.
 const current = ref<BaseEntity | null>(null);
 
 export function useAuth<TUser extends BaseEntity>() {
@@ -12,10 +12,8 @@ export function useAuth<TUser extends BaseEntity>() {
     const auth = sessionProvider<TUser>();
     const isLoggedIn = computed(() => current.value !== null);
 
-    // `useRouter` is an inject, so it only works while a component is being set up. The route
-    // guard calls this composable outside of one — it only needs `isLoggedIn` and `refresh` —
-    // and reaching for the router there warned on every guarded navigation. Nothing outside a
-    // component calls `logout`, which is the only thing that navigates.
+    // `useRouter` is an inject, so it only works inside a component's setup. The route guard
+    // calls this outside of one, and only `logout` needs to navigate.
     const router = getCurrentInstance() ? useRouter() : null;
 
     async function update(data: Partial<TUser>) {

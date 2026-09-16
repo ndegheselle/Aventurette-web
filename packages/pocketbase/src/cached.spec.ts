@@ -28,8 +28,7 @@ describe('createPocketBaseCached', () => {
     });
 
     it('collapses concurrent first reads into one request', async () => {
-        // Several components mounting at once is the normal case for a reference collection —
-        // each awaiting the same in-flight promise is the whole point of this service.
+        // Several components mounting at once is the normal case for a reference collection.
         const pb = fakePocketBase(someBenefits());
         const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
 

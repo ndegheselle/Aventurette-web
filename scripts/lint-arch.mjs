@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 /**
- * Architecture rules, checked by grep.
- *
- * These encode the boundaries the codebase is organised around. They are cheap and
- * approximate on purpose: the point is to catch a boundary being crossed in review, not to
- * be a type system. Run with `npm run lint:arch`.
+ * The codebase's boundaries, checked by grep. Cheap and approximate on purpose — enough to catch
+ * a boundary being crossed in review. Run with `npm run lint:arch`.
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, posix, relative, sep } from 'node:path';
@@ -43,7 +40,7 @@ const files = walk(join(ROOT, 'front', 'src'))
         },
     }));
 
-/** A spec, or part of the shared test toolkit. Nothing here is in the shipped bundle. */
+/** A spec, or part of the shared test toolkit. Nothing here ships. */
 function isTestFile(path) {
     return /\.spec\.ts$/.test(path) || path.startsWith('tests/');
 }
@@ -118,15 +115,11 @@ const RULES = [
         check: f => /^front\/src\/features\/[^/]+\/composables\//.test(f.path)
             && /from ['"]@\/backend['"]/.test(f.text),
     },
-    // There is deliberately no rule confining daisyUI component classes to packages/ui.
-    // It held, but only by breeding one-line wrapper components whose entire body was the
-    // class name being hidden. See the compromises section of ARCHITECTURE.md.
+    // No rule confines daisyUI classes to packages/ui: it only bred one-line wrapper
+    // components. See the compromises section of ARCHITECTURE.md.
 ];
 
-/**
- * The alias map and the tsconfig paths describe the same thing in two places, because
- * TypeScript cannot read a JS module for its `paths`. This checks they still agree.
- */
+/** The alias map and the tsconfig `paths` are the same list twice; check they still agree. */
 function aliasesMatchTsconfig() {
     const raw = readFileSync(join(ROOT, 'front', 'tsconfig.json'), 'utf8');
 

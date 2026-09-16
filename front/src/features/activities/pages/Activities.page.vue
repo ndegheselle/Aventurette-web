@@ -9,8 +9,6 @@ import { useActivitiesList } from '@features/activities/composables/useActivitie
 import { routesNames } from '@features/activities/routes';
 import { ArrowRightIcon } from 'lucide-vue-next';
 
-// One composable for the screen: the results and what narrows them. Nothing writes from
-// here — starting an activity is the `activities-edit` feature's list.
 const { paginated, filters, refresh } = useActivitiesList();
 </script>
 

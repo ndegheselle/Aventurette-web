@@ -10,9 +10,8 @@ import (
 
 const stepsCollection = "activities_steps"
 
-// What a step owns: the field listing them on the step, and the collection they live in.
-// Both are written by the editor as a list on the step, so dropping one from that list is what
-// says it is no longer needed.
+// What a step owns: the field listing them, and the collection they live in. The editor keeps
+// both as a list on the step, so dropping an id from that list is what says it is unneeded.
 var stepChildren = map[string]string{
 	"resources": "steps_resources",
 	"materials": "steps_materials",
@@ -24,11 +23,8 @@ func Register(app core.App) {
 }
 
 // registerStepChildrenCleanup deletes a step's resources and materials once no step points at
-// them any more.
-//
-// The editor only ever unlinks: deleting the record from the client would mean deleting one a
-// step still lists, and `activities_steps.resources` / `.materials` cascade — which would take
-// the step itself down with the last of them.
+// them. The editor only ever unlinks: `activities_steps.resources` and `.materials` cascade, so
+// deleting from the client would take the step down with the last of its children.
 func registerStepChildrenCleanup(app core.App) {
 	app.OnRecordUpdate(stepsCollection).BindFunc(func(e *core.RecordEvent) error {
 		previous := make(map[string][]string, len(stepChildren))

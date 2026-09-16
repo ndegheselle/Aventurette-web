@@ -14,10 +14,10 @@ import {
 } from './criteria';
 import { describe, expect, it } from 'vitest';
 
-// What a criterion is set to, what it reads as, and what it contributes to a query. The
-// criteria a screen declares, and the query they are built into, are that feature's own.
+// What a criterion is set to, what it reads as, and what it contributes to a query. The criteria
+// a screen declares are that feature's own.
 
-// Translations are not what is under test: this fake shows the key and what it interpolates.
+// Translations are not under test: this fake shows the key and what it interpolates.
 const t = (key: string, params?: Record<string, unknown>) =>
     params ? `${key}(${Object.values(params).join(',')})` : key;
 

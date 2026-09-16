@@ -4,11 +4,8 @@ import ActivitiesEditPage from '@features/activities-authoring/pages/ActivitiesE
 import ActivityEditPage from '@features/activities-authoring/pages/ActivityEdit.page.vue';
 
 /**
- * Authoring has a path of its own rather than hanging off `/activities/:id`.
- *
- * `/activities` is somebody reading an activity; these two screens are somebody writing one,
- * and the list behind them is the author's own — which is also why the editor moved out of
- * `/activities/:id/edit`: it was never a view of that activity, it was the other half of this.
+ * Authoring has a path of its own: `/activities` is somebody reading an activity, these two
+ * screens are somebody writing one.
  */
 export const routesNames = {
     all: 'activities.authoring',

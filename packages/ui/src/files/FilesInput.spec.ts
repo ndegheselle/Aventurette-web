@@ -6,8 +6,8 @@ import FilesInput from './FilesInput.vue';
 const alert = useAlert();
 
 /**
- * Put files on the hidden <input type="file"> and fire its change event — the same path a
- * real pick or a drop takes. `files` is read-only, hence defineProperty.
+ * Put files on the hidden <input type="file"> and fire its change event — the path a real pick
+ * takes. `files` is read-only, hence defineProperty.
  */
 async function pick(wrapper: ReturnType<typeof mount>, files: File[]) {
     const input = wrapper.find('input[type="file"]').element as HTMLInputElement;

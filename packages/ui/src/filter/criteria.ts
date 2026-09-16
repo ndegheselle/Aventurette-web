@@ -1,24 +1,12 @@
 import { createFilter, FilterOperator, type Filter } from "@chapelure/core";
 import type { Component } from "vue";
 
-/**
- * A translation lookup. Declared structurally rather than importing vue-i18n's
- * ComposerTranslation, so a caller can describe a criterion with any `t` it has — including
- * none, in a test.
- */
+/** A translation lookup. Structural, so a test can pass any `t` — or a stub. */
 export type Translate = (key: string, params?: Record<string, unknown>) => string;
 
 /**
- * What a list can be narrowed by, as data.
- *
- * A criterion carries everything the three places that read it need: what it is called, what
- * the user has set it to, and which field of the record it constrains. The filter form is
- * generated from a list of criteria, the chips above the list are generated from the same list,
- * and so is the query — so adding a filter is adding an entry, rather than editing a form, a
- * toolbar and a query builder in step.
- *
- * Nothing here knows about any one screen: a list of criteria is what an app hands `useFilters`,
- * and what the form and the chips are generated from.
+ * What a list can be narrowed by, as data. Hand a list of criteria to `useFilters`: the form,
+ * the chips and the query are all generated from it, so a new filter is a new entry.
  */
 export type CriterionType = 'range' | 'options' | 'tags';
 
@@ -28,47 +16,40 @@ export interface RangeValue {
     max: number | null;
 }
 
-/**
- * A value on offer. `label` is a translation key for `options`, whose choices the domain
- * declares, and a record's own name for `tags`, whose choices are loaded.
- */
+/** A value on offer. `label` is a translation key for `options`, a record's name for `tags`. */
 export interface CriterionChoice {
     label: string;
     value: string;
 }
 
 interface BaseCriterion {
-    /** Stable id — what the form keys its fields on, and what removing a chip names. */
+    /** Stable id, used to key the form's fields and to name the criterion a chip removes. */
     key: string;
     /** Translation key for the criterion's own name. */
     label: string;
-    /** What stands for it on its field and its chip. A lucide icon, or anything renderable. */
+    /** Shown on its field and its chip. A lucide icon, or anything renderable. */
     icon?: Component;
 }
 
 /**
  * A number bounded from either end.
  *
- * `minField` and `maxField` are the record fields the bounds compare against: two different
- * ones when the record stores a range of its own, the same one twice when a single number is
- * bounded from both ends — an activity has an `ageMin` and an `ageMax`, but one
- * `durationMinutes`.
+ * `minField` and `maxField` are the record fields the bounds compare against — two different
+ * ones for a stored range (`ageMin`/`ageMax`), the same one twice for a single number bounded
+ * both ways (`durationMinutes`).
  */
 export interface RangeCriterion extends BaseCriterion {
     type: 'range';
     minField: string;
     maxField: string;
-    /** Prefix of the `.range`, `.minOnly` and `.maxOnly` keys a set range reads as. */
+    /** Translation key prefix: `.range`, `.minOnly` and `.maxOnly` hang off it. */
     display: string;
     value: RangeValue;
 }
 
 /**
- * A pick from a list, held as the values picked.
- *
- * `options` are a fixed set the domain declares and the form renders as checkboxes; `tags` are
- * loaded at runtime and picked from a dropdown. That is the whole difference — and the reason
- * one's labels are translation keys and the other's are data.
+ * A pick from a list, held as the values picked. `options` are a fixed set rendered as
+ * checkboxes; `tags` are loaded at runtime and picked from a dropdown.
  */
 export interface ChoiceCriterion extends BaseCriterion {
     type: 'options' | 'tags';
@@ -88,7 +69,7 @@ export function optionsCriterion(criterion: Omit<ChoiceCriterion, 'type' | 'valu
     return { ...criterion, type: 'options', value: [] };
 }
 
-/** Tags start with no choices: they are what the screen's api call brings back. */
+/** Tags start empty — fill them with `withChoices` once the screen's api call answers. */
 export function tagsCriterion(criterion: Omit<ChoiceCriterion, 'type' | 'value' | 'choices'>): ChoiceCriterion {
     return { ...criterion, type: 'tags', choices: [], value: [] };
 }
@@ -102,10 +83,7 @@ export function isCriterionSet(criterion: Criterion): boolean {
 
 /**
  * What a criterion reads as on its chip: a range as one bound or both, a pick as its values
- * joined. An unset one has nothing to show and describes to an empty string.
- *
- * A value with no matching choice is dropped — a benefit the catalogue no longer holds has no
- * name to show for it.
+ * joined. Unset describes to an empty string, and a value with no matching choice is dropped.
  */
 export function describeCriterion(t: Translate, criterion: Criterion): string {
     if (criterion.type === 'range')
@@ -132,10 +110,8 @@ export function formatRange(t: Translate, display: string, min?: number | null, 
 }
 
 /**
- * A copy the modal can edit without touching what the list is showing.
- *
- * Choices are shared rather than copied: they are what can be picked and not what is, they do
- * not change while the modal is open, and `TagSelect` compares them by identity.
+ * A copy the modal can edit without touching what the list is showing. Choices are shared, not
+ * copied — `TagSelect` compares them by identity.
  */
 export function cloneCriteria<T extends Criterion>(criteria: T[]): T[] {
     return criteria.map(criterion => withValue(criterion, criterion.type === 'range'
@@ -148,12 +124,12 @@ export function clearedCriteria<T extends Criterion>(criteria: T[]): T[] {
     return criteria.map(criterion => clearedCriterion(criterion));
 }
 
-/** The same criteria with one of them cleared — a chip's cross. An unknown key changes nothing. */
+/** The same criteria with one cleared — a chip's cross. An unknown key changes nothing. */
 export function withoutCriterion<T extends Criterion>(criteria: T[], key: string): T[] {
     return criteria.map(criterion => criterion.key === key ? clearedCriterion(criterion) : criterion);
 }
 
-/** The same criteria with one's choices filled in, which is what a `tags` criterion waits for. */
+/** The same criteria with one's choices filled in. What a `tags` criterion waits for. */
 export function withChoices<T extends Criterion>(criteria: T[], key: string, choices: CriterionChoice[]): T[] {
     return criteria.map(criterion => criterion.key === key && criterion.type !== 'range'
         ? { ...criterion, choices } as T
@@ -161,10 +137,8 @@ export function withChoices<T extends Criterion>(criteria: T[], key: string, cho
 }
 
 /**
- * The filters a criterion contributes to a query.
- *
- * An unset one contributes filters with empty values, which `removeEmptyFilters` drops — so
- * there is no branch for "not set" here, and none in the caller either.
+ * The filters a criterion contributes to a query. An unset one contributes empty values, which
+ * `removeEmptyFilters` drops — so neither this nor its caller branches on "not set".
  */
 export function criterionFilters<T>(criterion: Criterion): Filter<T>[] {
     if (criterion.type === 'range') {
@@ -183,11 +157,8 @@ function clearedCriterion<T extends Criterion>(criterion: T): T {
 }
 
 /**
- * The same criterion holding a different value.
- *
- * The cast is TypeScript's limit rather than a lie: every other field is copied across, and the
- * value handed in is the one the criterion's own type declares — which each caller, branching
- * on `type` first, is what guarantees.
+ * The same criterion holding a different value. Every caller branches on `type` first, which is
+ * what makes the cast safe.
  */
 function withValue<T extends Criterion>(criterion: T, value: RangeValue | string[]): T {
     return { ...criterion, value } as T;

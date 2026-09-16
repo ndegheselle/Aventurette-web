@@ -6,13 +6,8 @@ export enum SortDirection {
     DESC = '-',
 }
 
-/**
- * Pagination options for list. Page number starts from 1.
- */
+/** Page numbers start at 1. */
 export class PaginationOptions {
-    /**
-     * Current page number (starting from 1)
-     */
     page: number;
     perPage: number;
     sortBy?: string;
@@ -26,9 +21,6 @@ export class PaginationOptions {
     }
 }
 
-/**
- * Paginated items with total count and pagination options used for the query.
- */
 export class Paginated<T> {
     items: T[];
     total: number;
@@ -53,12 +45,11 @@ export interface IDataCrud<TResponse extends BaseEntity> {
 }
 
 /**
- * Builds a CRUD service for one collection. This is the seam a backend adapter plugs into:
- * the app wires one factory at startup and every repository asks it for its collection.
+ * Builds a CRUD service for one collection. Wire one factory at startup; each api module asks
+ * it for its own collection.
  *
  * @param collection name of the collection / table / endpoint
- * @param relations related records to fetch alongside each entity (PocketBase "expand",
- *                  SQL joins, GraphQL selection sets — the concept exists in most backends)
+ * @param relations related records to fetch with each entity (PocketBase expand, SQL join, …)
  */
 export type CrudFactory = <TResponse extends BaseEntity>(
     collection: string,

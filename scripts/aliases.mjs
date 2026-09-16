@@ -1,12 +1,9 @@
 /**
- * The one alias map.
+ * The one alias map, imported by Vite and Vitest. Workspace packages resolve to source, so there
+ * is no per-package build step.
  *
- * Workspace packages resolve to source rather than through node_modules: no per-package build
- * step, `vue-tsc -b` typechecks them with the app, and HMR crosses package boundaries.
- *
- * Vite and Vitest both import this. `front/tsconfig.json` cannot — TypeScript will not read a
- * JS module for its paths — so it repeats the same list, and `npm run lint:arch` fails if the
- * two ever disagree.
+ * `front/tsconfig.json` repeats the same list — TypeScript will not read a JS module for its
+ * `paths` — and `npm run lint:arch` fails if the two disagree.
  */
 import { fileURLToPath, URL } from 'node:url';
 

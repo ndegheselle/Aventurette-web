@@ -3,7 +3,7 @@
  *
  *     import { anActivity, fakeCrud, mountWithRouter } from '@tests';
  *
- * `@tests` is test-only — `npm run lint:arch` fails if anything that ships imports it.
+ * Test-only — `lint:arch` fails if anything that ships imports it.
  */
 export * from './builders';
 export * from './fakes';

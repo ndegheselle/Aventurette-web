@@ -1,9 +1,5 @@
-// @chapelure/ui — Vue 3 design system built on Tailwind + daisyUI.
-//
-// Components are deep-imported so bundlers can drop what an app does not use:
-//   import Modal from '@chapelure/ui/modals/Modal.vue';
-//
-// This barrel carries the non-component surface: composables, directives and their types.
+// @chapelure/ui — Vue 3 on Tailwind + daisyUI. Composables, directives and their types.
+// Components are deep-imported: import Modal from '@chapelure/ui/modals/Modal.vue';
 
 export { Alert, EnumAlertType, useAlert } from './alerts/useAlert';
 

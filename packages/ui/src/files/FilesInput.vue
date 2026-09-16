@@ -1,20 +1,12 @@
 <!--
-  FilesInput — drag-and-drop / browse zone that validates and emits accepted files.
+  Drag-and-drop / browse zone. `change` carries only files that passed `accept` and `maxMbSize`,
+  and never fires empty. Pair it with useOneFile / useMultipleFiles and FilesList:
 
-  Pair with useOneFile / useMultipleFiles and FilesList:
     const { files, update } = useOneFile();
     <FilesInput accept="image/*" @change="update">
       <template #constraints>JPG or PNG, max 2 MB</template>
     </FilesInput>
     <FilesList :files />
-
-  Props:
-    accept      — same syntax as <input accept>  (default: "image/*")
-    maxMbSize   — per-file size limit in MB       (default: 2)
-    multiple    — allow selecting multiple files  (default: false)
-
-  Emits:
-    change(files: File[]) — only valid, accepted files; never empty
 -->
 <script setup lang="ts">
 import { useAlert } from '@chapelure/ui/alerts/useAlert';

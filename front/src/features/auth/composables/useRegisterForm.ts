@@ -4,11 +4,9 @@ import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 /**
- * The registration form's state and what submitting it does.
- *
- * The password confirmation is checked by the backend, not here: it answers with a
- * `validation_values_mismatch` code on `passwordConfirm`, which the form renders like any other
- * field error. One rule, in one place.
+ * The registration form's state and what submitting it does. The confirmation is checked by the
+ * backend, which answers `validation_values_mismatch` on `passwordConfirm` — rendered like any
+ * other field error.
  *
  * XXX : pre-filled with a development account, same as the login form.
  */

@@ -19,8 +19,8 @@ describe('Deferred', () => {
     });
 
     it('exposes resolve synchronously, before anything awaits', () => {
-        // This is the property useModal depends on: show() creates the Deferred and hands the
-        // promise out, and confirm() resolves it much later from a click handler.
+        // What useModal depends on: show() hands the promise out, confirm() resolves it much
+        // later from a click handler.
         const deferred = new Deferred();
         expect(typeof deferred.resolve).toBe('function');
     });

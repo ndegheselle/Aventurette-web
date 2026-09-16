@@ -1,24 +1,19 @@
 import { SETTINGS_STORAGE_KEYS } from '@chapelure/ui/settings/useSettings';
 import { createI18n } from 'vue-i18n';
 
-// The design system ships its own strings (actions, data, validation, settings, inputs...).
-// The app imports them explicitly rather than the library globbing the app's folders, which
-// is what used to make @chapelure/ui depend on this project's layout.
+// The design system's own strings: actions, data, validation, settings, inputs.
 import uiEn from '@chapelure/ui/locales/en.json';
 import uiFr from '@chapelure/ui/locales/fr.json';
 
-/** Every string exists here, so it is both the boot default and the fallback for any gap. */
+/** The boot default, and the fallback for a key missing from another locale. */
 export const DEFAULT_LOCALE = 'fr';
 
 type Messages = Record<string, any>;
 
-// Feature translations are colocated with their feature and picked up automatically.
+// Each feature's locales/ is picked up automatically; nothing to register.
 const featureFiles = import.meta.glob('@/features/**/locales/*.json', { eager: true });
 
-/**
- * Recursive merge. A shallow spread would let two files that share a top-level key silently
- * drop each other's subtrees (features/auth owns "users", and any feature could add one).
- */
+/** Recursive: two features sharing a top-level key must keep both subtrees. */
 function mergeMessages(target: Messages, source: Messages): Messages {
     for (const [key, value] of Object.entries(source)) {
         const existing = target[key];
@@ -36,10 +31,8 @@ function isPlainObject(value: unknown): value is Messages {
 }
 
 /**
- * The whole catalogue: design system strings first, then every feature's, merged in.
- *
- * Exported because the test suite mounts components against these same messages, so an
- * assertion reads as the copy a user would see rather than as a key path.
+ * The whole catalogue: design system strings first, then every feature's. Exported so tests
+ * mount against the same messages and assert on the copy a user would read.
  */
 export const messages: Record<string, Messages> = {
     fr: mergeMessages({}, uiFr),
@@ -59,19 +52,14 @@ for (const path in featureFiles) {
     mergeMessages(messages[locale], mod.default);
 }
 
-/**
- * A stored value can outlive the locale it names (renamed code, removed translation). Falling
- * back here keeps an unknown one from being adopted as the active locale, which would leave
- * every key unresolved.
- */
+// A stored locale can outlive the translation it names, so check it before adopting it.
 const storedLocale = localStorage.getItem(SETTINGS_STORAGE_KEYS.language);
 const initialLocale = storedLocale && storedLocale in messages ? storedLocale : DEFAULT_LOCALE;
 
 export const i18n = createI18n({
     legacy: false,
     locale: initialLocale,
-    // Set explicitly: vue-i18n otherwise defaults it to `locale`, so the fallback would follow
-    // whatever was in storage and any untranslated key would render as its own path.
+    // Explicit: vue-i18n otherwise defaults it to `locale`, leaving nothing to fall back to.
     fallbackLocale: DEFAULT_LOCALE,
     messages,
 });

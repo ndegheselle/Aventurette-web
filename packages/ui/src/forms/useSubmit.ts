@@ -2,12 +2,12 @@ import { useValidationErrors } from '@chapelure/ui/forms/useValidationErrors';
 import { ref } from 'vue';
 
 /**
- * The shape every form submission in this app has: mark it busy, clear the last failure, run
- * the action, and turn a rejection into field errors rather than an unhandled promise.
- * `submit` never rejects: a failure is reported through `errors`, which is what the template
- * is bound to. It resolves to whether the action succeeded, for a caller that needs to know.
+ * Wraps a form submission: busy flag, cleared errors, and a rejection turned into field errors.
+ * Bind `isLoading` and `errors` in the template and call `submit` from the button.
  *
- * @param action what the form does. Anything it throws is treated as a rejected submission.
+ * `submit` never rejects — it resolves to whether the action succeeded.
+ *
+ * @param action what the form does. Anything it throws is a rejected submission.
  * @param options.defaultErrorKey translation key for the message shown when the backend sent
  *                                no per-field detail
  */

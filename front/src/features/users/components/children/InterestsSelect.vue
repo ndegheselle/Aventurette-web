@@ -9,8 +9,7 @@ import {
 } from '@features/users/model/interest';
 import { onMounted, ref, watch } from 'vue';
 
-// `selected` carries whole interests, not ids: that is the shape the child record now holds,
-// and the shape it is saved back in.
+// Whole interests, not ids — the shape the child record holds and is saved back in.
 const props = defineProps<{ selected?: InterestData[] }>();
 const emit = defineEmits<{ (e: 'update:selected', value: InterestData[]): void }>();
 

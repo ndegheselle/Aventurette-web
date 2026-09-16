@@ -5,15 +5,12 @@ import { DEFAULT_LOCALE, messages } from '@/app/i18n';
 export const TEST_LOCALE = 'en';
 
 /**
- * The one instance every test in a file mounts against, built from the app's own catalogue
- * rather than a stub of it — so `wrapper.text()` is checked against the copy a user would read.
+ * What every mounted component gets, built from the app's own catalogue — so `wrapper.text()` is
+ * checked against the copy a user would read. Separate from the app's instance, which takes its
+ * locale from `localStorage`, and exported so tests/setup.ts can reset the locale between tests.
  *
- * A separate instance from the app's, because that one takes its locale from `localStorage`.
- * Held here so tests/setup.ts can put the locale back between tests: switching language is
- * global by design, so a test that exercises it would otherwise leave the next one in French.
- *
- * Completeness is not enforced anywhere. A key missing from both locales renders as its own
- * path; one missing from `en` alone falls back to `fr` and renders in French.
+ * Nothing enforces completeness: a key missing from both locales renders as its own path, and one
+ * missing from `en` alone renders in French.
  */
 export const testI18n = createI18n({
     legacy: false,

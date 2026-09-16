@@ -8,8 +8,8 @@ const icon = shallowRef<Component | null>(null);
 let modalController: IModalController | null = null;
 
 /**
- * Global confirmation dialog. Requires a single <ConfirmationModal /> mounted in the app layout,
- * which registers itself here.
+ * The app-wide confirmation dialog. Needs one <ConfirmationModal /> in the layout, which
+ * registers itself here; without it every prompt resolves to null, which reads as cancelled.
  */
 export function useConfirmation() {
 
@@ -19,8 +19,6 @@ export function useConfirmation() {
 
     function show(t: string, m: string, i?: Component): Promise<boolean | null> {
         if (!modalController) {
-            // Resolving to null reads as "cancelled" to every caller, so a missing dialog
-            // declines the action instead of throwing on a non-null assertion.
             console.error('[chapelure/ui] useConfirmation().show() was called but no <ConfirmationModal /> is mounted — add one to your layout.');
             return Promise.resolve(null);
         }

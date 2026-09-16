@@ -8,11 +8,11 @@ export interface ICachedCrud<TResponse extends BaseEntity> extends IDataCrud<TRe
 }
 
 /**
- * A CRUD service that fetches the whole collection once and serves reads from memory.
- * Intended for small reference collections (tags, categories, benefits).
+ * A CRUD service that fetches the whole collection once and serves reads from memory. Only for
+ * small reference collections (tags, categories, benefits).
  *
- * Cache state is held per instance, so create one at module scope in a repository and share it.
- * Writes go to the server and are reflected in the cache; `filter` always goes to the server.
+ * The cache is per instance — create one at module scope so callers share it. Writes go to the
+ * server and update the cache; `filter` always goes to the server.
  */
 export function createPocketBaseCached<TResponse extends BaseEntity>(
     client: PocketBase,

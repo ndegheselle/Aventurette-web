@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Panel from '@chapelure/ui/layout/Panel.vue';
 
-// XXX : WIP — still to add here: change email address, change password, show account type.
+// XXX : WIP — still to add: change email, change password, show account type.
 </script>
 
 <template>

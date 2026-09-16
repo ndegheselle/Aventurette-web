@@ -21,8 +21,7 @@ async function setup() {
 
 beforeEach(async () => {
     provider.session = null;
-    // The session is module state shared by every caller — that is the point of it — so each
-    // test has to put it back.
+    // The session is module state shared by every caller, so each test has to put it back.
     const { auth } = await setup();
     if (auth.isLoggedIn.value) await auth.logout();
 });

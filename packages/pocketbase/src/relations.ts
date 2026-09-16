@@ -1,19 +1,14 @@
 /**
- * Moving relations between PocketBase's wire shape and the app's.
- *
- * PocketBase answers a read with the related records in a separate `expand` object keyed by
- * relation name, and leaves the record's own field holding ids. The app would rather have one
- * shape — `activity.steps` is the steps — so the adapter inlines them on the way out and puts
- * the ids back on the way in. `Expanded` in @chapelure/core is the type side of this.
+ * Relations between PocketBase's wire shape and the app's: expanded records on the way out,
+ * ids on the way in. `Expanded` in @chapelure/core is the type side of this.
  */
 
 /**
- * Fold `expand` into the record: each expanded relation replaces its own id list.
+ * Fold `expand` into the record: each expanded relation replaces its own id list. Recurses, so
+ * a nested expand (`steps.materials`) is inlined too.
  *
- * Recursive, because a nested expand (`steps.materials`) arrives as an `expand` on each
- * expanded record. Anything PocketBase leaves out of `expand` keeps its ids — a relation that
- * was never requested, and equally a to-many relation that matched nothing, which PocketBase
- * omits rather than sending back an empty array.
+ * A relation missing from `expand` keeps its ids — either it was not requested, or it is a
+ * to-many that matched nothing, which PocketBase omits rather than sending back an empty array.
  */
 export function inlineRelations<TResponse>(record: unknown): TResponse {
     if (record === null || typeof record !== 'object') return record as TResponse;
@@ -31,10 +26,8 @@ export function inlineRelations<TResponse>(record: unknown): TResponse {
 /**
  * The inverse, for writes: a relation field holding records goes back to holding their ids.
  *
- * `fields` are top-level relation names only. A nested path like `steps.materials` says how to
- * read an activity, never how to write one — the parent write stores step ids and stops there.
- * Values that are already ids pass through untouched, so a caller that never expanded, or an
- * update that omits the relation entirely, is unaffected.
+ * Pass top-level relation names only — a write stores step ids and stops there, so a nested
+ * path like `steps.materials` has no meaning here. Ids and absent fields pass through untouched.
  */
 export function relationsToIds(data: object, fields: string[]): Record<string, unknown> {
     const written = { ...data } as Record<string, unknown>;

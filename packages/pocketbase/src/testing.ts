@@ -1,9 +1,6 @@
 /**
- * A stand-in for the PocketBase SDK client, for this package's own tests.
- *
- * It lives in src/ rather than a test folder because the specs beside it are the only callers,
- * and because writing it against the SDK's real method names is what makes those specs
- * meaningful: they exercise `createPocketBaseCrud` as written, including the options it passes.
+ * A stand-in for the PocketBase SDK client, for this package's own specs. Written against the
+ * SDK's real method names, so a spec can assert the options the adapter passes.
  */
 import type PocketBase from 'pocketbase';
 

@@ -1,8 +1,6 @@
 <!--
-  What can be done to one activity from the authoring list: open it, or delete it.
-
-  Deleting is emitted rather than done here — the confirmation and the write belong to the
-  screen and its composable, so this stays markup.
+  Row actions on the authoring list: open an activity, or delete it. Deleting is emitted — the
+  confirmation and the write belong to the screen.
 -->
 <script setup lang="ts">
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';

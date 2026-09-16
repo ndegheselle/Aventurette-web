@@ -46,9 +46,8 @@ describe('inlineRelations', () => {
     });
 
     it('leaves ids in place when a to-many relation matched nothing', () => {
-        // PocketBase omits an empty relation from `expand` rather than sending back []. The
-        // field therefore still holds whatever ids the record itself carries — for an empty
-        // relation, none.
+        // PocketBase omits an empty relation from `expand` rather than sending back [], so the
+        // field keeps the ids the record carries — for an empty relation, none.
         expect(inlineRelations<any>({ id: 'act1', steps: [] })).toEqual({ id: 'act1', steps: [] });
     });
 

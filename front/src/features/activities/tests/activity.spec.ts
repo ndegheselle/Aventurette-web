@@ -2,8 +2,8 @@ import { materialsOf, resourcesOf } from '@features/activities/model/activity';
 import { aMaterial, aResource, aStep, anActivity } from '@tests';
 import { describe, expect, it } from 'vitest';
 
-// Materials and resources hang off steps, not off the activity, so the detail screen has to
-// gather them — which is the one decision in this file worth a test.
+// Materials and resources hang off steps, not off the activity: gathering them is the one
+// decision in the model worth a test.
 
 describe('materialsOf', () => {
     it('gathers what the steps need, since materials hang off steps not activities', () => {

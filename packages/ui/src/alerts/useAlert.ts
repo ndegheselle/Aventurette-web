@@ -23,8 +23,7 @@ export class Alert {
 
 const alerts = ref<Alert[]>([]);
 
-// A counter, not Date.now(): two alerts pushed in the same millisecond used to share an id,
-// so dismissing one removed both and the auto-dismiss timer cleared the wrong entry.
+// A counter, not Date.now(): two alerts pushed in the same millisecond would share an id.
 let nextId = 0;
 
 export function useAlert(delayMs: number = 10000) {

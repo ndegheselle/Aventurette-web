@@ -1,10 +1,9 @@
 /**
- * Mount helpers.
+ * Mount helpers for the two cases plain `mount` does not cover: a subject that navigates or
+ * reads a route param, and a composable that needs a component instance.
  *
- * `mount` from @vue/test-utils already carries i18n and the `<RouterLink>` stand-in via
- * tests/setup.ts, so most component tests need nothing from here. What lives here is the
- * router — components and composables that navigate or read route params need a real one —
- * and `withSetup`, for running a composable inside a component instance.
+ * Everything else can use `mount` directly — tests/setup.ts already gives it i18n and a
+ * `<RouterLink>` stand-in.
  */
 import { mount, type MountingOptions } from '@vue/test-utils';
 import { defineComponent, type Component } from 'vue';
@@ -18,18 +17,13 @@ import {
 const BLANK = defineComponent({ template: '<div data-test="route-target" />' });
 
 export interface RouterOptions {
-    /** The feature's own route records, usually the default export from its `routes.ts`. */
+    /** The feature's route records, usually the default export from its `routes.ts`. */
     routes?: RouteRecordRaw[];
     /** Where to start. A path, or a named location. */
     initialRoute?: string | { name: string; params?: Record<string, unknown> };
 }
 
-/**
- * A router on memory history, ready to use.
- *
- * The catch-all keeps an unmatched push from warning, so a test only fails on what it is
- * actually asserting.
- */
+/** A router on memory history. A catch-all route keeps an unmatched push from warning. */
 export async function createTestRouter({ routes = [], initialRoute = '/' }: RouterOptions = {}): Promise<Router> {
     const router = createRouter({
         history: createMemoryHistory(),
@@ -44,13 +38,11 @@ export async function createTestRouter({ routes = [], initialRoute = '/' }: Rout
 export type RouterMountOptions<Props> = MountingOptions<Props> & RouterOptions;
 
 /**
- * Mount with a real router.
+ * Mount with a real router. Assert where a navigation landed with
+ * `router.currentRoute.value.name`.
  *
- * Returns the router alongside the wrapper so a test can assert where a navigation landed
- * (`router.currentRoute.value.name`) rather than that some function was called.
- *
- * `<RouterLink>` stays stubbed — see tests/setup.ts — so a link to a route the test did not
- * declare still renders. Assert on those with `linkTarget`, and navigate with `router.push`.
+ * `<RouterLink>` stays stubbed, so a link to a route the test did not declare still renders —
+ * assert on those with `linkTarget`, and navigate with `router.push`.
  */
 export async function mountWithRouter<Props>(
     component: Component,
@@ -71,16 +63,13 @@ export async function mountWithRouter<Props>(
 }
 
 /**
- * Run a composable inside a real component instance.
- *
- * Composables that use lifecycle hooks (`onMounted`) or `inject` need one, and calling them
- * bare logs a Vue warning that tests/setup.ts turns into a failure. Unmount the wrapper when a
- * test is about teardown.
+ * Run a composable inside a component instance — anything using `onMounted` or `inject` needs
+ * one, and calling it bare warns, which fails the test.
  *
  *     const [filters] = withSetup(() => useActivityFilters(onChange));
  *
- * Pass `routes`/`initialRoute` for a composable that uses `useRouter` or `useRoute`; the router
- * comes back as the third element so the test can assert on where it navigated.
+ * Pass a router for a composable that uses `useRouter` or `useRoute`; it comes back third, to
+ * assert on where it navigated. Unmount the wrapper when the test is about teardown.
  */
 export function withSetup<T>(composable: () => T): [T, ReturnType<typeof mount>];
 export function withSetup<T>(composable: () => T, router: Router): [T, ReturnType<typeof mount>, Router];
@@ -100,7 +89,7 @@ export function withSetup<T>(composable: () => T, router?: Router) {
     return router ? [result, wrapper, router] : [result, wrapper];
 }
 
-/** Where a stubbed `<RouterLink>` points. See the stand-in in tests/setup.ts. */
+/** Where a stubbed `<RouterLink>` points. */
 export function linkTarget(link: { attributes(name: string): string | undefined }): unknown {
     const raw = link.attributes('data-to');
     return raw ? JSON.parse(raw) : null;

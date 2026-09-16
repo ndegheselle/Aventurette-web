@@ -5,14 +5,12 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import { computed } from 'vue';
 
 /**
- * One field of a generated filter form: the criterion's type picks the input.
- *
- * The criterion handed in is the modal's draft, and the inputs write into it directly — which
- * is the point of a draft, and why nothing is emitted back up.
+ * One field of a generated filter form; the criterion's type picks the input. Hand it a draft
+ * criterion: the inputs write into it directly and nothing is emitted back up.
  */
 const props = defineProps<{ criterion: Criterion }>();
 
-/** TagSelect works in the choices themselves and compares them by identity; a criterion holds values. */
+/** TagSelect binds the choices themselves; a criterion holds their values. */
 const tags = computed<CriterionChoice[]>({
     get: () => {
         const criterion = props.criterion;
@@ -43,7 +41,7 @@ const tags = computed<CriterionChoice[]>({
             <input type="number" class="input input-sm w-full" v-model="criterion.value.max" />
         </div>
 
-        <!-- Options are a fixed set, so they are all on screen; tags are a catalogue, so they are searched. -->
+        <!-- A fixed set fits on screen; a loaded catalogue is searched. -->
         <div v-else-if="criterion.type === 'options'" class="flex gap-2 flex-col">
             <label v-for="choice in criterion.choices" :key="choice.value" class="label cursor-pointer gap-2">
                 <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value"

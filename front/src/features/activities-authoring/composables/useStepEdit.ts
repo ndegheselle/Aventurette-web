@@ -12,19 +12,16 @@ import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 /**
- * What a step carries: the materials it needs and the files attached to it.
+ * What a step carries: the materials it needs and the files attached to it. Both are records of
+ * the step's own, written the moment they are chosen, and edited from the same modal.
  *
- * Both are records of the step's own, both are written the moment they are chosen, and both are
- * edited from the same modal — which is why they are one file. The step id is read on each
- * write rather than captured, because the modal shows one step after another without being
- * rebuilt.
+ * Pass `step` as a getter: the modal shows one step after another without being rebuilt, so the
+ * id has to be read on each write rather than captured.
  */
 
 /**
- * The materials a step needs.
- *
- * A material belongs to one step, so choosing a name writes a row for this step — the names
- * already used elsewhere are suggestions, not records to link.
+ * The materials a step needs. Choosing a name writes a row for this step — names used elsewhere
+ * are suggestions, not records to link.
  *
  * @param selected the step's materials, as the input binds them
  * @param step id of the step they belong to
@@ -52,11 +49,8 @@ export function useStepMaterials(selected: Ref<ActivityMaterialData[]>, step: ()
     }
 
     /**
-     * Drop a material from the step.
-     *
-     * Only the link is dropped here. The record is left to `back/hooks`, which reclaims one no
-     * step lists any more — deleting it from here would mean deleting a record the step still
-     * points at, and `activities_steps.materials` cascades.
+     * Unlink a material. The record is left to `back/hooks`, which reclaims one no step lists any
+     * more — `activities_steps.materials` cascades, so deleting it here would take the step too.
      */
     function remove(index: number) {
         selected.value = selected.value.filter((_, i) => i !== index);
@@ -70,10 +64,8 @@ export function useStepMaterials(selected: Ref<ActivityMaterialData[]>, step: ()
 }
 
 /**
- * The files a step carries.
- *
- * A picked file is uploaded there and then, so what the step holds is always records — the
- * step is saved with their ids and never has to carry an upload of its own.
+ * The files a step carries. A picked file is uploaded on the spot, so `selected` always holds
+ * records and the step is saved with their ids.
  *
  * @param selected the step's resources, as the input binds them
  * @param step id of the step they belong to
@@ -99,11 +91,8 @@ export function useStepResources(selected: Ref<ActivityResourceData[]>, step: ()
     }
 
     /**
-     * Drop a resource from the step.
-     *
-     * Only the link is dropped here. The record is left to `back/hooks`, which reclaims a
-     * resource once no step lists it — deleting it from here would mean deleting a record the
-     * step still points at, and `activities_steps.resources` cascades.
+     * Unlink a resource. The record is left to `back/hooks`, which reclaims one no step lists any
+     * more — `activities_steps.resources` cascades, so deleting it here would take the step too.
      */
     function remove(index: number) {
         selected.value = selected.value.filter((_, i) => i !== index);

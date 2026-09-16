@@ -28,8 +28,6 @@ export function filterToPocketBase<T>(filter: Filter<T>): string {
     const values = isArrayValue ? filter.value : [filter.value];
 
     const parts = values.map((v: any) => {
-        // The '?' prefix in PocketBase allows searching within multi-valued fields (arrays/relations)
-        // or signifies "any" match when the right side is part of a list expansion.
         const operator = filterOperatorToPocketBase(filter.operator);
         const valueStr = filterValueToString(v);
         return `${String(filter.key)}${operator}${valueStr}`;

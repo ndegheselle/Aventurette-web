@@ -5,13 +5,11 @@ import { filterGroupToPocketBase } from "./filters";
 import { inlineRelations, relationFields, relationsToIds } from "./relations";
 
 /**
- * IDataCrud backed by one PocketBase collection.
+ * IDataCrud backed by one PocketBase collection. Only the port is handed back: the client stays
+ * closed over here, so no caller can reach around the seam.
  *
- * Note the return type: only the port is handed back. The underlying RecordService and client
- * stay closed over here on purpose, so no caller can reach around the seam.
- *
- * Expanded relations are inlined into the record on the way out and turned back into ids on
- * the way in, so TResponse describes the same shape in both directions — see ./relations.
+ * Relations are inlined on the way out and turned back into ids on the way in, so TResponse
+ * describes the same shape both ways — see ./relations.
  *
  * @param relations records to expand alongside each entity
  */

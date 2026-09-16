@@ -22,20 +22,17 @@ import { onMounted, ref } from 'vue';
 
 const DEFAULT_PER_PAGE = 5;
 
-/** The criterion whose choices are loaded rather than declared. */
+/** The one criterion whose choices are loaded rather than declared. */
 const BENEFITS_CRITERION = 'benefits';
 
 /**
- * What the activity list can be narrowed by, in the order the form shows them.
+ * What the activity list can be narrowed by, in the order the form shows them. The modal's
+ * fields, the chips above the list and the query are all generated from this, so a new filter
+ * is a new entry here.
  *
- * This list *is* the screen's filters: `@chapelure/ui/filter` generates the modal's fields and
- * the chips above the list from it, and `buildActivityFilters` turns it into a query — so a new
- * filter is a new entry here. What each criterion means to the backend travels with it:
- * `ageMin`/`ageMax` are two fields bounding one number, duration is one field bounded twice, and
- * benefits are matched with `anyEquals` because they are a relation list.
- *
- * It lives beside the call that sends the query rather than in `model/`, which may not import
- * the view layer — and a criterion carries its label, its input and its icon. See
+ * Each criterion carries what it means to the backend: `ageMin`/`ageMax` are two fields bounding
+ * one number, duration is one field bounded twice, and benefits need `anyEquals` because they
+ * are a relation list. See
  * [ADR 0016](../../../../../docs/adr/0016-filtering-lives-in-the-ui-package.md).
  */
 export function activityCriteria(): Criterion[] {
@@ -75,10 +72,8 @@ export function activityCriteria(): Criterion[] {
 }
 
 /**
- * Turn the criteria and the free-text search into the query sent to the backend.
- *
- * Empty criteria are stripped, so an untouched form produces an empty group and the list falls
- * back to showing everything. The search spans name and description, matching either.
+ * Turn the criteria and the free-text search into the query sent to the backend. Empty criteria
+ * are stripped, so an untouched form shows everything. The search matches name or description.
  */
 export function buildActivityFilters(criteria: Criterion[], search: string): FilterGroup<ActivityData> {
     const group = createGroup<ActivityData>({
@@ -93,32 +88,17 @@ export function buildActivityFilters(criteria: Criterion[], search: string): Fil
 }
 
 /**
- * The public activity list: what is on it, and what narrows it.
- *
- * Read-only. Writing an activity — and the button that starts one — is the `activities-edit`
- * feature's, which lists the author's own rather than everybody's.
- *
- * One composable for one screen. The criteria used to live in `<ActivitiesFilters>`, which
- * handed a built `FilterGroup` back up through `v-model` for the page to re-query with — the
- * query made a round trip for no reason. It is built here now, next to the call that sends it,
- * and the component is handed `filters` to render.
+ * The public activity list: what is on it, and what narrows it. Read-only — writing an activity
+ * is the `activities-authoring` feature's, which lists the author's own rather than everybody's.
  */
 export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
     const paginated = ref<Paginated<ActivityData>>(
         new Paginated<ActivityData>([], 0, new PaginationOptions(1, perPage)),
     );
 
-    // Applied and draft criteria, and what moves one to the other, are the same on any screen
-    // that filters; what is this screen's is the list handed in and the query built from it.
     const filters = useFilters(activityCriteria(), () => { refresh(); });
 
-    /**
-     * Re-query with the applied criteria and the current page.
-     *
-     * Empty criteria build an empty group, which the adapter sends as no filter at all — so the
-     * first load and a filtered one take the same path, and there is no separate "unfiltered"
-     * branch that could drift from the other.
-     */
+    /** Re-query with the applied criteria and the current page. */
     async function refresh() {
         paginated.value = await activities.filter(
             buildActivityFilters(filters.applied.value, filters.search.value),
@@ -127,7 +107,6 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
     }
 
     onMounted(async () => {
-        // Benefits are the one criterion whose choices are records rather than a fixed set.
         const choices = (await benefits.getAll()).map(benefit => ({ label: benefit.name, value: benefit.id }));
         filters.setChoices(BENEFITS_CRITERION, choices);
 

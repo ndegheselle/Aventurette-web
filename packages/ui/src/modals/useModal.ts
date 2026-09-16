@@ -2,8 +2,7 @@ import { Deferred } from '@chapelure/core';
 import { ref, type Ref } from 'vue';
 
 /**
- * Controller that handle a modal popup. The show method returns a promise that will be resolved when the user confirm or cancel the modal.
- * Confirm resolve the promise with the given result, while cancel resolve it with null.
+ * Drives a modal. `show` resolves with the result on confirm, or null on cancel.
  */
 export interface IModalController<T = boolean> {
     isShown: Ref<boolean>;
@@ -13,7 +12,7 @@ export interface IModalController<T = boolean> {
 }
 
 /**
- * Modal element that expose a show method.
+ * A modal component that opens on a record.
  * Example : defineExpose<IEditModal<ChildrenData>>({ show });
  */
 export interface IEditModal<T>
@@ -21,12 +20,7 @@ export interface IEditModal<T>
     show(child: T): Promise<T | null>;
 }
 
-/**
- * Options for the useModal composable. 
- * onShow is called when the modal is shown,
- * onCancel is called when the user cancel the modal,
- * onConfirm is called when the user confirm the modal, can return false to prevent the modal from being closed and the promise from being resolved.
- */
+/** Hooks around the modal's lifetime. Return false from `onConfirm` to leave the promise pending. */
 export interface IModalOptions<T = boolean> {
     onShow?: () => void;
     onConfirm?: (result: T | null) => boolean | void;

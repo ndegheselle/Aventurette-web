@@ -1,8 +1,6 @@
 <!--
-  A labelled control with its validation message.
-
-  `label` is a translation key and is passed through $t. Use the #label slot instead when the
-  legend needs markup, such as a leading icon.
+  A labelled control with its validation message. `label` is a translation key; use the #label
+  slot instead when the legend needs markup, such as a leading icon.
 -->
 <script lang="ts" setup>
 import FieldError from '@chapelure/ui/forms/FieldError.vue';

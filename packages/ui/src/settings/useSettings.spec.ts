@@ -2,7 +2,7 @@ import { withSetup } from '@tests';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EnumTheme, SETTINGS_STORAGE_KEYS, useSettings } from './useSettings';
 
-/** What the OS says it prefers. useSettings mirrors it actively for the `auto` theme. */
+/** What the OS says it prefers; the `auto` theme mirrors it. */
 function prefersDark(dark: boolean) {
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: dark, addEventListener() { }, removeEventListener() { } })));
 }
@@ -81,7 +81,7 @@ describe('useSettings', () => {
         });
 
         it('changes it globally, not just for the component that asked', () => {
-            // The whole app has to follow, which is why this uses the global i18n scope.
+            // The whole app has to follow, which is why useSettings uses the global i18n scope.
             const [first] = withSetup(() => useSettings());
             const [second] = withSetup(() => useSettings());
 

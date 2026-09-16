@@ -3,11 +3,11 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 /**
- * Usage with FilesInput + FilesList:
- *   const { files, update } = useOneFile();
- * 
- *   <FilesInput @change="update" />   — feeds validated File[] into the composable
- *   <FilesList :files />               — renders the resulting files array; supports inline removal
+ * One picked file, replaced on each pick.
+ *
+ *     const { files, update } = useOneFile();
+ *     <FilesInput @change="update" />
+ *     <FilesList :files />
  */
 export function useOneFile() {
     const files = ref<File[]>([]);
@@ -23,12 +23,11 @@ export function useOneFile() {
 }
 
 /**
- * Usage with FilesInput + FilesList:
- *   const { files, update } = useMultipleFiles(5);
+ * Picked files, appended on each pick. Over the limit, what fits is kept and the user alerted.
  *
- *   <FilesInput @change="update" />   — feeds validated File[] into the composable
- *   <FilesList :files />               — renders the resulting files array; supports inline removal
- * @param maxFilesNumber max number of files accepted
+ *     const { files, update } = useMultipleFiles(5);
+ *     <FilesInput multiple @change="update" />
+ *     <FilesList :files />
  */
 export function useMultipleFiles(maxFilesNumber: number = 10) {
     const { t } = useI18n();

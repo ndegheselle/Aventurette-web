@@ -66,13 +66,12 @@ describe('useModal', () => {
     });
 
     it('KNOWN DEVIATION: a vetoed confirm still hides the modal', () => {
-        // IModalOptions says onConfirm returning false "prevents the modal from being closed
-        // and the promise from being resolved". Only the second half holds: confirm() sets
-        // isShown before consulting onConfirm, so the dialog closes over a pending promise.
+        // A false `onConfirm` is documented as keeping the modal open and the promise pending.
+        // Only the second half holds: confirm() sets isShown before consulting onConfirm, so the
+        // dialog closes over a pending promise. Nothing calls the veto today.
         //
-        // Nothing calls the veto today, which is why this has never been visible. The fix is to
-        // move the `isShown.value = false` below the onConfirm check. Left as-is deliberately:
-        // this pass changes no behaviour. Flip this test when the fix lands.
+        // The fix is to move `isShown.value = false` below the onConfirm check. Flip this test
+        // when it lands.
         const modal = useModal<string>({ onConfirm: () => false });
 
         modal.show();

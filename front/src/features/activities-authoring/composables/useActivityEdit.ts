@@ -11,15 +11,11 @@ import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
 /**
- * The activity the edit form is bound to, and what saving it does.
+ * The activity the edit form is bound to, and what saving it does. Saving writes the activity's
+ * own fields only — it already exists by the time this screen opens, and so does every step.
  *
- * The activity always exists by the time this screen opens — `useActivitiesEditList` creates it —
- * and so does every step, written blank the moment it is added. Nothing here creates anything on
- * save: what is left for the save button is the activity's own fields.
- *
- * Never null, so the form can bind `v-model` straight to the fields: an empty activity stands
- * in until the real one arrives. Watching the route param rather than loading once on mount,
- * because vue-router reuses the component when only the parameter changes.
+ * `activity` is never null, so the form can `v-model` straight onto it: an empty activity stands
+ * in until the real one arrives.
  */
 export function useActivityEdit() {
     const route = useRoute();
@@ -42,11 +38,8 @@ export function useActivityEdit() {
         { immediate: true },
     );
 
-    /**
-     * TagSelect picks from `availableBenefits` and tells what is selected apart by identity,
-     * while the benefits the activity was loaded with are records of their own. Matching them
-     * back by id is what keeps an already-chosen benefit out of the dropdown.
-     */
+    // TagSelect compares by identity, and the loaded benefits are records of their own — match
+    // them back by id, or an already-chosen benefit stays in the dropdown.
     const selectedBenefits = computed({
         get: () => availableBenefits.value.filter(
             available => activity.value.benefits.some(chosen => chosen.id === available.id),
@@ -57,13 +50,8 @@ export function useActivityEdit() {
     });
 
     /**
-     * Add a step: write a blank one, link it to the activity, and hand it back for the modal
-     * to fill in.
-     *
-     * Same reasoning as the activity itself — a step exists before it is edited, so what the
-     * modal opens on is always a record, and the materials and files chosen in it have
-     * something to belong to. Returns null when the write failed, which is the caller's cue
-     * not to open the modal on nothing.
+     * Write a blank step, link it to the activity, and hand it back for the modal to fill in.
+     * Null when the write failed — the caller's cue not to open the modal on nothing.
      */
     async function addStep(): Promise<ActivityStepData | null> {
         if (isAddingStep.value) return null;
@@ -88,11 +76,10 @@ export function useActivityEdit() {
     }
 
     /**
-     * Unlink a step, then delete it — in that order, and never the other way round.
+     * Unlink a step, then delete it — in that order, never the other way round.
      *
-     * `activities.steps` cascades on delete: PocketBase deletes the record holding the
-     * relation once the deleted id leaves it with none, so removing an activity's last step
-     * while it is still linked would take the activity with it.
+     * `activities.steps` cascades: PocketBase deletes the record *holding* the relation once the
+     * deleted id leaves it with none, so removing a still-linked last step takes the activity too.
      */
     async function detachStep(step: ActivityStepData) {
         if (!await relinkSteps(activity.value.steps.filter(current => current.id !== step.id)))
@@ -101,18 +88,15 @@ export function useActivityEdit() {
         try {
             await steps.remove(step.id);
         } catch {
-            // The step is already off the activity; what is left behind is an unreferenced
-            // record, which is worth reporting but not worth putting the step back for.
+            // The step is already unlinked; an unreferenced record is worth reporting, not
+            // worth putting the step back for.
             alert.error(t('validation.errors.default'));
         }
     }
 
     /**
-     * Write the activity's step list.
-     *
-     * Its own little save: nothing on the form is involved, so a failure is reported as an
-     * alert and the list is put back to what the record still holds, rather than leaving the
-     * screen showing a link that was never made.
+     * Write the activity's step list. A save of its own — nothing on the form is involved — so a
+     * failure alerts and rolls the list back to what the record still holds.
      */
     async function relinkSteps(next: ActivityStepData[]): Promise<boolean> {
         const previous = activity.value.steps;
@@ -128,16 +112,13 @@ export function useActivityEdit() {
         }
     }
 
-    /** Where the state button will take this activity, and what the button should read. */
+    /** Where the state button takes this activity, and what the button reads. */
     const transition = computed(() => stateTransition(activity.value.state));
 
     /**
-     * Publish the activity, or put it back to draft.
-     *
-     * Writes the state and nothing else, which is why it sits beside the save button rather
-     * than inside it: what is typed into the form is still unsaved afterwards, and still on
-     * screen to save. Reported as an alert rather than through `errors` — no field on the form
-     * stands for the state, so there is nothing to show a message against.
+     * Publish the activity, or put it back to draft. Writes the state and nothing else, so what
+     * is typed into the form stays unsaved and still on screen. Failures alert rather than going
+     * through `errors`: no field on the form stands for the state.
      */
     async function changeState() {
         if (isChangingState.value) return;

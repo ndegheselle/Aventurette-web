@@ -19,7 +19,7 @@ const children = ref<ChildrenData[]>([]);
 const confirm = useConfirmation();
 const { t } = useI18n();
 
-// The modal is the one that saves, so the list only has to take in what it hands back.
+// The modal saves; the list only takes in what it hands back.
 async function add() {
     const created = await modal.value?.show({ user: auth.currentId() } as ChildrenData);
     if (created) children.value = [...children.value, created];

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Imported rather than relying on a global registration in the app's main.ts.
 import { vClickOutside } from '@chapelure/ui/dropdown/clickOutside';
 
 defineSlots<{

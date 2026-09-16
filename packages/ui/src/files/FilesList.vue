@@ -1,10 +1,7 @@
 <!--
-  FilesList — renders the files array managed by useOneFile / useMultipleFiles.
-  Images are shown as thumbnails; other types show a generic file icon.
-  The × button calls files.splice() directly on the prop array, so the
-  reactive ref in the parent composable stays in sync.
+  The files held by useOneFile / useMultipleFiles: thumbnails for images, an icon otherwise.
+  Removing splices the prop array in place, so the parent's ref follows.
 
-  Usage:
     const { files, update } = useMultipleFiles(10);
     <FilesInput multiple @change="update" />
     <FilesList :files />

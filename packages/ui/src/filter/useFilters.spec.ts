@@ -3,10 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { isCriterionSet, optionsCriterion, rangeCriterion, tagsCriterion } from './criteria';
 import { useFilters } from './useFilters';
 
-/**
- * The draft dance, which is the whole point of this composable: what the list is showing only
- * changes when something says so, and `onApply` fires exactly then.
- */
+// The draft dance: what the list shows only changes when something says so, and `onApply` fires
+// exactly then.
 
 const criteria = () => [
     rangeCriterion({ key: 'age', label: 'fields.age', display: 'age', minField: 'ageMin', maxField: 'ageMax' }),

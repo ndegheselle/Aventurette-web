@@ -2,12 +2,7 @@ import type { BaseEntity, IAuthProvider } from '@chapelure/core';
 import type PocketBase from 'pocketbase';
 import { mapErrors } from './errors';
 
-/**
- * IAuthProvider backed by a PocketBase auth collection.
- *
- * Everything PocketBase-specific about sessions — authWithPassword, authRefresh, the authStore,
- * the verification email — is contained here, so the UI only ever sees the port.
- */
+/** IAuthProvider backed by a PocketBase auth collection. */
 export function createPocketBaseAuth<TUser extends BaseEntity>(
     client: PocketBase,
     collectionName: string
@@ -30,7 +25,7 @@ export function createPocketBaseAuth<TUser extends BaseEntity>(
         },
 
         async refresh(): Promise<TUser | null> {
-            // A missing or expired session is an expected outcome here, not an error.
+            // A missing or expired session is expected here, not an error.
             try {
                 const result = await collection.authRefresh<TUser>();
                 return result.record ?? null;

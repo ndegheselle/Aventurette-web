@@ -1,4 +1,4 @@
-<!-- Example of a reusable modal -->
+<!-- Driven by a useModal controller: <Modal :controller /> -->
 <script setup lang="ts" generic="T = boolean">
 import { useModal, type IModalController } from '@chapelure/ui/modals/useModal';
 import { CheckIcon, XIcon } from 'lucide-vue-next';
@@ -44,7 +44,6 @@ defineSlots<{
                 <slot />
             </div>
 
-            <!-- Actions -->
             <div class="modal-action"
                  v-if="withActions">
                 <slot name="actions">

@@ -1,9 +1,6 @@
 /**
- * Domain object builders.
- *
- * Records come from PocketBase carrying system fields no test cares about, so every builder
- * fills a complete, valid record and takes an override for the one or two fields the test is
- * actually about. A test then reads as what it is about:
+ * Domain object builders. Each fills a complete, valid record — system fields included — and
+ * takes an override for the one or two fields the test is actually about:
  *
  *     anActivity({ name: 'Treasure hunt', ageMin: 6, ageMax: 10 })
  */
@@ -119,7 +116,7 @@ export function aUser(overrides: Partial<UserData> = {}): UserData {
     } as UserData;
 }
 
-/** An upload the user has just picked: it has no record yet, so it carries the File itself. */
+/** A file the user has just picked, before anything has stored it. */
 export function aPickedFile(name = 'photo.png', type = 'image/png'): File {
     return new File(['fake-bytes'], name, { type });
 }

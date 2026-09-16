@@ -12,8 +12,8 @@ import ResourcesSelection from '@features/activities-authoring/components/Resour
 import { type ActivityStepData } from '@features/activities/model/step';
 import { computed } from 'vue';
 
-// A step is written blank when it is added, so this only ever updates one — what it opens on
-// is already a record, which is what lets its materials and files be saved as they are chosen.
+// Only ever updates: a step is written blank when it is added, so what this opens on is already
+// a record — which is what lets its materials and files be saved as they are chosen.
 const controller = useModal<ActivityStepData>();
 const { show, confirm, cancel, data, errors, isLoading } = useEditModal(controller, stepsApi);
 const step = computed(() => data.value);

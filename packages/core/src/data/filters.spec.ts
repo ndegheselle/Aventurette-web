@@ -93,9 +93,8 @@ describe('removeEmptyFilters', () => {
             filters: [createFilter<Activity>({ key: 'ageMin', value: 0 })],
         });
 
-        // Documents current behaviour: falsy scalars are dropped. A zero-minimum-age filter
-        // is indistinguishable from an untouched field, which is why the age form treats
-        // null, not 0, as "not set".
+        // Falsy scalars are dropped, so a zero-minimum-age filter looks like an untouched field.
+        // The age form treats null, not 0, as "not set".
         expect(removeEmptyFilters(group).filters).toHaveLength(0);
     });
 });

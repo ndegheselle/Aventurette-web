@@ -4,11 +4,9 @@ import { aBenefit, anActivity, fakeCrud, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-/**
- * The filter bar's wiring, which is what mounting is for: a form generated from the criteria, a
- * chip per criterion the user set, and a cross that takes one back out of the query. What each
- * of those *decides* is tested without a screen in `criteria.spec.ts`.
- */
+// The filter bar's wiring: a form generated from the criteria, a chip per criterion the user
+// set, and a cross that takes one back out of the query. What each of those decides is tested
+// without a screen in `criteria.spec.ts`.
 
 const activities = fakeCrud<ActivityData>();
 const benefits = fakeCrud<BenefitData>();
@@ -34,7 +32,7 @@ const chips = (wrapper: any) => wrapper.findAll('.badge-lg');
 const buttonSaying = (wrapper: any, label: string) =>
     wrapper.findAll('button').filter((button: any) => button.text() === label);
 
-/** What the last query narrowed a field to, or undefined if it did not narrow it at all. */
+/** What the last query narrowed a field to, or undefined if it did not. */
 function queried(key: string): unknown {
     const flatten = (group: any): any[] =>
         group.filters.flatMap((filter: any) => 'filters' in filter ? flatten(filter) : [filter]);
