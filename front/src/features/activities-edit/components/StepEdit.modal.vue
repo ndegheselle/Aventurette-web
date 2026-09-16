@@ -6,9 +6,9 @@ import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
 import TextEditor from '@chapelure/ui/primitives/TextEditor.vue';
-import { stepsApi } from '@features/activities/api/steps.api';
-import MaterialsSelection from '@features/activities/components/MaterialsSelection.vue';
-import ResourcesSelection from '@features/activities/components/ResourcesSelection.vue';
+import { stepsApi } from '@features/activities-edit/api/steps.api';
+import MaterialsSelection from '@features/activities-edit/components/MaterialsSelection.vue';
+import ResourcesSelection from '@features/activities-edit/components/ResourcesSelection.vue';
 import { type ActivityStepData } from '@features/activities/model/step';
 import { computed } from 'vue';
 

@@ -1,6 +1,13 @@
 # activities
 
-Browsing, filtering and authoring activities.
+Browsing and filtering the public activity catalogue.
+
+Read-only. Writing an activity is [activities-edit](activities-edit.md), which owns the editor,
+the step modal and the author's own list — see
+[ADR 0014](../adr/0014-authoring-is-its-own-feature.md) for why that is a second feature. What
+stays here is the **shape**: `model/activity.ts`, `model/step.ts` and `api/activities.api.ts`
+describe what an activity is, which both halves need, and the dependency runs one way — nothing
+here imports `activities-edit`.
 
 ## Routes
 
@@ -8,17 +15,11 @@ Browsing, filtering and authoring activities.
 |---|---|---|
 | `activities` | `/activities` | The list, with the filter toolbar |
 | `activities.page` | `/activities/:id` | One activity in full |
-| `activities.edit` | `/activities/:id/edit` | Authoring, one form |
 
-Authoring is a single form laid out like the detail screen — properties, description, then the
-steps — over the activity `useActivityEdit` loads from the route. The activity always exists by
-the time the screen opens: **Add** on the list writes it first (`useActivitiesList`) and then
-navigates, so there is no `new` id and no create branch in the editor. `/` redirects to
-`activities`.
+`/` redirects to `activities`.
 
-One composable to a screen: `useActivitiesList` holds the results, the filter criteria and the
-add button; `useActivity` the detail screen; `useActivityEdit` the form and its steps; and
-`useStepEdit` the materials and files inside the step modal.
+One composable to a screen: `useActivitiesList` holds the results and the filter criteria,
+`useActivity` the detail screen.
 
 ## Data
 
@@ -37,13 +38,17 @@ holding — a tile renders a url, a step is saved with ids.
 
 ## Saving
 
+Nothing on these two screens writes. What follows describes how the editor in
+[activities-edit](activities-edit.md) persists what this feature then reads back, because it is
+the reason `ActivityData` has the shape it does.
+
 An activity is three collections and relations are stored as ids, so nothing can be saved
 before its parent exists. Rather than sequencing that at the end, **every record is written as
 soon as it is added**:
 
 | Added | Written | By |
 |---|---|---|
-| the activity | on **Add** on the list, before the editor opens | `useActivitiesList` |
+| the activity | on **Add** on the authoring list, before the editor opens | `useActivitiesEditList` |
 | a step, blank, and its link to the activity | on **Add** in the steps panel, before the modal opens | `useActivityEdit.addStep` |
 | a file | as it is picked | `useStepEdit` |
 | the step's own content | as the modal is confirmed | `StepEdit.modal` (`useEditModal`) |
@@ -114,7 +119,8 @@ or an api wrapper does not earn one — see
 - A step takes at most `MAX_STEP_RESOURCES` (10) files. Over the limit, the files that fit are
   still taken and the rest reported — a partial pick beats dropping all of it.
 
-*`tests/useActivityEdit.spec.ts`* — the one order that matters
+*`activities-edit/tests/useActivityEdit.spec.ts`* — the one order that matters, and the one
+spec that moved out with the composable it covers
 
 - Adding a step writes a blank one and links it before the modal opens; if the link fails there
   is nothing to open.
@@ -124,6 +130,9 @@ or an api wrapper does not earn one — see
 - A delete that fails after the unlink landed leaves the step off the activity anyway.
 
 ## Not finished
+
+Most of what follows is the editor's, and is listed here because it is about this feature's
+data. [activities-edit](activities-edit.md) has the gaps that belong to its screens.
 
 - **The picture input goes nowhere.** The `activities` collection has no file field to store
   one in, so what the user picks is shown and then dropped. There is an `XXX` on it in the

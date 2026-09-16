@@ -7,22 +7,15 @@ import ActivityMetadataDisplay from '@features/activities/components/ActivityMet
 import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
 import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
 import { routesNames } from '@features/activities/routes';
-import { ArrowRightIcon, PlusIcon } from 'lucide-vue-next';
+import { ArrowRightIcon } from 'lucide-vue-next';
 
-// One composable for the screen: the results, what narrows them, and the add button. Adding
-// writes the activity straight away and opens the editor on it.
-const { paginated, filters, refresh, isCreating, createActivity } = useActivitiesList();
+// One composable for the screen: the results and what narrows them. Nothing writes from
+// here — starting an activity is the `activities-edit` feature's list.
+const { paginated, filters, refresh } = useActivitiesList();
 </script>
 
 <template>
     <Container>
-        <button class="btn btn-primary"
-                :disabled="isCreating"
-                @click="createActivity">
-            <span v-if="isCreating" class="loading loading-spinner loading-sm"></span>
-            <PlusIcon />
-            {{ $t('actions.add') }}
-        </button>
         <ActivitiesFilters :filters="filters" />
         <List :items="paginated.items"
               v-slot="{ item }"

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { MenuIcon, TreesIcon } from 'lucide-vue-next';
+import { MenuIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 import AlertsContainer from '@chapelure/ui/overlays/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/ui/overlays/ConfirmationModal.vue';
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import DropdownTrigger from '@chapelure/ui/overlays/DropdownTrigger.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
+import { routesNames as activitiesEditRoutesNames } from '@features/activities-edit/routes';
 import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
 </script>
 
@@ -25,6 +26,11 @@ import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
                                 <TreesIcon /> {{ $t('activities.title') }}
                             </RouterLink>
                         </li>
+                        <li>
+                            <RouterLink :to="{ name: activitiesEditRoutesNames.all }">
+                                <PencilLineIcon /> {{ $t('activities.edit.title') }}
+                            </RouterLink>
+                        </li>
                     </ul>
                 </Dropdown>
 
@@ -39,6 +45,11 @@ import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
                     <li>
                         <RouterLink :to="{ name: activitiesRoutesNames.all }">
                             <TreesIcon /> {{ $t('activities.title') }}
+                        </RouterLink>
+                    </li>
+                    <li>
+                        <RouterLink :to="{ name: activitiesEditRoutesNames.all }">
+                            <PencilLineIcon /> {{ $t('activities.edit.title') }}
                         </RouterLink>
                     </li>
                 </ul>

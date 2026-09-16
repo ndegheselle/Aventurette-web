@@ -11,13 +11,13 @@ import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import TextEditor from '@chapelure/ui/primitives/TextEditor.vue';
-import StepEditModal from '@features/activities/components/StepEdit.modal.vue';
+import StepEditModal from '@features/activities-edit/components/StepEdit.modal.vue';
 import StepSummary from '@features/activities/components/StepSummary.vue';
-import { useActivityEdit } from '@features/activities/composables/useActivityEdit';
+import { useActivityEdit } from '@features/activities-edit/composables/useActivityEdit';
 import { type ActivityStepData } from '@features/activities/model/step';
-import { availablesEnvironments } from '@features/activities/model/activity';
-import { routesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, LibraryIcon, ListOrderedIcon, MinusIcon, PenIcon, PlusIcon, SaveIcon, ScrollTextIcon, TriangleAlertIcon } from 'lucide-vue-next';
+import { ActivityState, availablesEnvironments } from '@features/activities/model/activity';
+import { routesNames } from '@features/activities-edit/routes';
+import { ArrowLeftIcon, BadgeCheckIcon, LibraryIcon, ListOrderedIcon, MinusIcon, PenIcon, PlusIcon, SaveIcon, ScrollTextIcon, TriangleAlertIcon, UndoIcon } from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -27,8 +27,11 @@ const {
     selectedBenefits,
     isLoading,
     isAddingStep,
+    isChangingState,
+    transition,
     errors,
     save,
+    changeState,
     addStep,
     replaceStep,
     detachStep,
@@ -67,7 +70,15 @@ async function remove(step: ActivityStepData) {
                 <ArrowLeftIcon /> {{ $t('actions.back') }}
             </RouterLink>
 
-            <button class="btn btn-primary ms-auto" :disabled="isLoading" @click="save">
+            <!-- Publishing is its own write: it stores the state and leaves the form as it is. -->
+            <button class="btn ms-auto" :disabled="isChangingState" @click="changeState">
+                <span v-if="isChangingState" class="loading loading-spinner loading-sm"></span>
+                <BadgeCheckIcon v-if="transition.to === ActivityState.VALIDATED" />
+                <UndoIcon v-else />
+                {{ $t(transition.label) }}
+            </button>
+
+            <button class="btn btn-primary" :disabled="isLoading" @click="save">
                 <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
                 <SaveIcon />
                 {{ $t('actions.save') }}

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
-import { resourcesApi as resources } from '@features/activities/api/steps.api';
-import ResourceDisplay from '@features/activities/components/ResourceDisplay.vue';
-import { useStepResources } from '@features/activities/composables/useStepEdit';
+import { resourcesApi as resources } from '@features/activities-edit/api/steps.api';
+import ResourceDisplay from '@features/activities-edit/components/ResourceDisplay.vue';
+import { useStepResources } from '@features/activities-edit/composables/useStepEdit';
 import { ACCEPTED_RESOURCE_TYPES, type ActivityResourceData } from '@features/activities/model/step';
 import { CircleOffIcon, TrashIcon } from 'lucide-vue-next';
 

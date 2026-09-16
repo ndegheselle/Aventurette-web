@@ -1,12 +1,12 @@
 import type { ActivityData, BenefitData } from '@features/activities/model/activity';
 import type { ActivityStepData } from '@features/activities/model/step';
-import { useActivityEdit } from '@features/activities/composables/useActivityEdit';
+import { useActivityEdit } from '@features/activities-edit/composables/useActivityEdit';
 import { anActivity, aStep, createTestRouter, fakeCrud, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
- * The one composable in this feature with a spec, because it is the one with an order in it:
+ * The one composable here with a spec, because it is the one with an order in it:
  * `activities.steps` cascades on delete, so unlinking a step before removing it is the
  * difference between deleting a step and deleting the whole activity. Everything else here is
  * a ref and a call.
@@ -20,17 +20,17 @@ vi.mock('@features/activities/api/activities.api', () => ({
     get activitiesApi() { return activities; },
     get benefitsApi() { return benefits; },
 }));
-vi.mock('@features/activities/api/steps.api', () => ({
+vi.mock('@features/activities-edit/api/steps.api', () => ({
     get stepsApi() { return steps; },
 }));
 
 const routes = [
-    { path: '/activities/:id/edit', name: 'activities.edit', component: { template: '<div/>' } },
+    { path: '/my-activities/:id', name: 'activities.edit.page', component: { template: '<div/>' } },
     { path: '/activities/:id', name: 'activities.page', component: { template: '<div/>' } },
 ];
 
 async function setup(id = 'act-1') {
-    const router = await createTestRouter({ routes, initialRoute: `/activities/${id}/edit` });
+    const router = await createTestRouter({ routes, initialRoute: `/my-activities/${id}` });
     const [subject] = withSetup(() => useActivityEdit(), router);
     await flushPromises();
     return subject;

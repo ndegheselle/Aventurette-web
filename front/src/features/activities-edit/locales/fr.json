@@ -1,0 +1,24 @@
+{
+    "activities": {
+        "untitled": "Nouvelle activité",
+        "state": {
+            "DRAFT": "Brouillon",
+            "VALIDATED": "Publiée"
+        },
+        "edit": {
+            "title": "Mes activités",
+            "description": "Description",
+            "steps": "Étapes",
+            "properties": "Informations",
+            "states": {
+                "all": "Toutes",
+                "DRAFT": "Brouillons",
+                "VALIDATED": "Publiées"
+            },
+            "publish": "Publier",
+            "unpublish": "Repasser en brouillon",
+            "remove": "Supprimer",
+            "removed": "Activité supprimée."
+        }
+    }
+}

@@ -37,11 +37,6 @@
         "contraints": {
             "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
         },
-        "edit": {
-            "description": "Description",
-            "steps": "Étapes",
-            "properties": "Informations"
-        },
         "duration": "{duration} min",
         "age": {
             "range": "{min}-{max} ans",
@@ -53,7 +48,6 @@
             "OUTDOOR": "Extérieur",
             "CLASSROOM": "Classe",
             "CAR": "Voiture"
-        },
-        "untitled": "Nouvelle activité"
+        }
     }
 }

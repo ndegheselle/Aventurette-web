@@ -34,8 +34,9 @@ inside `<script setup>`, it belongs in `model/`.
 **One file per entity or screen, not per concept.** `model/activity.ts` holds the activity's
 types, its factory, its enums and its formatters together; `model/step.ts` does the same for a
 step and the materials and resources hanging off it. A three-line type alias is not a file.
-A composable covers a screen — `useActivitiesList` owns the list, its filters and its add
-button — rather than one slice of one.
+A composable covers a screen — `useActivitiesList` owns the public list and its filters,
+`useActivitiesEditList` the author's own and its add and delete buttons — rather than one
+slice of one.
 
 Full reasoning in [ADR 0009](docs/adr/0009-logic-lives-outside-components.md); the rest of the
 decisions are in [docs/adr/](docs/adr/README.md), and each feature is documented in
