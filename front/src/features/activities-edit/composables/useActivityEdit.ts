@@ -1,10 +1,11 @@
 import { useAlert } from '@chapelure/ui/composables/useAlert';
 import { useSubmit } from '@chapelure/ui/composables/useSubmit';
 import { activitiesApi as activities, benefitsApi as benefits } from '@features/activities/api/activities.api';
-import { stepsApi as steps } from '@features/activities/api/steps.api';
+import { stepsApi as steps } from '@features/activities-edit/api/steps.api';
 import { createEmptyActivity, type ActivityData, type BenefitData } from '@features/activities/model/activity';
 import { createEmptyStep, type ActivityStepData } from '@features/activities/model/step';
-import { routesNames } from '@features/activities/routes';
+import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
+import { stateTransition } from '@features/activities-edit/model/activity.edit';
 import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -12,8 +13,8 @@ import { useRoute, useRouter } from 'vue-router';
 /**
  * The activity the edit form is bound to, and what saving it does.
  *
- * The activity always exists by the time this screen opens — `useNewActivity` creates it — and
- * so does every step, written blank the moment it is added. Nothing here creates anything on
+ * The activity always exists by the time this screen opens — `useActivitiesEditList` creates it —
+ * and so does every step, written blank the moment it is added. Nothing here creates anything on
  * save: what is left for the save button is the activity's own fields.
  *
  * Never null, so the form can bind `v-model` straight to the fields: an empty activity stands
@@ -29,6 +30,7 @@ export function useActivityEdit() {
     const activity = ref<ActivityData>(createEmptyActivity());
     const availableBenefits = ref<BenefitData[]>([]);
     const isAddingStep = ref(false);
+    const isChangingState = ref(false);
 
     watch(
         () => route.params.id,
@@ -126,11 +128,39 @@ export function useActivityEdit() {
         }
     }
 
+    /** Where the state button will take this activity, and what the button should read. */
+    const transition = computed(() => stateTransition(activity.value.state));
+
+    /**
+     * Publish the activity, or put it back to draft.
+     *
+     * Writes the state and nothing else, which is why it sits beside the save button rather
+     * than inside it: what is typed into the form is still unsaved afterwards, and still on
+     * screen to save. Reported as an alert rather than through `errors` — no field on the form
+     * stands for the state, so there is nothing to show a message against.
+     */
+    async function changeState() {
+        if (isChangingState.value) return;
+
+        const { to } = transition.value;
+
+        isChangingState.value = true;
+        try {
+            await activities.update(activity.value.id, { state: to });
+            activity.value.state = to;
+            alert.success(t('data.updated'));
+        } catch {
+            alert.error(t('validation.errors.default'));
+        } finally {
+            isChangingState.value = false;
+        }
+    }
+
     const { isLoading, errors, submit } = useSubmit(async () => {
         await activities.update(activity.value.id, toRaw(activity.value));
 
         alert.success(t('data.updated'));
-        router.push({ name: routesNames.page, params: { id: activity.value.id } });
+        router.push({ name: activitiesRoutesNames.page, params: { id: activity.value.id } });
     });
 
     onMounted(async () => {
@@ -143,8 +173,11 @@ export function useActivityEdit() {
         selectedBenefits,
         isLoading,
         isAddingStep,
+        isChangingState,
+        transition,
         errors,
         save: submit,
+        changeState,
         addStep,
         replaceStep,
         detachStep,

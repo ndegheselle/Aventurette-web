@@ -5,7 +5,8 @@ it owns, the shape of its data, the rules that hold, and what is not finished.
 
 | Feature | What it is |
 |---|---|
-| [activities](activities.md) | Browsing, filtering and authoring activities |
+| [activities](activities.md) | Browsing and filtering the public activity catalogue |
+| [activities-edit](activities-edit.md) | Authoring: the author's own activities, and the form behind them |
 | [auth](auth.md) | Signing in, signing up, and guarding the rest of the app |
 | [users](users.md) | The account: profile type, children, and their interests |
 | home | A single placeholder page. Not routed — `/` redirects to the activity list. |

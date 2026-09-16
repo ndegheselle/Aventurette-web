@@ -1,0 +1,24 @@
+{
+    "activities": {
+        "untitled": "New activity",
+        "state": {
+            "DRAFT": "Draft",
+            "VALIDATED": "Published"
+        },
+        "edit": {
+            "title": "My activities",
+            "description": "Description",
+            "steps": "Steps",
+            "properties": "Details",
+            "states": {
+                "all": "All",
+                "DRAFT": "Drafts",
+                "VALIDATED": "Published"
+            },
+            "publish": "Publish",
+            "unpublish": "Back to draft",
+            "remove": "Delete",
+            "removed": "Activity deleted."
+        }
+    }
+}

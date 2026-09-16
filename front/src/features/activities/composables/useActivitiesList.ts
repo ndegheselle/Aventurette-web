@@ -1,24 +1,21 @@
 import { Paginated, PaginationOptions } from '@chapelure/core';
-import { useSubmit } from '@chapelure/ui/composables/useSubmit';
 import { activitiesApi as activities, benefitsApi as benefits } from '@features/activities/api/activities.api';
-import { createEmptyActivity, type ActivityData, type BenefitData } from '@features/activities/model/activity';
+import type { ActivityData, BenefitData } from '@features/activities/model/activity';
 import {
     buildActivityFilters,
     emptyCriteria,
     hasAdvancedCriteria,
     type ActivityCriteria,
 } from '@features/activities/model/activity.filters';
-import { routesNames } from '@features/activities/routes';
-import { useAuth } from '@features/auth/composables/useAuth';
 import { computed, onMounted, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 const DEFAULT_PER_PAGE = 5;
 
 /**
- * The activity list screen: what is on it, what narrows it, and the button that starts a new
- * one.
+ * The public activity list: what is on it, and what narrows it.
+ *
+ * Read-only. Writing an activity — and the button that starts one — is the `activities-edit`
+ * feature's, which lists the author's own rather than everybody's.
  *
  * One composable for one screen. The criteria used to live in `<ActivitiesFilters>`, which
  * handed a built `FilterGroup` back up through `v-model` for the page to re-query with — the
@@ -92,28 +89,6 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
         Object.assign(draft, emptyCriteria());
     }
 
-    const router = useRouter();
-    const { t } = useI18n();
-    const { currentId } = useAuth();
-
-    /**
-     * Starting a new activity.
-     *
-     * The record is written before the editor opens, empty but for what the collection
-     * requires, and everything after that is an update. That is what lets a step and the files
-     * under it be saved the moment they are added: each of them is a record of its own, and a
-     * record needs a parent that already exists to belong to.
-     */
-    const { isLoading: isCreating, submit: createActivity } = useSubmit(async () => {
-        const created = await activities.create({
-            ...createEmptyActivity(),
-            name: t('activities.untitled'),
-            user: currentId(),
-        });
-
-        router.push({ name: routesNames.edit, params: { id: created.id } });
-    });
-
     onMounted(async () => {
         availableBenefits.value = await benefits.getAll();
         await refresh();
@@ -122,8 +97,6 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
     return {
         paginated,
         refresh,
-        isCreating,
-        createActivity,
         /** Everything `<ActivitiesFilters>` renders, handed down as one object. */
         filters: {
             search,

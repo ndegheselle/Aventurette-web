@@ -15,7 +15,7 @@ daisyUI classes are written at the call site, component classes included.
 what was dropped on it, `<Pagination>` and its two-way page state, `useEditModal` sequencing a
 create-or-update. What survives in `layout/` and `primitives/` is there for a reason other than
 styling - `<Panel>` for a surface repeated a dozen times, `<PasswordInput>` for its reveal
-toggle.
+toggle, `<TextEditor>` for the tiptap instance it owns and tears down.
 
 ## Consequences
 

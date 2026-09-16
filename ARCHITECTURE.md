@@ -101,7 +101,7 @@ One layout to a folder is just `_layout.vue`. A folder that needs several names 
 ### `packages/ui`
 
 `overlays/`, `data/`, `files/`, `forms/`, `composables/`, `settings/`, `layout/`,
-`primitives/` (just PasswordInput), `directives/`, `styles/` and `locales/`.
+`primitives/` (PasswordInput and TextEditor), `directives/`, `styles/` and `locales/`.
 
 This is not a design system — it is the behaviour the app should not hand-write twice:
 `<Modal>` owning a promise, `<FilesInput>` validating what was dropped on it, `<Pagination>`
@@ -112,7 +112,7 @@ in front of it does not belong here, however typed that props table was: `<Butto
 variant="primary" size="sm">` mapped to `btn btn-primary btn-sm` and bought only the
 indirection, so the app writes the classes. What survives in `layout/` and `primitives/` is
 there for something else — `<Panel>` for a surface repeated a dozen times, `<PasswordInput>`
-for its reveal toggle.
+for its reveal toggle, `<TextEditor>` for the tiptap instance it owns and tears down.
 
 Components are deep-imported so bundlers can drop what is unused:
 

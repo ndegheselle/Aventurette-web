@@ -22,6 +22,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0011](0011-tests-fail-on-vue-warnings.md) | Tests fail on Vue warnings, and use the real translations | Accepted |
 | [0012](0012-fakes-at-the-port-not-the-sdk.md) | Tests fake the port, never the SDK | Accepted |
 | [0013](0013-specs-live-in-a-feature-tests-folder.md) | Specs live in a feature's `tests/` folder, and fewer are written | Accepted |
+| [0014](0014-authoring-is-its-own-feature.md) | Authoring activities is its own feature | Accepted |
 
 ## Writing a new one
 
