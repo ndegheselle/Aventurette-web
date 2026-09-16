@@ -1,6 +1,6 @@
 // @chapelure/core — the contracts. Never import vue, a backend SDK or the app from here.
 
-export type { BaseEntity, Expanded } from './data/entity';
+export type { BaseEntity, Entity } from './data/entity';
 
 export {
     Paginated,
@@ -8,6 +8,7 @@ export {
     SortDirection,
 } from './data/crud';
 export type { CrudFactory, IDataCrud } from './data/crud';
+export type { EntityMapper } from './data/mapper';
 
 export {
     createFilter,

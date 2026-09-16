@@ -23,18 +23,20 @@ One composable to a screen: `useActivitiesList` holds the results and the filter
 
 ## Data
 
-`ActivityData` is the generated `ActivitiesResponse` with its relations inlined — see
-[ADR 0007](../adr/0007-relations-are-inlined-by-the-adapter.md). `activity.steps` holds the
-steps themselves, each with its own `materials` and `resources`.
+Two types to an entity: `ActivityPayload` is what the backend sends, `ActivityData` is what the
+app uses, and `activityMapper` is the only thing that holds both — see
+[ADR 0017](../adr/0017-models-map-their-own-payloads.md). `activity.steps` holds the steps
+themselves, each with its own `materials` and `resources`.
 
-`ACTIVITY_RELATIONS` lists what is fetched alongside an activity, and **must** stay in step
-with what `Expanded<>` declares on `ActivityData`. Its nested half is derived from
-`STEP_RELATIONS`, which is also what a step is written with, so reading and writing a step
-cannot drift apart.
+`activityMapper.relations` lists what is fetched alongside an activity; the nested half is
+derived from `stepMapper.relations`, so a step arrives the same way whether it is read on its
+own or under an activity. A relation the read did not expand maps to an empty list, never to
+the ids the record carries.
 
-A resource is always a record: a picked file is uploaded the moment it is chosen, so `file`
-only ever holds the name of a stored file. Nothing downstream has to ask which kind it is
-holding — a tile renders a url, a step is saved with ids.
+A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
+`file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
+name into `resource.url` — so a tile renders a url and a step is saved with ids, and neither
+has to ask which it is holding.
 
 ## Saving
 

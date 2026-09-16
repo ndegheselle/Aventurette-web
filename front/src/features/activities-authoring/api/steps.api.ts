@@ -1,17 +1,18 @@
-import { crud, fileUrls } from "@/backend";
+import { crud } from "@/backend";
 import { Collections } from "@/backend/schema.g";
 import {
-    STEP_RELATIONS,
+    materialMapper,
+    resourceMapper,
+    stepMapper,
     type ActivityMaterialData,
     type ActivityResourceData,
-    type ActivityStepData,
 } from "@features/activities/model/step";
 
 // Saving an activity stores its step ids and nothing else, so a step is written through here
 // first — and so are its materials and resources, which are records of their own too.
-export const stepsApi = crud<ActivityStepData>(Collections.ActivitiesSteps, STEP_RELATIONS);
+export const stepsApi = crud(Collections.ActivitiesSteps, stepMapper);
 
-const materials = crud<ActivityMaterialData>(Collections.StepsMaterials);
+const materials = crud(Collections.StepsMaterials, materialMapper);
 
 // Not a reference collection: a material belongs to one step, so picking a name writes a new row.
 export const materialsApi = {
@@ -31,19 +32,14 @@ export const materialsApi = {
     },
 };
 
-const resources = crud<ActivityResourceData>(Collections.StepsResources);
+const resources = crud(Collections.StepsResources, resourceMapper);
 
 export const resourcesApi = {
     /**
      * Store a picked file as the resource record a step points at. `file` goes up as the upload;
-     * the stored record holds its name.
+     * what comes back carries the url to read it from.
      */
     async upload(file: File, step: string): Promise<ActivityResourceData> {
-        return await resources.create({ name: file.name, file, step } as unknown as ActivityResourceData);
-    },
-
-    /** Url of the file stored for a resource. */
-    getFileUrl(resource: ActivityResourceData): string {
-        return fileUrls.getUrl(resource, resource.file);
+        return await resources.create({ name: file.name, file, step } as ActivityResourceData);
     },
 };

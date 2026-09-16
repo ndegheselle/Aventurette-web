@@ -15,7 +15,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0004](0004-daisyui-classes-at-the-call-site.md) | daisyUI classes are written where they are used | Accepted |
 | [0005](0005-icons-imported-directly.md) | Icons are imported directly from lucide | Accepted |
 | [0006](0006-the-view-layer-stays-vue.md) | The view layer is Vue, and stays Vue | Accepted |
-| [0007](0007-relations-are-inlined-by-the-adapter.md) | Relations are inlined by the adapter | Accepted |
+| [0007](0007-relations-are-inlined-by-the-adapter.md) | Relations are inlined by the adapter | Superseded by 0017 |
 | [0008](0008-boundaries-are-enforced-by-a-script.md) | The boundaries are enforced by a script, not by convention | Accepted |
 | [0009](0009-logic-lives-outside-components.md) | Logic lives in `model/` and `composables/`, not in components | Accepted |
 | [0010](0010-component-tests-over-end-to-end.md) | The suite is component tests, not end-to-end | Accepted |
@@ -25,6 +25,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0014](0014-authoring-is-its-own-feature.md) | Authoring activities is its own feature | Accepted |
 | [0015](0015-filter-criteria-are-data.md) | Filter criteria are data, and the form is generated from them | Accepted |
 | [0016](0016-filtering-lives-in-the-ui-package.md) | Filtering lives in `@chapelure/ui`, and a feature's criteria sit in its composable | Accepted |
+| [0017](0017-models-map-their-own-payloads.md) | Models map their own payloads, relations and files included | Accepted |
 
 ## Writing a new one
 

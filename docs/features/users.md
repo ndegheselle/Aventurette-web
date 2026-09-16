@@ -12,12 +12,12 @@ what those children are interested in.
 
 ## Data
 
-`UserData` is the generated `UsersResponse`, with no `Expanded<>` wrapper: the auth provider
-never asks for relations, so `childrens` is ids.
+`UserData` is the generated `UsersResponse` with no mapper of its own: the session comes back
+from the auth port, which expands nothing and stores no file, so `childrens` is ids.
 
-`ChildrenData` **is** expanded — `child.interests` holds the interests themselves, per
-`CHILD_RELATIONS`. Saving a child still persists their ids
-([ADR 0007](../adr/0007-relations-are-inlined-by-the-adapter.md)).
+`childMapper` **does** map — `child.interests` holds the interests themselves, each through
+`interestMapper`. Saving a child still persists their ids
+([ADR 0017](../adr/0017-models-map-their-own-payloads.md)).
 
 A profile type is one of `PERSONNAL`, `ASSOCIATION` or `SCHOOL`, from the generated schema.
 

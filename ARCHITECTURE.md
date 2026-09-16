@@ -53,7 +53,7 @@ Every feature has the same shape, so you never have to guess:
 
 | | |
 |---|---|
-| `model/` | types, factories, domain rules — **no framework imports** |
+| `model/` | types, mappers, factories, domain rules — **no framework imports** |
 | `api/` | `*.api.ts` — the only place `@/backend` may be imported |
 | `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
 | `components/` | feature components |
@@ -171,12 +171,12 @@ Three deliberate compromises:
   The alias map lives in `scripts/aliases.mjs` and is imported by `front/vite.config.ts` and
   `vitest.config.ts`. TypeScript cannot read a JS module for its `paths`, so
   `front/tsconfig.json` repeats it — and `lint:arch` fails if the two disagree.
-- **Relations come back inlined, not on the side.** PocketBase returns expanded records in a
-  separate `expand` object; `packages/pocketbase/src/relations.ts` folds them into the record
-  on read and turns them back into ids on write, so `activity.steps` is the steps in both
-  directions. Models declare that with `Expanded<Response, { ... }>` from `@chapelure/core`,
-  and the fields they list must match the `relations` argument the api layer passes — nothing
-  checks the two against each other. Saving a parent still persists ids only.
+- **Each model maps its own payload.** The backend's shape stops at the api layer: a model
+  declares an `EntityMapper<Payload, Data>` holding the relations to fetch, a `toEntity` that
+  inlines them and turns stored file names into urls, and a `toPayload` that turns related
+  entities back into ids. The adapter applies it on every read and write, so `activity.steps`
+  is the steps and `resource.url` is a url everywhere above `api/`. Saving a parent still
+  persists ids only — see [ADR 0017](docs/adr/0017-models-map-their-own-payloads.md).
 
 - **Tailwind v4 ignores `node_modules`,** and workspace packages are symlinked there. So
   `front/src/app/styles/index.css` declares `@source "../../../../packages/ui/src"`. Remove

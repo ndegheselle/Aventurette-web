@@ -1,7 +1,7 @@
 import { PaginationOptions, SortDirection, type BaseEntity } from '@chapelure/core';
 import { describe, expect, it } from 'vitest';
 import { createPocketBaseCached } from './cached';
-import { fakePocketBase } from './testing';
+import { fakePocketBase, passthroughMapper } from './testing';
 
 type Benefit = BaseEntity & { name: string };
 
@@ -18,7 +18,7 @@ function countOf(pb: ReturnType<typeof fakePocketBase>, method: string) {
 describe('createPocketBaseCached', () => {
     it('fetches the collection once and serves later reads from memory', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
 
         await cached.getAll();
         await cached.getAll();
@@ -30,7 +30,7 @@ describe('createPocketBaseCached', () => {
     it('collapses concurrent first reads into one request', async () => {
         // Several components mounting at once is the normal case for a reference collection.
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
 
         await Promise.all([cached.getAll(), cached.getAll(), cached.getById('bnf2')]);
 
@@ -39,7 +39,7 @@ describe('createPocketBaseCached', () => {
 
     it('answers getById from the cache, and with null for an id it does not hold', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
 
         expect(await cached.getById('bnf2')).toEqual({ id: 'bnf2', name: 'Attention' });
         expect(await cached.getById('nope')).toBeNull();
@@ -48,7 +48,7 @@ describe('createPocketBaseCached', () => {
 
     it('pages and sorts in memory', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
 
         const page = await cached.getList(new PaginationOptions(2, 2, 'name', SortDirection.ASC));
 
@@ -58,7 +58,7 @@ describe('createPocketBaseCached', () => {
 
     it('sorts descending when asked', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
 
         const page = await cached.getList(new PaginationOptions(1, 3, 'name', SortDirection.DESC));
 
@@ -67,7 +67,7 @@ describe('createPocketBaseCached', () => {
 
     it('reflects a create in the cache without refetching', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
         await cached.getAll();
 
         const created = await cached.create({ id: '', name: 'Patience' });
@@ -78,7 +78,7 @@ describe('createPocketBaseCached', () => {
 
     it('reflects an update in the cache', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
         await cached.getAll();
 
         await cached.update('bnf1', { name: 'Coordination fine' });
@@ -88,7 +88,7 @@ describe('createPocketBaseCached', () => {
 
     it('reflects a delete in the cache', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
         await cached.getAll();
 
         await cached.remove('bnf1');
@@ -99,7 +99,7 @@ describe('createPocketBaseCached', () => {
 
     it('always goes to the server for filter', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
         await cached.getAll();
 
         await cached.filter({ filters: [], combine: 'and' } as any, new PaginationOptions(1, 5));
@@ -109,7 +109,7 @@ describe('createPocketBaseCached', () => {
 
     it('refetches after invalidate', async () => {
         const pb = fakePocketBase(someBenefits());
-        const cached = createPocketBaseCached<Benefit>(pb.client, 'benefits');
+        const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
         await cached.getAll();
 
         cached.invalidate();

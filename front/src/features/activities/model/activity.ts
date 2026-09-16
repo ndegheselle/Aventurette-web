@@ -1,21 +1,53 @@
 import { ActivitiesEnvironmentOptions, ActivitiesStateOptions, type ActivitiesResponse, type BenefitsResponse } from "@/backend/schema.g";
-import type { Expanded } from "@chapelure/core";
+import type { Entity, EntityMapper } from "@chapelure/core";
 import {
     EMPTY_DESCRIPTION,
-    STEP_RELATIONS,
+    stepMapper,
     type ActivityMaterialData,
     type ActivityResourceData,
     type ActivityStepData,
+    type ActivityStepPayload,
 } from "@features/activities/model/step";
 
-// Relations arrive inlined: `activity.steps` holds the steps. Keep this in step with
-// ACTIVITY_RELATIONS below — nothing checks the two against each other.
-export type ActivityData = Expanded<ActivitiesResponse, {
+export type BenefitPayload = BenefitsResponse;
+
+export type BenefitData = Entity<BenefitPayload>;
+
+export const benefitMapper: EntityMapper<BenefitPayload, BenefitData> = {
+    relations: [],
+    toEntity: ({ expand: _expand, ...benefit }) => benefit,
+    toPayload: (benefit) => benefit,
+};
+
+/** An activity as the backend stores it, with what an expanded read carries alongside. */
+export type ActivityPayload = ActivitiesResponse<{
+    benefits?: BenefitPayload[];
+    steps?: ActivityStepPayload[];
+}>;
+
+/** An activity as the app uses it: `activity.steps` is the steps, not their ids. */
+export type ActivityData = Entity<ActivitiesResponse, {
     benefits: BenefitData[];
     steps: ActivityStepData[];
 }>;
 
-export type BenefitData = BenefitsResponse;
+/**
+ * Reads and writes an activity: benefits and steps arrive as records — their own mappers' work —
+ * and go back as ids, because saving an activity persists its links and nothing under them.
+ */
+export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
+    relations: ["benefits", "steps", ...stepMapper.relations.map(relation => `steps.${relation}`)],
+    toEntity: ({ expand, ...activity }, files) => ({
+        ...activity,
+        benefits: (expand?.benefits ?? []).map(benefit => benefitMapper.toEntity(benefit, files)),
+        steps: (expand?.steps ?? []).map(step => stepMapper.toEntity(step, files)),
+    }),
+    toPayload: ({ benefits, steps, ...activity }) => ({
+        ...activity,
+        ...(benefits && { benefits: benefits.map(benefit => benefit.id) }),
+        ...(steps && { steps: steps.map(step => step.id) }),
+    }),
+};
 
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 
@@ -23,12 +55,6 @@ export const ActivityState = ActivitiesStateOptions;
 
 // Declared in `step.ts`, re-exported here: an activity seeds its description with it too.
 export { EMPTY_DESCRIPTION };
-
-/** Relations to fetch alongside an activity for the detail and edit screens. */
-export const ACTIVITY_RELATIONS = [
-    "benefits",
-    "steps", ...STEP_RELATIONS.map(relation => `steps.${relation}`),
-];
 
 /** The environments offered in filters and the edit form, in display order. */
 export const availablesEnvironments = [

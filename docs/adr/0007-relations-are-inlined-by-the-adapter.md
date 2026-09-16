@@ -1,6 +1,7 @@
 # 0007 — Relations are inlined by the adapter
 
-**Status:** Accepted
+**Status:** Superseded by [0017](0017-models-map-their-own-payloads.md) — the folding moved from
+the adapter into each model's mapper, which also resolves file urls.
 
 ## Context
 

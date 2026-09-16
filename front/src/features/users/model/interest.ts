@@ -1,6 +1,15 @@
 import type { InterestsResponse } from "@/backend/schema.g";
+import type { Entity, EntityMapper } from "@chapelure/core";
 
-export type InterestData = InterestsResponse;
+export type InterestPayload = InterestsResponse;
+
+export type InterestData = Entity<InterestPayload>;
+
+export const interestMapper: EntityMapper<InterestPayload, InterestData> = {
+    relations: [],
+    toEntity: ({ expand: _expand, ...interest }) => interest,
+    toPayload: (interest) => interest,
+};
 
 /** An interest as the picker shows it: the record, plus whether this child has it. */
 export type SelectableInterest = InterestData & { isSelected: boolean };
