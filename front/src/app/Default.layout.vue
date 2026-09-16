@@ -6,7 +6,7 @@ import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import DropdownTrigger from '@chapelure/ui/overlays/DropdownTrigger.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { routesNames as activitiesEditRoutesNames } from '@features/activities-edit/routes';
+import { routesNames as activitiesEditRoutesNames } from '@features/activities-authoring/routes';
 import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
 </script>
 

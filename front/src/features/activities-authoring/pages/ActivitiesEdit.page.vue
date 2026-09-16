@@ -5,9 +5,9 @@ import Pagination from '@chapelure/ui/data/Pagination.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import ActivityMetadataDisplay from '@features/activities/components/ActivityMetadataDisplay.vue';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
-import ActivityRowActions from '@features/activities-edit/components/ActivityRowActions.vue';
-import { useActivitiesEditList } from '@features/activities-edit/composables/useActivitiesEditList';
-import { authoredStateTabs } from '@features/activities-edit/model/activity.edit';
+import ActivityRowActions from '@features/activities-authoring/components/ActivityRowActions.vue';
+import { useActivitiesEditList } from '@features/activities-authoring/composables/useActivitiesEditList';
+import { authoredStateTabs } from '@features/activities-authoring/model/activity.edit';
 import { PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 

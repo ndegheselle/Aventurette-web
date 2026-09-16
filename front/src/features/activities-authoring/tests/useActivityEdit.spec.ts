@@ -1,6 +1,6 @@
 import type { ActivityData, BenefitData } from '@features/activities/model/activity';
 import type { ActivityStepData } from '@features/activities/model/step';
-import { useActivityEdit } from '@features/activities-edit/composables/useActivityEdit';
+import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
 import { anActivity, aStep, createTestRouter, fakeCrud, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -20,7 +20,7 @@ vi.mock('@features/activities/api/activities.api', () => ({
     get activitiesApi() { return activities; },
     get benefitsApi() { return benefits; },
 }));
-vi.mock('@features/activities-edit/api/steps.api', () => ({
+vi.mock('@features/activities-authoring/api/steps.api', () => ({
     get stepsApi() { return steps; },
 }));
 

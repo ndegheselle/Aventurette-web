@@ -3,7 +3,7 @@ import { ActivityState, type ActivityData } from '@features/activities/model/act
 import {
     buildAuthoredFilters,
     stateTransition,
-} from '@features/activities-edit/model/activity.edit';
+} from '@features/activities-authoring/model/activity.edit';
 import { describe, expect, it } from 'vitest';
 
 /** The filters of the group, which is all this query ever builds — no nesting. */

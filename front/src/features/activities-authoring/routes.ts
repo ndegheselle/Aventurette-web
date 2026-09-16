@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import ActivitiesEditPage from '@features/activities-edit/pages/ActivitiesEdit.page.vue';
-import ActivityEditPage from '@features/activities-edit/pages/ActivityEdit.page.vue';
+import ActivitiesEditPage from '@features/activities-authoring/pages/ActivitiesEdit.page.vue';
+import ActivityEditPage from '@features/activities-authoring/pages/ActivityEdit.page.vue';
 
 /**
  * Authoring has a path of its own rather than hanging off `/activities/:id`.
@@ -11,18 +11,18 @@ import ActivityEditPage from '@features/activities-edit/pages/ActivityEdit.page.
  * `/activities/:id/edit`: it was never a view of that activity, it was the other half of this.
  */
 export const routesNames = {
-    all: 'activities.edit',
-    page: 'activities.edit.page',
+    all: 'activities.authoring',
+    page: 'activities.authoring.page',
 } as const;
 
 const routes: RouteRecordRaw[] = [
     {
-        path: '/my-activities',
+        path: '/activities/authoring',
         name: routesNames.all,
         component: ActivitiesEditPage,
     },
     {
-        path: '/my-activities/:id',
+        path: '/activities/authoring/:id',
         name: routesNames.page,
         component: ActivityEditPage,
     },

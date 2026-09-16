@@ -1,5 +1,5 @@
 import { useAlert } from '@chapelure/ui/composables/useAlert';
-import { materialsApi as materials, resourcesApi as resources } from '@features/activities-edit/api/steps.api';
+import { materialsApi as materials, resourcesApi as resources } from '@features/activities-authoring/api/steps.api';
 import {
     canCreateMaterial,
     filesWithinLimit,

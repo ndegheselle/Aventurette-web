@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
 import DropdownTrigger from '@chapelure/ui/overlays/DropdownTrigger.vue';
-import { routesNames } from '@features/activities-edit/routes';
+import { routesNames } from '@features/activities-authoring/routes';
 import { EllipsisVerticalIcon, PenIcon, TrashIcon } from 'lucide-vue-next';
 
 const { id } = defineProps<{ id: string }>();

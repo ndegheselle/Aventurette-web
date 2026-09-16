@@ -1,11 +1,11 @@
 import { useAlert } from '@chapelure/ui/composables/useAlert';
 import { useSubmit } from '@chapelure/ui/composables/useSubmit';
 import { activitiesApi as activities, benefitsApi as benefits } from '@features/activities/api/activities.api';
-import { stepsApi as steps } from '@features/activities-edit/api/steps.api';
+import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
 import { createEmptyActivity, type ActivityData, type BenefitData } from '@features/activities/model/activity';
 import { createEmptyStep, type ActivityStepData } from '@features/activities/model/step';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { stateTransition } from '@features/activities-edit/model/activity.edit';
+import { stateTransition } from '@features/activities-authoring/model/activity.edit';
 import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';

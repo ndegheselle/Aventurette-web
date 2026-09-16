@@ -6,8 +6,8 @@ import { createEmptyActivity, type ActivityData } from '@features/activities/mod
 import {
     buildAuthoredFilters,
     type ActivityStateFilter,
-} from '@features/activities-edit/model/activity.edit';
-import { routesNames } from '@features/activities-edit/routes';
+} from '@features/activities-authoring/model/activity.edit';
+import { routesNames } from '@features/activities-authoring/routes';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
