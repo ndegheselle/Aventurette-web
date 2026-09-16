@@ -29,7 +29,7 @@ export type ActivityStateFilter = ActivityData['state'] | null;
 export const authoredStateTabs: { label: string, value: ActivityStateFilter }[] = [
     { label: 'activities.edit.states.all', value: null },
     { label: 'activities.edit.states.DRAFT', value: ActivityState.DRAFT },
-    { label: 'activities.edit.states.VALIDATED', value: ActivityState.VALIDATED },
+    { label: 'activities.edit.states.PUBLISHED', value: ActivityState.PUBLISHED },
 ];
 
 /** Where the state button sends an activity, and what to call the button. */
@@ -50,9 +50,9 @@ export interface StateTransition {
  * through to a button that undoes something.
  */
 export function stateTransition(state: ActivityData['state']): StateTransition {
-    return state === ActivityState.VALIDATED
+    return state === ActivityState.PUBLISHED
         ? { to: ActivityState.DRAFT, label: 'activities.edit.unpublish' }
-        : { to: ActivityState.VALIDATED, label: 'activities.edit.publish' };
+        : { to: ActivityState.PUBLISHED, label: 'activities.edit.publish' };
 }
 
 /**
@@ -67,10 +67,9 @@ export function stateTransition(state: ActivityData['state']): StateTransition {
  * `null` for the state drops the filter entirely — `removeEmptyFilters` strips it — so the
  * "all" tab and a chosen one take the same path.
  */
-export function buildAuthoredFilters(user: string, state: ActivityStateFilter): FilterGroup<ActivityData> {
+export function buildAuthoredFilters(state: ActivityStateFilter): FilterGroup<ActivityData> {
     return removeEmptyFilters(createGroup<ActivityData>({
         filters: [
-            createFilter<ActivityData>({ key: 'user', value: user, operator: FilterOperator.Equals }),
             createFilter<ActivityData>({ key: 'state', value: state, operator: FilterOperator.Equals }),
         ],
     }));

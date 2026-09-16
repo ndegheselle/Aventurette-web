@@ -110,7 +110,7 @@ export type ActivitiesEnvironmentOptions = typeof ActivitiesEnvironmentOptions[k
 
 export const ActivitiesStateOptions = {
 	"DRAFT": "DRAFT",
-	"VALIDATED": "VALIDATED",
+	"PUBLISHED": "PUBLISHED",
 } as const
 export type ActivitiesStateOptions = typeof ActivitiesStateOptions[keyof typeof ActivitiesStateOptions]
 export type ActivitiesRecord = {

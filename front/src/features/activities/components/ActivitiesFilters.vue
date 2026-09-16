@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { useModal } from '@chapelure/ui/composables/useModal';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
-import TagSelect from '@chapelure/ui/data/TagSelect.vue';
-import Field from '@chapelure/ui/forms/Field.vue';
 import Modal from '@chapelure/ui/overlays/Modal.vue';
+import CriterionField from '@features/activities/components/CriterionField.vue';
 import type { ActivityFilters } from '@features/activities/composables/useActivitiesList';
-import { availablesEnvironments, formatAgeRange } from '@features/activities/model/activity';
-import { BabyIcon, CheckIcon, ChevronRightIcon, ClockIcon, FunnelIcon, MapIcon, TrendingUpIcon, XIcon } from 'lucide-vue-next';
+import { describeCriterion, isCriterionSet } from '@features/activities/model/criteria';
+import { CheckIcon, FunnelIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -15,14 +14,17 @@ const { t } = useI18n();
 /**
  * The list screen's filter state, owned by `useActivitiesList`. Handed down whole rather than
  * as ten props — and rebuilt into a query there, next to the call that sends it.
+ *
+ * Nothing here knows what an activity can be narrowed by: the form and the chips are both
+ * generated from the criteria, so a new filter appears in each without this file changing.
  */
 const props = defineProps<{ filters: ActivityFilters }>();
 
 // Destructured so the template sees plain bindings: a ref reached through an object is not
 // unwrapped in templates, only a top-level one is.
 const {
-    search, applied, draft, availableBenefits, draftBenefits, showsAdvancedBadge,
-    apply, openDraft, discardDraft, applyDraft, resetDraft,
+    search, applied, draft,
+    apply, openDraft, discardDraft, applyDraft, resetDraft, clearApplied, removeCriterion,
 } = props.filters;
 
 // The modal is only a way to edit the draft; the composable owns what that means.
@@ -32,92 +34,41 @@ const controller = useModal({
     onConfirm: applyDraft,
 });
 
-const ageDisplay = computed(() => formatAgeRange(t, applied.ageMin, applied.ageMax));
+/** Only what the user has set: untouched criteria show no chip, and the row collapses. */
+const activeCriteria = computed(() => applied.value.filter(isCriterionSet));
 </script>
 
 <template>
-    <SearchInput @search="() => apply()" v-model="search" />
-    <section class="flex gap-1">
-        <button class="btn btn-sm flex-1" @click="() => controller.show()">
-            <BabyIcon />
-            {{ ageDisplay || $t('activities.fields.age') }}
-            <ChevronRightIcon />
-        </button>
-        <button class="btn btn-sm flex-1" @click="() => controller.show()">
-            <MapIcon />
-            <span v-if="!applied.environment.length">
-                {{ $t('activities.fields.environment') }}
-            </span>
-            <span v-else>
-                {{applied.environment.map((v) => $t(`activities.environment.${v}`)).join(', ')}}
-            </span>
-            <ChevronRightIcon />
-        </button>
-        <button class="btn btn-sm" @click="() => controller.show()">
+    <div class="flex gap-2">
+        <SearchInput @search="() => apply()" v-model="search" />
+        <button class="btn" @click="() => controller.show()">
             <FunnelIcon />
             {{ $t('actions.filter') }}
-            <!-- An indicator, not a count — see hasAdvancedCriteria in model/activity.filters.ts. -->
-            <span v-if="showsAdvancedBadge" class="badge badge-primary badge-sm">1</span>
+        </button>
+    </div>
+
+    <section v-if="activeCriteria.length" class="flex flex-wrap items-center gap-1">
+        <span v-for="criterion in activeCriteria" :key="criterion.key" class="badge badge-lg gap-2 pe-0">
+            <component :is="criterion.icon" class="icon-sm" />
+            {{ describeCriterion(t, criterion) }}
+            <button class="btn btn-xs btn-square btn-ghost" :aria-label="$t('actions.remove')"
+                @click="() => removeCriterion(criterion.key)">
+                <XIcon class="icon-sm" />
+            </button>
+        </span>
+        <button class="btn btn-sm btn-ghost ms-auto" @click="clearApplied">
+            <XIcon />
+            {{ $t('actions.reset') }}
         </button>
     </section>
+
     <Modal :controller="controller">
         <template #title>
             {{ $t('actions.filter') }}
         </template>
         <section class="flex flex-col gap-2">
             <fieldset class="fieldset">
-                <Field>
-                    <template #label>
-                        <span class="flex items-center gap-1">
-                            <BabyIcon /> {{ $t('activities.fields.age') }}
-                        </span>
-                    </template>
-                    <div class="flex gap-2 items-center">
-                        <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                        <input type="number" class="input input-sm w-full" v-model="draft.ageMin" />
-                        <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                        <input type="number" class="input input-sm w-full" v-model="draft.ageMax" />
-                    </div>
-                </Field>
-
-                <Field>
-                    <template #label>
-                        <span class="flex items-center gap-1">
-                            <ClockIcon /> {{ $t('activities.fields.durationMinutes') }}
-                        </span>
-                    </template>
-                    <div class="flex gap-2 items-center">
-                        <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                        <input type="number" class="input input-sm w-full" v-model="draft.durationMin" />
-                        <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                        <input type="number" class="input input-sm w-full" v-model="draft.durationMax" />
-                    </div>
-                </Field>
-
-                <Field>
-                    <template #label>
-                        <span class="flex items-center gap-1">
-                            <MapIcon /> {{ $t('activities.fields.environment') }}
-                        </span>
-                    </template>
-                    <div class="flex gap-2 flex-col">
-                        <label v-for="choice in availablesEnvironments" :key="choice.value"
-                            class="label cursor-pointer gap-2">
-                            <input type="checkbox" class="checkbox checkbox-sm" :value="choice.value"
-                                v-model="draft.environment" />
-                            <span class="text-sm">{{ $t(choice.label) }}</span>
-                        </label>
-                    </div>
-                </Field>
-
-                <Field>
-                    <template #label>
-                        <span class="flex items-center gap-1">
-                            <TrendingUpIcon /> {{ $t('activities.fields.benefits') }}
-                        </span>
-                    </template>
-                    <TagSelect :items="availableBenefits" display-key="name" v-model="draftBenefits" />
-                </Field>
+                <CriterionField v-for="criterion in draft" :key="criterion.key" :criterion="criterion" />
             </fieldset>
         </section>
         <template #actions>

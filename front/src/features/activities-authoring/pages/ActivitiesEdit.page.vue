@@ -73,7 +73,7 @@ async function remove(activity: ActivityData) {
                 <div class="flex flex-wrap gap-2">
                     <b class="my-auto">{{ item.name }}</b>
                     <span class="badge badge-sm my-auto"
-                          :class="item.state === ActivityState.VALIDATED ? 'badge-success' : 'badge-ghost'">
+                          :class="item.state === ActivityState.PUBLISHED ? 'badge-success' : 'badge-ghost'">
                         {{ $t(`activities.state.${item.state}`) }}
                     </span>
                     <ActivityMetadataDisplay :activity="item" />

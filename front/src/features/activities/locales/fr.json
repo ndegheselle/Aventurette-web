@@ -38,6 +38,11 @@
             "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
         },
         "duration": "{duration} min",
+        "durationRange": {
+            "range": "{min}-{max} min",
+            "minOnly": "À partir de {min} min",
+            "maxOnly": "Jusqu'à {max} min"
+        },
         "age": {
             "range": "{min}-{max} ans",
             "minOnly": "À partir de {min} ans",

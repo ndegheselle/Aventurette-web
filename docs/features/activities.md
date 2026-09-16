@@ -78,33 +78,66 @@ list is put back to what the record still holds, because no field on the form st
 
 ## Filtering
 
-Criteria are a flat form-shaped object (`ActivityCriteria`), not a query. `buildActivityFilters`
-turns them into a `FilterGroup`, and that is the only place that translation happens — inside
-`useActivitiesList`, next to the call that sends it. `<ActivitiesFilters>` renders the criteria
-and nothing more; it is handed them as one prop.
+**A criterion is data.** `model/criteria.ts` declares what one is — a key, a label, the type of
+input it takes, the values it offers and the value it holds — and `activityCriteria()` in
+`model/activity.filters.ts` is the list of them the activity list can be narrowed by. Three
+things are generated from that one list: the modal's fields, the chips above the list, and the
+query. Adding a filter is adding an entry.
+
+A criterion is one of three types. A `range` holds two bounds and names the record fields they
+compare against — two different ones for age (`ageMin`, `ageMax`), the same one twice for
+duration. `options` are a fixed set the domain declares, rendered as checkboxes, whose labels
+are translation keys. `tags` are a catalogue loaded at runtime, picked from a dropdown, whose
+labels are the records' own names. What each contributes to the query travels with it, which is
+why `buildActivityFilters` no longer knows any field name.
+
+The icon is the one thing a criterion does *not* carry: it is a Vue component, and `model/` may
+not import the view layer. `useActivitiesList` hangs one on each criterion by key, `markRaw`'d —
+a component turned into a reactive proxy is a Vue warning, and warnings fail the suite.
 
 The screen holds **two** copies of the criteria. `applied` is what the list is showing;
 `draft` is what the modal's inputs are bound to. Opening the modal copies applied → draft,
 confirming copies draft → applied and re-queries, cancelling copies applied → draft again.
+Choices are shared rather than copied between the two: they are what can be picked and not what
+is, and `TagSelect` compares them by identity.
 
 Search is the exception: it sits outside the modal and applies as soon as it is submitted.
 
+Above the list sits **a chip per criterion that has a value**, reading the values themselves —
+all of them, joined — rather than the criterion's name. Its cross clears that one criterion and
+re-queries; the button on the right clears the lot, search included. Neither waits to be
+confirmed, there being nothing left to confirm. Untouched criteria describe to nothing, so the
+row collapses.
+
 ## Rules that hold
 
-Four specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Six specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
 [ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md).
+
+*`tests/criteria.spec.ts`* — what a criterion is set to, and what it reads as
+
+- A range is set by either bound on its own, and both bounds fold into one reading.
+- A pick reads as every value chosen, joined — an option through `$t`, a tag by its own name.
+- A value the choices no longer hold is dropped, there being no name to show for it.
+- A draft is a copy: editing it leaves what is applied alone. Clearing a criterion keeps its
+  choices, which are what can be picked and not what is.
+- A range contributes two filters, each against the field it was declared with; a pick
+  contributes one, with the operator the criterion carries, over a copy of its values.
 
 *`tests/activity.filters.spec.ts`* — the criteria-to-query translation
 
 - Untouched criteria produce an empty query, so the list shows everything.
 - Search matches `name` **or** `description`, and stays its own group so its ORs cannot widen
   the other criteria.
-- `benefits` is matched with `anyEquals`, because it is a relation list; duration is bounded
-  from both ends against the same field.
-- The arrays are copied into the query, so editing the criteria afterwards cannot mutate a
-  query already sent.
-- The filter button's badge ignores age and environment, which have buttons of their own.
+- `benefits` is matched with `anyEquals`, because it is a relation list; age is bounded against
+  its two fields and duration twice against its one.
+
+*`tests/ActivitiesFilters.spec.ts`* — the bar's wiring, which is what mounting is for
+
+- The modal's fields are generated from the criteria, in their declared order.
+- Applying a criterion shows a chip reading its values, and narrows the query.
+- A chip's cross takes that criterion back out of the query.
 
 *`tests/activity.spec.ts`* — gathering what hangs off the steps
 
@@ -145,11 +178,8 @@ data. [activities-edit](activities-edit.md) has the gaps that belong to its scre
 - **A step whose link could not be written stays in `activities_steps`.** It is deliberate:
   deleting it would be the safe move only if the failed update definitely did not land, and
   `cascadeDelete` makes guessing wrong expensive.
-- **The age and duration inputs are `<input type="number">` bound without `.number`**, so what
-  reaches `buildActivityFilters` at runtime is a string. PocketBase then compares
-  `ageMin>'6'` as a string rather than a number. Adding `.number` to the four `v-model`s in
-  `ActivitiesFilters.vue` is the fix; it was left alone because that pass was explicitly
-  behaviour-preserving.
-- The filter button's badge is an indicator, not a count — it reads `1` for any number of
-  advanced criteria. `hasAdvancedCriteria` is named for what it actually is.
+- **A range's bounds are `<input type="number">` bound without `.number`**, so what reaches
+  `buildActivityFilters` at runtime is a string. PocketBase then compares `ageMin>'6'` as a
+  string rather than a number. Adding `.number` to the two `v-model`s in `CriterionField.vue`
+  is the fix — one place now, rather than one per range — and it fixes every range at once.
 - Images throughout are placeholders from `placeholder.pagebee.io`.

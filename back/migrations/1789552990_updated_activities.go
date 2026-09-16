@@ -12,7 +12,7 @@ func init() {
 			return err
 		}
 
-		// add field
+		// update field
 		if err := collection.Fields.AddMarshaledJSONAt(10, []byte(`{
 			"help": "",
 			"hidden": false,
@@ -38,8 +38,24 @@ func init() {
 			return err
 		}
 
-		// remove field
-		collection.Fields.RemoveById("select2744374011")
+		// update field
+		if err := collection.Fields.AddMarshaledJSONAt(10, []byte(`{
+			"help": "",
+			"hidden": false,
+			"id": "select2744374011",
+			"maxSelect": 0,
+			"name": "state",
+			"presentable": false,
+			"required": true,
+			"system": false,
+			"type": "select",
+			"values": [
+				"DRAFT",
+				"VALIDATED"
+			]
+		}`)); err != nil {
+			return err
+		}
 
 		return app.Save(collection)
 	})

@@ -32,6 +32,7 @@
         "next": "Suivant",
         "create": "Créer",
         "reset": "Réinitialiser",
+        "remove": "Retirer",
         "browse": "Parcourir"
     },
     "inputs": {

@@ -1,15 +1,46 @@
 import { Paginated, PaginationOptions } from '@chapelure/core';
 import { activitiesApi as activities, benefitsApi as benefits } from '@features/activities/api/activities.api';
-import type { ActivityData, BenefitData } from '@features/activities/model/activity';
+import type { ActivityData } from '@features/activities/model/activity';
 import {
+    activityCriteria,
+    BENEFITS_CRITERION,
     buildActivityFilters,
-    emptyCriteria,
-    hasAdvancedCriteria,
-    type ActivityCriteria,
 } from '@features/activities/model/activity.filters';
-import { computed, onMounted, reactive, ref } from 'vue';
+import {
+    clearedCriteria,
+    cloneCriteria,
+    withChoices,
+    withoutCriterion,
+    type Criterion,
+} from '@features/activities/model/criteria';
+import { BabyIcon, ClockIcon, MapIcon, TrendingUpIcon } from 'lucide-vue-next';
+import { markRaw, onMounted, ref, type Component } from 'vue';
 
 const DEFAULT_PER_PAGE = 5;
+
+/**
+ * A criterion, plus the icon that stands for it on its form field and its chip.
+ *
+ * The icon is hung on here rather than declared with the criterion because `model/` may not
+ * import the view layer, and a lucide icon is a Vue component. `markRaw` keeps it out of the
+ * reactive graph — a component turned into a reactive proxy is a Vue warning, and warnings
+ * fail the suite.
+ */
+export type ActivityCriterion = Criterion & { icon: Component };
+
+const CRITERION_ICONS: Record<string, Component> = {
+    age: BabyIcon,
+    duration: ClockIcon,
+    environment: MapIcon,
+    benefits: TrendingUpIcon,
+};
+
+function activityCriteriaWithIcons(): ActivityCriterion[] {
+    return activityCriteria().map(criterion => ({
+        ...criterion,
+        icon: markRaw(CRITERION_ICONS[criterion.key]!),
+    }));
+}
 
 /**
  * The public activity list: what is on it, and what narrows it.
@@ -30,25 +61,11 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
     /**
      * Two copies of the criteria, because the advanced filters live in a modal: `applied` is
      * what the list is currently showing, `draft` is what the modal's inputs are bound to.
-     * Confirming copies draft over applied; cancelling copies the other way. Without the split,
-     * typing in the modal and then cancelling would still have re-queried the list.
-     *
-     * Search is the exception — it is outside the modal and applies as soon as it is submitted.
+     * Confirming copies draft over applied; cancelling copies the other way.
      */
     const search = ref('');
-    const applied = reactive<ActivityCriteria>(emptyCriteria());
-    const draft = reactive<ActivityCriteria>(emptyCriteria());
-
-    const availableBenefits = ref<BenefitData[]>([]);
-    const showsAdvancedBadge = computed(() => hasAdvancedCriteria(applied));
-
-    /** TagSelect works in records; the criteria hold ids. This is the translation between them. */
-    const draftBenefits = computed({
-        get: () => availableBenefits.value.filter(b => draft.benefits.includes(b.id)),
-        set: (items: BenefitData[]) => {
-            draft.benefits = Array.isArray(items) ? items.map(i => i.id) : [];
-        },
-    });
+    const applied = ref<ActivityCriterion[]>(activityCriteriaWithIcons());
+    const draft = ref<ActivityCriterion[]>(activityCriteriaWithIcons());
 
     /**
      * Re-query with the applied criteria and the current page.
@@ -59,24 +76,24 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
      */
     async function refresh() {
         paginated.value = await activities.filter(
-            buildActivityFilters(applied, search.value),
+            buildActivityFilters(applied.value, search.value),
             paginated.value.options,
         );
     }
 
     /** Seed the modal's inputs from what is currently applied. */
     function openDraft() {
-        Object.assign(draft, applied);
+        draft.value = cloneCriteria(applied.value);
     }
 
     /** Throw the modal's edits away. */
     function discardDraft() {
-        Object.assign(draft, applied);
+        draft.value = cloneCriteria(applied.value);
     }
 
     /** Adopt the modal's edits and re-query. */
     function applyDraft() {
-        Object.assign(applied, draft);
+        applied.value = cloneCriteria(draft.value);
         refresh();
     }
 
@@ -86,11 +103,34 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
      */
     function resetDraft() {
         search.value = '';
-        Object.assign(draft, emptyCriteria());
+        draft.value = clearedCriteria(draft.value);
+    }
+
+    /**
+     * Drop everything the list is narrowed by — the chip row's clear button.
+     *
+     * Unlike `resetDraft` this one re-queries: nothing is left to confirm, since it empties what
+     * is applied and not just what the modal is showing. Removing a single criterion is the
+     * same move, narrowed to one chip's cross.
+     */
+    function clearApplied() {
+        search.value = '';
+        applied.value = clearedCriteria(applied.value);
+        refresh();
+    }
+
+    function removeCriterion(key: string) {
+        applied.value = withoutCriterion(applied.value, key);
+        refresh();
     }
 
     onMounted(async () => {
-        availableBenefits.value = await benefits.getAll();
+        // The one criterion whose choices are records: they are loaded into both copies, so the
+        // modal offers them and a chip can still name what is applied.
+        const choices = (await benefits.getAll()).map(benefit => ({ label: benefit.name, value: benefit.id }));
+        applied.value = withChoices(applied.value, BENEFITS_CRITERION, choices);
+        draft.value = withChoices(draft.value, BENEFITS_CRITERION, choices);
+
         await refresh();
     });
 
@@ -102,14 +142,13 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
             search,
             applied,
             draft,
-            availableBenefits,
-            draftBenefits,
-            showsAdvancedBadge,
             apply: refresh,
             openDraft,
             discardDraft,
             applyDraft,
             resetDraft,
+            clearApplied,
+            removeCriterion,
         },
     };
 }

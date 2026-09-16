@@ -14,16 +14,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 const DEFAULT_PER_PAGE = 10;
-
-/**
- * The author's own activities: what is on the list, the state tab narrowing it, and the two
- * buttons that add to it and take from it.
- *
- * One composable for one screen, the same as `useActivitiesList` — which this is deliberately
- * not. That one is the public catalogue and answers "what is there to do"; this one answers
- * "what have I written, and what is still a draft". They ask the same collection different
- * questions, so they are two screens rather than one with a mode.
- */
 export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     const paginated = ref<Paginated<ActivityData>>(
         new Paginated<ActivityData>([], 0, new PaginationOptions(1, perPage)),
@@ -46,7 +36,7 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
      */
     async function refresh() {
         paginated.value = await activities.filter(
-            buildAuthoredFilters(currentId(), state.value),
+            buildAuthoredFilters(state.value),
             paginated.value.options,
         );
     }

@@ -19,12 +19,12 @@ describe('stateTransition', () => {
     it('offers to publish a draft', () => {
         const { to, label } = stateTransition(ActivityState.DRAFT);
 
-        expect(to).toBe(ActivityState.VALIDATED);
+        expect(to).toBe(ActivityState.PUBLISHED);
         expect(label).toBe('activities.edit.publish');
     });
 
     it('offers to take a published activity back to draft', () => {
-        const { to, label } = stateTransition(ActivityState.VALIDATED);
+        const { to, label } = stateTransition(ActivityState.PUBLISHED);
 
         expect(to).toBe(ActivityState.DRAFT);
         expect(label).toBe('activities.edit.unpublish');
@@ -35,7 +35,7 @@ describe('stateTransition', () => {
         // falling through to one that undoes something.
         const { to } = stateTransition('ARCHIVED' as ActivityData['state']);
 
-        expect(to).toBe(ActivityState.VALIDATED);
+        expect(to).toBe(ActivityState.PUBLISHED);
     });
 });
 

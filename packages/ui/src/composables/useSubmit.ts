@@ -4,15 +4,6 @@ import { ref } from 'vue';
 /**
  * The shape every form submission in this app has: mark it busy, clear the last failure, run
  * the action, and turn a rejection into field errors rather than an unhandled promise.
- *
- * It was written out by hand in each form, which is how one of them ended up leaving `isLoading`
- * stuck on a failure. Here the `finally` is in one place.
- *
- *     const { isLoading, errors, submit } = useSubmit(async () => {
- *         await auth.login(credentials.email, credentials.password);
- *         router.push('/');
- *     }, { defaultErrorKey: 'users.login.defaultError' });
- *
  * `submit` never rejects: a failure is reported through `errors`, which is what the template
  * is bound to. It resolves to whether the action succeeded, for a caller that needs to know.
  *

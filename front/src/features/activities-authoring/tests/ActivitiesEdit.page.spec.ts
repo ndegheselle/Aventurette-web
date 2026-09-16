@@ -23,7 +23,7 @@ vi.mock('@features/activities/api/activities.api', () => ({
 vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => fakeAuthProvider(author) }));
 
 const draft = anActivity({ name: 'Treasure hunt', state: ActivityState.DRAFT, user: author.id });
-const published = anActivity({ name: 'Leaf hunt', state: ActivityState.VALIDATED, user: author.id });
+const published = anActivity({ name: 'Leaf hunt', state: ActivityState.PUBLISHED, user: author.id });
 
 /**
  * Stand in for the app-wide <ConfirmationModal />, answering every prompt the same way.

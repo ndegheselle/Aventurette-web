@@ -3,17 +3,17 @@
         "untitled": "Nouvelle activité",
         "state": {
             "DRAFT": "Brouillon",
-            "VALIDATED": "Publiée"
+            "PUBLISHED": "Publiée"
         },
         "edit": {
-            "title": "Mes activités",
+            "title": "Modification des activités",
             "description": "Description",
             "steps": "Étapes",
             "properties": "Informations",
             "states": {
                 "all": "Toutes",
                 "DRAFT": "Brouillons",
-                "VALIDATED": "Publiées"
+                "PUBLISHED": "Publiées"
             },
             "publish": "Publier",
             "unpublish": "Repasser en brouillon",

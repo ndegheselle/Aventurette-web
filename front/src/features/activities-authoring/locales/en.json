@@ -3,17 +3,17 @@
         "untitled": "New activity",
         "state": {
             "DRAFT": "Draft",
-            "VALIDATED": "Published"
+            "PUBLISHED": "Published"
         },
         "edit": {
-            "title": "My activities",
+            "title": "Edit activities",
             "description": "Description",
             "steps": "Steps",
             "properties": "Details",
             "states": {
                 "all": "All",
                 "DRAFT": "Drafts",
-                "VALIDATED": "Published"
+                "PUBLISHED": "Published"
             },
             "publish": "Publish",
             "unpublish": "Back to draft",

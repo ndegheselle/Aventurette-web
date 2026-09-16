@@ -1,10 +1,7 @@
 import { FilterOperator, type Filter, type FilterGroup } from '@chapelure/core';
 import type { ActivityData } from '@features/activities/model/activity';
-import {
-    buildActivityFilters,
-    emptyCriteria,
-    hasAdvancedCriteria,
-} from '@features/activities/model/activity.filters';
+import { activityCriteria, buildActivityFilters } from '@features/activities/model/activity.filters';
+import type { Criterion, RangeValue } from '@features/activities/model/criteria';
 import { describe, expect, it } from 'vitest';
 
 /** The filters a group holds, flattened out of whatever nesting it uses. */
@@ -21,19 +18,26 @@ function onlyLeaf(group: FilterGroup<ActivityData>): Filter<ActivityData> {
     return found[0]!;
 }
 
+/** The activity's criteria with some of them set, as the form would have left them. */
+function criteria(values: Record<string, RangeValue | string[]> = {}): Criterion[] {
+    return activityCriteria().map(criterion => criterion.key in values
+        ? { ...criterion, value: values[criterion.key] } as Criterion
+        : criterion);
+}
+
 describe('buildActivityFilters', () => {
     it('is empty for untouched criteria, so the list shows everything', () => {
-        expect(leaves(buildActivityFilters(emptyCriteria(), ''))).toEqual([]);
+        expect(leaves(buildActivityFilters(criteria(), ''))).toEqual([]);
     });
 
     it('searches name and description, either of which may match', () => {
-        const group = buildActivityFilters(emptyCriteria(), 'hunt');
+        const group = buildActivityFilters(criteria(), 'hunt');
 
         expect(leaves(group).map(filter => filter.key)).toEqual(['name', 'description']);
     });
 
     it('keeps the search in a group of its own, so its ORs cannot widen the other criteria', () => {
-        const group = buildActivityFilters({ ...emptyCriteria(), ageMin: 6 }, 'hunt');
+        const group = buildActivityFilters(criteria({ age: { min: 6, max: null } }), 'hunt');
 
         // Age sits at the top level; the two search filters are nested one level down.
         expect(group.filters.filter(filter => !('filters' in filter))).toHaveLength(1);
@@ -41,39 +45,22 @@ describe('buildActivityFilters', () => {
     });
 
     it('matches benefits with anyEquals, because it is a relation list', () => {
-        const group = buildActivityFilters({ ...emptyCriteria(), benefits: ['bnf-1'] }, '');
+        const group = buildActivityFilters(criteria({ benefits: ['bnf-1'] }), '');
 
         expect(onlyLeaf(group).operator).toBe(FilterOperator.AnyEquals);
     });
 
-    it('bounds duration from both ends against the same field', () => {
-        const criteria = { ...emptyCriteria(), durationMin: 10, durationMax: 30 };
+    it('bounds age against its two fields, and duration twice against its one', () => {
+        const group = buildActivityFilters(criteria({
+            age: { min: 6, max: 10 },
+            duration: { min: 10, max: 30 },
+        }), '');
 
-        expect(leaves(buildActivityFilters(criteria, '')).map(filter => [filter.key, filter.operator])).toEqual([
+        expect(leaves(group).map(filter => [filter.key, filter.operator])).toEqual([
+            ['ageMin', FilterOperator.GreaterThan],
+            ['ageMax', FilterOperator.LessThan],
             ['durationMinutes', FilterOperator.GreaterThan],
             ['durationMinutes', FilterOperator.LessThan],
         ]);
-    });
-
-    it('copies the arrays in, so editing the criteria cannot mutate a query already sent', () => {
-        const criteria = { ...emptyCriteria(), environment: ['INDOOR'] };
-        const group = buildActivityFilters(criteria, '');
-
-        criteria.environment.push('OUTDOOR');
-
-        expect(onlyLeaf(group).value).toEqual(['INDOOR']);
-    });
-});
-
-describe('hasAdvancedCriteria', () => {
-    it('ignores age and environment, which the toolbar shows on their own buttons', () => {
-        const criteria = { ...emptyCriteria(), ageMin: 6, environment: ['INDOOR'] };
-
-        expect(hasAdvancedCriteria(criteria)).toBe(false);
-    });
-
-    it('is set for duration and benefits, which nothing else displays', () => {
-        expect(hasAdvancedCriteria({ ...emptyCriteria(), durationMin: 10 })).toBe(true);
-        expect(hasAdvancedCriteria({ ...emptyCriteria(), benefits: ['bnf-1'] })).toBe(true);
     });
 });

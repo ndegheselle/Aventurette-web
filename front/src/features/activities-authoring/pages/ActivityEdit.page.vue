@@ -73,7 +73,7 @@ async function remove(step: ActivityStepData) {
             <!-- Publishing is its own write: it stores the state and leaves the form as it is. -->
             <button class="btn ms-auto" :disabled="isChangingState" @click="changeState">
                 <span v-if="isChangingState" class="loading loading-spinner loading-sm"></span>
-                <BadgeCheckIcon v-if="transition.to === ActivityState.VALIDATED" />
+                <BadgeCheckIcon v-if="transition.to === ActivityState.PUBLISHED" />
                 <UndoIcon v-else />
                 {{ $t(transition.label) }}
             </button>
