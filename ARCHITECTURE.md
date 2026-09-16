@@ -100,8 +100,13 @@ One layout to a folder is just `_layout.vue`. A folder that needs several names 
 
 ### `packages/ui`
 
-`overlays/`, `data/`, `files/`, `forms/`, `composables/`, `settings/`, `layout/`,
-`primitives/` (PasswordInput and TextEditor), `directives/`, `styles/` and `locales/`.
+`modals/`, `alerts/`, `dropdown/`, `data/`, `files/`, `forms/`, `settings/`, `layout/`,
+`styles/` and `locales/`.
+
+A folder is one family and holds everything that family is made of — `modals/` has `Modal.vue`
+next to `useModal`, `dropdown/` has the `v-click-outside` directive it is the only user of.
+There is no `composables/` or `directives/` folder: a composable sits with the components it
+drives, which is also where you look for it.
 
 This is not a design system — it is the behaviour the app should not hand-write twice:
 `<Modal>` owning a promise, `<FilesInput>` validating what was dropped on it, `<Pagination>`
@@ -110,14 +115,14 @@ and its two-way page state, `useEditModal` sequencing a create-or-update.
 Styling is not its job. A component whose whole body was a daisyUI class with a props table
 in front of it does not belong here, however typed that props table was: `<Button
 variant="primary" size="sm">` mapped to `btn btn-primary btn-sm` and bought only the
-indirection, so the app writes the classes. What survives in `layout/` and `primitives/` is
+indirection, so the app writes the classes. What survives in `layout/` and `forms/` is
 there for something else — `<Panel>` for a surface repeated a dozen times, `<PasswordInput>`
 for its reveal toggle, `<TextEditor>` for the tiptap instance it owns and tears down.
 
 Components are deep-imported so bundlers can drop what is unused:
 
 ```ts
-import Modal from '@chapelure/ui/overlays/Modal.vue';
+import Modal from '@chapelure/ui/modals/Modal.vue';
 ```
 
 Icons come straight from `lucide-vue-next`, by their real names, everywhere:

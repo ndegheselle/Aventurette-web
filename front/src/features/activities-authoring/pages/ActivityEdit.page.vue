@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
-import type { IEditModal } from '@chapelure/ui/composables/useModal';
 import List from '@chapelure/ui/data/List.vue';
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
@@ -8,9 +6,11 @@ import FilesList from '@chapelure/ui/files/FilesList.vue';
 import { useOneFile } from '@chapelure/ui/files/useFiles';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
+import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import TextEditor from '@chapelure/ui/primitives/TextEditor.vue';
+import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
+import type { IEditModal } from '@chapelure/ui/modals/useModal';
 import StepEditModal from '@features/activities-authoring/components/StepEdit.modal.vue';
 import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';

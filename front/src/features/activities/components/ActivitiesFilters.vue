@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useModal } from '@chapelure/ui/composables/useModal';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
-import Modal from '@chapelure/ui/overlays/Modal.vue';
+import Modal from '@chapelure/ui/modals/Modal.vue';
+import { useModal } from '@chapelure/ui/modals/useModal';
 import CriterionField from '@features/activities/components/CriterionField.vue';
 import type { ActivityFilters } from '@features/activities/composables/useActivitiesList';
 import { describeCriterion, isCriterionSet } from '@features/activities/model/criteria';

@@ -50,28 +50,33 @@ is missing, rather than throwing.
 
 ## Layout of the package
 
+A folder is one family, and it holds everything that family is made of — the components and
+the composable driving them together, the way `settings/` holds `SettingsMenu` next to
+`useSettings`. There is no `composables/` or `directives/` folder to look in.
+
 | Folder | |
 |---|---|
-| `overlays/` | Modal, Dropdown, DropdownTrigger, ConfirmationModal, AlertsContainer |
+| `modals/` | Modal, ConfirmationModal, `useModal`, `useConfirmation`, `useEditModal` |
+| `alerts/` | AlertsContainer, `useAlert` |
+| `dropdown/` | Dropdown, DropdownTrigger, `vClickOutside` |
 | `data/` | List, Pagination, SearchInput, TagSelect |
 | `files/` | FilesInput, FilesList, `useFiles` |
-| `forms/` | Field, FieldError |
-| `composables/` | `useModal`, `useAlert`, `useConfirmation`, `useEditModal`, `useValidationErrors` |
+| `forms/` | Field, FieldError, PasswordInput, TextEditor, `useSubmit`, `useValidationErrors` |
 | `settings/` | SettingsMenu, `useSettings` |
 | `layout/` | Container, Panel |
-| `primitives/` | PasswordInput |
 
 Components are deep-imported; the barrel carries composables and types. Icons are imported from
 `lucide-vue-next` directly, under their real names.
 
 ```ts
-import Modal from '@chapelure/ui/overlays/Modal.vue';
+import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui';
 import { XIcon } from 'lucide-vue-next';
 ```
 
-`Container` is the page shell, `Panel` a titled surface. `PasswordInput` is the one input left:
-it is here for the reveal toggle, not for the `input` class.
+`Container` is the page shell, `Panel` a titled surface. `PasswordInput` and `TextEditor` are
+the two inputs left: one is here for its reveal toggle, the other for the tiptap instance it
+owns and tears down — neither for the `input` class.
 
 ## Patterns
 

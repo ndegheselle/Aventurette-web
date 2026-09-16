@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NotImplementedError } from '@chapelure/core';
 import Field from '@chapelure/ui/forms/Field.vue';
-import PasswordInput from '@chapelure/ui/primitives/PasswordInput.vue';
+import PasswordInput from '@chapelure/ui/forms/PasswordInput.vue';
 import LoginProviders from '@features/auth/components/LoginProviders.vue';
 import { useRegisterForm } from '@features/auth/composables/useRegisterForm';
 import { MailIcon } from 'lucide-vue-next';

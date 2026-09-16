@@ -1,4 +1,4 @@
-import { useAlert } from '@chapelure/ui/composables/useAlert';
+import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { materialsApi as materials, resourcesApi as resources } from '@features/activities-authoring/api/steps.api';
 import {
     canCreateMaterial,

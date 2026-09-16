@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
+import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import MaterialDisplay from '@features/activities-authoring/components/MaterialDisplay.vue';
 import { useStepMaterials } from '@features/activities-authoring/composables/useStepEdit';
 import { type ActivityMaterialData } from '@features/activities/model/step';

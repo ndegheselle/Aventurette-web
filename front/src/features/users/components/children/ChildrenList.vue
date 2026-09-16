@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { childrenApi } from '@features/users/api/children.api';
-import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
-import type { IEditModal } from '@chapelure/ui/composables/useModal';
 import List from '@chapelure/ui/data/List.vue';
+import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
+import type { IEditModal } from '@chapelure/ui/modals/useModal';
 import { MinusIcon, PenIcon, PlusIcon, TriangleAlertIcon, UsersRoundIcon } from 'lucide-vue-next';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useAuth } from '@features/auth/composables/useAuth';

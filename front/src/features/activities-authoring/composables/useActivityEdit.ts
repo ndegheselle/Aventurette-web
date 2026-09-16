@@ -1,5 +1,5 @@
-import { useAlert } from '@chapelure/ui/composables/useAlert';
-import { useSubmit } from '@chapelure/ui/composables/useSubmit';
+import { useAlert } from '@chapelure/ui/alerts/useAlert';
+import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { activitiesApi as activities, benefitsApi as benefits } from '@features/activities/api/activities.api';
 import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
 import { createEmptyActivity, type ActivityData, type BenefitData } from '@features/activities/model/activity';

@@ -1,7 +1,7 @@
 import type { BaseEntity, IDataCrud } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import type { IModalController } from '@chapelure/ui/modals/useModal';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
+import type { IModalController } from '@chapelure/ui/modals/useModal';
 import { computed, ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 

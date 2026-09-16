@@ -1,4 +1,4 @@
-import { useAlert } from '@chapelure/ui/composables/useAlert';
+import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 import FilesInput from './FilesInput.vue';

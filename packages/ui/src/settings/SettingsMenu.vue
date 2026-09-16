@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
+import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import { EnumTheme, useSettings } from '@chapelure/ui/settings/useSettings';
 import { PaletteIcon } from 'lucide-vue-next';
 

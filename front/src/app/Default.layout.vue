@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { MenuIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
-import AlertsContainer from '@chapelure/ui/overlays/AlertsContainer.vue';
-import ConfirmationModal from '@chapelure/ui/overlays/ConfirmationModal.vue';
-import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
-import DropdownTrigger from '@chapelure/ui/overlays/DropdownTrigger.vue';
+import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
+import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
+import DropdownTrigger from '@chapelure/ui/dropdown/DropdownTrigger.vue';
+import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as activitiesEditRoutesNames } from '@features/activities-authoring/routes';

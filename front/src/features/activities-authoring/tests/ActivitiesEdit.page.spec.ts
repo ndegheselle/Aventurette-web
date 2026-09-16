@@ -1,5 +1,5 @@
-import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
-import { useModal } from '@chapelure/ui/composables/useModal';
+import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
+import { useModal } from '@chapelure/ui/modals/useModal';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import { useAuth } from '@features/auth/composables/useAuth';
 import ActivitiesEditPage from '@features/activities-authoring/pages/ActivitiesEdit.page.vue';

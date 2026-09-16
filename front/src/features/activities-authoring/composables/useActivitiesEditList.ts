@@ -1,6 +1,6 @@
 import { Paginated, PaginationOptions } from '@chapelure/core';
-import { useAlert } from '@chapelure/ui/composables/useAlert';
-import { useSubmit } from '@chapelure/ui/composables/useSubmit';
+import { useAlert } from '@chapelure/ui/alerts/useAlert';
+import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import { createEmptyActivity, type ActivityData } from '@features/activities/model/activity';
 import {

@@ -1,4 +1,4 @@
-import { useAlert } from '@chapelure/ui/composables/useAlert';
+import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

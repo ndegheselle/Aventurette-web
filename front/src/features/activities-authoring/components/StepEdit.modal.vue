@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useEditModal } from '@chapelure/ui/composables/useEditModal';
-import { useModal, type IEditModal } from '@chapelure/ui/composables/useModal';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
+import { useEditModal } from '@chapelure/ui/modals/useEditModal';
+import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
-import Modal from '@chapelure/ui/overlays/Modal.vue';
-import TextEditor from '@chapelure/ui/primitives/TextEditor.vue';
+import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
+import Modal from '@chapelure/ui/modals/Modal.vue';
 import { stepsApi } from '@features/activities-authoring/api/steps.api';
 import MaterialsSelection from '@features/activities-authoring/components/MaterialsSelection.vue';
 import ResourcesSelection from '@features/activities-authoring/components/ResourcesSelection.vue';

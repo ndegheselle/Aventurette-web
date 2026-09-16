@@ -1,5 +1,5 @@
-import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
-import { useModal } from '@chapelure/ui/composables/useModal';
+import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
+import { useModal } from '@chapelure/ui/modals/useModal';
 import { aChild, aUser, fakeAuthProvider, fakeCrud, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';

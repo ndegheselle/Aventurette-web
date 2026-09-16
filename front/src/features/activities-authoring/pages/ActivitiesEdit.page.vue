@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useConfirmation } from '@chapelure/ui/composables/useConfirmation';
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
+import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import ActivityMetadataDisplay from '@features/activities/components/ActivityMetadataDisplay.vue';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import ActivityRowActions from '@features/activities-authoring/components/ActivityRowActions.vue';

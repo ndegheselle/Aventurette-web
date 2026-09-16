@@ -1,6 +1,6 @@
 import { aPickedFile, withSetup } from '@tests';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { useAlert } from '@chapelure/ui/composables/useAlert';
+import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useMultipleFiles, useOneFile } from './useFiles';
 
 const alert = useAlert();

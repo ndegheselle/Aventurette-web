@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { childrenApi } from '@features/users/api/children.api';
-import { useEditModal } from '@chapelure/ui/composables/useEditModal';
-import { useModal, type IEditModal } from '@chapelure/ui/composables/useModal';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
+import { useEditModal } from '@chapelure/ui/modals/useEditModal';
+import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
-import Modal from '@chapelure/ui/overlays/Modal.vue';
+import Modal from '@chapelure/ui/modals/Modal.vue';
 import { type ChildrenData } from '@features/users/model/child';
 import InterestsSelect from '@features/users/components/children/InterestsSelect.vue';
 import { computed } from 'vue';

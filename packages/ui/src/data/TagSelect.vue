@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
+import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import { CircleQuestionMarkIcon, XIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 

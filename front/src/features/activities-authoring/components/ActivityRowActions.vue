@@ -5,8 +5,8 @@
   screen and its composable, so this stays markup.
 -->
 <script setup lang="ts">
-import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
-import DropdownTrigger from '@chapelure/ui/overlays/DropdownTrigger.vue';
+import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
+import DropdownTrigger from '@chapelure/ui/dropdown/DropdownTrigger.vue';
 import { routesNames } from '@features/activities-authoring/routes';
 import { EllipsisVerticalIcon, PenIcon, TrashIcon } from 'lucide-vue-next';
 

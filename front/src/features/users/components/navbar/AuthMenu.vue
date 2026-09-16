@@ -2,7 +2,7 @@
 import { LogOutIcon } from 'lucide-vue-next';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as authRoutesNames } from '@features/auth/routes';
-import Dropdown from '@chapelure/ui/overlays/Dropdown.vue';
+import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import type { UserData } from '@features/users/model/user';
 
 const { isLoggedIn, current, logout } = useAuth<UserData>();
