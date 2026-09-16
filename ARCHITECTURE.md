@@ -13,7 +13,7 @@ Aventurette-web/
 ├── packages/
 │   ├── core/          @chapelure/core        contracts. no framework, no backend, no deps
 │   ├── pocketbase/    @chapelure/pocketbase  the backend adapter
-│   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, files
+│   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, filters
 ├── front/             @sagace/front          the app
 ├── tests/                                    the test toolkit: builders, fakes, mount helpers
 ├── docs/                                     ADRs, feature docs, testing guide
@@ -100,8 +100,8 @@ One layout to a folder is just `_layout.vue`. A folder that needs several names 
 
 ### `packages/ui`
 
-`modals/`, `alerts/`, `dropdown/`, `data/`, `files/`, `forms/`, `settings/`, `layout/`,
-`styles/` and `locales/`.
+`modals/`, `alerts/`, `dropdown/`, `data/`, `filter/`, `files/`, `forms/`, `settings/`,
+`layout/`, `styles/` and `locales/`.
 
 A folder is one family and holds everything that family is made of — `modals/` has `Modal.vue`
 next to `useModal`, `dropdown/` has the `v-click-outside` directive it is the only user of.

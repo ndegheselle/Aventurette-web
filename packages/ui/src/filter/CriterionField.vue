@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
+import type { Criterion, CriterionChoice } from '@chapelure/ui/filter/criteria';
 import Field from '@chapelure/ui/forms/Field.vue';
-import type { ActivityCriterion } from '@features/activities/composables/useActivitiesList';
-import type { CriterionChoice } from '@features/activities/model/criteria';
 import { computed } from 'vue';
 
 /**
- * One field of the generated filter form: the criterion's type picks the input.
+ * One field of a generated filter form: the criterion's type picks the input.
  *
  * The criterion handed in is the modal's draft, and the inputs write into it directly — which
- * is the point of the draft, and why nothing is emitted back up.
+ * is the point of a draft, and why nothing is emitted back up.
  */
-const props = defineProps<{ criterion: ActivityCriterion }>();
+const props = defineProps<{ criterion: Criterion }>();
 
 /** TagSelect works in the choices themselves and compares them by identity; a criterion holds values. */
 const tags = computed<CriterionChoice[]>({

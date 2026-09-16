@@ -78,52 +78,48 @@ list is put back to what the record still holds, because no field on the form st
 
 ## Filtering
 
-**A criterion is data.** `model/criteria.ts` declares what one is — a key, a label, the type of
-input it takes, the values it offers and the value it holds — and `activityCriteria()` in
-`model/activity.filters.ts` is the list of them the activity list can be narrowed by. Three
-things are generated from that one list: the modal's fields, the chips above the list, and the
-query. Adding a filter is adding an entry.
+**The mechanism is `@chapelure/ui/filter`'s; the criteria are this feature's.** A criterion is
+data — a key, a label, an icon, the kind of input it takes, the values it offers and the value
+it holds — and the package generates the modal's fields and the chips above the list from a list
+of them. `activityCriteria()` is that list, and adding a filter is adding an entry. See
+[ADR 0015](../adr/0015-filter-criteria-are-data.md) and
+[ADR 0016](../adr/0016-filtering-lives-in-the-ui-package.md).
+
+It sits in `composables/useActivitiesList.ts` and not in `model/`, along with
+`buildActivityFilters`: a criterion names a translation key and an icon, and `model/` may not
+import the view layer. Both are still pure, and both are tested without mounting anything.
 
 A criterion is one of three types. A `range` holds two bounds and names the record fields they
 compare against — two different ones for age (`ageMin`, `ageMax`), the same one twice for
 duration. `options` are a fixed set the domain declares, rendered as checkboxes, whose labels
 are translation keys. `tags` are a catalogue loaded at runtime, picked from a dropdown, whose
 labels are the records' own names. What each contributes to the query travels with it, which is
-why `buildActivityFilters` no longer knows any field name.
+why `buildActivityFilters` knows no field name.
 
-The icon is the one thing a criterion does *not* carry: it is a Vue component, and `model/` may
-not import the view layer. `useActivitiesList` hangs one on each criterion by key, `markRaw`'d —
-a component turned into a reactive proxy is a Vue warning, and warnings fail the suite.
-
-The screen holds **two** copies of the criteria. `applied` is what the list is showing;
+`useFilters` holds **two** copies of the criteria. `applied` is what the list is showing;
 `draft` is what the modal's inputs are bound to. Opening the modal copies applied → draft,
 confirming copies draft → applied and re-queries, cancelling copies applied → draft again.
 Choices are shared rather than copied between the two: they are what can be picked and not what
-is, and `TagSelect` compares them by identity.
+is, and `TagSelect` compares them by identity. Benefits are the one criterion whose choices are
+loaded — `setChoices` fills them in once the api answers.
 
 Search is the exception: it sits outside the modal and applies as soon as it is submitted.
 
-Above the list sits **a chip per criterion that has a value**, reading the values themselves —
-all of them, joined — rather than the criterion's name. Its cross clears that one criterion and
-re-queries; the button on the right clears the lot, search included. Neither waits to be
-confirmed, there being nothing left to confirm. Untouched criteria describe to nothing, so the
-row collapses.
+`<ActivitiesFilters>` is the bar itself, and stays here because layout does
+([ADR 0004](../adr/0004-daisyui-classes-at-the-call-site.md)): a search box, a filter button, a
+modal of generated fields, and **a chip per criterion that has a value**. A chip reads the
+values themselves — all of them, joined — rather than the criterion's name. Its cross clears
+that one criterion and re-queries; the button on the right clears the lot, search included.
+Neither waits to be confirmed, there being nothing left to confirm. Untouched criteria describe
+to nothing, so the row collapses.
 
 ## Rules that hold
 
-Six specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Five specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
-[ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md).
-
-*`tests/criteria.spec.ts`* — what a criterion is set to, and what it reads as
-
-- A range is set by either bound on its own, and both bounds fold into one reading.
-- A pick reads as every value chosen, joined — an option through `$t`, a tag by its own name.
-- A value the choices no longer hold is dropped, there being no name to show for it.
-- A draft is a copy: editing it leaves what is applied alone. Clearing a criterion keeps its
-  choices, which are what can be picked and not what is.
-- A range contributes two filters, each against the field it was declared with; a pick
-  contributes one, with the operator the criterion carries, over a copy of its values.
+[ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md). What a criterion *is* — its
+reading, its copies, the filters it contributes — is `@chapelure/ui`'s, and tested there in
+`filter/criteria.spec.ts` and `filter/useFilters.spec.ts`.
 
 *`tests/activity.filters.spec.ts`* — the criteria-to-query translation
 
@@ -180,6 +176,6 @@ data. [activities-edit](activities-edit.md) has the gaps that belong to its scre
   `cascadeDelete` makes guessing wrong expensive.
 - **A range's bounds are `<input type="number">` bound without `.number`**, so what reaches
   `buildActivityFilters` at runtime is a string. PocketBase then compares `ageMin>'6'` as a
-  string rather than a number. Adding `.number` to the two `v-model`s in `CriterionField.vue`
-  is the fix — one place now, rather than one per range — and it fixes every range at once.
+  string rather than a number. The fix is two `v-model`s in `@chapelure/ui`'s
+  `filter/CriterionField.vue` — one place, and it fixes every range in every app at once.
 - Images throughout are placeholders from `placeholder.pagebee.io`.

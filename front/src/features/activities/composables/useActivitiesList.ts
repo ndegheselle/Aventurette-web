@@ -1,45 +1,95 @@
-import { Paginated, PaginationOptions } from '@chapelure/core';
-import { activitiesApi as activities, benefitsApi as benefits } from '@features/activities/api/activities.api';
-import type { ActivityData } from '@features/activities/model/activity';
 import {
-    activityCriteria,
-    BENEFITS_CRITERION,
-    buildActivityFilters,
-} from '@features/activities/model/activity.filters';
+    createGroup,
+    createSearchFilter,
+    FilterOperator,
+    Paginated,
+    PaginationOptions,
+    removeEmptyFilters,
+    type FilterGroup,
+} from '@chapelure/core';
 import {
-    clearedCriteria,
-    cloneCriteria,
-    withChoices,
-    withoutCriterion,
+    criterionFilters,
+    optionsCriterion,
+    rangeCriterion,
+    tagsCriterion,
     type Criterion,
-} from '@features/activities/model/criteria';
+} from '@chapelure/ui/filter/criteria';
+import { useFilters } from '@chapelure/ui/filter/useFilters';
+import { activitiesApi as activities, benefitsApi as benefits } from '@features/activities/api/activities.api';
+import { availablesEnvironments, type ActivityData } from '@features/activities/model/activity';
 import { BabyIcon, ClockIcon, MapIcon, TrendingUpIcon } from 'lucide-vue-next';
-import { markRaw, onMounted, ref, type Component } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const DEFAULT_PER_PAGE = 5;
 
+/** The criterion whose choices are loaded rather than declared. */
+const BENEFITS_CRITERION = 'benefits';
+
 /**
- * A criterion, plus the icon that stands for it on its form field and its chip.
+ * What the activity list can be narrowed by, in the order the form shows them.
  *
- * The icon is hung on here rather than declared with the criterion because `model/` may not
- * import the view layer, and a lucide icon is a Vue component. `markRaw` keeps it out of the
- * reactive graph — a component turned into a reactive proxy is a Vue warning, and warnings
- * fail the suite.
+ * This list *is* the screen's filters: `@chapelure/ui/filter` generates the modal's fields and
+ * the chips above the list from it, and `buildActivityFilters` turns it into a query — so a new
+ * filter is a new entry here. What each criterion means to the backend travels with it:
+ * `ageMin`/`ageMax` are two fields bounding one number, duration is one field bounded twice, and
+ * benefits are matched with `anyEquals` because they are a relation list.
+ *
+ * It lives beside the call that sends the query rather than in `model/`, which may not import
+ * the view layer — and a criterion carries its label, its input and its icon. See
+ * [ADR 0016](../../../../../docs/adr/0016-filtering-lives-in-the-ui-package.md).
  */
-export type ActivityCriterion = Criterion & { icon: Component };
+export function activityCriteria(): Criterion[] {
+    return [
+        rangeCriterion({
+            key: 'age',
+            label: 'activities.fields.age',
+            icon: BabyIcon,
+            display: 'activities.age',
+            minField: 'ageMin',
+            maxField: 'ageMax',
+        }),
+        rangeCriterion({
+            key: 'duration',
+            label: 'activities.fields.durationMinutes',
+            icon: ClockIcon,
+            display: 'activities.durationRange',
+            minField: 'durationMinutes',
+            maxField: 'durationMinutes',
+        }),
+        optionsCriterion({
+            key: 'environment',
+            label: 'activities.fields.environment',
+            icon: MapIcon,
+            field: 'environment',
+            operator: FilterOperator.Equals,
+            choices: availablesEnvironments,
+        }),
+        tagsCriterion({
+            key: BENEFITS_CRITERION,
+            label: 'activities.fields.benefits',
+            icon: TrendingUpIcon,
+            field: 'benefits',
+            operator: FilterOperator.AnyEquals,
+        }),
+    ];
+}
 
-const CRITERION_ICONS: Record<string, Component> = {
-    age: BabyIcon,
-    duration: ClockIcon,
-    environment: MapIcon,
-    benefits: TrendingUpIcon,
-};
+/**
+ * Turn the criteria and the free-text search into the query sent to the backend.
+ *
+ * Empty criteria are stripped, so an untouched form produces an empty group and the list falls
+ * back to showing everything. The search spans name and description, matching either.
+ */
+export function buildActivityFilters(criteria: Criterion[], search: string): FilterGroup<ActivityData> {
+    const group = createGroup<ActivityData>({
+        filters: criteria.flatMap(criterion => criterionFilters<ActivityData>(criterion)),
+    });
 
-function activityCriteriaWithIcons(): ActivityCriterion[] {
-    return activityCriteria().map(criterion => ({
-        ...criterion,
-        icon: markRaw(CRITERION_ICONS[criterion.key]!),
-    }));
+    const searchFilter = createSearchFilter<ActivityData>(search, ['name', 'description']);
+    if (searchFilter)
+        group.filters.push(searchFilter);
+
+    return removeEmptyFilters(group);
 }
 
 /**
@@ -58,14 +108,9 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
         new Paginated<ActivityData>([], 0, new PaginationOptions(1, perPage)),
     );
 
-    /**
-     * Two copies of the criteria, because the advanced filters live in a modal: `applied` is
-     * what the list is currently showing, `draft` is what the modal's inputs are bound to.
-     * Confirming copies draft over applied; cancelling copies the other way.
-     */
-    const search = ref('');
-    const applied = ref<ActivityCriterion[]>(activityCriteriaWithIcons());
-    const draft = ref<ActivityCriterion[]>(activityCriteriaWithIcons());
+    // Applied and draft criteria, and what moves one to the other, are the same on any screen
+    // that filters; what is this screen's is the list handed in and the query built from it.
+    const filters = useFilters(activityCriteria(), () => { refresh(); });
 
     /**
      * Re-query with the applied criteria and the current page.
@@ -76,82 +121,18 @@ export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
      */
     async function refresh() {
         paginated.value = await activities.filter(
-            buildActivityFilters(applied.value, search.value),
+            buildActivityFilters(filters.applied.value, filters.search.value),
             paginated.value.options,
         );
     }
 
-    /** Seed the modal's inputs from what is currently applied. */
-    function openDraft() {
-        draft.value = cloneCriteria(applied.value);
-    }
-
-    /** Throw the modal's edits away. */
-    function discardDraft() {
-        draft.value = cloneCriteria(applied.value);
-    }
-
-    /** Adopt the modal's edits and re-query. */
-    function applyDraft() {
-        applied.value = cloneCriteria(draft.value);
-        refresh();
-    }
-
-    /**
-     * Clear the form. Note this does not re-query on its own: it empties the inputs, and the
-     * user still confirms — the same as any other edit made in the modal.
-     */
-    function resetDraft() {
-        search.value = '';
-        draft.value = clearedCriteria(draft.value);
-    }
-
-    /**
-     * Drop everything the list is narrowed by — the chip row's clear button.
-     *
-     * Unlike `resetDraft` this one re-queries: nothing is left to confirm, since it empties what
-     * is applied and not just what the modal is showing. Removing a single criterion is the
-     * same move, narrowed to one chip's cross.
-     */
-    function clearApplied() {
-        search.value = '';
-        applied.value = clearedCriteria(applied.value);
-        refresh();
-    }
-
-    function removeCriterion(key: string) {
-        applied.value = withoutCriterion(applied.value, key);
-        refresh();
-    }
-
     onMounted(async () => {
-        // The one criterion whose choices are records: they are loaded into both copies, so the
-        // modal offers them and a chip can still name what is applied.
+        // Benefits are the one criterion whose choices are records rather than a fixed set.
         const choices = (await benefits.getAll()).map(benefit => ({ label: benefit.name, value: benefit.id }));
-        applied.value = withChoices(applied.value, BENEFITS_CRITERION, choices);
-        draft.value = withChoices(draft.value, BENEFITS_CRITERION, choices);
+        filters.setChoices(BENEFITS_CRITERION, choices);
 
         await refresh();
     });
 
-    return {
-        paginated,
-        refresh,
-        /** Everything `<ActivitiesFilters>` renders, handed down as one object. */
-        filters: {
-            search,
-            applied,
-            draft,
-            apply: refresh,
-            openDraft,
-            discardDraft,
-            applyDraft,
-            resetDraft,
-            clearApplied,
-            removeCriterion,
-        },
-    };
+    return { paginated, refresh, filters };
 }
-
-/** What `<ActivitiesFilters>` is handed. */
-export type ActivityFilters = ReturnType<typeof useActivitiesList>['filters'];

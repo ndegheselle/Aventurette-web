@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
+import CriterionField from '@chapelure/ui/filter/CriterionField.vue';
+import { describeCriterion, isCriterionSet } from '@chapelure/ui/filter/criteria';
+import type { Filters } from '@chapelure/ui/filter/useFilters';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
-import CriterionField from '@features/activities/components/CriterionField.vue';
-import type { ActivityFilters } from '@features/activities/composables/useActivitiesList';
-import { describeCriterion, isCriterionSet } from '@features/activities/model/criteria';
 import { CheckIcon, FunnelIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -18,7 +18,7 @@ const { t } = useI18n();
  * Nothing here knows what an activity can be narrowed by: the form and the chips are both
  * generated from the criteria, so a new filter appears in each without this file changing.
  */
-const props = defineProps<{ filters: ActivityFilters }>();
+const props = defineProps<{ filters: Filters }>();
 
 // Destructured so the template sees plain bindings: a ref reached through an object is not
 // unwrapped in templates, only a top-level one is.

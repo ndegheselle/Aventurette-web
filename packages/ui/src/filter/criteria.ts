@@ -1,8 +1,10 @@
 import { createFilter, FilterOperator, type Filter } from "@chapelure/core";
+import type { Component } from "vue";
 
 /**
  * A translation lookup. Declared structurally rather than importing vue-i18n's
- * ComposerTranslation, so the model layer stays free of framework types.
+ * ComposerTranslation, so a caller can describe a criterion with any `t` it has — including
+ * none, in a test.
  */
 export type Translate = (key: string, params?: Record<string, unknown>) => string;
 
@@ -15,8 +17,8 @@ export type Translate = (key: string, params?: Record<string, unknown>) => strin
  * and so is the query — so adding a filter is adding an entry, rather than editing a form, a
  * toolbar and a query builder in step.
  *
- * What is deliberately *not* here is the icon. It is a Vue component, and `model/` does not
- * import the view layer; `useActivitiesList` hangs one on each criterion by key.
+ * Nothing here knows about any one screen: a list of criteria is what an app hands `useFilters`,
+ * and what the form and the chips are generated from.
  */
 export type CriterionType = 'range' | 'options' | 'tags';
 
@@ -40,6 +42,8 @@ interface BaseCriterion {
     key: string;
     /** Translation key for the criterion's own name. */
     label: string;
+    /** What stands for it on its field and its chip. A lucide icon, or anything renderable. */
+    icon?: Component;
 }
 
 /**

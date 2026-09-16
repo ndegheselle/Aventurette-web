@@ -24,6 +24,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0013](0013-specs-live-in-a-feature-tests-folder.md) | Specs live in a feature's `tests/` folder, and fewer are written | Accepted |
 | [0014](0014-authoring-is-its-own-feature.md) | Authoring activities is its own feature | Accepted |
 | [0015](0015-filter-criteria-are-data.md) | Filter criteria are data, and the form is generated from them | Accepted |
+| [0016](0016-filtering-lives-in-the-ui-package.md) | Filtering lives in `@chapelure/ui`, and a feature's criteria sit in its composable | Accepted |
 
 ## Writing a new one
 

@@ -1,7 +1,10 @@
 import { FilterOperator, type Filter, type FilterGroup } from '@chapelure/core';
+import type { Criterion, RangeValue } from '@chapelure/ui/filter/criteria';
+import {
+    activityCriteria,
+    buildActivityFilters,
+} from '@features/activities/composables/useActivitiesList';
 import type { ActivityData } from '@features/activities/model/activity';
-import { activityCriteria, buildActivityFilters } from '@features/activities/model/activity.filters';
-import type { Criterion, RangeValue } from '@features/activities/model/criteria';
 import { describe, expect, it } from 'vitest';
 
 /** The filters a group holds, flattened out of whatever nesting it uses. */
