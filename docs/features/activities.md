@@ -3,9 +3,7 @@
 Browsing and filtering the public activity catalogue.
 
 Read-only. Writing an activity is [activities-edit](activities-edit.md), which owns the editor,
-the step modal and the author's own list — see
-[ADR 0014](../adr/0014-authoring-is-its-own-feature.md) for why that is a second feature. What
-stays here is the **shape**: `model/activity.ts`, `model/step.ts` and `api/activities.api.ts`
+the step modal and the author's own list. What stays here is the **shape**: `model/activity.ts`, `model/step.ts` and `api/activities.api.ts`
 describe what an activity is, which both halves need, and the dependency runs one way — nothing
 here imports `activities-edit`.
 
@@ -83,9 +81,7 @@ list is put back to what the record still holds, because no field on the form st
 **The mechanism is `@chapelure/ui/filter`'s; the criteria are this feature's.** A criterion is
 data — a key, a label, an icon, the kind of input it takes, the values it offers and the value
 it holds — and the package generates the modal's fields and the chips above the list from a list
-of them. `activityCriteria()` is that list, and adding a filter is adding an entry. See
-[ADR 0015](../adr/0015-filter-criteria-are-data.md) and
-[ADR 0016](../adr/0016-filtering-lives-in-the-ui-package.md).
+of them. `activityCriteria()` is that list, and adding a filter is adding an entry.
 
 It sits in `composables/useActivitiesList.ts` and not in `model/`, along with
 `buildActivityFilters`: a criterion names a translation key and an icon, and `model/` may not
