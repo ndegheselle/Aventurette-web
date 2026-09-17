@@ -3,9 +3,10 @@
 Browsing and filtering the public activity catalogue.
 
 Read-only. Writing an activity is [activities-edit](activities-edit.md), which owns the editor,
-the step modal and the author's own list. What stays here is the **shape**: `model/activity.ts`, `model/step.ts` and `api/activities.api.ts`
-describe what an activity is, which both halves need, and the dependency runs one way — nothing
-here imports `activities-edit`.
+the step modal and the author's own list. What stays here is the **shape**: `model/activity.ts`
+and `model/step.ts` with their `.mapper.ts` files, and `api/activities.api.ts`, describe what an
+activity is — which both halves need — and the dependency runs one way: nothing here imports
+`activities-edit`.
 
 ## Routes
 
@@ -21,8 +22,9 @@ One composable to a screen: `useActivitiesList` holds the results and the filter
 
 ## Data
 
-Two types to an entity: `ActivityPayload` is what the backend sends, `ActivityData` is what the
-app uses, and `activityMapper` is the only thing that holds both — see
+Two types to an entity: `ActivityData` in `model/activity.ts` is what the app uses,
+`ActivityPayload` in `model/activity.mapper.ts` is what the backend sends, and `activityMapper`
+beside it is the only thing that holds both — see
 [ADR 0017](../adr/0017-models-map-their-own-payloads.md). `activity.steps` holds the steps
 themselves, each with its own `materials` and `resources`.
 

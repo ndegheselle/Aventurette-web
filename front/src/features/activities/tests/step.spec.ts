@@ -2,9 +2,8 @@ import {
     canCreateMaterial,
     filesWithinLimit,
     materialNameSuggestions,
-    resourceMapper,
-    stepMapper,
 } from '@features/activities/model/step';
+import { resourceMapper, stepMapper } from '@features/activities/model/step.mapper';
 import {
     aMaterial,
     aMaterialPayload,

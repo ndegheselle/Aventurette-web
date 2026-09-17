@@ -53,7 +53,7 @@ Every feature has the same shape, so you never have to guess:
 
 | | |
 |---|---|
-| `model/` | types, mappers, factories, domain rules — **no framework imports** |
+| `model/` | types, factories, domain rules, and `<entity>.mapper.ts` — **no framework imports** |
 | `api/` | `*.api.ts` — the only place `@/backend` may be imported |
 | `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
 | `components/` | feature components |
@@ -70,7 +70,9 @@ has the reasoning; a feature with no logic needs no composable.
 Within a folder the unit is an **entity or a screen, not a concept**: `model/activity.ts` holds
 the activity's types, factory, enums and formatters together, and `useActivitiesList` owns the
 list screen — its results, its filters and its add button. Splitting finer than that was tried
-and produced `model/benefit.ts`, three lines long.
+and produced `model/benefit.ts`, three lines long. The exception is the backend seam: an
+entity's payload type and mapper sit in `model/<entity>.mapper.ts`, so the model reads as the
+domain alone.
 
 Specs do **not** sit beside what they cover. They live in the feature's `tests/`, and there are
 fewer of them than there were — [ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)
@@ -171,8 +173,9 @@ Three deliberate compromises:
   The alias map lives in `scripts/aliases.mjs` and is imported by `front/vite.config.ts` and
   `vitest.config.ts`. TypeScript cannot read a JS module for its `paths`, so
   `front/tsconfig.json` repeats it — and `lint:arch` fails if the two disagree.
-- **Each model maps its own payload.** The backend's shape stops at the api layer: a model
-  declares an `EntityMapper<Payload, Data>` holding the relations to fetch, a `toEntity` that
+- **Each model maps its own payload.** The backend's shape stops at the api layer:
+  `model/<entity>.mapper.ts` declares an `EntityMapper<Payload, Data>` holding the relations to
+  fetch, a `toEntity` that
   inlines them and turns stored file names into urls, and a `toPayload` that turns related
   entities back into ids. The adapter applies it on every read and write, so `activity.steps`
   is the steps and `resource.url` is a url everywhere above `api/`. Saving a parent still

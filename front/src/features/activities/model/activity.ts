@@ -1,53 +1,19 @@
 import { ActivitiesEnvironmentOptions, ActivitiesStateOptions, type ActivitiesResponse, type BenefitsResponse } from "@/backend/schema.g";
-import type { Entity, EntityMapper } from "@chapelure/core";
+import type { Entity } from "@chapelure/core";
 import {
     EMPTY_DESCRIPTION,
-    stepMapper,
     type ActivityMaterialData,
     type ActivityResourceData,
     type ActivityStepData,
-    type ActivityStepPayload,
 } from "@features/activities/model/step";
 
-export type BenefitPayload = BenefitsResponse;
-
-export type BenefitData = Entity<BenefitPayload>;
-
-export const benefitMapper: EntityMapper<BenefitPayload, BenefitData> = {
-    relations: [],
-    toEntity: ({ expand: _expand, ...benefit }) => benefit,
-    toPayload: (benefit) => benefit,
-};
-
-/** An activity as the backend stores it, with what an expanded read carries alongside. */
-export type ActivityPayload = ActivitiesResponse<{
-    benefits?: BenefitPayload[];
-    steps?: ActivityStepPayload[];
-}>;
+export type BenefitData = Entity<BenefitsResponse>;
 
 /** An activity as the app uses it: `activity.steps` is the steps, not their ids. */
 export type ActivityData = Entity<ActivitiesResponse, {
     benefits: BenefitData[];
     steps: ActivityStepData[];
 }>;
-
-/**
- * Reads and writes an activity: benefits and steps arrive as records — their own mappers' work —
- * and go back as ids, because saving an activity persists its links and nothing under them.
- */
-export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
-    relations: ["benefits", "steps", ...stepMapper.relations.map(relation => `steps.${relation}`)],
-    toEntity: ({ expand, ...activity }, files) => ({
-        ...activity,
-        benefits: (expand?.benefits ?? []).map(benefit => benefitMapper.toEntity(benefit, files)),
-        steps: (expand?.steps ?? []).map(step => stepMapper.toEntity(step, files)),
-    }),
-    toPayload: ({ benefits, steps, ...activity }) => ({
-        ...activity,
-        ...(benefits && { benefits: benefits.map(benefit => benefit.id) }),
-        ...(steps && { steps: steps.map(step => step.id) }),
-    }),
-};
 
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 

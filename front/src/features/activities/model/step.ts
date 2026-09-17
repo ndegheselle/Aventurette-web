@@ -1,65 +1,24 @@
 import type { ActivitiesStepsResponse, StepsMaterialsResponse, StepsResourcesResponse } from "@/backend/schema.g";
-import type { Entity, EntityMapper } from "@chapelure/core";
-
-/** A material as the backend stores it. */
-export type ActivityMaterialPayload = StepsMaterialsResponse;
+import type { Entity } from "@chapelure/core";
 
 /** A material belongs to one step — `step` is its owner, never a catalogue entry. */
-export type ActivityMaterialData = Entity<ActivityMaterialPayload>;
-
-export const materialMapper: EntityMapper<ActivityMaterialPayload, ActivityMaterialData> = {
-    relations: [],
-    toEntity: ({ expand: _expand, ...material }) => material,
-    toPayload: (material) => material,
-};
+export type ActivityMaterialData = Entity<StepsMaterialsResponse>;
 
 /**
- * A resource as the backend stores it. `file` is the stored file's name coming back and the
- * upload itself going up — the asymmetry the entity's `url` exists to hide.
+ * A file uploaded for one step. A picked file is uploaded the moment it is chosen, so what the
+ * app holds is always a record — see `step.mapper.ts` for the two sides of `file`.
  */
-export type ActivityResourcePayload = Omit<StepsResourcesResponse, 'file'> & { file?: string | File };
-
-/** A file uploaded for one step. */
-export type ActivityResourceData = Entity<ActivityResourcePayload, {
+export type ActivityResourceData = Entity<Omit<StepsResourcesResponse, 'file'>, {
     /** Where the stored file can be read. Empty until the upload comes back. */
     url: string;
     /** The picked file, on its way up. Set on a create and never after. */
     file?: File;
 }>;
 
-export const resourceMapper: EntityMapper<ActivityResourcePayload, ActivityResourceData> = {
-    relations: [],
-    toEntity: ({ expand: _expand, file, ...resource }, files) => ({
-        ...resource,
-        url: typeof file === 'string' && file ? files.getUrl(resource, file) : '',
-    }),
-    toPayload: ({ url: _url, ...resource }) => resource,
-};
-
-/** A step as the backend stores it, with what an expanded read carries alongside. */
-export type ActivityStepPayload = ActivitiesStepsResponse<{
-    materials?: ActivityMaterialPayload[];
-    resources?: ActivityResourcePayload[];
-}>;
-
 export type ActivityStepData = Entity<ActivitiesStepsResponse, {
     materials: ActivityMaterialData[];
     resources: ActivityResourceData[];
 }>;
-
-export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
-    relations: ["materials", "resources"],
-    toEntity: ({ expand, ...step }, files) => ({
-        ...step,
-        materials: (expand?.materials ?? []).map(material => materialMapper.toEntity(material, files)),
-        resources: (expand?.resources ?? []).map(resource => resourceMapper.toEntity(resource, files)),
-    }),
-    toPayload: ({ materials, resources, ...step }) => ({
-        ...step,
-        ...(materials && { materials: materials.map(material => material.id) }),
-        ...(resources && { resources: resources.map(resource => resource.id) }),
-    }),
-};
 
 /** What an empty rich-text field holds — the collection requires a value. */
 export const EMPTY_DESCRIPTION = "<p></p>";

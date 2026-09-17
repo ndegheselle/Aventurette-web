@@ -9,18 +9,19 @@ import {
     ActivityEnvironment,
     ActivityState,
     type ActivityData,
-    type ActivityPayload,
     type BenefitData,
-    type BenefitPayload,
 } from '@features/activities/model/activity';
+import type { ActivityPayload, BenefitPayload } from '@features/activities/model/activity.mapper';
 import type {
     ActivityMaterialData,
-    ActivityMaterialPayload,
     ActivityResourceData,
-    ActivityResourcePayload,
     ActivityStepData,
-    ActivityStepPayload,
 } from '@features/activities/model/step';
+import type {
+    ActivityMaterialPayload,
+    ActivityResourcePayload,
+    ActivityStepPayload,
+} from '@features/activities/model/step.mapper';
 import type { ChildrenData } from '@features/users/model/child';
 import type { InterestData } from '@features/users/model/interest';
 import type { UserData } from '@features/users/model/user';
