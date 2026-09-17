@@ -3,12 +3,11 @@
  * not be imported anywhere else in front/src — everything downstream uses the ports built here.
  */
 import { Collections } from '@/backend/schema.g';
-import type { BaseEntity, CrudFactory, IAuthProvider, IFileUrlResolver } from '@chapelure/core';
+import type { BaseEntity, CrudFactory, EntityMapper, IAuthProvider } from '@chapelure/core';
 import {
     createPocketBaseAuth,
     createPocketBaseCached,
     createPocketBaseCrud,
-    createPocketBaseFileUrls,
     initPocketBase,
 } from '@chapelure/pocketbase';
 
@@ -19,18 +18,19 @@ if (!apiUrl)
 const client = initPocketBase(apiUrl);
 
 /** A CRUD service for one collection, reading through to the server every time. */
-export const crud: CrudFactory = <TEntity extends BaseEntity>(collection: string, relations?: string[]) =>
-    createPocketBaseCrud<TEntity>(client, collection, relations);
+export const crud: CrudFactory = <TPayload extends BaseEntity, TEntity extends BaseEntity>(
+    collection: string,
+    mapper: EntityMapper<TPayload, TEntity>,
+) => createPocketBaseCrud<TPayload, TEntity>(client, collection, mapper);
 
 /**
  * Same contract as `crud`, fetched once and read from memory. Only for small reference
  * collections, and only at module scope — the cache lives on the instance.
  */
-export const cachedCrud: CrudFactory = <TEntity extends BaseEntity>(collection: string, relations?: string[]) =>
-    createPocketBaseCached<TEntity>(client, collection, relations);
-
-/** Resolves stored file references to urls. */
-export const fileUrls: IFileUrlResolver = createPocketBaseFileUrls(client);
+export const cachedCrud: CrudFactory = <TPayload extends BaseEntity, TEntity extends BaseEntity>(
+    collection: string,
+    mapper: EntityMapper<TPayload, TEntity>,
+) => createPocketBaseCached<TPayload, TEntity>(client, collection, mapper);
 
 const auth = createPocketBaseAuth<BaseEntity>(client, Collections.Users);
 

@@ -23,11 +23,31 @@ getById(id)       getAll()             getList(options)      filter(group, optio
 it once, and repositories only ever see the port:
 
 ```ts
-type CrudFactory = <T extends BaseEntity>(collection: string, relations?: string[]) => IDataCrud<T>;
+type CrudFactory = <TPayload extends BaseEntity, TEntity extends BaseEntity>(
+    collection: string,
+    mapper: EntityMapper<TPayload, TEntity>,
+) => IDataCrud<TEntity>;
 ```
 
 `BaseEntity` is deliberately just `{ id: string }`. Anything richer (timestamps, collection
 metadata) is backend-specific; generated app types satisfy it structurally.
+
+## Mapping
+
+`EntityMapper<TPayload, TEntity>` is the seam between what a backend sends and what an app
+uses. A model declares one and the data layer applies it to every read and write:
+
+```ts
+interface EntityMapper<TPayload extends BaseEntity, TEntity extends BaseEntity> {
+    relations: string[];
+    toEntity(payload: TPayload, files: IFileUrlResolver): TEntity;
+    toPayload(entity: Partial<TEntity>): Partial<TPayload>;
+}
+```
+
+`relations` is what the read fetches alongside the record, so the list cannot drift from the
+code reading it. `Entity<TPayload, TRelations>` writes the entity side of a payload: its
+relation fields replaced by the related entities, and the backend's own fields dropped.
 
 ## Filters
 

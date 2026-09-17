@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
-import { resourcesApi as resources } from '@features/activities-authoring/api/steps.api';
 import ResourceDisplay from '@features/activities-authoring/components/ResourceDisplay.vue';
 import { useStepResources } from '@features/activities-authoring/composables/useStepEdit';
 import { ACCEPTED_RESOURCE_TYPES, type ActivityResourceData } from '@features/activities/model/step';
@@ -23,7 +22,7 @@ const { add, remove } = useStepResources(selected, () => props.step);
     </FilesInput>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
         <ResourceDisplay v-for="(resource, index) in selected" :key="resource.id"
-            :source="resources.getFileUrl(resource)" v-model:name="resource.name" class="relative">
+            :source="resource.url" v-model:name="resource.name" class="relative">
             <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="remove(index)">
                 <TrashIcon class="icon-sm" />
             </button>

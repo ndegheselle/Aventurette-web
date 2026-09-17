@@ -21,7 +21,7 @@ down, which is what makes it testable without mounting anything.
 | Layer | Holds | May import |
 |---|---|---|
 | `features/<name>/model/` | rules that hold whatever renders them — pure functions over plain data | `@chapelure/core`, other models. **No `vue`.** |
-| `features/<name>/api/` | the feature's backend calls | `@/backend`. **No `vue`.** |
+| `features/<name>/api/` | the feature's backend calls, and `<entity>.mapper.ts` — the payload type and the translation to the model | `@/backend`, the feature's `model/`. **No `vue`.** |
 | `features/<name>/composables/` | reactive state and orchestration | `vue`, the feature's `api/` and `model/` |
 | `features/<name>/components/` | markup and bindings | anything above |
 | `features/<name>/pages/` | route targets, and what only they use | anything above |
@@ -33,7 +33,9 @@ inside `<script setup>`, it belongs in `model/`.
 
 **One file per entity or screen, not per concept.** `model/activity.ts` holds the activity's
 types, its factory, its enums and its formatters together; `model/step.ts` does the same for a
-step and the materials and resources hanging off it. A three-line type alias is not a file.
+step and the materials and resources hanging off it. What the backend sends is not part of that:
+an entity's payload type and its `EntityMapper` live in `api/<entity>.mapper.ts`, with the rest
+of the code that knows a backend exists. A three-line type alias is not a file.
 A composable covers a screen — `useActivitiesList` owns the public list and its filters,
 `useActivitiesEditList` the author's own and its add and delete buttons — rather than one
 slice of one.
@@ -80,9 +82,10 @@ app's real catalogue, so assertions are on the copy a user would read.
 
 ## Things that will bite
 
-- `ACTIVITY_RELATIONS` and what `Expanded<>` declares on `ActivityData` must match, and nothing
-  checks them against each other ([ADR 0007](docs/adr/0007-relations-are-inlined-by-the-adapter.md)).
-- Relations read as records but **write as ids**. Saving a parent does not save its children.
+- A model's `EntityMapper` owns the relations it needs expanded, so `toEntity` and the fetch
+  cannot drift — but nothing checks the mapper against the payload type it claims to read
+  ([ADR 0007](docs/adr/0007-models-map-their-own-payloads.md)).
+- Relations read as entities but **write as ids**. Saving a parent does not save its children.
 - Adding an alias means adding it in `scripts/aliases.mjs` *and* `front/tsconfig.json`;
   `lint:arch` fails if they drift.
 - Tailwind does not scan `node_modules`, so `front/src/app/styles/index.css` declares

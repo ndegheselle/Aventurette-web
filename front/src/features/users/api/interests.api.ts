@@ -1,5 +1,5 @@
 import { crud } from "@/backend";
 import { Collections } from "@/backend/schema.g";
-import type { InterestData } from "@features/users/model/interest";
+import { interestMapper } from "@features/users/api/interest.mapper";
 
-export const interestsApi = crud<InterestData>(Collections.Interests);
+export const interestsApi = crud(Collections.Interests, interestMapper);

@@ -3,11 +3,10 @@
 Browsing and filtering the public activity catalogue.
 
 Read-only. Writing an activity is [activities-edit](activities-edit.md), which owns the editor,
-the step modal and the author's own list — see
-[ADR 0014](../adr/0014-authoring-is-its-own-feature.md) for why that is a second feature. What
-stays here is the **shape**: `model/activity.ts`, `model/step.ts` and `api/activities.api.ts`
-describe what an activity is, which both halves need, and the dependency runs one way — nothing
-here imports `activities-edit`.
+the step modal and the author's own list. What stays here is the **shape**: `model/activity.ts`
+and `model/step.ts`, their mappers in `api/`, and `api/activities.api.ts` describe what an
+activity is — which both halves need — and the dependency runs one way: nothing here imports
+`activities-edit`.
 
 ## Routes
 
@@ -23,18 +22,21 @@ One composable to a screen: `useActivitiesList` holds the results and the filter
 
 ## Data
 
-`ActivityData` is the generated `ActivitiesResponse` with its relations inlined — see
-[ADR 0007](../adr/0007-relations-are-inlined-by-the-adapter.md). `activity.steps` holds the
-steps themselves, each with its own `materials` and `resources`.
+Two types to an entity: `ActivityData` in `model/activity.ts` is what the app uses,
+`ActivityPayload` in `api/activity.mapper.ts` is what the backend sends, and `activityMapper`
+beside it is the only thing that holds both — see
+[ADR 0007](../adr/0007-models-map-their-own-payloads.md). `activity.steps` holds the steps
+themselves, each with its own `materials` and `resources`.
 
-`ACTIVITY_RELATIONS` lists what is fetched alongside an activity, and **must** stay in step
-with what `Expanded<>` declares on `ActivityData`. Its nested half is derived from
-`STEP_RELATIONS`, which is also what a step is written with, so reading and writing a step
-cannot drift apart.
+`activityMapper.relations` lists what is fetched alongside an activity; the nested half is
+derived from `stepMapper.relations`, so a step arrives the same way whether it is read on its
+own or under an activity. A relation the read did not expand maps to an empty list, never to
+the ids the record carries.
 
-A resource is always a record: a picked file is uploaded the moment it is chosen, so `file`
-only ever holds the name of a stored file. Nothing downstream has to ask which kind it is
-holding — a tile renders a url, a step is saved with ids.
+A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
+`file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
+name into `resource.url` — so a tile renders a url and a step is saved with ids, and neither
+has to ask which it is holding.
 
 ## Saving
 
@@ -81,9 +83,7 @@ list is put back to what the record still holds, because no field on the form st
 **The mechanism is `@chapelure/ui/filter`'s; the criteria are this feature's.** A criterion is
 data — a key, a label, an icon, the kind of input it takes, the values it offers and the value
 it holds — and the package generates the modal's fields and the chips above the list from a list
-of them. `activityCriteria()` is that list, and adding a filter is adding an entry. See
-[ADR 0015](../adr/0015-filter-criteria-are-data.md) and
-[ADR 0016](../adr/0016-filtering-lives-in-the-ui-package.md).
+of them. `activityCriteria()` is that list, and adding a filter is adding an entry.
 
 It sits in `composables/useActivitiesList.ts` and not in `model/`, along with
 `buildActivityFilters`: a criterion names a translation key and an icon, and `model/` may not

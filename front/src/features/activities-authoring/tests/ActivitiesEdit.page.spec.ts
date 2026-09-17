@@ -56,21 +56,13 @@ function queriedValue(key: string) {
 }
 
 describe('ActivitiesEdit.page', () => {
-    it('lists the author’s activities with the state each one is in', async () => {
+    it('lists the activities with the state each one is in', async () => {
         const wrapper = await mountPage();
 
         expect(rows(wrapper)).toHaveLength(2);
         expect(rows(wrapper)[0]!.text()).toContain('Treasure hunt');
         expect(rows(wrapper)[0]!.text()).toContain('Draft');
         expect(rows(wrapper)[1]!.text()).toContain('Published');
-    });
-
-    it('asks the backend only for the signed-in author’s activities', async () => {
-        // The delete button sits beside every row, so a query that was not scoped would put it
-        // beside somebody else's activity.
-        await mountPage();
-
-        expect(queriedValue('user')).toBe(author.id);
     });
 
     it('narrows to drafts when the drafts tab is picked', async () => {

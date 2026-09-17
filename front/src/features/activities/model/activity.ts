@@ -1,21 +1,19 @@
 import { ActivitiesEnvironmentOptions, ActivitiesStateOptions, type ActivitiesResponse, type BenefitsResponse } from "@/backend/schema.g";
-import type { Expanded } from "@chapelure/core";
+import type { Entity } from "@chapelure/core";
 import {
     EMPTY_DESCRIPTION,
-    STEP_RELATIONS,
     type ActivityMaterialData,
     type ActivityResourceData,
     type ActivityStepData,
 } from "@features/activities/model/step";
 
-// Relations arrive inlined: `activity.steps` holds the steps. Keep this in step with
-// ACTIVITY_RELATIONS below — nothing checks the two against each other.
-export type ActivityData = Expanded<ActivitiesResponse, {
+export type BenefitData = Entity<BenefitsResponse>;
+
+/** An activity as the app uses it: `activity.steps` is the steps, not their ids. */
+export type ActivityData = Entity<ActivitiesResponse, {
     benefits: BenefitData[];
     steps: ActivityStepData[];
 }>;
-
-export type BenefitData = BenefitsResponse;
 
 export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 
@@ -23,12 +21,6 @@ export const ActivityState = ActivitiesStateOptions;
 
 // Declared in `step.ts`, re-exported here: an activity seeds its description with it too.
 export { EMPTY_DESCRIPTION };
-
-/** Relations to fetch alongside an activity for the detail and edit screens. */
-export const ACTIVITY_RELATIONS = [
-    "benefits",
-    "steps", ...STEP_RELATIONS.map(relation => `steps.${relation}`),
-];
 
 /** The environments offered in filters and the edit form, in display order. */
 export const availablesEnvironments = [

@@ -1,8 +1,8 @@
 import { cachedCrud, crud } from "@/backend";
 import { Collections } from "@/backend/schema.g";
-import { ACTIVITY_RELATIONS, type ActivityData, type BenefitData } from "@features/activities/model/activity";
+import { activityMapper, benefitMapper } from "@features/activities/api/activity.mapper";
 
-export const activitiesApi = crud<ActivityData>(Collections.Activities, ACTIVITY_RELATIONS);
+export const activitiesApi = crud(Collections.Activities, activityMapper);
 
 // Small reference collection: fetched once, then served from memory.
-export const benefitsApi = cachedCrud<BenefitData>(Collections.Benefits);
+export const benefitsApi = cachedCrud(Collections.Benefits, benefitMapper);

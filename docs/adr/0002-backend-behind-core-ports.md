@@ -32,6 +32,6 @@ failure is rethrown rather than mislabelled as a validation error.
 - Tests fake the port rather than the SDK — see [0012](0012-fakes-at-the-port-not-the-sdk.md).
 - Some of the SDK's abilities are not reachable without widening a port first. That is the
   intended friction: it puts the question in one place instead of at the call site.
-- `Expanded<>` in core mentions `expand` by name, which is PocketBase's word for its relation
+- `Entity<>` in core omits `expand` by name, which is PocketBase's word for its relation
   side-channel. It is the one backend term in the package, and it saves every model from
-  having to omit the field by hand.
+  having to drop the field by hand — see [0007](0007-models-map-their-own-payloads.md).

@@ -1,5 +1,6 @@
 import type { BaseEntity } from "./entity";
 import type { FilterGroup } from "./filters";
+import type { EntityMapper } from "./mapper";
 
 export enum SortDirection {
     ASC = '+',
@@ -49,9 +50,9 @@ export interface IDataCrud<TResponse extends BaseEntity> {
  * it for its own collection.
  *
  * @param collection name of the collection / table / endpoint
- * @param relations related records to fetch with each entity (PocketBase expand, SQL join, …)
+ * @param mapper the model's translation between payload and entity, and the relations it needs
  */
-export type CrudFactory = <TResponse extends BaseEntity>(
+export type CrudFactory = <TPayload extends BaseEntity, TEntity extends BaseEntity>(
     collection: string,
-    relations?: string[]
-) => IDataCrud<TResponse>;
+    mapper: EntityMapper<TPayload, TEntity>
+) => IDataCrud<TEntity>;

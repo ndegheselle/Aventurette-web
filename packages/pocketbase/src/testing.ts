@@ -2,7 +2,17 @@
  * A stand-in for the PocketBase SDK client, for this package's own specs. Written against the
  * SDK's real method names, so a spec can assert the options the adapter passes.
  */
+import type { BaseEntity, EntityMapper } from '@chapelure/core';
 import type PocketBase from 'pocketbase';
+
+/** A mapper that translates nothing — for specs about the adapter rather than about a model. */
+export function passthroughMapper<T extends BaseEntity>(relations: string[] = []): EntityMapper<T, T> {
+    return {
+        relations,
+        toEntity: (payload) => payload,
+        toPayload: (entity) => entity,
+    };
+}
 
 export interface RecordedCall {
     method: string;

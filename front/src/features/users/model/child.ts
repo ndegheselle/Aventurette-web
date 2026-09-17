@@ -1,9 +1,7 @@
 import type { ChildrensResponse } from "@/backend/schema.g";
-import type { Expanded } from "@chapelure/core";
+import type { Entity } from "@chapelure/core";
 import type { InterestData } from "@features/users/model/interest";
 
-export type ChildrenData = Expanded<ChildrensResponse, {
+export type ChildrenData = Entity<ChildrensResponse, {
     interests: InterestData[];
 }>;
-
-export const CHILD_RELATIONS = ["interests"];

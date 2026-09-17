@@ -11,11 +11,17 @@ import {
     type ActivityData,
     type BenefitData,
 } from '@features/activities/model/activity';
+import type { ActivityPayload, BenefitPayload } from '@features/activities/api/activity.mapper';
 import type {
     ActivityMaterialData,
     ActivityResourceData,
     ActivityStepData,
 } from '@features/activities/model/step';
+import type {
+    ActivityMaterialPayload,
+    ActivityResourcePayload,
+    ActivityStepPayload,
+} from '@features/activities/api/step.mapper';
 import type { ChildrenData } from '@features/users/model/child';
 import type { InterestData } from '@features/users/model/interest';
 import type { UserData } from '@features/users/model/user';
@@ -44,14 +50,12 @@ export function aMaterial(overrides: Partial<ActivityMaterialData> = {}): Activi
     } as ActivityMaterialData;
 }
 
-export function aResource(
-    overrides: Partial<Omit<ActivityResourceData, 'file'>> & { file?: string } = {},
-): ActivityResourceData {
+export function aResource(overrides: Partial<ActivityResourceData> = {}): ActivityResourceData {
     return {
         ...SYSTEM,
         id: nextId('res'),
         name: 'Rules sheet',
-        file: 'rules.pdf',
+        url: 'https://files.test/rules.pdf',
         step: nextId('stp'),
         ...overrides,
     } as ActivityResourceData;
@@ -119,4 +123,56 @@ export function aUser(overrides: Partial<UserData> = {}): UserData {
 /** A file the user has just picked, before anything has stored it. */
 export function aPickedFile(name = 'photo.png', type = 'image/png'): File {
     return new File(['fake-bytes'], name, { type });
+}
+
+/**
+ * Backend payloads — a record as a read answers with it, relation fields holding ids and the
+ * related records sitting under `expand`. Only a mapper's spec has a reason to build one;
+ * everything above it works on entities.
+ */
+
+export function aMaterialPayload(overrides: Partial<ActivityMaterialPayload> = {}): ActivityMaterialPayload {
+    return { ...SYSTEM, id: nextId('mat'), name: 'Rope', step: nextId('stp'), ...overrides } as ActivityMaterialPayload;
+}
+
+export function aResourcePayload(overrides: Partial<ActivityResourcePayload> = {}): ActivityResourcePayload {
+    return {
+        ...SYSTEM,
+        id: nextId('res'),
+        name: 'Rules sheet',
+        file: 'rules.pdf',
+        step: nextId('stp'),
+        ...overrides,
+    } as ActivityResourcePayload;
+}
+
+export function aStepPayload(overrides: Partial<ActivityStepPayload> = {}): ActivityStepPayload {
+    return {
+        ...SYSTEM,
+        id: nextId('stp'),
+        activity: nextId('act'),
+        description: '<p>Line everyone up.</p>',
+        materials: [],
+        resources: [],
+        ...overrides,
+    } as ActivityStepPayload;
+}
+
+export function aBenefitPayload(overrides: Partial<BenefitPayload> = {}): BenefitPayload {
+    return { ...SYSTEM, id: nextId('bnf'), name: 'Coordination', ...overrides } as BenefitPayload;
+}
+
+export function anActivityPayload(overrides: Partial<ActivityPayload> = {}): ActivityPayload {
+    return {
+        ...SYSTEM,
+        id: nextId('act'),
+        name: 'Treasure hunt',
+        description: '<p>Hide, then seek.</p>',
+        environment: ActivityEnvironment.OUTDOOR,
+        state: ActivityState.DRAFT,
+        user: nextId('usr'),
+        benefits: [],
+        steps: [],
+        ...overrides,
+    } as ActivityPayload;
 }

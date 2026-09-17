@@ -1,6 +1,8 @@
 import { UsersTypeOptions, type UsersResponse } from "@/backend/schema.g";
+import type { Entity } from "@chapelure/core";
 
 export { UsersTypeOptions as UserProfilType };
 
-// No Expanded wrapper: the auth provider asks for no relations, so `childrens` holds ids.
-export type UserData = UsersResponse;
+// No mapper: the session comes back from the auth port, which expands nothing and stores no
+// file, so `childrens` holds ids and there is nothing to translate.
+export type UserData = Entity<UsersResponse>;
