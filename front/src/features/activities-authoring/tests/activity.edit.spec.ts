@@ -40,22 +40,15 @@ describe('stateTransition', () => {
 });
 
 describe('buildAuthoredFilters', () => {
-    it('scopes the list to the author, which is what the delete button is beside', () => {
-        const group = buildAuthoredFilters('usr-1', null);
-
-        expect(valueOf(group, 'user')).toBe('usr-1');
-    });
-
     it('drops the state filter on the "all" tab, so it takes the same path as a chosen one', () => {
-        const group = buildAuthoredFilters('usr-1', null);
+        const group = buildAuthoredFilters(null);
 
-        expect(filtersOf(group).map(f => f.key)).toEqual(['user']);
+        expect(filtersOf(group)).toEqual([]);
     });
 
     it('narrows to one state when a tab is picked', () => {
-        const group = buildAuthoredFilters('usr-1', ActivityState.DRAFT);
+        const group = buildAuthoredFilters(ActivityState.DRAFT);
 
         expect(valueOf(group, 'state')).toBe(ActivityState.DRAFT);
-        expect(valueOf(group, 'user')).toBe('usr-1');
     });
 });
