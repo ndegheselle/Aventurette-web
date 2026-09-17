@@ -54,7 +54,7 @@ Every feature has the same shape, so you never have to guess:
 | | |
 |---|---|
 | `model/` | types, factories, domain rules — **no framework imports** |
-| `api/` | `*.api.ts` — the only place `@/backend` may be imported |
+| `api/` | `*.api.ts` — the only place `@/backend` may be imported — and `*.mapper.ts` |
 | `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
 | `components/` | feature components |
 | `pages/` | route targets, plus the structural files only they use — see below |
@@ -70,7 +70,9 @@ has the reasoning; a feature with no logic needs no composable.
 Within a folder the unit is an **entity or a screen, not a concept**: `model/activity.ts` holds
 the activity's types, factory, enums and formatters together, and `useActivitiesList` owns the
 list screen — its results, its filters and its add button. Splitting finer than that was tried
-and produced `model/benefit.ts`, three lines long.
+and produced `model/benefit.ts`, three lines long. The exception is the backend seam: an
+entity's payload type and mapper sit in `model/<entity>.mapper.ts`, so the model reads as the
+domain alone.
 
 Specs do **not** sit beside what they cover. They live in the feature's `tests/`, and there are
 fewer of them than there were — [ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)
@@ -171,12 +173,13 @@ Three deliberate compromises:
   The alias map lives in `scripts/aliases.mjs` and is imported by `front/vite.config.ts` and
   `vitest.config.ts`. TypeScript cannot read a JS module for its `paths`, so
   `front/tsconfig.json` repeats it — and `lint:arch` fails if the two disagree.
-- **Relations come back inlined, not on the side.** PocketBase returns expanded records in a
-  separate `expand` object; `packages/pocketbase/src/relations.ts` folds them into the record
-  on read and turns them back into ids on write, so `activity.steps` is the steps in both
-  directions. Models declare that with `Expanded<Response, { ... }>` from `@chapelure/core`,
-  and the fields they list must match the `relations` argument the api layer passes — nothing
-  checks the two against each other. Saving a parent still persists ids only.
+- **Each entity maps its own payload.** The backend's shape stops inside the api layer:
+  `api/<entity>.mapper.ts` declares an `EntityMapper<Payload, Data>` holding the relations to
+  fetch, a `toEntity` that
+  inlines them and turns stored file names into urls, and a `toPayload` that turns related
+  entities back into ids. The adapter applies it on every read and write, so `activity.steps`
+  is the steps and `resource.url` is a url everywhere above `api/`. Saving a parent still
+  persists ids only — see [ADR 0007](docs/adr/0007-models-map-their-own-payloads.md).
 
 - **Tailwind v4 ignores `node_modules`,** and workspace packages are symlinked there. So
   `front/src/app/styles/index.css` declares `@source "../../../../packages/ui/src"`. Remove

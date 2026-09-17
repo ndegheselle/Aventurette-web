@@ -1,8 +1,8 @@
-import { Paginated, PaginationOptions, SortDirection, type BaseEntity, type IDataCrud } from "@chapelure/core";
+import { Paginated, PaginationOptions, SortDirection, type BaseEntity, type EntityMapper, type IDataCrud } from "@chapelure/core";
 import type PocketBase from 'pocketbase';
 import { createPocketBaseCrud } from "./crud";
 
-export interface ICachedCrud<TResponse extends BaseEntity> extends IDataCrud<TResponse> {
+export interface ICachedCrud<TEntity extends BaseEntity> extends IDataCrud<TEntity> {
     /** Drop the cache so the next read hits the server again. */
     invalidate(): void;
 }
@@ -14,19 +14,19 @@ export interface ICachedCrud<TResponse extends BaseEntity> extends IDataCrud<TRe
  * The cache is per instance — create one at module scope so callers share it. Writes go to the
  * server and update the cache; `filter` always goes to the server.
  */
-export function createPocketBaseCached<TResponse extends BaseEntity>(
+export function createPocketBaseCached<TPayload extends BaseEntity, TEntity extends BaseEntity>(
     client: PocketBase,
     collectionName: string,
-    relations: string[] | undefined = undefined
-): ICachedCrud<TResponse> {
+    mapper: EntityMapper<TPayload, TEntity>
+): ICachedCrud<TEntity> {
 
-    const crud = createPocketBaseCrud<TResponse>(client, collectionName, relations);
+    const crud = createPocketBaseCrud<TPayload, TEntity>(client, collectionName, mapper);
 
-    let cache: TResponse[] = [];
+    let cache: TEntity[] = [];
     let isLoaded = false;
-    let loadPromise: Promise<TResponse[]> | null = null;
+    let loadPromise: Promise<TEntity[]> | null = null;
 
-    async function ensureLoaded(): Promise<TResponse[]> {
+    async function ensureLoaded(): Promise<TEntity[]> {
         if (isLoaded) return cache;
         if (loadPromise) return loadPromise;
 
@@ -40,16 +40,16 @@ export function createPocketBaseCached<TResponse extends BaseEntity>(
         return loadPromise;
     }
 
-    async function getAll(): Promise<TResponse[]> {
+    async function getAll(): Promise<TEntity[]> {
         return await ensureLoaded();
     }
 
-    async function getById(id: string): Promise<TResponse | null> {
+    async function getById(id: string): Promise<TEntity | null> {
         const items = await ensureLoaded();
         return items.find((i) => i.id === id) || null;
     }
 
-    async function getList(options: PaginationOptions): Promise<Paginated<TResponse>> {
+    async function getList(options: PaginationOptions): Promise<Paginated<TEntity>> {
         const allItems = await ensureLoaded();
 
         const items = [...allItems];
@@ -67,16 +67,16 @@ export function createPocketBaseCached<TResponse extends BaseEntity>(
         const start = (options.page - 1) * options.perPage;
         const paged = items.slice(start, start + options.perPage);
 
-        return new Paginated<TResponse>(paged, items.length, options);
+        return new Paginated<TEntity>(paged, items.length, options);
     }
 
-    async function create(data: TResponse): Promise<TResponse> {
+    async function create(data: TEntity): Promise<TEntity> {
         const created = await crud.create(data);
         cache.push(created);
         return created;
     }
 
-    async function update(id: string, data: Partial<TResponse>): Promise<TResponse> {
+    async function update(id: string, data: Partial<TEntity>): Promise<TEntity> {
         const updated = await crud.update(id, data);
         const index = cache.findIndex((i) => i.id === id);
         if (index !== -1) {

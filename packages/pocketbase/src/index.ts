@@ -9,4 +9,3 @@ export { createPocketBaseCrud } from './crud';
 export { mapErrors, toValidationError } from './errors';
 export { createPocketBaseFileUrls } from './files';
 export { filterGroupToPocketBase, filterToPocketBase } from './filters';
-export { inlineRelations, relationFields, relationsToIds } from './relations';

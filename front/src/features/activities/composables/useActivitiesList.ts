@@ -32,8 +32,7 @@ const BENEFITS_CRITERION = 'benefits';
  *
  * Each criterion carries what it means to the backend: `ageMin`/`ageMax` are two fields bounding
  * one number, duration is one field bounded twice, and benefits need `anyEquals` because they
- * are a relation list. See
- * [ADR 0016](../../../../../docs/adr/0016-filtering-lives-in-the-ui-package.md).
+ * are a relation list.
  */
 export function activityCriteria(): Criterion[] {
     return [

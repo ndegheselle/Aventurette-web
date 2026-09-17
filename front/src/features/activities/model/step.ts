@@ -1,24 +1,24 @@
 import type { ActivitiesStepsResponse, StepsMaterialsResponse, StepsResourcesResponse } from "@/backend/schema.g";
-import type { Expanded } from "@chapelure/core";
+import type { Entity } from "@chapelure/core";
 
-// Relations arrive inlined: `step.materials` holds the materials. Keep this in step with
-// STEP_RELATIONS below — nothing checks the two against each other.
-export type ActivityStepData = Expanded<ActivitiesStepsResponse, {
+/** A material belongs to one step — `step` is its owner, never a catalogue entry. */
+export type ActivityMaterialData = Entity<StepsMaterialsResponse>;
+
+/**
+ * A file uploaded for one step. A picked file is uploaded the moment it is chosen, so what the
+ * app holds is always a record — see `step.mapper.ts` for the two sides of `file`.
+ */
+export type ActivityResourceData = Entity<Omit<StepsResourcesResponse, 'file'>, {
+    /** Where the stored file can be read. Empty until the upload comes back. */
+    url: string;
+    /** The picked file, on its way up. Set on a create and never after. */
+    file?: File;
+}>;
+
+export type ActivityStepData = Entity<ActivitiesStepsResponse, {
     materials: ActivityMaterialData[];
     resources: ActivityResourceData[];
 }>;
-
-/** A material belongs to one step — `step` is its owner, never a catalogue entry. */
-export type ActivityMaterialData = StepsMaterialsResponse;
-
-/**
- * A file uploaded for one step. `file` holds the stored file's name, never an upload waiting to
- * be sent: a picked file is uploaded the moment it is chosen.
- */
-export type ActivityResourceData = StepsResourcesResponse;
-
-/** Relations to fetch alongside a step, and to write back as ids when one is saved. */
-export const STEP_RELATIONS = ["materials", "resources"];
 
 /** What an empty rich-text field holds — the collection requires a value. */
 export const EMPTY_DESCRIPTION = "<p></p>";

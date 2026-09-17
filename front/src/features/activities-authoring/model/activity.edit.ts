@@ -45,6 +45,8 @@ export function stateTransition(state: ActivityData['state']): StateTransition {
 /**
  * What the authoring list asks for, narrowed to one state when a tab other than "all" is picked.
  * `null` drops the filter entirely, so the "all" tab and a chosen one take the same path.
+ *
+ * Not scoped to the signed-in author: for now everybody may edit every activity.
  */
 export function buildAuthoredFilters(state: ActivityStateFilter): FilterGroup<ActivityData> {
     return removeEmptyFilters(createGroup<ActivityData>({

@@ -4,8 +4,8 @@ Authoring activities: the author's own list, and the form behind it.
 
 [activities](activities.md) is the other half — the public catalogue, which reads. This one
 writes, and the two never overlap on a screen: browsing everybody's activities and managing
-your own are different questions asked of the same collection. Why that is a feature boundary
-and not a mode is in [ADR 0014](../adr/0014-authoring-is-its-own-feature.md).
+your own are different questions asked of the same collection — a feature boundary rather than
+a mode.
 
 ## Routes
 
@@ -22,10 +22,10 @@ belongs to.
 
 `useActivitiesEditList` owns it: the results, the state tab, the add button and the delete.
 
-**It is scoped to the signed-in author.** `buildAuthoredFilters` puts `user` in the query, and
-that is not a filter the screen offers — it is what makes the list theirs, and what keeps its
-delete button off somebody else's activity. `currentId()` throws rather than returning nothing
-when there is no session, so a signed-out query cannot silently widen to everybody.
+**It is not scoped to the signed-in author yet.** `buildAuthoredFilters` queries by state only,
+so every signed-in user sees — and may delete — every activity. A new one still records its
+author: `currentId()` fills `user` on create, and throws rather than returning nothing when
+there is no session.
 
 The tabs are **all / drafts / published**, declared as `authoredStateTabs` — domain data, the
 same way `availablesEnvironments` is, with translation keys for labels. `null` is the "all"

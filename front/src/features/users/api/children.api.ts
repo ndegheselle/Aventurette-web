@@ -1,5 +1,5 @@
 import { crud } from "@/backend";
 import { Collections } from "@/backend/schema.g";
-import { CHILD_RELATIONS, type ChildrenData } from "@features/users/model/child";
+import { childMapper } from "@features/users/api/child.mapper";
 
-export const childrenApi = crud<ChildrenData>(Collections.Childrens, CHILD_RELATIONS);
+export const childrenApi = crud(Collections.Childrens, childMapper);

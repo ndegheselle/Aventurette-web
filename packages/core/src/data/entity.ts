@@ -4,13 +4,13 @@ export type BaseEntity = {
 };
 
 /**
- * A record whose relation fields hold the related records instead of their ids.
+ * The domain side of a backend payload: relation fields holding the related entities instead of
+ * their ids, and nothing of the wire shape left.
  *
- *     type ActivityData = Expanded<ActivitiesResponse, { steps: ActivityStepData[] }>;
+ *     type ActivityData = Entity<ActivitiesResponse, { steps: ActivityStepData[] }>;
  *
- * Declare exactly the fields passed as `relations` to the CrudFactory — nothing checks the two
- * against each other, so anything else makes the type lie. Writing stays id-based: saving the
- * parent persists the relation ids only, never the children.
+ * What fills those fields is the model's own mapper — see `EntityMapper`. Writing stays
+ * id-based: saving the parent persists the relation ids only, never the children.
  */
-export type Expanded<TEntity, TRelations> =
-    Omit<TEntity, keyof TRelations | 'expand'> & TRelations;
+export type Entity<TPayload, TRelations extends object = object> =
+    Omit<TPayload, keyof TRelations | 'expand'> & TRelations;

@@ -1,6 +1,7 @@
 import type { InterestsResponse } from "@/backend/schema.g";
+import type { Entity } from "@chapelure/core";
 
-export type InterestData = InterestsResponse;
+export type InterestData = Entity<InterestsResponse>;
 
 /** An interest as the picker shows it: the record, plus whether this child has it. */
 export type SelectableInterest = InterestData & { isSelected: boolean };
