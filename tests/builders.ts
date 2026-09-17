@@ -11,7 +11,7 @@ import {
     type ActivityData,
     type BenefitData,
 } from '@features/activities/model/activity';
-import type { ActivityPayload, BenefitPayload } from '@features/activities/model/activity.mapper';
+import type { ActivityPayload, BenefitPayload } from '@features/activities/api/activity.mapper';
 import type {
     ActivityMaterialData,
     ActivityResourceData,
@@ -21,7 +21,7 @@ import type {
     ActivityMaterialPayload,
     ActivityResourcePayload,
     ActivityStepPayload,
-} from '@features/activities/model/step.mapper';
+} from '@features/activities/api/step.mapper';
 import type { ChildrenData } from '@features/users/model/child';
 import type { InterestData } from '@features/users/model/interest';
 import type { UserData } from '@features/users/model/user';

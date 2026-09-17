@@ -1,7 +1,7 @@
 import type { ChildrensResponse } from "@/backend/schema.g";
 import type { EntityMapper } from "@chapelure/core";
+import { interestMapper, type InterestPayload } from "@features/users/api/interest.mapper";
 import type { ChildrenData } from "@features/users/model/child";
-import { interestMapper, type InterestPayload } from "@features/users/model/interest.mapper";
 
 /** A child as the backend stores it, with what an expanded read carries alongside. */
 export type ChildPayload = ChildrensResponse<{ interests?: InterestPayload[] }>;

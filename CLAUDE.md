@@ -21,7 +21,7 @@ down, which is what makes it testable without mounting anything.
 | Layer | Holds | May import |
 |---|---|---|
 | `features/<name>/model/` | rules that hold whatever renders them — pure functions over plain data | `@chapelure/core`, other models. **No `vue`.** |
-| `features/<name>/api/` | the feature's backend calls | `@/backend`. **No `vue`.** |
+| `features/<name>/api/` | the feature's backend calls, and `<entity>.mapper.ts` — the payload type and the translation to the model | `@/backend`, the feature's `model/`. **No `vue`.** |
 | `features/<name>/composables/` | reactive state and orchestration | `vue`, the feature's `api/` and `model/` |
 | `features/<name>/components/` | markup and bindings | anything above |
 | `features/<name>/pages/` | route targets, and what only they use | anything above |
@@ -33,9 +33,9 @@ inside `<script setup>`, it belongs in `model/`.
 
 **One file per entity or screen, not per concept.** `model/activity.ts` holds the activity's
 types, its factory, its enums and its formatters together; `model/step.ts` does the same for a
-step and the materials and resources hanging off it. The one split is the backend: an entity's
-payload type and its `EntityMapper` sit in `model/<entity>.mapper.ts`, so the model itself
-reads as the domain and nothing above `api/` imports the mapper. A three-line type alias is not a file.
+step and the materials and resources hanging off it. What the backend sends is not part of that:
+an entity's payload type and its `EntityMapper` live in `api/<entity>.mapper.ts`, with the rest
+of the code that knows a backend exists. A three-line type alias is not a file.
 A composable covers a screen — `useActivitiesList` owns the public list and its filters,
 `useActivitiesEditList` the author's own and its add and delete buttons — rather than one
 slice of one.

@@ -53,8 +53,8 @@ Every feature has the same shape, so you never have to guess:
 
 | | |
 |---|---|
-| `model/` | types, factories, domain rules, and `<entity>.mapper.ts` — **no framework imports** |
-| `api/` | `*.api.ts` — the only place `@/backend` may be imported |
+| `model/` | types, factories, domain rules — **no framework imports** |
+| `api/` | `*.api.ts` — the only place `@/backend` may be imported — and `*.mapper.ts` |
 | `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
 | `components/` | feature components |
 | `pages/` | route targets, plus the structural files only they use — see below |
@@ -173,8 +173,8 @@ Three deliberate compromises:
   The alias map lives in `scripts/aliases.mjs` and is imported by `front/vite.config.ts` and
   `vitest.config.ts`. TypeScript cannot read a JS module for its `paths`, so
   `front/tsconfig.json` repeats it — and `lint:arch` fails if the two disagree.
-- **Each model maps its own payload.** The backend's shape stops at the api layer:
-  `model/<entity>.mapper.ts` declares an `EntityMapper<Payload, Data>` holding the relations to
+- **Each entity maps its own payload.** The backend's shape stops inside the api layer:
+  `api/<entity>.mapper.ts` declares an `EntityMapper<Payload, Data>` holding the relations to
   fetch, a `toEntity` that
   inlines them and turns stored file names into urls, and a `toPayload` that turns related
   entities back into ids. The adapter applies it on every read and write, so `activity.steps`

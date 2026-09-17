@@ -1,7 +1,7 @@
 import { crud } from "@/backend";
 import { Collections } from "@/backend/schema.g";
 import type { ActivityMaterialData, ActivityResourceData } from "@features/activities/model/step";
-import { materialMapper, resourceMapper, stepMapper } from "@features/activities/model/step.mapper";
+import { materialMapper, resourceMapper, stepMapper } from "@features/activities/api/step.mapper";
 
 // Saving an activity stores its step ids and nothing else, so a step is written through here
 // first — and so are its materials and resources, which are records of their own too.

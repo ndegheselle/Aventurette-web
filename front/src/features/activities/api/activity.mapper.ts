@@ -1,7 +1,7 @@
 import type { ActivitiesResponse, BenefitsResponse } from "@/backend/schema.g";
 import type { EntityMapper } from "@chapelure/core";
+import { stepMapper, type ActivityStepPayload } from "@features/activities/api/step.mapper";
 import type { ActivityData, BenefitData } from "@features/activities/model/activity";
-import { stepMapper, type ActivityStepPayload } from "@features/activities/model/step.mapper";
 
 export type BenefitPayload = BenefitsResponse;
 

@@ -3,7 +3,7 @@ import {
     filesWithinLimit,
     materialNameSuggestions,
 } from '@features/activities/model/step';
-import { resourceMapper, stepMapper } from '@features/activities/model/step.mapper';
+import { resourceMapper, stepMapper } from '@features/activities/api/step.mapper';
 import {
     aMaterial,
     aMaterialPayload,

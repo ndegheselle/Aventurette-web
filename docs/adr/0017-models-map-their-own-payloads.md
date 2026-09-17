@@ -19,10 +19,10 @@ what the backend sends and what the app uses — as one type with a wrapper arou
 
 ## Decision
 
-Each entity gets a `model/<entity>.mapper.ts` beside its model, holding the payload type and an
+Each entity gets an `api/<entity>.mapper.ts`, holding the payload type and an
 `EntityMapper<TPayload, TEntity>`: the relations it needs fetched, and the two functions between
-the two shapes. The model file keeps the domain — its entity type, factory, enums and rules —
-and never mentions the wire.
+the two shapes. It sits in `api/` because knowing what a backend sends is that layer's job; the
+model keeps the domain — its entity type, factory, enums and rules — and never mentions the wire.
 
 ```ts
 export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
@@ -43,7 +43,7 @@ the backend.
 ## Consequences
 
 - One shape per side, and one file where they meet. `ActivityPayload` is what the wire carries,
-  `ActivityData` is what the app binds to, and only `activity.mapper.ts` holds both.
+  `ActivityData` is what the app binds to, and only `api/activity.mapper.ts` holds both.
 - The relations list sits in the mapper that reads them, so it cannot drift from the fetch.
 - A relation the request did not expand now maps to `[]` rather than to ids the type denies.
 - A file is a url by the time a component sees it — no resolver call at the call site.

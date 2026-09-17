@@ -1,6 +1,6 @@
 import { cachedCrud, crud } from "@/backend";
 import { Collections } from "@/backend/schema.g";
-import { activityMapper, benefitMapper } from "@features/activities/model/activity.mapper";
+import { activityMapper, benefitMapper } from "@features/activities/api/activity.mapper";
 
 export const activitiesApi = crud(Collections.Activities, activityMapper);
 

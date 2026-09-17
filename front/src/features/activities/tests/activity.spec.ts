@@ -1,5 +1,5 @@
 import { materialsOf, resourcesOf } from '@features/activities/model/activity';
-import { activityMapper } from '@features/activities/model/activity.mapper';
+import { activityMapper } from '@features/activities/api/activity.mapper';
 import {
     aBenefit,
     aBenefitPayload,
