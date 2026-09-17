@@ -1,13 +1,14 @@
 # 0017 — Models map their own payloads
 
-**Status:** Accepted — supersedes [0007](0007-relations-are-inlined-by-the-adapter.md)
+**Status:** Accepted — replaces 0007, which had the adapter inline relations generically
 
 ## Context
 
-[0007](0007-relations-are-inlined-by-the-adapter.md) had the adapter fold PocketBase's `expand`
-into the record generically, and models declare the result with `Expanded<Response, { … }>`.
-That kept `expand` out of the app, but it left the two shapes — what the backend sends and what
-the app uses — as one type with a wrapper around it:
+Relations used to be folded in by the adapter: PocketBase answers with the related records in a
+separate `expand` object, `packages/pocketbase/src/relations.ts` folded them into the record on
+read and turned them back into ids on write, and models declared the result with
+`Expanded<Response, { … }>`. That kept `expand` out of the app, but it left the two shapes —
+what the backend sends and what the app uses — as one type with a wrapper around it:
 
 - A model's type had to list the same relations as the `relations` argument its api module
   passed, and nothing checked the two against each other.

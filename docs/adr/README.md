@@ -15,7 +15,6 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0004](0004-daisyui-classes-at-the-call-site.md) | daisyUI classes are written where they are used | Accepted |
 | [0005](0005-icons-imported-directly.md) | Icons are imported directly from lucide | Accepted |
 | [0006](0006-the-view-layer-stays-vue.md) | The view layer is Vue, and stays Vue | Accepted |
-| [0007](0007-relations-are-inlined-by-the-adapter.md) | Relations are inlined by the adapter | Superseded by 0017 |
 | [0008](0008-boundaries-are-enforced-by-a-script.md) | The boundaries are enforced by a script, not by convention | Accepted |
 | [0009](0009-logic-lives-outside-components.md) | Logic lives in `model/` and `composables/`, not in components | Accepted |
 | [0010](0010-component-tests-over-end-to-end.md) | The suite is component tests, not end-to-end | Accepted |
@@ -24,13 +23,14 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0013](0013-specs-live-in-a-feature-tests-folder.md) | Specs live in a feature's `tests/` folder, and fewer are written | Accepted |
 | [0017](0017-models-map-their-own-payloads.md) | Models map their own payloads, relations and files included | Accepted |
 
-0014 to 0016 were taken but never written down. The numbers stay skipped rather than reused, so
-a decision and its number keep pointing at the same thing.
+0007 was replaced by 0017, and 0014 to 0016 were taken but never written down. Those numbers
+stay skipped rather than reused, so a decision and its number keep pointing at the same thing.
 
 ## Writing a new one
 
 Copy the shape of any of the above: **Context** (what forced a choice), **Decision** (what was
 chosen, in the present tense), **Consequences** (what it buys, and what it costs).
 
-Number it next in sequence. A decision that replaces an earlier one does not edit it: mark the
-old one `Superseded by NNNN` and say so in the new one, so the reasoning stays readable.
+Number it next in sequence. A decision that replaces an earlier one takes its place: the new
+one says which number it replaces and carries over what is still true of the old reasoning, and
+the old file goes, so the index only ever lists decisions that hold.
