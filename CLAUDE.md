@@ -84,7 +84,7 @@ app's real catalogue, so assertions are on the copy a user would read.
 
 - A model's `EntityMapper` owns the relations it needs expanded, so `toEntity` and the fetch
   cannot drift — but nothing checks the mapper against the payload type it claims to read
-  ([ADR 0017](docs/adr/0017-models-map-their-own-payloads.md)).
+  ([ADR 0007](docs/adr/0007-models-map-their-own-payloads.md)).
 - Relations read as entities but **write as ids**. Saving a parent does not save its children.
 - Adding an alias means adding it in `scripts/aliases.mjs` *and* `front/tsconfig.json`;
   `lint:arch` fails if they drift.

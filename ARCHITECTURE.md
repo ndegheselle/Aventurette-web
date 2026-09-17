@@ -179,7 +179,7 @@ Three deliberate compromises:
   inlines them and turns stored file names into urls, and a `toPayload` that turns related
   entities back into ids. The adapter applies it on every read and write, so `activity.steps`
   is the steps and `resource.url` is a url everywhere above `api/`. Saving a parent still
-  persists ids only — see [ADR 0017](docs/adr/0017-models-map-their-own-payloads.md).
+  persists ids only — see [ADR 0007](docs/adr/0007-models-map-their-own-payloads.md).
 
 - **Tailwind v4 ignores `node_modules`,** and workspace packages are symlinked there. So
   `front/src/app/styles/index.css` declares `@source "../../../../packages/ui/src"`. Remove

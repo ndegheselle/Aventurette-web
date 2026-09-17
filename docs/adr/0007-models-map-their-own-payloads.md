@@ -1,6 +1,7 @@
-# 0017 — Models map their own payloads
+# 0007 — Models map their own payloads
 
-**Status:** Accepted — replaces 0007, which had the adapter inline relations generically
+**Status:** Accepted — takes the number of the decision it replaces, which had the adapter
+inline relations generically
 
 ## Context
 

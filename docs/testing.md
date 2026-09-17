@@ -84,7 +84,7 @@ and `aPickedFile` for an upload that has no record yet.
 They build **entities** — what everything above `api/` works on. The `*Payload` builders
 (`anActivityPayload`, `aStepPayload`, …) build the backend's shape instead, relation ids and
 all, and only a mapper's spec has a reason to reach for one
-([ADR 0017](adr/0017-models-map-their-own-payloads.md)).
+([ADR 0007](adr/0007-models-map-their-own-payloads.md)).
 
 **Fakes** (`tests/fakes.ts`) implement the `@chapelure/core` ports, never the SDK
 ([ADR 0012](adr/0012-fakes-at-the-port-not-the-sdk.md)). A feature reaches the backend only

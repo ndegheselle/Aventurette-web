@@ -34,4 +34,4 @@ failure is rethrown rather than mislabelled as a validation error.
   intended friction: it puts the question in one place instead of at the call site.
 - `Entity<>` in core omits `expand` by name, which is PocketBase's word for its relation
   side-channel. It is the one backend term in the package, and it saves every model from
-  having to drop the field by hand — see [0017](0017-models-map-their-own-payloads.md).
+  having to drop the field by hand — see [0007](0007-models-map-their-own-payloads.md).

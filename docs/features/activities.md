@@ -25,7 +25,7 @@ One composable to a screen: `useActivitiesList` holds the results and the filter
 Two types to an entity: `ActivityData` in `model/activity.ts` is what the app uses,
 `ActivityPayload` in `api/activity.mapper.ts` is what the backend sends, and `activityMapper`
 beside it is the only thing that holds both — see
-[ADR 0017](../adr/0017-models-map-their-own-payloads.md). `activity.steps` holds the steps
+[ADR 0007](../adr/0007-models-map-their-own-payloads.md). `activity.steps` holds the steps
 themselves, each with its own `materials` and `resources`.
 
 `activityMapper.relations` lists what is fetched alongside an activity; the nested half is
