@@ -20,10 +20,7 @@ import { markRaw, ref } from 'vue';
  * @param onApply re-query with the applied criteria, usually the screen's own `refresh`
  */
 export function useFilters(criteria: Criterion[], onApply: () => void) {
-    // Both refs below are deep, and a component turned into a reactive proxy warns.
-    const declared = criteria.map(criterion => criterion.icon
-        ? { ...criterion, icon: markRaw(criterion.icon) }
-        : criterion);
+    const declared = raw(criteria);
 
     const search = ref('');
     const applied = ref<Criterion[]>(declared);
@@ -66,6 +63,17 @@ export function useFilters(criteria: Criterion[], onApply: () => void) {
         onApply();
     }
 
+    /**
+     * Swap the whole list of criteria — what a screen whose filters are loaded rather than
+     * declared does once they arrive. Anything already applied is dropped with them, so call it
+     * before the user has narrowed anything.
+     */
+    function replaceCriteria(criteria: Criterion[]) {
+        const next = raw(criteria);
+        applied.value = next;
+        draft.value = cloneCriteria(next);
+    }
+
     /** Fill in what a `tags` criterion offers, once its api call has answered. */
     function setChoices(key: string, choices: CriterionChoice[]) {
         applied.value = withChoices(applied.value, key, choices);
@@ -84,8 +92,16 @@ export function useFilters(criteria: Criterion[], onApply: () => void) {
         resetDraft,
         clearApplied,
         removeCriterion,
+        replaceCriteria,
         setChoices,
     };
+}
+
+// Both criteria refs are deep, and a component turned into a reactive proxy warns.
+function raw(criteria: Criterion[]): Criterion[] {
+    return criteria.map(criterion => criterion.icon
+        ? { ...criterion, icon: markRaw(criterion.icon) }
+        : criterion);
 }
 
 /** What a filter bar is handed: the whole state, as one prop. */

@@ -28,6 +28,37 @@ beside it is the only thing that holds both — see
 [ADR 0007](../adr/0007-models-map-their-own-payloads.md). `activity.steps` holds the steps
 themselves, each with its own `materials` and `resources`.
 
+### The attribute catalogue
+
+An activity has almost no columns of its own: a name, a description, a state, an author, its
+steps and the **groups** it belongs to. Everything a user would filter or read off it — age,
+duration, environment, the developmental keywords — is an *attribute*, defined in the database
+rather than in the schema. `model/attribute.ts` holds that side:
+
+| | |
+|---|---|
+| `GroupData` | one of the eight groups: Général, Imaginaire, and the six developmental ones |
+| `AttributeData` | a definition with its vocabulary joined on — name, slug, type, `filterable` |
+| `ActivityAttributeValueData` | what one activity holds for one attribute: a number, a range, a text or one option |
+| `ActivityAttributeOptionData` | one option an activity picked, for the `multi_choice` attributes |
+
+The five types are `string`, `number`, `range`, `single_choice` and `multi_choice`. A value is
+typed, not stringly: a range is two number columns, and a choice is a relation to an option.
+
+**Adding a keyword is a row, not a release.** Seeding an attribute puts a field on the edit
+form and a filter on the list without either file changing, which is the whole reason the
+catalogue exists.
+
+`useAttributes` reads it — three `cachedCrud` collections, so several components asking at once
+still fetch once — and `attributesWithOptions` joins definitions to options, ordered by group
+first and `sort_order` second. Sorting on `sort_order` alone interleaves the groups, every one
+of them numbering its attributes from 1.
+
+**The value rows point at the activity, not the other way round**, so the mapper reads them
+through PocketBase's back-relation expand — `activity_attribute_values_via_activity` and
+`activity_attribute_options_via_activity`. They arrive with the activity and `toPayload` drops
+them: they are not fields of `activities`, and saving one never writes them.
+
 `activityMapper.relations` lists what is fetched alongside an activity; the nested half is
 derived from `stepMapper.relations`, so a step arrives the same way whether it is read on its
 own or under an activity. A relation the read did not expand maps to an empty list, never to
@@ -80,28 +111,57 @@ list is put back to what the record still holds, because no field on the form st
 
 ## Filtering
 
-**The mechanism is `@chapelure/ui/filter`'s; the criteria are this feature's.** A criterion is
+**The mechanism is `@chapelure/ui/filter`'s; the criteria are the catalogue's.** A criterion is
 data — a key, a label, an icon, the kind of input it takes, the values it offers and the value
 it holds — and the package generates the modal's fields and the chips above the list from a list
-of them. `activityCriteria()` is that list, and adding a filter is adding an entry.
+of them. `activityCriteria(attributes)` builds that list from every **filterable** attribute,
+one criterion per attribute, so adding a filter is seeding a row.
 
-It sits in `composables/useActivitiesList.ts` and not in `model/`, along with
-`buildActivityFilters`: a criterion names a translation key and an icon, and `model/` may not
-import the view layer. Both are still pure, and both are tested without mounting anything.
+The attribute's type picks the input: `range` and `number` become a range, `single_choice`
+checkboxes, `multi_choice` a searchable tag select. Labels are the stored names rather than
+translation keys — vue-i18n renders an unknown key as itself, which is exactly the name
+([ADR 0011](../adr/0011-tests-fail-on-vue-warnings.md)). The criteria are loaded, not declared,
+so `useFilters` grew a `replaceCriteria` for the moment the catalogue arrives.
 
-A criterion is one of three types. A `range` holds two bounds and names the record fields they
-compare against — two different ones for age (`ageMin`, `ageMax`), the same one twice for
-duration. `options` are a fixed set the domain declares, rendered as checkboxes, whose labels
-are translation keys. `tags` are a catalogue loaded at runtime, picked from a dropdown, whose
-labels are the records' own names. What each contributes to the query travels with it, which is
-why `buildActivityFilters` knows no field name.
+### Narrowing by an attribute takes two queries
+
+An attribute's value is a **row of its own**, so one row can satisfy one criterion and never
+two: `attribute='age' && attribute='domaine'` matches nothing, and PocketBase resolves every
+`attributes.*` path onto one shared join, which rules out asking for both in one filter.
+
+So the list asks for the **union** and intersects itself:
+
+1. `buildAttributeSweep` builds one query per collection — typed values on one side, picked
+   options on the other — ORing a group per criterion.
+2. `activitiesMatchingAll` keeps the activities that produced a row for as many **distinct**
+   attributes as were asked about. One row per activity and attribute is what the unique index
+   on `(activity, attribute)` guarantees, so the count is exact.
+3. `buildActivityFilters` then asks for that page of activities by id, with the search and the
+   groups, and the server paginates and sorts as usual.
+
+Narrowing by nothing but the search takes one query, and `groups` is a relation on the activity
+itself, so it needs no sweep either.
+
+Two things follow from this that are worth knowing. **Nothing matching is not a filter** —
+`removeEmptyFilters` would drop an empty id list and the list would come back unfiltered — so
+the composable answers that case without asking. And a sweep reads at most `SWEEP_LIMIT` (1000,
+PocketBase's cap) rows, so a filter matching more than that narrows to the first 1000.
+
+It sits in `composables/useActivitiesList.ts` and not in `model/`: a criterion names an icon,
+and `model/` may not import the view layer. The icons are a slug-to-lucide map in
+`composables/attributeIcons.ts`, with a fallback, so a new attribute needs no entry
+([ADR 0005](../adr/0005-icons-imported-directly.md)). The three builders are pure and tested
+without mounting anything.
+
+A range is matched **inclusively** — a 6-10 activity answers "for a 10 year old" — which is why
+`FilterOperator` grew `GreaterOrEquals` and `LessOrEquals`.
 
 `useFilters` holds **two** copies of the criteria. `applied` is what the list is showing;
 `draft` is what the modal's inputs are bound to. Opening the modal copies applied → draft,
 confirming copies draft → applied and re-queries, cancelling copies applied → draft again.
 Choices are shared rather than copied between the two: they are what can be picked and not what
-is, and `TagSelect` compares them by identity. Benefits are the one criterion whose choices are
-loaded — `setChoices` fills them in once the api answers.
+is, and `TagSelect` compares them by identity. A vocabulary arrives with its attribute;
+`groups` is the one criterion whose choices `setChoices` fills in separately.
 
 Search is the exception: it sits outside the modal and applies as soon as it is submitted.
 
@@ -121,18 +181,31 @@ or an api wrapper does not earn one — see
 reading, its copies, the filters it contributes — is `@chapelure/ui`'s, and tested there in
 `filter/criteria.spec.ts` and `filter/useFilters.spec.ts`.
 
-*`tests/activity.filters.spec.ts`* — the criteria-to-query translation
+*`tests/attribute.spec.ts`* — the catalogue's own rules
 
-- Untouched criteria produce an empty query, so the list shows everything.
+- Options join to the definition that names them; attributes order by group, then `sort_order`.
+- A group offers its own attributes and Général's, and never lists Général twice.
+- Imaginaire's families survive as option metadata, in first-seen order.
+- A value formats per type, and to null when the activity holds nothing — so a badge is skipped
+  rather than rendered blank.
+- `activitiesMatchingAll` counts **distinct** attributes, and matches nothing when nothing was
+  asked rather than everything.
+
+*`tests/activity.filters.spec.ts`* — the criteria-to-query translation, now in two halves
+
+- A criterion is generated per filterable attribute and skips the rest, taking its input from
+  the attribute's type.
 - Search matches `name` **or** `description`, and stays its own group so its ORs cannot widen
   the other criteria.
-- `benefits` is matched with `anyEquals`, because it is a relation list; age is bounded against
-  its two fields and duration twice against its one.
+- A range is bounded inclusively; an open bound is dropped rather than compared against nothing.
+- A `multi_choice` sweeps the picks and a `single_choice` the values.
+- "Nothing matched" cannot be expressed as a filter, which is why the list never sends it.
 
 *`tests/ActivitiesFilters.spec.ts`* — the bar's wiring, which is what mounting is for
 
-- The modal's fields are generated from the criteria, in their declared order.
-- Applying a criterion shows a chip reading its values, and narrows the query.
+- The modal's fields are generated from the catalogue, so seeding an attribute needs no markup.
+- Applying a criterion sweeps the attribute rows, then narrows the activities to what matched.
+- A sweep that matched nothing issues no query at all, rather than showing everything.
 - A chip's cross takes that criterion back out of the query.
 
 *`tests/activity.spec.ts`* — gathering what hangs off the steps
@@ -165,7 +238,19 @@ data. [activities-edit](activities-edit.md) has the gaps that belong to its scre
 
 - **The picture input goes nowhere.** The `activities` collection has no file field to store
   one in, so what the user picks is shown and then dropped. There is an `XXX` on it in the
-  page.
+  page. `Visuel principal` is seeded as a `string` attribute, which is not the same thing and
+  not a home for a file either.
+- **Selecting a group does not narrow the fields offered.** `attributesFor` implements the
+  Glossaire's rule — the group's attributes plus Général's — and is tested, but no screen calls
+  it: the filter modal and the edit form both offer every attribute at once. Wiring it means
+  rebuilding the criteria when the group changes.
+- **`Sécurité` has no vocabulary.** It is seeded as a filterable `multi_choice` with zero
+  options, the Glossaire pointing at a tag referential that is not ours yet, so its filter is
+  an empty dropdown.
+- **A sweep reads 1000 rows at most.** Past that a filter narrows to the first 1000 matches
+  and says nothing about it. The catalogue is small; the activity count is what this scales on.
+- **An attribute's name and its options' labels are not translatable.** They are stored in one
+  language and rendered as-is, unlike every other string in the app.
 - **Cancelling leaves what was already written.** A step is a record before the modal opens, so
   cancelling keeps an empty one on the activity; a file uploaded inside the modal is stored
   before the step points at it. `back/hooks` reclaims a resource no step references any more,

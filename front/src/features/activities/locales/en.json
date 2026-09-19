@@ -26,33 +26,18 @@
         },
         "fields": {
             "name": "Name",
-            "environment": "Environment",
-            "age": "Age",
-            "durationMinutes": "Duration (minutes)",
             "summary": "Short description",
             "description": "Description",
             "picture": "Image",
-            "benefits": "Benefits"
+            "groups": "Groups"
         },
         "contraints": {
             "picture": "PNG, JPEG and JPG formats. 2MB maximum"
         },
-        "duration": "{duration} min",
-        "durationRange": {
-            "range": "{min}-{max} min",
-            "minOnly": "{min} min and up",
-            "maxOnly": "Up to {max} min"
-        },
-        "age": {
-            "range": "Ages {min}-{max}",
-            "minOnly": "Ages {min} and up",
-            "maxOnly": "Ages up to {max}"
-        },
-        "environment": {
-            "INDOOR": "Indoors",
-            "OUTDOOR": "Outdoors",
-            "CLASSROOM": "Classroom",
-            "CAR": "Car"
+        "bounds": {
+            "range": "{min} to {max}",
+            "minOnly": "{min} and up",
+            "maxOnly": "Up to {max}"
         }
     }
 }

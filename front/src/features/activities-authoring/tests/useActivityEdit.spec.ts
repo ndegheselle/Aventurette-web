@@ -1,4 +1,4 @@
-import type { ActivityData, BenefitData } from '@features/activities/model/activity';
+import type { ActivityData } from '@features/activities/model/activity';
 import type { ActivityStepData } from '@features/activities/model/step';
 import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
 import { anActivity, aStep, createTestRouter, fakeCrud, withSetup } from '@tests';
@@ -11,11 +11,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const activities = fakeCrud<ActivityData>();
 const steps = fakeCrud<ActivityStepData>();
-const benefits = fakeCrud<BenefitData>();
-
 vi.mock('@features/activities/api/activities.api', () => ({
     get activitiesApi() { return activities; },
-    get benefitsApi() { return benefits; },
+}));
+vi.mock('@features/activities/api/attributes.api', () => ({
+    get groupsApi() { return fakeCrud(); },
+    get attributeDefinitionsApi() { return fakeCrud(); },
+    get attributeOptionsApi() { return fakeCrud(); },
+    get activityAttributeValuesApi() { return fakeCrud(); },
+    get activityAttributeOptionsApi() { return fakeCrud(); },
 }));
 vi.mock('@features/activities-authoring/api/steps.api', () => ({
     get stepsApi() { return steps; },
@@ -40,7 +44,6 @@ function stored(id = 'act-1') {
 
 beforeEach(() => {
     vi.restoreAllMocks();
-    benefits.items = [];
     steps.items = [];
     activities.items = [anActivity({ id: 'act-1', steps: [] })];
 });

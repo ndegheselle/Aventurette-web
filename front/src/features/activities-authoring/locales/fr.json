@@ -18,7 +18,8 @@
             "publish": "Publier",
             "unpublish": "Repasser en brouillon",
             "remove": "Supprimer",
-            "removed": "Activité supprimée."
+            "removed": "Activité supprimée.",
+            "attributes": "Attributs"
         }
     }
 }

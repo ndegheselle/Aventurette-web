@@ -1,5 +1,11 @@
-import { ActivitiesEnvironmentOptions, ActivitiesStateOptions, type ActivitiesResponse, type BenefitsResponse } from "@/backend/schema.g";
+import { ActivitiesStateOptions, type ActivitiesResponse } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
+import type {
+    ActivityAttributeOptionData,
+    ActivityAttributeValueData,
+    AttributeData,
+    GroupData,
+} from "@features/activities/model/attribute";
 import {
     EMPTY_DESCRIPTION,
     type ActivityMaterialData,
@@ -7,65 +13,62 @@ import {
     type ActivityStepData,
 } from "@features/activities/model/step";
 
-export type BenefitData = Entity<BenefitsResponse>;
-
-/** An activity as the app uses it: `activity.steps` is the steps, not their ids. */
+/**
+ * An activity as the app uses it: `activity.steps` is the steps, not their ids, and what it
+ * holds for the catalogue's attributes comes with it — `attributes` for the typed values,
+ * `picks` for the multi_choice options.
+ *
+ * Both of those are rows of their own collections pointing back here, so they read with the
+ * activity and are written on their own. Saving an activity never writes them.
+ */
 export type ActivityData = Entity<ActivitiesResponse, {
-    benefits: BenefitData[];
+    groups: GroupData[];
     steps: ActivityStepData[];
+    attributes: ActivityAttributeValueData[];
+    picks: ActivityAttributeOptionData[];
 }>;
-
-export const ActivityEnvironment = ActivitiesEnvironmentOptions;
 
 export const ActivityState = ActivitiesStateOptions;
 
 // Declared in `step.ts`, re-exported here: an activity seeds its description with it too.
 export { EMPTY_DESCRIPTION };
 
-/** The environments offered in filters and the edit form, in display order. */
-export const availablesEnvironments = [
-    { label: 'activities.environment.INDOOR', value: ActivityEnvironment.INDOOR },
-    { label: 'activities.environment.OUTDOOR', value: ActivityEnvironment.OUTDOOR },
-    { label: 'activities.environment.CLASSROOM', value: ActivityEnvironment.CLASSROOM },
-    { label: 'activities.environment.CAR', value: ActivityEnvironment.CAR },
-];
-
 /**
  * A blank activity: written when the user starts one, and bound to the edit form until the real
  * record arrives.
  *
- * `description`, `environment` and `state` are seeded because the collection requires them, and
- * an activity is created before it is filled in. `name` is the caller's — only it can translate
- * a placeholder.
+ * `description` and `state` are seeded because the collection requires them, and an activity is
+ * created before it is filled in. `name` is the caller's — only it can translate a placeholder.
  */
 export function createEmptyActivity(): ActivityData {
     return {
         name: "",
         description: EMPTY_DESCRIPTION,
-        environment: ActivityEnvironment.INDOOR,
         state: ActivityState.DRAFT,
-        benefits: [] as BenefitData[],
-        steps: [] as ActivityStepData[]
+        groups: [] as GroupData[],
+        steps: [] as ActivityStepData[],
+        attributes: [] as ActivityAttributeValueData[],
+        picks: [] as ActivityAttributeOptionData[],
     } as ActivityData;
 }
 
-/** A translation lookup. Structural, so `model/` stays free of framework types. */
-export type Translate = (key: string, params?: Record<string, unknown>) => string;
+/** What the activity holds for one attribute, or undefined when it holds nothing. */
+export function valueOf(activity: ActivityData | null | undefined, attribute: AttributeData) {
+    return activity?.attributes.find(value => value.attribute === attribute.id);
+}
 
-/**
- * Render an age range, tolerating either bound being missing. What the detail screen reads;
- * a filter chip gets its own from the criterion.
- */
-export function formatAgeRange(t: Translate, ageMin?: number | null, ageMax?: number | null): string | null {
-    if (ageMin && ageMax) {
-        return t('activities.age.range', { min: ageMin, max: ageMax });
-    } else if (ageMin) {
-        return t('activities.age.minOnly', { min: ageMin });
-    } else if (ageMax) {
-        return t('activities.age.maxOnly', { max: ageMax });
-    }
+/** The options the activity picked for one attribute, in the vocabulary's own order. */
+export function picksOf(
+    activity: ActivityData | null | undefined,
+    attribute: AttributeData,
+) {
+    const picked = new Set(
+        (activity?.picks ?? [])
+            .filter(pick => pick.attribute === attribute.id)
+            .map(pick => pick.option),
+    );
 
-    return null;
+    return attribute.options.filter(option => picked.has(option.id));
 }
 
 /**

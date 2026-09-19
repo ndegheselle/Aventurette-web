@@ -3,6 +3,9 @@ export const FilterOperator = {
     Contains: 'contains',
     GreaterThan: 'greaterThan',
     LessThan: 'lessThan',
+    /** Inclusive bounds. A range overlaps another when its ends touch, so `>` would drop it. */
+    GreaterOrEquals: 'greaterOrEquals',
+    LessOrEquals: 'lessOrEquals',
 
     AnyEquals: 'anyEquals'
 } as const;

@@ -27,8 +27,8 @@ so every signed-in user sees — and may delete — every activity. A new one st
 author: `currentId()` fills `user` on create, and throws rather than returning nothing when
 there is no session.
 
-The tabs are **all / drafts / published**, declared as `authoredStateTabs` — domain data, the
-same way `availablesEnvironments` is, with translation keys for labels. `null` is the "all"
+The tabs are **all / drafts / published**, declared as `authoredStateTabs` — domain data, with
+translation keys for labels. `null` is the "all"
 tab, and `removeEmptyFilters` drops the filter for it, so the unfiltered tab and a chosen one
 take the same path. Switching tabs returns to page 1.
 
@@ -51,7 +51,27 @@ and resources inside it, and `steps.api.ts`. How saving works, and why every rec
 the moment it is added, is described in [activities](activities.md#saving); the ordering rule
 that spec pins has not changed.
 
-What is new is **the state button, beside save**. `stateTransition` decides it: there are two
+**The attributes panel is generated.** `useActivityEdit` seeds an `AttributeDraft` per
+attribute from what the activity holds — one flat shape whatever the type, so `<AttributeField>`
+has one thing to `v-model` — and the attribute's type picks the input. Nothing in the form knows
+which attributes exist.
+
+Saving them is `attributeWrites`, which works out the whole plan before anything is sent: which
+value rows are new, which changed, which the user emptied, and which option picks were ticked
+and unticked. Two rules are in there. **An emptied field deletes its row rather than blanking
+it** — the unique index on `(activity, attribute)` means the row's absence *is* the empty value.
+And **deletions go last**, so the index never sees two rows for one attribute and a failed
+create cannot leave the activity with neither.
+
+A `multi_choice` attribute has no value row at all; its picks are rows of `activity_attribute_options`,
+reconciled against what the activity already holds, so saving twice writes once.
+
+Two shapes mean "nothing" and neither is null: a cleared `<input type="number">` binds as an
+empty string, and PocketBase answers an unset number field with `0`. `numeric` maps the first to
+null and keeps the second — "0 minutes of preparation" is an answer, and a zero bound formats as
+no bound anyway.
+
+What is also new is **the state button, beside save**. `stateTransition` decides it: there are two
 states, so the button is not a choice between them but the other end of a toggle, and it
 returns the target state and the label together so a button reading "Publish" cannot write
 `DRAFT`. Anything not already validated offers the forward move, rather than matching `DRAFT`

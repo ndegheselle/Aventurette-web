@@ -18,7 +18,8 @@
             "publish": "Publish",
             "unpublish": "Back to draft",
             "remove": "Delete",
-            "removed": "Activity deleted."
+            "removed": "Activity deleted.",
+            "attributes": "Attributes"
         }
     }
 }

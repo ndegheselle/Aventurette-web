@@ -5,6 +5,8 @@ const operatorMap: Record<FilterOperator, string> = {
   [FilterOperator.Contains]: "~",
   [FilterOperator.GreaterThan]: ">",
   [FilterOperator.LessThan]: "<",
+  [FilterOperator.GreaterOrEquals]: ">=",
+  [FilterOperator.LessOrEquals]: "<=",
   [FilterOperator.AnyEquals]: "?=",
 };
 

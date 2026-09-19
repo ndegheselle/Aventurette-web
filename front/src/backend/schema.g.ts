@@ -13,8 +13,13 @@ export const Collections = {
 	Superusers: "_superusers",
 	Activities: "activities",
 	ActivitiesSteps: "activities_steps",
+	ActivityAttributeOptions: "activity_attribute_options",
+	ActivityAttributeValues: "activity_attribute_values",
+	AttributeDefinitions: "attribute_definitions",
+	AttributeOptions: "attribute_options",
 	Benefits: "benefits",
 	Childrens: "childrens",
+	Groups: "groups",
 	Interests: "interests",
 	StepsMaterials: "steps_materials",
 	StepsResources: "steps_resources",
@@ -100,27 +105,15 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export const ActivitiesEnvironmentOptions = {
-	"INDOOR": "INDOOR",
-	"OUTDOOR": "OUTDOOR",
-	"CLASSROOM": "CLASSROOM",
-	"CAR": "CAR",
-} as const
-export type ActivitiesEnvironmentOptions = typeof ActivitiesEnvironmentOptions[keyof typeof ActivitiesEnvironmentOptions]
-
 export const ActivitiesStateOptions = {
 	"DRAFT": "DRAFT",
 	"PUBLISHED": "PUBLISHED",
 } as const
 export type ActivitiesStateOptions = typeof ActivitiesStateOptions[keyof typeof ActivitiesStateOptions]
 export type ActivitiesRecord = {
-	ageMax?: number
-	ageMin?: number
-	benefits?: RecordIdString[]
 	created: IsoAutoDateString
 	description: HTMLString
-	durationMinutes?: number
-	environment: ActivitiesEnvironmentOptions
+	groups?: RecordIdString[]
 	id: string
 	name: string
 	state: ActivitiesStateOptions
@@ -139,6 +132,60 @@ export type ActivitiesStepsRecord = {
 	updated: IsoAutoDateString
 }
 
+export type ActivityAttributeOptionsRecord = {
+	activity: RecordIdString
+	attribute: RecordIdString
+	created: IsoAutoDateString
+	id: string
+	option: RecordIdString
+	updated: IsoAutoDateString
+}
+
+export type ActivityAttributeValuesRecord = {
+	activity: RecordIdString
+	attribute: RecordIdString
+	created: IsoAutoDateString
+	id: string
+	number_value?: number
+	option?: RecordIdString
+	range_max?: number
+	range_min?: number
+	string_value?: string
+	updated: IsoAutoDateString
+}
+
+export const AttributeDefinitionsTypeOptions = {
+	"string": "string",
+	"number": "number",
+	"range": "range",
+	"single_choice": "single_choice",
+	"multi_choice": "multi_choice",
+} as const
+export type AttributeDefinitionsTypeOptions = typeof AttributeDefinitionsTypeOptions[keyof typeof AttributeDefinitionsTypeOptions]
+export type AttributeDefinitionsRecord = {
+	created: IsoAutoDateString
+	filterable?: boolean
+	group: RecordIdString
+	id: string
+	name: string
+	required?: boolean
+	slug: string
+	sort_order?: number
+	type: AttributeDefinitionsTypeOptions
+	updated: IsoAutoDateString
+}
+
+export type AttributeOptionsRecord = {
+	attribute: RecordIdString
+	created: IsoAutoDateString
+	id: string
+	label: string
+	sort_order?: number
+	subgroup?: string
+	updated: IsoAutoDateString
+	value: string
+}
+
 export type BenefitsRecord = {
 	created: IsoAutoDateString
 	id: string
@@ -154,6 +201,14 @@ export type ChildrensRecord = {
 	name?: string
 	updated: IsoAutoDateString
 	user: RecordIdString
+}
+
+export type GroupsRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	slug: string
+	updated: IsoAutoDateString
 }
 
 export type InterestsRecord = {
@@ -207,8 +262,13 @@ export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemF
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
+export type ActivityAttributeOptionsResponse<Texpand = unknown> = Required<ActivityAttributeOptionsRecord> & BaseSystemFields<Texpand>
+export type ActivityAttributeValuesResponse<Texpand = unknown> = Required<ActivityAttributeValuesRecord> & BaseSystemFields<Texpand>
+export type AttributeDefinitionsResponse<Texpand = unknown> = Required<AttributeDefinitionsRecord> & BaseSystemFields<Texpand>
+export type AttributeOptionsResponse<Texpand = unknown> = Required<AttributeOptionsRecord> & BaseSystemFields<Texpand>
 export type BenefitsResponse<Texpand = unknown> = Required<BenefitsRecord> & BaseSystemFields<Texpand>
 export type ChildrensResponse<Texpand = unknown> = Required<ChildrensRecord> & BaseSystemFields<Texpand>
+export type GroupsResponse<Texpand = unknown> = Required<GroupsRecord> & BaseSystemFields<Texpand>
 export type InterestsResponse<Texpand = unknown> = Required<InterestsRecord> & BaseSystemFields<Texpand>
 export type StepsMaterialsResponse<Texpand = unknown> = Required<StepsMaterialsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
@@ -224,8 +284,13 @@ export type CollectionRecords = {
 	_superusers: SuperusersRecord
 	activities: ActivitiesRecord
 	activities_steps: ActivitiesStepsRecord
+	activity_attribute_options: ActivityAttributeOptionsRecord
+	activity_attribute_values: ActivityAttributeValuesRecord
+	attribute_definitions: AttributeDefinitionsRecord
+	attribute_options: AttributeOptionsRecord
 	benefits: BenefitsRecord
 	childrens: ChildrensRecord
+	groups: GroupsRecord
 	interests: InterestsRecord
 	steps_materials: StepsMaterialsRecord
 	steps_resources: StepsResourcesRecord
@@ -240,8 +305,13 @@ export type CollectionResponses = {
 	_superusers: SuperusersResponse
 	activities: ActivitiesResponse
 	activities_steps: ActivitiesStepsResponse
+	activity_attribute_options: ActivityAttributeOptionsResponse
+	activity_attribute_values: ActivityAttributeValuesResponse
+	attribute_definitions: AttributeDefinitionsResponse
+	attribute_options: AttributeOptionsResponse
 	benefits: BenefitsResponse
 	childrens: ChildrensResponse
+	groups: GroupsResponse
 	interests: InterestsResponse
 	steps_materials: StepsMaterialsResponse
 	steps_resources: StepsResourcesResponse

@@ -15,16 +15,18 @@ import StepEditModal from '@features/activities-authoring/components/StepEdit.mo
 import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
 import { type ActivityStepData } from '@features/activities/model/step';
-import { ActivityState, availablesEnvironments } from '@features/activities/model/activity';
+import { ActivityState } from '@features/activities/model/activity';
+import AttributeField from '@features/activities-authoring/components/AttributeField.vue';
 import { routesNames } from '@features/activities-authoring/routes';
-import { ArrowLeftIcon, BadgeCheckIcon, LibraryIcon, ListOrderedIcon, MinusIcon, PenIcon, PlusIcon, SaveIcon, ScrollTextIcon, TriangleAlertIcon, UndoIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, BadgeCheckIcon, LibraryIcon, ListOrderedIcon, MinusIcon, PenIcon, PlusIcon, SaveIcon, ScrollTextIcon, TagsIcon, TriangleAlertIcon, UndoIcon } from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const {
     activity,
-    availableBenefits,
-    selectedBenefits,
+    availableGroups,
+    selectedGroups,
+    drafts,
     isLoading,
     isAddingStep,
     isChangingState,
@@ -103,34 +105,20 @@ async function remove(step: ActivityStepData) {
                     <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
                         v-model="activity.name" />
                 </Field>
-                <Field label="activities.fields.age">
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-                            <input type="number" class="input w-full" min="0" v-model.number="activity.ageMin" />
-                        </div>
-                        <div>
-                            <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-                            <input type="number" class="input w-full" min="0" v-model.number="activity.ageMax" />
-                        </div>
-                    </div>
+                <Field label="activities.fields.groups">
+                    <TagSelect :items="availableGroups" display-key="name" v-model="selectedGroups" />
                 </Field>
-                <div class="grid grid-cols-2 gap-2">
-                    <Field label="activities.fields.environment" :error="errors.get('environment')">
-                        <select class="select w-full" v-model="activity.environment">
-                            <option v-for="env in availablesEnvironments" :key="env.value" :value="env.value">
-                                {{ $t(env.label) }}
-                            </option>
-                        </select>
-                    </Field>
-                    <Field label="activities.fields.durationMinutes">
-                        <input type="number" class="input w-full" min="0" v-model.number="activity.durationMinutes" />
-                    </Field>
-                </div>
             </div>
-            <Field label="activities.fields.benefits">
-                <TagSelect :items="availableBenefits" display-key="name" v-model="selectedBenefits" />
-            </Field>
+        </Panel>
+
+        <!-- A field per attribute the catalogue defines; seeding one is what adds it here. -->
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <TagsIcon /> {{ $t('activities.edit.attributes') }}
+            </h2>
+            <fieldset class="fieldset">
+                <AttributeField v-for="draft in drafts" :key="draft.attribute.id" :draft="draft" />
+            </fieldset>
         </Panel>
 
         <Panel>

@@ -3,7 +3,7 @@ import List from '@chapelure/ui/data/List.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import AcitivityMetadaDisplay from '@features/activities/components/ActivityMetadataDisplay.vue';
-import BenefitsDisplay from '@features/activities/components/BenefitsDisplay.vue';
+import ActivityKeywordsDisplay from '@features/activities/components/ActivityKeywordsDisplay.vue';
 import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivity } from '@features/activities/composables/useActivity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
@@ -39,7 +39,7 @@ const { activity, materials, resources } = useActivity();
                     <AcitivityMetadaDisplay :activity="activity ?? undefined" />
                 </div>
                 <p v-html="activity?.description"></p>
-                <BenefitsDisplay :benefits="activity?.benefits" />
+                <ActivityKeywordsDisplay :activity="activity ?? undefined" />
             </div>
         </Panel>
         <Panel v-if="materials.length">

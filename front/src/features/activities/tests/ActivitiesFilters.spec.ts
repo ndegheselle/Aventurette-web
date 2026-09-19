@@ -1,25 +1,48 @@
-import type { ActivityData, BenefitData } from '@features/activities/model/activity';
+import type { ActivityData } from '@features/activities/model/activity';
+import { AttributeType, type ActivityAttributeOptionData, type ActivityAttributeValueData, type AttributeDefinitionData, type AttributeOptionData, type GroupData } from '@features/activities/model/attribute';
 import ActivitiesPage from '@features/activities/pages/Activities.page.vue';
-import { aBenefit, anActivity, fakeCrud, mountWithRouter } from '@tests';
+import { aGroup, anActivity, anOption, fakeCrud, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-// The filter bar's wiring: a form generated from the criteria, a chip per criterion the user
-// set, and a cross that takes one back out of the query. What each of those decides is tested
-// without a screen in `criteria.spec.ts`.
+// The filter bar's wiring, and the one thing this screen does that no other does: the fields are
+// generated from the catalogue rather than declared, so seeding an attribute puts a filter on
+// screen. What a criterion *is* is tested in `criteria.spec.ts`, and the queries in
+// `activity.filters.spec.ts`.
 
 const activities = fakeCrud<ActivityData>();
-const benefits = fakeCrud<BenefitData>();
+const groups = fakeCrud<GroupData>();
+const definitions = fakeCrud<AttributeDefinitionData>();
+const options = fakeCrud<AttributeOptionData>();
+const values = fakeCrud<ActivityAttributeValueData>();
+const picks = fakeCrud<ActivityAttributeOptionData>();
 
 vi.mock('@features/activities/api/activities.api', () => ({
     get activitiesApi() { return activities; },
-    get benefitsApi() { return benefits; },
 }));
+vi.mock('@features/activities/api/attributes.api', () => ({
+    get groupsApi() { return groups; },
+    get attributeDefinitionsApi() { return definitions; },
+    get attributeOptionsApi() { return options; },
+    get activityAttributeValuesApi() { return values; },
+    get activityAttributeOptionsApi() { return picks; },
+}));
+
+const general = aGroup({ id: 'grp-gen', name: 'Général', slug: 'general' });
+const energyOption = anOption({ id: 'opt-low', attribute: 'atr-nrg', label: 'Bas', value: '1' });
 
 beforeEach(() => {
     activities.items = [anActivity({ name: 'Treasure hunt' })];
     activities.lastFilter = null;
-    benefits.items = [aBenefit({ name: 'Coordination' })];
+    groups.items = [general];
+    options.items = [energyOption];
+    values.items = [];
+    picks.items = [];
+    definitions.items = [
+        { ...anOption(), id: 'atr-age', group: general.id, name: 'Âge recommandé', slug: 'age', type: AttributeType.range, filterable: true, sort_order: 1 } as any,
+        { ...anOption(), id: 'atr-nrg', group: general.id, name: "Niveau d'énergie", slug: 'niveau-energie', type: AttributeType.single_choice, filterable: true, sort_order: 2 } as any,
+        { ...anOption(), id: 'atr-vis', group: general.id, name: 'Visuel principal', slug: 'visuel-principal', type: AttributeType.string, filterable: false, sort_order: 3 } as any,
+    ];
 });
 
 async function mountPage() {
@@ -40,8 +63,8 @@ function queried(key: string): unknown {
     return flatten(activities.lastFilter!).find(filter => filter.key === key)?.value;
 }
 
-/** Narrow the list to indoor activities, through the form rather than around it. */
-async function filterByIndoors(wrapper: any) {
+/** Narrow the list to low-energy activities, through the form rather than around it. */
+async function filterByLowEnergy(wrapper: any) {
     await buttonSaying(wrapper, 'Filter')[0]!.trigger('click');
     await wrapper.findAll('input[type="checkbox"]')[0]!.setValue(true);
     await wrapper.find('.modal-action .btn-primary').trigger('click');
@@ -49,11 +72,13 @@ async function filterByIndoors(wrapper: any) {
 }
 
 describe('<ActivitiesFilters>', () => {
-    it('generates a field per criterion, so a new one needs no markup of its own', async () => {
+    it('generates a field per filterable attribute, so seeding one needs no markup', async () => {
         const wrapper = await mountPage();
 
+        // Groups first — a field of the activity — then the catalogue's own, in sort order.
+        // `Visuel principal` is not filterable and gets none.
         expect(wrapper.findAll('.fieldset legend').map(legend => legend.text()))
-            .toEqual(['Age', 'Duration (minutes)', 'Environment', 'Benefits']);
+            .toEqual(['Groups', 'Âge recommandé', "Niveau d'énergie"]);
     });
 
     it('shows nothing above the list until something is applied', async () => {
@@ -63,20 +88,39 @@ describe('<ActivitiesFilters>', () => {
     it('shows a chip for what was applied, reading the values and not the criterion', async () => {
         const wrapper = await mountPage();
 
-        await filterByIndoors(wrapper);
+        await filterByLowEnergy(wrapper);
 
-        expect(chips(wrapper).map((chip: any) => chip.text())).toEqual(['Indoors']);
-        expect(queried('environment')).toEqual(['INDOOR']);
+        expect(chips(wrapper).map((chip: any) => chip.text())).toEqual(['Bas']);
+    });
+
+    it('sweeps the attribute rows, then narrows the activities to what matched them all', async () => {
+        values.items = [
+            { ...anOption(), id: 'val-1', activity: 'act-match', attribute: 'atr-nrg' } as any,
+        ];
+        const wrapper = await mountPage();
+
+        await filterByLowEnergy(wrapper);
+
+        expect(queried('id')).toEqual(['act-match']);
+    });
+
+    it('does not query at all when the sweep matched nothing, rather than showing everything', async () => {
+        const wrapper = await mountPage();
+        activities.lastFilter = null;
+
+        await filterByLowEnergy(wrapper);
+
+        expect(activities.lastFilter).toBeNull();
     });
 
     it('takes a criterion out of the query when its cross is clicked', async () => {
         const wrapper = await mountPage();
-        await filterByIndoors(wrapper);
+        await filterByLowEnergy(wrapper);
 
         await chips(wrapper)[0]!.find('button').trigger('click');
         await flushPromises();
 
         expect(chips(wrapper)).toHaveLength(0);
-        expect(queried('environment')).toBeUndefined();
+        expect(queried('id')).toBeUndefined();
     });
 });

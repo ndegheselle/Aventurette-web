@@ -65,6 +65,7 @@
             "previous": "Previous page",
             "next": "Next page",
             "of": "of"
-        }
+        },
+        "none": "None"
     }
 }

@@ -65,6 +65,7 @@
             "previous": "Page précédente",
             "next": "Page suivante",
             "of": "de"
-        }
+        },
+        "none": "Aucun"
     }
 }
