@@ -10,7 +10,7 @@ import {
 
 // The catalogue changes when someone edits the Glossaire, not while a screen is open: fetched
 // once, then served from memory.
-export const groupsApi = cachedCrud(Collections.Groups, groupMapper);
+export const groupsApi = cachedCrud(Collections.AttributeGroup, groupMapper);
 export const attributeDefinitionsApi = cachedCrud(Collections.AttributeDefinitions, attributeDefinitionMapper);
 export const attributeOptionsApi = cachedCrud(Collections.AttributeOptions, attributeOptionMapper);
 

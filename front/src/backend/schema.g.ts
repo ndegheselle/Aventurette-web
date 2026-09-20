@@ -16,11 +16,9 @@ export const Collections = {
 	ActivityAttributeOptions: "activity_attribute_options",
 	ActivityAttributeValues: "activity_attribute_values",
 	AttributeDefinitions: "attribute_definitions",
+	AttributeGroup: "attribute_group",
 	AttributeOptions: "attribute_options",
-	Benefits: "benefits",
 	Childrens: "childrens",
-	Groups: "groups",
-	Interests: "interests",
 	StepsMaterials: "steps_materials",
 	StepsResources: "steps_resources",
 	Users: "users",
@@ -164,14 +162,20 @@ export const AttributeDefinitionsTypeOptions = {
 export type AttributeDefinitionsTypeOptions = typeof AttributeDefinitionsTypeOptions[keyof typeof AttributeDefinitionsTypeOptions]
 export type AttributeDefinitionsRecord = {
 	created: IsoAutoDateString
-	filterable?: boolean
 	group: RecordIdString
 	id: string
 	name: string
-	required?: boolean
 	slug: string
 	sort_order?: number
 	type: AttributeDefinitionsTypeOptions
+	updated: IsoAutoDateString
+}
+
+export type AttributeGroupRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	slug: string
 	updated: IsoAutoDateString
 }
 
@@ -181,41 +185,17 @@ export type AttributeOptionsRecord = {
 	id: string
 	label: string
 	sort_order?: number
-	subgroup?: string
 	updated: IsoAutoDateString
 	value: string
-}
-
-export type BenefitsRecord = {
-	created: IsoAutoDateString
-	id: string
-	name: string
-	updated: IsoAutoDateString
 }
 
 export type ChildrensRecord = {
 	age?: number
 	created: IsoAutoDateString
 	id: string
-	interests?: RecordIdString[]
 	name?: string
 	updated: IsoAutoDateString
 	user: RecordIdString
-}
-
-export type GroupsRecord = {
-	created: IsoAutoDateString
-	id: string
-	name: string
-	slug: string
-	updated: IsoAutoDateString
-}
-
-export type InterestsRecord = {
-	created: IsoAutoDateString
-	id: string
-	name: string
-	updated: IsoAutoDateString
 }
 
 export type StepsMaterialsRecord = {
@@ -265,11 +245,9 @@ export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStep
 export type ActivityAttributeOptionsResponse<Texpand = unknown> = Required<ActivityAttributeOptionsRecord> & BaseSystemFields<Texpand>
 export type ActivityAttributeValuesResponse<Texpand = unknown> = Required<ActivityAttributeValuesRecord> & BaseSystemFields<Texpand>
 export type AttributeDefinitionsResponse<Texpand = unknown> = Required<AttributeDefinitionsRecord> & BaseSystemFields<Texpand>
+export type AttributeGroupResponse<Texpand = unknown> = Required<AttributeGroupRecord> & BaseSystemFields<Texpand>
 export type AttributeOptionsResponse<Texpand = unknown> = Required<AttributeOptionsRecord> & BaseSystemFields<Texpand>
-export type BenefitsResponse<Texpand = unknown> = Required<BenefitsRecord> & BaseSystemFields<Texpand>
 export type ChildrensResponse<Texpand = unknown> = Required<ChildrensRecord> & BaseSystemFields<Texpand>
-export type GroupsResponse<Texpand = unknown> = Required<GroupsRecord> & BaseSystemFields<Texpand>
-export type InterestsResponse<Texpand = unknown> = Required<InterestsRecord> & BaseSystemFields<Texpand>
 export type StepsMaterialsResponse<Texpand = unknown> = Required<StepsMaterialsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -287,11 +265,9 @@ export type CollectionRecords = {
 	activity_attribute_options: ActivityAttributeOptionsRecord
 	activity_attribute_values: ActivityAttributeValuesRecord
 	attribute_definitions: AttributeDefinitionsRecord
+	attribute_group: AttributeGroupRecord
 	attribute_options: AttributeOptionsRecord
-	benefits: BenefitsRecord
 	childrens: ChildrensRecord
-	groups: GroupsRecord
-	interests: InterestsRecord
 	steps_materials: StepsMaterialsRecord
 	steps_resources: StepsResourcesRecord
 	users: UsersRecord
@@ -308,11 +284,9 @@ export type CollectionResponses = {
 	activity_attribute_options: ActivityAttributeOptionsResponse
 	activity_attribute_values: ActivityAttributeValuesResponse
 	attribute_definitions: AttributeDefinitionsResponse
+	attribute_group: AttributeGroupResponse
 	attribute_options: AttributeOptionsResponse
-	benefits: BenefitsResponse
 	childrens: ChildrensResponse
-	groups: GroupsResponse
-	interests: InterestsResponse
 	steps_materials: StepsMaterialsResponse
 	steps_resources: StepsResourcesResponse
 	users: UsersResponse

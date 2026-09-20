@@ -3,7 +3,7 @@ import type {
     ActivityAttributeValuesResponse,
     AttributeDefinitionsResponse,
     AttributeOptionsResponse,
-    GroupsResponse,
+    AttributeGroupResponse,
 } from "@/backend/schema.g";
 import type { EntityMapper } from "@chapelure/core";
 import type {
@@ -20,7 +20,7 @@ import type {
  * definition and its options is the model's — see `attributesWithOptions`.
  */
 
-export type GroupPayload = GroupsResponse;
+export type GroupPayload = AttributeGroupResponse;
 
 export const groupMapper: EntityMapper<GroupPayload, GroupData> = {
     relations: [],

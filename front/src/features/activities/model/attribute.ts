@@ -4,7 +4,7 @@ import {
     type ActivityAttributeValuesResponse,
     type AttributeDefinitionsResponse,
     type AttributeOptionsResponse,
-    type GroupsResponse,
+    type AttributeGroupResponse,
 } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
 
@@ -14,7 +14,7 @@ import type { Entity } from "@chapelure/core";
  * here — which is the whole point of the catalogue.
  */
 
-export type GroupData = Entity<GroupsResponse>;
+export type GroupData = Entity<AttributeGroupResponse>;
 
 export type AttributeOptionData = Entity<AttributeOptionsResponse>;
 
@@ -95,21 +95,14 @@ export function attributesFor(
 }
 
 /**
- * An attribute's options under the families they belong to, in first-seen order. Options with no
- * family are gathered under an empty key, which is every attribute but Imaginaire.
+ * Whether the list offers a filter for this attribute. A free text is the one type it does not:
+ * a filter over it would be a second search box, and the Glossaire says as much.
+ *
+ * A rule rather than a stored flag — what a screen shows is the screen's to decide, and the
+ * catalogue only says what exists.
  */
-export function optionsBySubgroup(attribute: AttributeData): { subgroup: string, options: AttributeOptionData[] }[] {
-    const families: { subgroup: string, options: AttributeOptionData[] }[] = [];
-
-    for (const option of attribute.options) {
-        const subgroup = option.subgroup ?? '';
-        const family = families.find(candidate => candidate.subgroup === subgroup);
-
-        if (family) family.options.push(option);
-        else families.push({ subgroup, options: [option] });
-    }
-
-    return families;
+export function isFilterable(attribute: AttributeData): boolean {
+    return attribute.type !== AttributeType.string;
 }
 
 /**

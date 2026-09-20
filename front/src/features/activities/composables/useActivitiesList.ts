@@ -28,6 +28,7 @@ import type { ActivityData } from '@features/activities/model/activity';
 import {
     activitiesMatchingAll,
     AttributeType,
+    isFilterable,
     type ActivityAttributeOptionData,
     type ActivityAttributeValueData,
     type AttributeData,
@@ -53,7 +54,7 @@ const SWEEP_LIMIT = 1000;
  * the form as-is — vue-i18n renders an unknown key as itself, which is exactly the name.
  */
 export function activityCriteria(attributes: AttributeData[]): Criterion[] {
-    return attributes.filter(attribute => attribute.filterable).map((attribute) => {
+    return attributes.filter(isFilterable).map((attribute) => {
         const shared = { key: attribute.slug, label: attribute.name, icon: attributeIcon(attribute.slug) };
         const choices = attribute.options.map(option => ({ label: option.label, value: option.id }));
 

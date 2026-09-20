@@ -50,7 +50,6 @@ export function anOption(overrides: Partial<AttributeOptionData> = {}): Attribut
         attribute: nextId('atr'),
         label: 'coopérer',
         value: 'cooperer',
-        subgroup: '',
         sort_order: 1,
         ...overrides,
     } as AttributeOptionData;
@@ -70,8 +69,6 @@ export function anAttribute(overrides: Partial<AttributeData> = {}): AttributeDa
         name: 'Âge recommandé',
         slug: 'age',
         type: AttributeType.range,
-        required: false,
-        filterable: true,
         sort_order: 1,
         ...overrides,
         options: (overrides.options ?? []).map(option => ({ ...option, attribute: id })),
