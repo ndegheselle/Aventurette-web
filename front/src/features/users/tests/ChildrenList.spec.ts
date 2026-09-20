@@ -12,8 +12,6 @@ vi.mock('@features/users/api/children.api', () => ({
     get childrenApi() { return children; },
 }));
 vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => fakeAuthProvider(aUser()) }));
-// Reached through the edit modal's interests picker, which this list renders.
-vi.mock('@features/users/api/interests.api', () => ({ interestsApi: fakeCrud([]) }));
 
 const camille = aChild({ name: 'Camille' });
 const remy = aChild({ name: 'Rémy' });

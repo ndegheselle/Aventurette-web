@@ -8,7 +8,6 @@ import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { type ChildrenData } from '@features/users/model/child';
 import ChildrenEditModal from '@features/users/components/children/ChildrenEditModal.vue';
-import InterestsList from '@features/users/components/children/InterestsList.vue';
 import { onMounted, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -63,7 +62,6 @@ onMounted(async () => {
                         $t("children.years",
                             { years: item.age }) }} </div>
                 </div>
-                <InterestsList :interests="item.interests" />
             </div>
             <button class="btn btn-ghost btn-square" @click="() => remove(item, index)">
                 <MinusIcon />

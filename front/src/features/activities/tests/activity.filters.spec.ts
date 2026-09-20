@@ -17,7 +17,7 @@ const domain = anAttribute({ id: 'atr-dom', slug: 'domaine', type: AttributeType
 const energy = anAttribute({ id: 'atr-nrg', slug: 'niveau-energie', type: AttributeType.single_choice, options: [anOption({ label: 'Bas', value: '1' })] });
 const age = anAttribute({ id: 'atr-age', slug: 'age', type: AttributeType.range });
 const duration = anAttribute({ id: 'atr-dur', slug: 'temps-jeu', type: AttributeType.number });
-const visual = anAttribute({ slug: 'visuel-principal', type: AttributeType.string, filterable: false });
+const visual = anAttribute({ slug: 'visuel-principal', type: AttributeType.string });
 
 const catalogue = [age, duration, domain, energy, visual];
 
@@ -36,7 +36,7 @@ function criteria(values: Record<string, any> = {}, attributes: AttributeData[] 
 }
 
 describe('activityCriteria', () => {
-    it('offers a criterion per filterable attribute, and skips the rest', () => {
+    it('offers a criterion per filterable attribute, and skips the free text', () => {
         expect(criteria().map(criterion => criterion.key))
             .toEqual(['age', 'temps-jeu', 'domaine', 'niveau-energie']);
     });

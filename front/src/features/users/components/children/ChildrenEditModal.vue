@@ -7,7 +7,6 @@ import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { type ChildrenData } from '@features/users/model/child';
-import InterestsSelect from '@features/users/components/children/InterestsSelect.vue';
 import { computed } from 'vue';
 
 const controller = useModal<ChildrenData>();
@@ -35,8 +34,6 @@ defineExpose<IEditModal<ChildrenData>>({ show });
                            v-model="children.age" min="0" />
                 </Field>
             </fieldset>
-
-            <InterestsSelect v-model:selected="children.interests" />
         </div>
         <FieldError :error="errors.global.value" />
 

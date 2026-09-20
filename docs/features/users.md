@@ -1,7 +1,6 @@
 # users
 
-The account behind the session: what kind of user it is, the children recorded against it, and
-what those children are interested in.
+The account behind the session: what kind of user it is, and the children recorded against it.
 
 ## Routes
 
@@ -15,9 +14,11 @@ what those children are interested in.
 `UserData` is the generated `UsersResponse` with no mapper of its own: the session comes back
 from the auth port, which expands nothing and stores no file, so `childrens` is ids.
 
-`childMapper` **does** map — `child.interests` holds the interests themselves, each through
-`interestMapper`. Saving a child still persists their ids
-([ADR 0007](../adr/0007-models-map-their-own-payloads.md)).
+`childMapper` maps nothing but `expand` away: a child is a name, an age and its owner, and
+nothing hangs off one. **`interests` is gone** — the collection it pointed at was removed, and
+with it the relation, the picker and the two specs that covered them. If a child is to record
+what it likes again, the catalogue's `attribute_options` are the natural vocabulary, but that
+needs a relation on `childrens` that does not exist today.
 
 A profile type is one of `PERSONNAL`, `ASSOCIATION` or `SCHOOL`, from the generated schema.
 
@@ -33,30 +34,12 @@ mounted in the layout, which registers itself with the composable. With none mou
 resolves to `null` — which reads as "cancelled" to every caller, so a missing dialog declines
 an action instead of throwing.
 
-## Interests
-
-The picker shows every interest and marks the ones the child has. Two things make it less
-trivial than it looks, both in `model/interest.ts`:
-
-- The two lists come from different requests, so the child's interests are equal records but
-  never the same objects. Marking is by id; comparing by identity would mark nothing.
-- `isSelected` belongs to the picker, not to the data. `selectionOf` strips it before the
-  selection is reported, so it is never saved.
-
 ## Rules that hold
 
-*`tests/interest.spec.ts`*
-
-- Marking is by id, and keeps the offered order rather than the selection order.
-- An interest the child has that is no longer offered is ignored rather than reappearing.
-- The source records are copied, not tagged: nothing gains an `isSelected` property.
-
-*`tests/ChildrenList.spec.ts`, `tests/InterestsSelect.spec.ts`*
+*`tests/ChildrenList.spec.ts`*
 
 - Removing a child asks first; declining keeps it on screen and on the server; accepting
   deletes it on the server and takes it off the list.
-- Clicking a marked interest reports the selection without it.
-- Loading a different child into the picker re-marks it.
 
 ## Not finished
 

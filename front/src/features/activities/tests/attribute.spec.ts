@@ -4,7 +4,7 @@ import {
     attributesWithOptions,
     AttributeType,
     formatAttributeValue,
-    optionsBySubgroup,
+    isFilterable,
 } from '@features/activities/model/attribute';
 import { anAttribute, anAttributeValue, anOption, aGroup } from '@tests';
 import { describe, expect, it } from 'vitest';
@@ -66,25 +66,15 @@ describe('attributesFor', () => {
     });
 });
 
-describe('optionsBySubgroup', () => {
-    it('keeps the families the Glossaire gives Imaginaire, in first-seen order', () => {
-        const imaginaire = anAttribute({
-            type: AttributeType.multi_choice,
-            options: [
-                anOption({ label: 'fées', subgroup: 'Fantastique' }),
-                anOption({ label: 'pirates', subgroup: 'Aventure' }),
-                anOption({ label: 'dragons', subgroup: 'Fantastique' }),
-            ],
-        });
+describe('isFilterable', () => {
+    it('offers a filter for every type but free text, which would be a second search box', () => {
+        const filterable = [
+            AttributeType.range, AttributeType.number,
+            AttributeType.single_choice, AttributeType.multi_choice,
+        ].map(type => isFilterable(anAttribute({ type })));
 
-        expect(optionsBySubgroup(imaginaire).map(family => [family.subgroup, family.options.length]))
-            .toEqual([['Fantastique', 2], ['Aventure', 1]]);
-    });
-
-    it('gathers a vocabulary with no families under one empty key', () => {
-        const domain = anAttribute({ options: [anOption({ label: 'art' }), anOption({ label: 'eau' })] });
-
-        expect(optionsBySubgroup(domain)).toEqual([{ subgroup: '', options: domain.options }]);
+        expect(filterable).toEqual([true, true, true, true]);
+        expect(isFilterable(anAttribute({ type: AttributeType.string }))).toBe(false);
     });
 });
 

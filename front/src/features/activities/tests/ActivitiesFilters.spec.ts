@@ -39,9 +39,9 @@ beforeEach(() => {
     values.items = [];
     picks.items = [];
     definitions.items = [
-        { ...anOption(), id: 'atr-age', group: general.id, name: 'Âge recommandé', slug: 'age', type: AttributeType.range, filterable: true, sort_order: 1 } as any,
-        { ...anOption(), id: 'atr-nrg', group: general.id, name: "Niveau d'énergie", slug: 'niveau-energie', type: AttributeType.single_choice, filterable: true, sort_order: 2 } as any,
-        { ...anOption(), id: 'atr-vis', group: general.id, name: 'Visuel principal', slug: 'visuel-principal', type: AttributeType.string, filterable: false, sort_order: 3 } as any,
+        { ...anOption(), id: 'atr-age', group: general.id, name: 'Âge recommandé', slug: 'age', type: AttributeType.range, sort_order: 1 } as any,
+        { ...anOption(), id: 'atr-nrg', group: general.id, name: "Niveau d'énergie", slug: 'niveau-energie', type: AttributeType.single_choice, sort_order: 2 } as any,
+        { ...anOption(), id: 'atr-vis', group: general.id, name: 'Visuel principal', slug: 'visuel-principal', type: AttributeType.string, sort_order: 3 } as any,
     ];
 });
 
@@ -76,7 +76,7 @@ describe('<ActivitiesFilters>', () => {
         const wrapper = await mountPage();
 
         // Groups first — a field of the activity — then the catalogue's own, in sort order.
-        // `Visuel principal` is not filterable and gets none.
+        // `Visuel principal` is a free text and gets none.
         expect(wrapper.findAll('.fieldset legend').map(legend => legend.text()))
             .toEqual(['Groups', 'Âge recommandé', "Niveau d'énergie"]);
     });

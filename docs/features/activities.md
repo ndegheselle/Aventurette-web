@@ -38,7 +38,7 @@ rather than in the schema. `model/attribute.ts` holds that side:
 | | |
 |---|---|
 | `GroupData` | one of the eight groups: Général, Imaginaire, and the six developmental ones |
-| `AttributeData` | a definition with its vocabulary joined on — name, slug, type, `filterable` |
+| `AttributeData` | a definition with its vocabulary joined on — name, slug, type, `sort_order` |
 | `ActivityAttributeValueData` | what one activity holds for one attribute: a number, a range, a text or one option |
 | `ActivityAttributeOptionData` | one option an activity picked, for the `multi_choice` attributes |
 
@@ -89,11 +89,12 @@ soon as it is added**:
 Nothing is ever created from a modal: what it opens on already exists, so it only updates, and
 the materials and files chosen in it have a record to belong to.
 
-What is left for the save button is the activity's own fields — name, description, age,
-environment, duration, benefits — which is a single update, and then the detail screen.
+What is left for the save button is the activity's own fields — name, description, groups —
+which is a single update, followed by the attribute rows, which are writes of their own
+([activities-edit](activities-edit.md)), and then the detail screen.
 
-A blank record is still a valid one: `createEmptyActivity` fills in the `description`,
-`environment` and `state` the collection requires — a new activity starts as `DRAFT` — and
+A blank record is still a valid one: `createEmptyActivity` fills in the `description` and
+`state` the collection requires — a new activity starts as `DRAFT` — and
 `useActivitiesList` adds the placeholder name and the owner from the session. `createEmptyStep`
 does the same for the one field a step must have. A material is **not** picked from a reference
 collection: it belongs to one step, so choosing a name writes a row of that step's own and the
@@ -114,8 +115,10 @@ list is put back to what the record still holds, because no field on the form st
 **The mechanism is `@chapelure/ui/filter`'s; the criteria are the catalogue's.** A criterion is
 data — a key, a label, an icon, the kind of input it takes, the values it offers and the value
 it holds — and the package generates the modal's fields and the chips above the list from a list
-of them. `activityCriteria(attributes)` builds that list from every **filterable** attribute,
-one criterion per attribute, so adding a filter is seeding a row.
+of them. `activityCriteria(attributes)` builds that list from every attribute `isFilterable`
+accepts — every type but free text — so adding a filter is seeding a row. Which attributes are
+offered is the screen's decision and not a stored flag: the catalogue says what exists, not how
+it is shown.
 
 The attribute's type picks the input: `range` and `number` become a range, `single_choice`
 checkboxes, `multi_choice` a searchable tag select. Labels are the stored names rather than
@@ -185,7 +188,7 @@ reading, its copies, the filters it contributes — is `@chapelure/ui`'s, and te
 
 - Options join to the definition that names them; attributes order by group, then `sort_order`.
 - A group offers its own attributes and Général's, and never lists Général twice.
-- Imaginaire's families survive as option metadata, in first-seen order.
+- Every type but free text offers a filter.
 - A value formats per type, and to null when the activity holds nothing — so a badge is skipped
   rather than rendered blank.
 - `activitiesMatchingAll` counts **distinct** attributes, and matches nothing when nothing was
@@ -193,8 +196,8 @@ reading, its copies, the filters it contributes — is `@chapelure/ui`'s, and te
 
 *`tests/activity.filters.spec.ts`* — the criteria-to-query translation, now in two halves
 
-- A criterion is generated per filterable attribute and skips the rest, taking its input from
-  the attribute's type.
+- A criterion is generated per filterable attribute and skips the free text, taking its input
+  from the attribute's type.
 - Search matches `name` **or** `description`, and stays its own group so its ORs cannot widen
   the other criteria.
 - A range is bounded inclusively; an open bound is dropped rather than compared against nothing.
@@ -244,9 +247,13 @@ data. [activities-edit](activities-edit.md) has the gaps that belong to its scre
   Glossaire's rule — the group's attributes plus Général's — and is tested, but no screen calls
   it: the filter modal and the edit form both offer every attribute at once. Wiring it means
   rebuilding the criteria when the group changes.
-- **`Sécurité` has no vocabulary.** It is seeded as a filterable `multi_choice` with zero
-  options, the Glossaire pointing at a tag referential that is not ours yet, so its filter is
-  an empty dropdown.
+- **`Sécurité` has no vocabulary.** It is seeded as a `multi_choice` with zero options, the
+  Glossaire pointing at a tag referential that is not ours yet, so its filter is an empty
+  dropdown.
+- **Imaginaire's families are not kept.** §7 of the data-model note asks for the Glossaire's
+  sub-families — Fantastique, Super-héros, Historique and the rest — to survive as option
+  metadata. The `subgroup` column that held them has been dropped, so the thirteen keywords are
+  now a flat list and the families exist only in the seed migration's source.
 - **A sweep reads 1000 rows at most.** Past that a filter narrows to the first 1000 matches
   and says nothing about it. The catalogue is small; the activity count is what this scales on.
 - **An attribute's name and its options' labels are not translatable.** They are stored in one
@@ -259,8 +266,4 @@ data. [activities-edit](activities-edit.md) has the gaps that belong to its scre
 - **A step whose link could not be written stays in `activities_steps`.** It is deliberate:
   deleting it would be the safe move only if the failed update definitely did not land, and
   `cascadeDelete` makes guessing wrong expensive.
-- **A range's bounds are `<input type="number">` bound without `.number`**, so what reaches
-  `buildActivityFilters` at runtime is a string. PocketBase then compares `ageMin>'6'` as a
-  string rather than a number. The fix is two `v-model`s in `@chapelure/ui`'s
-  `filter/CriterionField.vue` — one place, and it fixes every range in every app at once.
 - Images throughout are placeholders from `placeholder.pagebee.io`.

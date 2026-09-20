@@ -26,7 +26,6 @@ import type {
     ActivityStepPayload,
 } from '@features/activities/api/step.mapper';
 import type { ChildrenData } from '@features/users/model/child';
-import type { InterestData } from '@features/users/model/interest';
 import type { UserData } from '@features/users/model/user';
 
 let sequence = 0;
@@ -149,10 +148,6 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
     } as ActivityData;
 }
 
-export function anInterest(overrides: Partial<InterestData> = {}): InterestData {
-    return { ...SYSTEM, id: nextId('int'), name: 'Dinosaurs', ...overrides } as InterestData;
-}
-
 export function aChild(overrides: Partial<ChildrenData> = {}): ChildrenData {
     return {
         ...SYSTEM,
@@ -160,7 +155,6 @@ export function aChild(overrides: Partial<ChildrenData> = {}): ChildrenData {
         name: 'Camille',
         age: 7,
         user: nextId('usr'),
-        interests: [],
         ...overrides,
     } as ChildrenData;
 }

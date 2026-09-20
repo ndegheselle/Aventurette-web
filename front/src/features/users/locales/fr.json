@@ -15,13 +15,9 @@
             "description": "Une description pour l'école."
         }
     },
-    "children":
-    {
+    "children": {
         "title": "Enfants",
         "years": "{years} ans",
-        "interests": {
-            "title": "Centres d'intérêt"
-        },
         "form": {
             "name": "Nom",
             "age": "Âge"
