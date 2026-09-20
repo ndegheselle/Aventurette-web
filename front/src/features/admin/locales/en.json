@@ -1,0 +1,20 @@
+{
+    "admin": {
+        "title": "Administration",
+        "catalogue": {
+            "title": "Attribute catalogue",
+            "counts": "{groups} groups · {attributes} attributes · {options} values",
+            "attributeCount": "no attributes | 1 attribute | {count} attributes",
+            "ungrouped": "Without a group",
+            "noAttributes": "No attribute is defined in this group.",
+            "noOptions": "No values defined: this choice offers nothing.",
+            "types": {
+                "string": "Text",
+                "number": "Number",
+                "range": "Range",
+                "single_choice": "Single choice",
+                "multi_choice": "Multiple choice"
+            }
+        }
+    }
+}

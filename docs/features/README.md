@@ -7,6 +7,7 @@ it owns, the shape of its data, the rules that hold, and what is not finished.
 |---|---|
 | [activities](activities.md) | Browsing and filtering the public activity catalogue |
 | [activities-edit](activities-edit.md) | Authoring: the author's own activities, and the form behind them |
+| [admin](admin.md) | The attribute catalogue, whole and read-only |
 | [auth](auth.md) | Signing in, signing up, and guarding the rest of the app |
 | [users](users.md) | The account: profile type and children |
 | home | A single placeholder page. Not routed — `/` redirects to the activity list. |

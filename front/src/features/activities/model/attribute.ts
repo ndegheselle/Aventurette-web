@@ -106,6 +106,15 @@ export function isFilterable(attribute: AttributeData): boolean {
 }
 
 /**
+ * Whether this attribute is answered from a vocabulary. The choice types are; the rest are
+ * typed in, and an empty `options` on one of them means nothing is missing.
+ */
+export function takesOptions(attribute: AttributeData): boolean {
+    return attribute.type === AttributeType.single_choice
+        || attribute.type === AttributeType.multi_choice;
+}
+
+/**
  * What one attribute reads as on a badge: a range as one bound or both, a number with its unit
  * left to the caller, a pick as its labels joined. Null when the activity holds nothing for it,
  * so a display can skip it rather than render an empty badge.

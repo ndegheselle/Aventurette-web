@@ -5,6 +5,7 @@ import {
     AttributeType,
     formatAttributeValue,
     isFilterable,
+    takesOptions,
 } from '@features/activities/model/attribute';
 import { anAttribute, anAttributeValue, anOption, aGroup } from '@tests';
 import { describe, expect, it } from 'vitest';
@@ -75,6 +76,15 @@ describe('isFilterable', () => {
 
         expect(filterable).toEqual([true, true, true, true]);
         expect(isFilterable(anAttribute({ type: AttributeType.string }))).toBe(false);
+    });
+});
+
+describe('takesOptions', () => {
+    it('is the choice types alone: the rest are typed in and never had a vocabulary', () => {
+        expect(takesOptions(anAttribute({ type: AttributeType.single_choice }))).toBe(true);
+        expect(takesOptions(anAttribute({ type: AttributeType.multi_choice }))).toBe(true);
+        expect(takesOptions(anAttribute({ type: AttributeType.range }))).toBe(false);
+        expect(takesOptions(anAttribute({ type: AttributeType.string }))).toBe(false);
     });
 });
 

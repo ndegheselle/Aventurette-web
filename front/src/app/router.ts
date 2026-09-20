@@ -1,6 +1,7 @@
 import Default from '@/app/Default.layout.vue';
 import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import activitiesEditRoutes from '@features/activities-authoring/routes';
+import adminRoutes from '@features/admin/routes';
 import authRoutes from '@features/auth/routes';
 import usersRoutes from '@features/users/routes';
 import type { RouteRecordRaw } from 'vue-router';
@@ -17,6 +18,7 @@ const routes: RouteRecordRaw[] = [
             ...usersRoutes,
             ...activitiesRoutes,
             ...activitiesEditRoutes,
+            ...adminRoutes,
         ]
     }
 ];

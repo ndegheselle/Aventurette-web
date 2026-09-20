@@ -47,7 +47,8 @@ typed, not stringly: a range is two number columns, and a choice is a relation t
 
 **Adding a keyword is a row, not a release.** Seeding an attribute puts a field on the edit
 form and a filter on the list without either file changing, which is the whole reason the
-catalogue exists.
+catalogue exists. What is in it at any moment is listed by [admin](admin.md), which is the only
+screen that shows the catalogue rather than using it.
 
 `useAttributes` reads it — three `cachedCrud` collections, so several components asking at once
 still fetch once — and `attributesWithOptions` joins definitions to options, ordered by group
