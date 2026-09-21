@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FolderTreeIcon, MenuIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
+import { MenuIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import DropdownTrigger from '@chapelure/ui/dropdown/DropdownTrigger.vue';
@@ -7,7 +7,7 @@ import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as activitiesEditRoutesNames } from '@features/activities-authoring/routes';
-import { routesNames as adminRoutesNames } from '@features/admin/routes';
+
 import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
 </script>
 
@@ -32,11 +32,6 @@ import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
                                 <PencilLineIcon /> {{ $t('activities.edit.title') }}
                             </RouterLink>
                         </li>
-                        <li>
-                            <RouterLink :to="{ name: adminRoutesNames.catalogue }">
-                                <FolderTreeIcon /> {{ $t('admin.title') }}
-                            </RouterLink>
-                        </li>
                     </ul>
                 </Dropdown>
 
@@ -56,11 +51,6 @@ import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
                     <li>
                         <RouterLink :to="{ name: activitiesEditRoutesNames.all }">
                             <PencilLineIcon /> {{ $t('activities.edit.title') }}
-                        </RouterLink>
-                    </li>
-                    <li>
-                        <RouterLink :to="{ name: adminRoutesNames.catalogue }">
-                            <FolderTreeIcon /> {{ $t('admin.title') }}
                         </RouterLink>
                     </li>
                 </ul>

@@ -12,13 +12,16 @@ export const Collections = {
 	Otps: "_otps",
 	Superusers: "_superusers",
 	Activities: "activities",
+	ActivitiesDevelopAffect: "activities_develop_affect",
+	ActivitiesDevelopEmotional: "activities_develop_emotional",
+	ActivitiesDevelopIntellectual: "activities_develop_intellectual",
+	ActivitiesDevelopMoral: "activities_develop_moral",
+	ActivitiesDevelopPhysical: "activities_develop_physical",
+	ActivitiesDevelopSpiritual: "activities_develop_spiritual",
+	ActivitiesFields: "activities_fields",
+	ActivitiesImaginary: "activities_imaginary",
+	ActivitiesSecurity: "activities_security",
 	ActivitiesSteps: "activities_steps",
-	ActivityAttributeOptions: "activity_attribute_options",
-	ActivityAttributeValues: "activity_attribute_values",
-	AttributeDefinitions: "attribute_definitions",
-	AttributeGroup: "attribute_group",
-	AttributeOptions: "attribute_options",
-	Childrens: "childrens",
 	StepsMaterials: "steps_materials",
 	StepsResources: "steps_resources",
 	Users: "users",
@@ -108,16 +111,144 @@ export const ActivitiesStateOptions = {
 	"PUBLISHED": "PUBLISHED",
 } as const
 export type ActivitiesStateOptions = typeof ActivitiesStateOptions[keyof typeof ActivitiesStateOptions]
+
+export const ActivitiesEnvironnementOptions = {
+	"PARK": "PARK",
+	"HOUSE": "HOUSE",
+	"BALCONY": "BALCONY",
+	"CAR": "CAR",
+	"OUTDOOR": "OUTDOOR",
+	"CITY": "CITY",
+	"CAMPAIGN": "CAMPAIGN",
+	"FOREST": "FOREST",
+	"MOUTAIN": "MOUTAIN",
+	"POOL": "POOL",
+	"LAKE": "LAKE",
+	"RIVER": "RIVER",
+	"BATH": "BATH",
+	"MEAL": "MEAL",
+} as const
+export type ActivitiesEnvironnementOptions = typeof ActivitiesEnvironnementOptions[keyof typeof ActivitiesEnvironnementOptions]
+
+export const ActivitiesSeasonOptions = {
+	"AUTUMN": "AUTUMN",
+	"WINTER": "WINTER",
+	"SPRING": "SPRING",
+	"SUMMER": "SUMMER",
+	"CHRISTMAS": "CHRISTMAS",
+	"NEW YEAR": "NEW YEAR",
+	"HALLOWEEN": "HALLOWEEN",
+	"EASTER": "EASTER",
+	"VALENTINE": "VALENTINE",
+} as const
+export type ActivitiesSeasonOptions = typeof ActivitiesSeasonOptions[keyof typeof ActivitiesSeasonOptions]
+
+export const ActivitiesWeatherOptions = {
+	"RAIN": "RAIN",
+	"SNOW": "SNOW",
+	"SUNNY": "SUNNY",
+	"WINDY": "WINDY",
+} as const
+export type ActivitiesWeatherOptions = typeof ActivitiesWeatherOptions[keyof typeof ActivitiesWeatherOptions]
+
+export const ActivitiesEnergyLevelOptions = {
+	"LOW": "LOW",
+	"MEDIUM": "MEDIUM",
+	"HIGH": "HIGH",
+} as const
+export type ActivitiesEnergyLevelOptions = typeof ActivitiesEnergyLevelOptions[keyof typeof ActivitiesEnergyLevelOptions]
 export type ActivitiesRecord = {
+	age_max: number
+	age_min: number
 	created: IsoAutoDateString
 	description: HTMLString
-	groups?: RecordIdString[]
+	develop_affect?: RecordIdString[]
+	develop_emotional?: RecordIdString[]
+	develop_intellectual?: RecordIdString[]
+	develop_moral?: RecordIdString[]
+	develop_physical?: RecordIdString[]
+	develop_spritual?: RecordIdString[]
+	energy_level?: ActivitiesEnergyLevelOptions
+	environnement: ActivitiesEnvironnementOptions
+	fields?: RecordIdString[]
 	id: string
+	imaginary?: RecordIdString[]
 	name: string
+	participants_max: number
+	participants_min: number
+	recommended_hosts_numbers?: number
+	season?: ActivitiesSeasonOptions
+	security?: RecordIdString[]
 	state: ActivitiesStateOptions
 	steps?: RecordIdString[]
 	updated: IsoAutoDateString
 	user: RecordIdString
+	visual?: FileNameString
+	weather?: ActivitiesWeatherOptions
+}
+
+export type ActivitiesDevelopAffectRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesDevelopEmotionalRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesDevelopIntellectualRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesDevelopMoralRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesDevelopPhysicalRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesDevelopSpiritualRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesFieldsRecord = {
+	created: IsoAutoDateString
+	id: string
+	name?: string
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesImaginaryRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
+}
+
+export type ActivitiesSecurityRecord = {
+	created: IsoAutoDateString
+	description?: HTMLString
+	id: string
+	name: string
+	updated: IsoAutoDateString
 }
 
 export type ActivitiesStepsRecord = {
@@ -128,74 +259,6 @@ export type ActivitiesStepsRecord = {
 	materials?: RecordIdString[]
 	resources?: RecordIdString[]
 	updated: IsoAutoDateString
-}
-
-export type ActivityAttributeOptionsRecord = {
-	activity: RecordIdString
-	attribute: RecordIdString
-	created: IsoAutoDateString
-	id: string
-	option: RecordIdString
-	updated: IsoAutoDateString
-}
-
-export type ActivityAttributeValuesRecord = {
-	activity: RecordIdString
-	attribute: RecordIdString
-	created: IsoAutoDateString
-	id: string
-	number_value?: number
-	option?: RecordIdString
-	range_max?: number
-	range_min?: number
-	string_value?: string
-	updated: IsoAutoDateString
-}
-
-export const AttributeDefinitionsTypeOptions = {
-	"string": "string",
-	"number": "number",
-	"range": "range",
-	"single_choice": "single_choice",
-	"multi_choice": "multi_choice",
-} as const
-export type AttributeDefinitionsTypeOptions = typeof AttributeDefinitionsTypeOptions[keyof typeof AttributeDefinitionsTypeOptions]
-export type AttributeDefinitionsRecord = {
-	created: IsoAutoDateString
-	group: RecordIdString
-	id: string
-	name: string
-	slug: string
-	sort_order?: number
-	type: AttributeDefinitionsTypeOptions
-	updated: IsoAutoDateString
-}
-
-export type AttributeGroupRecord = {
-	created: IsoAutoDateString
-	id: string
-	name: string
-	slug: string
-	updated: IsoAutoDateString
-}
-
-export type AttributeOptionsRecord = {
-	attribute: RecordIdString
-	created: IsoAutoDateString
-	id: string
-	label: string
-	sort_order?: number
-	updated: IsoAutoDateString
-	value: string
-}
-
-export type ChildrensRecord = {
-	age?: number
-	created: IsoAutoDateString
-	id: string
-	name?: string
-	updated: IsoAutoDateString
-	user: RecordIdString
 }
 
 export type StepsMaterialsRecord = {
@@ -222,7 +285,6 @@ export const UsersTypeOptions = {
 } as const
 export type UsersTypeOptions = typeof UsersTypeOptions[keyof typeof UsersTypeOptions]
 export type UsersRecord = {
-	childrens?: RecordIdString[]
 	created: IsoAutoDateString
 	email: string
 	emailVisibility?: boolean
@@ -241,13 +303,16 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopAffectResponse<Texpand = unknown> = Required<ActivitiesDevelopAffectRecord> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopEmotionalResponse<Texpand = unknown> = Required<ActivitiesDevelopEmotionalRecord> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopIntellectualResponse<Texpand = unknown> = Required<ActivitiesDevelopIntellectualRecord> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopMoralResponse<Texpand = unknown> = Required<ActivitiesDevelopMoralRecord> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopPhysicalResponse<Texpand = unknown> = Required<ActivitiesDevelopPhysicalRecord> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopSpiritualResponse<Texpand = unknown> = Required<ActivitiesDevelopSpiritualRecord> & BaseSystemFields<Texpand>
+export type ActivitiesFieldsResponse<Texpand = unknown> = Required<ActivitiesFieldsRecord> & BaseSystemFields<Texpand>
+export type ActivitiesImaginaryResponse<Texpand = unknown> = Required<ActivitiesImaginaryRecord> & BaseSystemFields<Texpand>
+export type ActivitiesSecurityResponse<Texpand = unknown> = Required<ActivitiesSecurityRecord> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
-export type ActivityAttributeOptionsResponse<Texpand = unknown> = Required<ActivityAttributeOptionsRecord> & BaseSystemFields<Texpand>
-export type ActivityAttributeValuesResponse<Texpand = unknown> = Required<ActivityAttributeValuesRecord> & BaseSystemFields<Texpand>
-export type AttributeDefinitionsResponse<Texpand = unknown> = Required<AttributeDefinitionsRecord> & BaseSystemFields<Texpand>
-export type AttributeGroupResponse<Texpand = unknown> = Required<AttributeGroupRecord> & BaseSystemFields<Texpand>
-export type AttributeOptionsResponse<Texpand = unknown> = Required<AttributeOptionsRecord> & BaseSystemFields<Texpand>
-export type ChildrensResponse<Texpand = unknown> = Required<ChildrensRecord> & BaseSystemFields<Texpand>
 export type StepsMaterialsResponse<Texpand = unknown> = Required<StepsMaterialsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -261,13 +326,16 @@ export type CollectionRecords = {
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
 	activities: ActivitiesRecord
+	activities_develop_affect: ActivitiesDevelopAffectRecord
+	activities_develop_emotional: ActivitiesDevelopEmotionalRecord
+	activities_develop_intellectual: ActivitiesDevelopIntellectualRecord
+	activities_develop_moral: ActivitiesDevelopMoralRecord
+	activities_develop_physical: ActivitiesDevelopPhysicalRecord
+	activities_develop_spiritual: ActivitiesDevelopSpiritualRecord
+	activities_fields: ActivitiesFieldsRecord
+	activities_imaginary: ActivitiesImaginaryRecord
+	activities_security: ActivitiesSecurityRecord
 	activities_steps: ActivitiesStepsRecord
-	activity_attribute_options: ActivityAttributeOptionsRecord
-	activity_attribute_values: ActivityAttributeValuesRecord
-	attribute_definitions: AttributeDefinitionsRecord
-	attribute_group: AttributeGroupRecord
-	attribute_options: AttributeOptionsRecord
-	childrens: ChildrensRecord
 	steps_materials: StepsMaterialsRecord
 	steps_resources: StepsResourcesRecord
 	users: UsersRecord
@@ -280,13 +348,16 @@ export type CollectionResponses = {
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
 	activities: ActivitiesResponse
+	activities_develop_affect: ActivitiesDevelopAffectResponse
+	activities_develop_emotional: ActivitiesDevelopEmotionalResponse
+	activities_develop_intellectual: ActivitiesDevelopIntellectualResponse
+	activities_develop_moral: ActivitiesDevelopMoralResponse
+	activities_develop_physical: ActivitiesDevelopPhysicalResponse
+	activities_develop_spiritual: ActivitiesDevelopSpiritualResponse
+	activities_fields: ActivitiesFieldsResponse
+	activities_imaginary: ActivitiesImaginaryResponse
+	activities_security: ActivitiesSecurityResponse
 	activities_steps: ActivitiesStepsResponse
-	activity_attribute_options: ActivityAttributeOptionsResponse
-	activity_attribute_values: ActivityAttributeValuesResponse
-	attribute_definitions: AttributeDefinitionsResponse
-	attribute_group: AttributeGroupResponse
-	attribute_options: AttributeOptionsResponse
-	childrens: ChildrensResponse
 	steps_materials: StepsMaterialsResponse
 	steps_resources: StepsResourcesResponse
 	users: UsersResponse
