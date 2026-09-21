@@ -2,8 +2,6 @@
 import List from '@chapelure/ui/data/List.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
-import AcitivityMetadaDisplay from '@features/activities/components/ActivityMetadataDisplay.vue';
-import ActivityKeywordsDisplay from '@features/activities/components/ActivityKeywordsDisplay.vue';
 import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivity } from '@features/activities/composables/useActivity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
@@ -34,12 +32,8 @@ const { activity, materials, resources } = useActivity();
         <Panel>
             <img class="max-h-32 object-cover rounded-box" src="https://placeholder.pagebee.io/api/plain/800/200" />
             <div class="flex flex-1 gap-1 flex-col">
-                <div class="flex justify-between">
-                    <h2 class="text-2xl">{{ activity?.name }}</h2>
-                    <AcitivityMetadaDisplay :activity="activity ?? undefined" />
-                </div>
+                <h2 class="text-2xl">{{ activity?.name }}</h2>
                 <p v-html="activity?.description"></p>
-                <ActivityKeywordsDisplay :activity="activity ?? undefined" />
             </div>
         </Panel>
         <Panel v-if="materials.length">

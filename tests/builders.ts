@@ -6,14 +6,6 @@
  */
 import { UsersTypeOptions } from '@/backend/schema.g';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
-import {
-    AttributeType,
-    type ActivityAttributeOptionData,
-    type ActivityAttributeValueData,
-    type AttributeData,
-    type AttributeOptionData,
-    type GroupData,
-} from '@features/activities/model/attribute';
 import type { ActivityPayload } from '@features/activities/api/activity.mapper';
 import type {
     ActivityMaterialData,
@@ -37,67 +29,6 @@ const SYSTEM = {
     collectionId: 'fake-collection',
     collectionName: 'fake',
 };
-
-export function aGroup(overrides: Partial<GroupData> = {}): GroupData {
-    return { ...SYSTEM, id: nextId('grp'), name: 'Général', slug: 'general', ...overrides } as GroupData;
-}
-
-export function anOption(overrides: Partial<AttributeOptionData> = {}): AttributeOptionData {
-    return {
-        ...SYSTEM,
-        id: nextId('opt'),
-        attribute: nextId('atr'),
-        label: 'coopérer',
-        value: 'cooperer',
-        sort_order: 1,
-        ...overrides,
-    } as AttributeOptionData;
-}
-
-/**
- * An attribute with its vocabulary already joined on, as `attributesWithOptions` returns it.
- * Options passed in are re-pointed at it, so a test never has to wire the two together.
- */
-export function anAttribute(overrides: Partial<AttributeData> = {}): AttributeData {
-    const id = overrides.id ?? nextId('atr');
-
-    return {
-        ...SYSTEM,
-        id,
-        group: nextId('grp'),
-        name: 'Âge recommandé',
-        slug: 'age',
-        type: AttributeType.range,
-        sort_order: 1,
-        ...overrides,
-        options: (overrides.options ?? []).map(option => ({ ...option, attribute: id })),
-    } as AttributeData;
-}
-
-/** What an activity holds for one attribute. Which field matters depends on its type. */
-export function anAttributeValue(overrides: Partial<ActivityAttributeValueData> = {}): ActivityAttributeValueData {
-    return {
-        ...SYSTEM,
-        id: nextId('val'),
-        activity: nextId('act'),
-        attribute: nextId('atr'),
-        string_value: '',
-        option: '',
-        ...overrides,
-    } as ActivityAttributeValueData;
-}
-
-/** One option an activity picked, for a multi_choice attribute. */
-export function aPick(overrides: Partial<ActivityAttributeOptionData> = {}): ActivityAttributeOptionData {
-    return {
-        ...SYSTEM,
-        id: nextId('pck'),
-        activity: nextId('act'),
-        attribute: nextId('atr'),
-        option: nextId('opt'),
-        ...overrides,
-    } as ActivityAttributeOptionData;
-}
 
 export function aMaterial(overrides: Partial<ActivityMaterialData> = {}): ActivityMaterialData {
     return {
@@ -140,10 +71,7 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
         description: '<p>Hide, then seek.</p>',
         state: ActivityState.DRAFT,
         user: nextId('usr'),
-        groups: [],
         steps: [],
-        attributes: [],
-        picks: [],
         ...overrides,
     } as ActivityData;
 }
@@ -218,7 +146,6 @@ export function anActivityPayload(overrides: Partial<ActivityPayload> = {}): Act
         description: '<p>Hide, then seek.</p>',
         state: ActivityState.DRAFT,
         user: nextId('usr'),
-        groups: [],
         steps: [],
         ...overrides,
     } as ActivityPayload;

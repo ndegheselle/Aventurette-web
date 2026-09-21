@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import List from '@chapelure/ui/data/List.vue';
-import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import FilesList from '@chapelure/ui/files/FilesList.vue';
 import { useOneFile } from '@chapelure/ui/files/useFiles';
@@ -16,17 +15,13 @@ import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
 import { type ActivityStepData } from '@features/activities/model/step';
 import { ActivityState } from '@features/activities/model/activity';
-import AttributeField from '@features/activities-authoring/components/AttributeField.vue';
 import { routesNames } from '@features/activities-authoring/routes';
-import { ArrowLeftIcon, BadgeCheckIcon, LibraryIcon, ListOrderedIcon, MinusIcon, PenIcon, PlusIcon, SaveIcon, ScrollTextIcon, TagsIcon, TriangleAlertIcon, UndoIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, BadgeCheckIcon, LibraryIcon, ListOrderedIcon, MinusIcon, PenIcon, PlusIcon, SaveIcon, ScrollTextIcon, TriangleAlertIcon, UndoIcon } from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const {
     activity,
-    availableGroups,
-    selectedGroups,
-    drafts,
     isLoading,
     isAddingStep,
     isChangingState,
@@ -105,20 +100,7 @@ async function remove(step: ActivityStepData) {
                     <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
                         v-model="activity.name" />
                 </Field>
-                <Field label="activities.fields.groups">
-                    <TagSelect :items="availableGroups" display-key="name" v-model="selectedGroups" />
-                </Field>
             </div>
-        </Panel>
-
-        <!-- A field per attribute the catalogue defines; seeding one is what adds it here. -->
-        <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <TagsIcon /> {{ $t('activities.edit.attributes') }}
-            </h2>
-            <fieldset class="fieldset">
-                <AttributeField v-for="draft in drafts" :key="draft.attribute.id" :draft="draft" />
-            </fieldset>
         </Panel>
 
         <Panel>

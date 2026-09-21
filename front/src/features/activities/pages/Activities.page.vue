@@ -3,8 +3,6 @@ import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import ActivitiesFilters from '@features/activities/components/ActivitiesFilters.vue';
-import ActivityMetadataDisplay from '@features/activities/components/ActivityMetadataDisplay.vue';
-import ActivityKeywordsDisplay from '@features/activities/components/ActivityKeywordsDisplay.vue';
 import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
 import { routesNames } from '@features/activities/routes';
 import { ArrowRightIcon } from 'lucide-vue-next';
@@ -21,14 +19,9 @@ const { paginated, filters, refresh } = useActivitiesList();
             <div><img class="size-16 rounded-box"
                      src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <div>
-                <div class="flex gap-2">
-                    <b class="my-auto">{{ item.name }}</b>
-                    <ActivityMetadataDisplay :activity="item" />
-                </div>
+                <b>{{ item.name }}</b>
                 <p class="text-xs"
                    v-html="item.description"></p>
-                <ActivityKeywordsDisplay class="mt-1"
-                                         :activity="item" />
             </div>
 
             <RouterLink class="btn btn-ghost btn-square my-auto"

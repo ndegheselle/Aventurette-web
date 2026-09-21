@@ -1,15 +1,8 @@
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import {
-    activityAttributeOptionsApi as picks,
-    activityAttributeValuesApi as values,
-} from '@features/activities/api/attributes.api';
 import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
 import { createEmptyActivity, type ActivityData } from '@features/activities/model/activity';
-import type { GroupData } from '@features/activities/model/attribute';
-import { useAttributes } from '@features/activities/composables/useAttributes';
-import { attributeDrafts, attributeWrites, type AttributeDraft } from '@features/activities-authoring/model/attribute.edit';
 import { createEmptyStep, type ActivityStepData } from '@features/activities/model/step';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { stateTransition } from '@features/activities-authoring/model/activity.edit';
@@ -31,8 +24,6 @@ export function useActivityEdit() {
     const { t } = useI18n();
 
     const activity = ref<ActivityData>(createEmptyActivity());
-    const { groups: availableGroups, attributes } = useAttributes();
-    const drafts = ref<AttributeDraft[]>([]);
     const isAddingStep = ref(false);
     const isChangingState = ref(false);
 
@@ -42,29 +33,9 @@ export function useActivityEdit() {
             if (typeof id !== 'string') return;
 
             activity.value = await activities.getById(id) ?? createEmptyActivity();
-            reseedDrafts();
         },
         { immediate: true },
     );
-
-    // The catalogue and the activity arrive independently; whichever is second fills the form.
-    watch(attributes, reseedDrafts);
-
-    /** Bind the form to what the activity holds, for every attribute the catalogue defines. */
-    function reseedDrafts() {
-        drafts.value = attributeDrafts(attributes.value, activity.value);
-    }
-
-    // TagSelect compares by identity, and the loaded groups are records of their own — match
-    // them back by id, or an already-chosen group stays in the dropdown.
-    const selectedGroups = computed({
-        get: () => availableGroups.value.filter(
-            available => activity.value.groups.some(chosen => chosen.id === available.id),
-        ),
-        set: (chosen: GroupData[]) => {
-            activity.value.groups = chosen ?? [];
-        },
-    });
 
     /**
      * Write a blank step, link it to the activity, and hand it back for the modal to fill in.
@@ -154,29 +125,8 @@ export function useActivityEdit() {
         }
     }
 
-    /**
-     * Write what the attribute fields changed. Deletions go last: a row removed before its
-     * replacement is written would leave the activity without the attribute if the create then
-     * failed, and the unique index on (activity, attribute) never sees two rows for one either.
-     */
-    async function saveAttributes() {
-        const writes = attributeWrites(drafts.value, activity.value);
-
-        await Promise.all([
-            ...writes.created.map(value => values.create(value as never)),
-            ...writes.updated.map(({ id, fields }) => values.update(id, fields)),
-            ...writes.picked.map(pick => picks.create(pick as never)),
-        ]);
-
-        await Promise.all([
-            ...writes.removed.map(id => values.remove(id)),
-            ...writes.unpicked.map(id => picks.remove(id)),
-        ]);
-    }
-
     const { isLoading, errors, submit } = useSubmit(async () => {
         await activities.update(activity.value.id, toRaw(activity.value));
-        await saveAttributes();
 
         alert.success(t('data.updated'));
         router.push({ name: activitiesRoutesNames.page, params: { id: activity.value.id } });
@@ -184,9 +134,6 @@ export function useActivityEdit() {
 
     return {
         activity,
-        availableGroups,
-        selectedGroups,
-        drafts,
         isLoading,
         isAddingStep,
         isChangingState,

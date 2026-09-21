@@ -14,13 +14,6 @@ const steps = fakeCrud<ActivityStepData>();
 vi.mock('@features/activities/api/activities.api', () => ({
     get activitiesApi() { return activities; },
 }));
-vi.mock('@features/activities/api/attributes.api', () => ({
-    get groupsApi() { return fakeCrud(); },
-    get attributeDefinitionsApi() { return fakeCrud(); },
-    get attributeOptionsApi() { return fakeCrud(); },
-    get activityAttributeValuesApi() { return fakeCrud(); },
-    get activityAttributeOptionsApi() { return fakeCrud(); },
-}));
 vi.mock('@features/activities-authoring/api/steps.api', () => ({
     get stepsApi() { return steps; },
 }));

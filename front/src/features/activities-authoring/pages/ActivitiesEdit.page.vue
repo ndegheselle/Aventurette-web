@@ -3,7 +3,6 @@ import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
-import ActivityMetadataDisplay from '@features/activities/components/ActivityMetadataDisplay.vue';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import ActivityRowActions from '@features/activities-authoring/components/ActivityRowActions.vue';
 import { useActivitiesEditList } from '@features/activities-authoring/composables/useActivitiesEditList';
@@ -73,7 +72,6 @@ async function remove(activity: ActivityData) {
                           :class="item.state === ActivityState.PUBLISHED ? 'badge-success' : 'badge-ghost'">
                         {{ $t(`activities.state.${item.state}`) }}
                     </span>
-                    <ActivityMetadataDisplay :activity="item" />
                 </div>
                 <p class="text-xs"
                    v-html="item.description"></p>

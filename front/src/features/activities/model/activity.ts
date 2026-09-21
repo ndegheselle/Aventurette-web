@@ -1,11 +1,5 @@
 import { ActivitiesStateOptions, type ActivitiesResponse } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
-import type {
-    ActivityAttributeOptionData,
-    ActivityAttributeValueData,
-    AttributeData,
-    GroupData,
-} from "@features/activities/model/attribute";
 import {
     EMPTY_DESCRIPTION,
     type ActivityMaterialData,
@@ -14,18 +8,11 @@ import {
 } from "@features/activities/model/step";
 
 /**
- * An activity as the app uses it: `activity.steps` is the steps, not their ids, and what it
- * holds for the catalogue's attributes comes with it — `attributes` for the typed values,
- * `picks` for the multi_choice options.
- *
- * Both of those are rows of their own collections pointing back here, so they read with the
- * activity and are written on their own. Saving an activity never writes them.
+ * An activity as the app uses it: `activity.steps` is the steps, not their ids. Everything else
+ * it holds is a column of its own.
  */
 export type ActivityData = Entity<ActivitiesResponse, {
-    groups: GroupData[];
     steps: ActivityStepData[];
-    attributes: ActivityAttributeValueData[];
-    picks: ActivityAttributeOptionData[];
 }>;
 
 export const ActivityState = ActivitiesStateOptions;
@@ -45,30 +32,8 @@ export function createEmptyActivity(): ActivityData {
         name: "",
         description: EMPTY_DESCRIPTION,
         state: ActivityState.DRAFT,
-        groups: [] as GroupData[],
         steps: [] as ActivityStepData[],
-        attributes: [] as ActivityAttributeValueData[],
-        picks: [] as ActivityAttributeOptionData[],
     } as ActivityData;
-}
-
-/** What the activity holds for one attribute, or undefined when it holds nothing. */
-export function valueOf(activity: ActivityData | null | undefined, attribute: AttributeData) {
-    return activity?.attributes.find(value => value.attribute === attribute.id);
-}
-
-/** The options the activity picked for one attribute, in the vocabulary's own order. */
-export function picksOf(
-    activity: ActivityData | null | undefined,
-    attribute: AttributeData,
-) {
-    const picked = new Set(
-        (activity?.picks ?? [])
-            .filter(pick => pick.attribute === attribute.id)
-            .map(pick => pick.option),
-    );
-
-    return attribute.options.filter(option => picked.has(option.id));
 }
 
 /**

@@ -16,9 +16,7 @@ from the auth port, which expands nothing and stores no file, so `childrens` is 
 
 `childMapper` maps nothing but `expand` away: a child is a name, an age and its owner, and
 nothing hangs off one. **`interests` is gone** — the collection it pointed at was removed, and
-with it the relation, the picker and the two specs that covered them. If a child is to record
-what it likes again, the catalogue's `attribute_options` are the natural vocabulary, but that
-needs a relation on `childrens` that does not exist today.
+with it the relation, the picker and the two specs that covered them.
 
 A profile type is one of `PERSONNAL`, `ASSOCIATION` or `SCHOOL`, from the generated schema.
 

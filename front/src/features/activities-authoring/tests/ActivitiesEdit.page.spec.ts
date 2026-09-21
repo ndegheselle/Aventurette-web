@@ -16,14 +16,6 @@ const author = aUser();
 vi.mock('@features/activities/api/activities.api', () => ({
     get activitiesApi() { return activities; },
 }));
-// The rows show an activity's attributes, which reads the catalogue.
-vi.mock('@features/activities/api/attributes.api', () => ({
-    get groupsApi() { return fakeCrud(); },
-    get attributeDefinitionsApi() { return fakeCrud(); },
-    get attributeOptionsApi() { return fakeCrud(); },
-    get activityAttributeValuesApi() { return fakeCrud(); },
-    get activityAttributeOptionsApi() { return fakeCrud(); },
-}));
 vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => fakeAuthProvider(author) }));
 
 const draft = anActivity({ name: 'Treasure hunt', state: ActivityState.DRAFT, user: author.id });

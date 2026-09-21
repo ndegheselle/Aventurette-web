@@ -28,16 +28,10 @@
             "name": "Nom",
             "summary": "Description courte",
             "description": "Description",
-            "picture": "Image",
-            "groups": "Groupes"
+            "picture": "Image"
         },
         "contraints": {
             "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
-        },
-        "bounds": {
-            "range": "{min} à {max}",
-            "minOnly": "À partir de {min}",
-            "maxOnly": "Jusqu'à {max}"
         }
     }
 }
