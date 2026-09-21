@@ -146,7 +146,14 @@ data. [activities-edit](activities-edit.md) has the gaps that belong to its scre
 - **Nothing on an activity but its name, description and steps is edited or shown.** The
   attribute catalogue that carried age, duration, environment and the developmental keywords is
   gone, and the columns that replaced it are not read by any screen yet: no field on the form,
-  no badge on the list, no criterion in the filter modal.
+  no badge on the list, no criterion in the filter modal. The data behind them exists —
+  `back/migrations` seeds the Domaine, Imaginaire, Sécurité and six developmental referentials,
+  and environnement, saison, météo and niveau d'énergie are `select` columns — so wiring a field
+  is a mapper and a binding, not a migration.
+- **A referential's wordings are stored, not translated from a key.** `name` (and Sécurité's
+  `description`) is a JSON object holding one entry per locale — `{"fr": …, "en": …}` — because a
+  seeded row cannot live in a feature's `locales/`. Reading one means picking the current locale
+  out of it, with `fr` as the fallback; no mapper does that yet.
 - **The picture input goes nowhere.** The `activities` collection has no file field to store
   one in, so what the user picks is shown and then dropped. There is an `XXX` on it in the page.
 - **Cancelling leaves what was already written.** A step is a record before the modal opens, so

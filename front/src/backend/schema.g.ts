@@ -13,7 +13,7 @@ export const Collections = {
 	Superusers: "_superusers",
 	Activities: "activities",
 	ActivitiesDevelopAffect: "activities_develop_affect",
-	ActivitiesDevelopEmotional: "activities_develop_emotional",
+	ActivitiesDevelopSocial: "activities_develop_social",
 	ActivitiesDevelopIntellectual: "activities_develop_intellectual",
 	ActivitiesDevelopMoral: "activities_develop_moral",
 	ActivitiesDevelopPhysical: "activities_develop_physical",
@@ -163,7 +163,7 @@ export type ActivitiesRecord = {
 	created: IsoAutoDateString
 	description: HTMLString
 	develop_affect?: RecordIdString[]
-	develop_emotional?: RecordIdString[]
+	develop_social?: RecordIdString[]
 	develop_intellectual?: RecordIdString[]
 	develop_moral?: RecordIdString[]
 	develop_physical?: RecordIdString[]
@@ -194,7 +194,7 @@ export type ActivitiesDevelopAffectRecord = {
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesDevelopEmotionalRecord = {
+export type ActivitiesDevelopSocialRecord = {
 	created: IsoAutoDateString
 	id: string
 	name: string
@@ -304,7 +304,7 @@ export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemF
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
 export type ActivitiesDevelopAffectResponse<Texpand = unknown> = Required<ActivitiesDevelopAffectRecord> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopEmotionalResponse<Texpand = unknown> = Required<ActivitiesDevelopEmotionalRecord> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopSocialResponse<Texpand = unknown> = Required<ActivitiesDevelopSocialRecord> & BaseSystemFields<Texpand>
 export type ActivitiesDevelopIntellectualResponse<Texpand = unknown> = Required<ActivitiesDevelopIntellectualRecord> & BaseSystemFields<Texpand>
 export type ActivitiesDevelopMoralResponse<Texpand = unknown> = Required<ActivitiesDevelopMoralRecord> & BaseSystemFields<Texpand>
 export type ActivitiesDevelopPhysicalResponse<Texpand = unknown> = Required<ActivitiesDevelopPhysicalRecord> & BaseSystemFields<Texpand>
@@ -327,7 +327,7 @@ export type CollectionRecords = {
 	_superusers: SuperusersRecord
 	activities: ActivitiesRecord
 	activities_develop_affect: ActivitiesDevelopAffectRecord
-	activities_develop_emotional: ActivitiesDevelopEmotionalRecord
+	activities_develop_social: ActivitiesDevelopSocialRecord
 	activities_develop_intellectual: ActivitiesDevelopIntellectualRecord
 	activities_develop_moral: ActivitiesDevelopMoralRecord
 	activities_develop_physical: ActivitiesDevelopPhysicalRecord
@@ -349,7 +349,7 @@ export type CollectionResponses = {
 	_superusers: SuperusersResponse
 	activities: ActivitiesResponse
 	activities_develop_affect: ActivitiesDevelopAffectResponse
-	activities_develop_emotional: ActivitiesDevelopEmotionalResponse
+	activities_develop_social: ActivitiesDevelopSocialResponse
 	activities_develop_intellectual: ActivitiesDevelopIntellectualResponse
 	activities_develop_moral: ActivitiesDevelopMoralResponse
 	activities_develop_physical: ActivitiesDevelopPhysicalResponse
