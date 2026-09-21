@@ -8,7 +8,6 @@ import (
 	"github.com/pocketbase/pocketbase/tools/osutils"
 
 	"backend/hooks"
-	_ "backend/migrations"
 )
 
 func main() {
