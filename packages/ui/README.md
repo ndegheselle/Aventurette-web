@@ -115,7 +115,8 @@ same list. Declaring one is the whole of adding a filter:
 ```ts
 const criteria = [
     rangeCriterion({ key: 'age', label: 'fields.age', icon: BabyIcon,
-                     display: 'age', minField: 'ageMin', maxField: 'ageMax' }),
+                     display: 'age', minField: 'ageMin', maxField: 'ageMax',
+                     floor: 0, ceiling: 18 }),
     tagsCriterion({ key: 'benefits', label: 'fields.benefits', icon: TrendingUpIcon,
                     field: 'benefits', operator: FilterOperator.AnyEquals }),
 ];

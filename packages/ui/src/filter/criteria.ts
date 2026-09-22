@@ -44,6 +44,9 @@ export interface RangeCriterion extends BaseCriterion {
     maxField: string;
     /** Translation key prefix: `.range`, `.minOnly` and `.maxOnly` hang off it. */
     display: string;
+    /** The slider's ends. A bound dragged back to its end is open again. */
+    floor: number;
+    ceiling: number;
     value: RangeValue;
 }
 

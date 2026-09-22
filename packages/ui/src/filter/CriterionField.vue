@@ -2,6 +2,7 @@
 import TagSelect from '@chapelure/ui/data/TagSelect.vue';
 import type { Criterion, CriterionChoice } from '@chapelure/ui/filter/criteria';
 import Field from '@chapelure/ui/forms/Field.vue';
+import RangeInput from '@chapelure/ui/forms/RangeInput.vue';
 import { computed } from 'vue';
 
 /**
@@ -34,11 +35,13 @@ const tags = computed<CriterionChoice[]>({
             </span>
         </template>
 
-        <div v-if="criterion.type === 'range'" class="flex gap-2 items-center">
-            <span class="text-sm opacity-50">{{ $t('data.minimum') }}</span>
-            <input type="number" class="input input-sm w-full" v-model="criterion.value.min" />
-            <span class="text-sm opacity-50">{{ $t('data.maximum') }}</span>
-            <input type="number" class="input input-sm w-full" v-model="criterion.value.max" />
+        <div v-if="criterion.type === 'range'" class="flex flex-col gap-1">
+            <RangeInput class="text-primary" :floor="criterion.floor" :ceiling="criterion.ceiling"
+                v-model:min="criterion.value.min" v-model:max="criterion.value.max" />
+            <div class="flex justify-between text-sm opacity-50">
+                <span>{{ criterion.value.min ?? criterion.floor }}</span>
+                <span>{{ criterion.value.max ?? criterion.ceiling }}</span>
+            </div>
         </div>
 
         <!-- A fixed set fits on screen; a loaded catalogue is searched. -->
