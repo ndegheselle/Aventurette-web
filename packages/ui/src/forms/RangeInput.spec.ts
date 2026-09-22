@@ -14,6 +14,17 @@ describe('RangeInput', () => {
         expect(wrapper.emitted('update:max')).toEqual([[6]]);
     });
 
+    it('unsets an end dragged back to its edge', async () => {
+        const wrapper = mount(RangeInput, { props: { min: 2, max: 8, ceiling: 10 } });
+        const [low, high] = wrapper.findAll('input');
+
+        await low!.setValue(0);
+        await high!.setValue(10);
+
+        expect(wrapper.emitted('update:min')).toEqual([[null]]);
+        expect(wrapper.emitted('update:max')).toEqual([[null]]);
+    });
+
     it('stops a thumb dragged past the other', async () => {
         const wrapper = mount(RangeInput, { props: { min: 2, max: 5, ceiling: 10 } });
         const [low] = wrapper.findAll('input');

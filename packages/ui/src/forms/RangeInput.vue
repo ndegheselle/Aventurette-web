@@ -1,10 +1,10 @@
 <!--
   A slider with two thumbs, bound as `v-model:min` and `v-model:max`. The thumbs stop at each
-  other. An unset (`null`) end sits at its edge. Colour follows `currentColor`: put a
+  other. An unset (`null`) end sits at its edge, and an end dragged to its edge is unset. Colour follows `currentColor`: put a
   `text-primary` on it at the call site.
 -->
 <script setup lang="ts">
-import { clampHigh, clampLow, highOf, isLowOnTop, lowOf, percentOf } from '@chapelure/ui/forms/range';
+import { clampHigh, clampLow, highOf, highValue, isLowOnTop, lowOf, lowValue, percentOf } from '@chapelure/ui/forms/range';
 import { computed } from 'vue';
 
 const props = withDefaults(defineProps<{
@@ -30,14 +30,14 @@ function onLow(event: Event) {
     const value = clampLow(input.valueAsNumber, high.value);
     // The native thumb has already moved; put it back when it was stopped.
     input.valueAsNumber = value;
-    min.value = value;
+    min.value = lowValue(bounds.value, value);
 }
 
 function onHigh(event: Event) {
     const input = event.target as HTMLInputElement;
     const value = clampHigh(input.valueAsNumber, low.value);
     input.valueAsNumber = value;
-    max.value = value;
+    max.value = highValue(bounds.value, value);
 }
 </script>
 

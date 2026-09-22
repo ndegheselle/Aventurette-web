@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clampHigh, clampLow, highOf, isLowOnTop, lowOf, percentOf } from './range';
+import { clampHigh, clampLow, highOf, highValue, isLowOnTop, lowOf, lowValue, percentOf } from './range';
 
 const bounds = { floor: 0, ceiling: 10 };
 
@@ -8,6 +8,13 @@ describe('range', () => {
         expect(lowOf(bounds, null)).toBe(0);
         expect(highOf(bounds, undefined)).toBe(10);
         expect(lowOf(bounds, 3)).toBe(3);
+    });
+
+    it('unsets an end dragged back to its edge', () => {
+        expect(lowValue(bounds, 0)).toBeNull();
+        expect(highValue(bounds, 10)).toBeNull();
+        expect(lowValue(bounds, 1)).toBe(1);
+        expect(highValue(bounds, 9)).toBe(9);
     });
 
     it('stops each thumb at the other', () => {

@@ -22,6 +22,15 @@ export function clampHigh(value: number, low: number): number {
     return Math.max(value, low);
 }
 
+/** An end back at its edge bounds nothing, so it reads as unset, as it started. */
+export function lowValue(bounds: RangeBounds, value: number): number | null {
+    return value <= bounds.floor ? null : value;
+}
+
+export function highValue(bounds: RangeBounds, value: number): number | null {
+    return value >= bounds.ceiling ? null : value;
+}
+
 /** Position on the track, 0 to 100. */
 export function percentOf(bounds: RangeBounds, value: number): number {
     const span = bounds.ceiling - bounds.floor;
