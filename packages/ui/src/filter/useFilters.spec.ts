@@ -7,7 +7,8 @@ import { useFilters } from './useFilters';
 // exactly then.
 
 const criteria = () => [
-    rangeCriterion({ key: 'age', label: 'fields.age', display: 'age', minField: 'ageMin', maxField: 'ageMax' }),
+    rangeCriterion({ key: 'age', label: 'fields.age', display: 'age', minField: 'ageMin', maxField: 'ageMax',
+                    floor: 0, ceiling: 18 }),
     optionsCriterion({
         key: 'environment',
         label: 'fields.environment',

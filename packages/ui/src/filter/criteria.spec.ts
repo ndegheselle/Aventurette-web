@@ -23,6 +23,7 @@ const t = (key: string, params?: Record<string, unknown>) =>
 
 const age = () => rangeCriterion({
     key: 'age', label: 'fields.age', display: 'age', minField: 'ageMin', maxField: 'ageMax',
+    floor: 0, ceiling: 18,
 });
 
 const environment = () => optionsCriterion({
