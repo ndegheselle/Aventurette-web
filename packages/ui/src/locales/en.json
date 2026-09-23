@@ -33,7 +33,9 @@
         "create": "Create",
         "reset": "Reset",
         "remove": "Remove",
-        "browse": "Browse"
+        "browse": "Browse",
+        "showMore": "Show {count} more",
+        "showLess": "Show less"
     },
     "inputs": {
         "file": {

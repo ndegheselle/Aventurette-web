@@ -1,7 +1,7 @@
 import type { ActivitiesStepsResponse, StepsMaterialsResponse, StepsResourcesResponse } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
 
-/** A material belongs to one step — `step` is its owner, never a catalogue entry. */
+/** A material belongs to one step. */
 export type ActivityMaterialData = Entity<StepsMaterialsResponse>;
 
 /**
@@ -20,9 +20,6 @@ export type ActivityStepData = Entity<ActivitiesStepsResponse, {
     resources: ActivityResourceData[];
 }>;
 
-/** What an empty rich-text field holds — the collection requires a value. */
-export const EMPTY_DESCRIPTION = "<p></p>";
-
 /** How many files one step may carry. Also what the input's constraints line names. */
 export const MAX_STEP_RESOURCES = 10;
 
@@ -36,7 +33,7 @@ export const ACCEPTED_RESOURCE_TYPES = '.png,.jpeg,.jpg,.pdf';
 export function createEmptyStep(activity: string): ActivityStepData {
     return {
         activity,
-        description: EMPTY_DESCRIPTION,
+        description: "",
         materials: [] as ActivityMaterialData[],
         resources: [] as ActivityResourceData[],
     } as ActivityStepData;

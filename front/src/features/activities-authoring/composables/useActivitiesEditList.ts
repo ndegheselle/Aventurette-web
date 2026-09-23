@@ -1,4 +1,4 @@
-import { Paginated, PaginationOptions } from '@chapelure/core';
+import type { Paginated } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
@@ -16,7 +16,7 @@ import { useRouter } from 'vue-router';
 const DEFAULT_PER_PAGE = 10;
 export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     const paginated = ref<Paginated<ActivityData>>(
-        new Paginated<ActivityData>([], 0, new PaginationOptions(1, perPage)),
+        { items: [], total: 0, options: { page: 1, perPage } },
     );
 
     /** `null` is the "all" tab. See `authoredStateTabs`. */

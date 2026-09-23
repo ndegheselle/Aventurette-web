@@ -1,4 +1,4 @@
-import { Paginated, PaginationOptions, type BaseEntity, type EntityMapper, type FilterGroup, type IDataCrud } from "@chapelure/core";
+import { type Paginated, type PaginationOptions, type BaseEntity, type EntityMapper, type FilterGroup, type IDataCrud } from "@chapelure/core";
 import type PocketBase from 'pocketbase';
 import { mapErrors } from "./errors";
 import { createPocketBaseFileUrls } from "./files";
@@ -56,7 +56,7 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
             sort: sort(options),
         }));
 
-        return new Paginated<TEntity>(result.items.map(toEntity), result.totalItems, options);
+        return { items: result.items.map(toEntity), total: result.totalItems, options };
     }
 
     async function filter(group: FilterGroup<TEntity>, options: PaginationOptions): Promise<Paginated<TEntity>> {
@@ -67,7 +67,7 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
             filter: expression || undefined,
         }));
 
-        return new Paginated<TEntity>(result.items.map(toEntity), result.totalItems, options);
+        return { items: result.items.map(toEntity), total: result.totalItems, options };
     }
 
     return { create, update, remove, getAll, getById, getList, filter };

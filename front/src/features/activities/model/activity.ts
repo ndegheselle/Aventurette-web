@@ -1,7 +1,6 @@
 import { ActivitiesStateOptions, type ActivitiesResponse } from "@/backend/schema.g";
-import type { Entity } from "@chapelure/core";
+import { distinctById, type Entity } from "@chapelure/core";
 import {
-    EMPTY_DESCRIPTION,
     type ActivityMaterialData,
     type ActivityResourceData,
     type ActivityStepData,
@@ -17,9 +16,6 @@ export type ActivityData = Entity<ActivitiesResponse, {
 
 export const ActivityState = ActivitiesStateOptions;
 
-// Declared in `step.ts`, re-exported here: an activity seeds its description with it too.
-export { EMPTY_DESCRIPTION };
-
 /**
  * A blank activity: written when the user starts one, and bound to the edit form until the real
  * record arrives.
@@ -30,15 +26,14 @@ export { EMPTY_DESCRIPTION };
 export function createEmptyActivity(): ActivityData {
     return {
         name: "",
-        description: EMPTY_DESCRIPTION,
+        description: "",
         state: ActivityState.DRAFT,
         steps: [] as ActivityStepData[],
     } as ActivityData;
 }
 
 /**
- * Every material used across an activity's steps — they hang off steps, not off the activity.
- * Deduplicated by id, in first-use order.
+ * Every material used across an activity's steps.
  */
 export function materialsOf(activity: ActivityData | null | undefined): ActivityMaterialData[] {
     return distinctById((activity?.steps ?? []).flatMap(step => step.materials ?? []));
@@ -47,11 +42,4 @@ export function materialsOf(activity: ActivityData | null | undefined): Activity
 /** Every resource attached to an activity's steps. See `materialsOf`. */
 export function resourcesOf(activity: ActivityData | null | undefined): ActivityResourceData[] {
     return distinctById((activity?.steps ?? []).flatMap(step => step.resources ?? []));
-}
-
-function distinctById<T extends { id: string }>(items: T[]): T[] {
-    const byId = new Map<string, T>();
-    for (const item of items)
-        if (!byId.has(item.id)) byId.set(item.id, item);
-    return [...byId.values()];
 }

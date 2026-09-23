@@ -2,12 +2,16 @@ import { FilterOperator } from '@chapelure/core';
 import {
     clearedCriteria,
     cloneCriteria,
+    collapseHidesPick,
+    COLLAPSED_CHOICES,
     criterionFilters,
+    hiddenChoiceCount,
     describeCriterion,
     isCriterionSet,
     optionsCriterion,
     rangeCriterion,
     tagsCriterion,
+    visibleChoices,
     withChoices,
     withoutCriterion,
     type Criterion,
@@ -42,6 +46,17 @@ const benefits = () => tagsCriterion({
 function set<T extends Criterion>(criterion: T, value: T['value']): T {
     return { ...criterion, value } as T;
 }
+
+/** A vocabulary two longer than the fold, so there is something to hide and something to find. */
+const long = () => optionsCriterion({
+    key: 'season',
+    label: 'fields.season',
+    field: 'season',
+    operator: FilterOperator.AnyEquals,
+    choices: Array.from({ length: COLLAPSED_CHOICES + 2 }, (_, index) => ({
+        label: `season.S${index}`, value: `S${index}`,
+    })),
+});
 
 describe('isCriterionSet', () => {
     it('is false until a bound or a value is picked', () => {
@@ -138,5 +153,48 @@ describe('criterionFilters', () => {
         criterion.value.push('CAR');
 
         expect(filter!.value).toEqual(['INDOOR']);
+    });
+});
+
+// A long vocabulary is cut to its first few until the user asks for the rest. The rule worth
+// pinning is the third one: collapsing must never hide a pick, or confirming the form would
+// clear a filter the user could not see.
+
+describe('visibleChoices', () => {
+    it('cuts a long list to the fold, and shows the lot once expanded', () => {
+        expect(visibleChoices(long(), false)).toHaveLength(COLLAPSED_CHOICES);
+        expect(visibleChoices(long(), true)).toHaveLength(COLLAPSED_CHOICES + 2);
+    });
+
+    it('leaves a short list whole, collapsed or not', () => {
+        expect(visibleChoices(environment(), false)).toHaveLength(2);
+    });
+
+    it('is empty for a range, which has no choices to cut', () => {
+        expect(visibleChoices(age(), false)).toEqual([]);
+    });
+});
+
+describe('hiddenChoiceCount', () => {
+    it('counts what the fold holds back, which is also whether to offer the button', () => {
+        expect(hiddenChoiceCount(long())).toBe(2);
+        expect(hiddenChoiceCount(environment())).toBe(0);
+        expect(hiddenChoiceCount(age())).toBe(0);
+    });
+});
+
+describe('collapseHidesPick', () => {
+    it('is true when something picked sits past the fold', () => {
+        expect(collapseHidesPick(set(long(), [`S${COLLAPSED_CHOICES}`]))).toBe(true);
+    });
+
+    it('is false when every pick is visible anyway', () => {
+        expect(collapseHidesPick(set(long(), ['S0']))).toBe(false);
+        expect(collapseHidesPick(set(environment(), ['CAR']))).toBe(false);
+    });
+
+    it('is false for an untouched criterion, and for a range', () => {
+        expect(collapseHidesPick(long())).toBe(false);
+        expect(collapseHidesPick(age())).toBe(false);
     });
 });

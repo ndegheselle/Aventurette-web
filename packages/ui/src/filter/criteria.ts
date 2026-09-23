@@ -85,6 +85,41 @@ export function isCriterionSet(criterion: Criterion): boolean {
 }
 
 /**
+ * How many choices a criterion shows before it offers the rest behind a button. Six fits under
+ * the next field without scrolling, and leaves the short vocabularies — a weather, an energy
+ * level — whole.
+ */
+export const COLLAPSED_CHOICES = 4;
+
+/** The choices to render, given whether the user has asked for the rest. */
+export function visibleChoices(criterion: Criterion, expanded: boolean): CriterionChoice[] {
+    if (criterion.type === 'range') return [];
+
+    return expanded ? criterion.choices : criterion.choices.slice(0, COLLAPSED_CHOICES);
+}
+
+/** How many a collapsed list holds back — the count on the button, and whether to show one. */
+export function hiddenChoiceCount(criterion: Criterion): number {
+    if (criterion.type === 'range') return 0;
+
+    return Math.max(0, criterion.choices.length - COLLAPSED_CHOICES);
+}
+
+/**
+ * Whether collapsing would hide something already picked.
+ *
+ * What keeps a reopened modal honest: a checkbox the user cannot reach reads as one they never
+ * ticked, and they would clear a filter they cannot see by confirming the form.
+ */
+export function collapseHidesPick(criterion: Criterion): boolean {
+    if (criterion.type === 'range') return false;
+
+    return criterion.choices
+        .slice(COLLAPSED_CHOICES)
+        .some(choice => criterion.value.includes(choice.value));
+}
+
+/**
  * What a criterion reads as on its chip: a range as one bound or both, a pick as its values
  * joined. Unset describes to an empty string, and a value with no matching choice is dropped.
  */

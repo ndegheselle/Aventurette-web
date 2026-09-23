@@ -7,7 +7,6 @@
  *     }));
  */
 import {
-    Paginated,
     ValidationError,
     type BaseEntity,
     type FieldErrors,
@@ -15,6 +14,7 @@ import {
     type IAuthProvider,
     type IDataCrud,
     type IFileUrlResolver,
+    type Paginated,
     type PaginationOptions,
 } from '@chapelure/core';
 
@@ -92,7 +92,7 @@ export function fakeCrud<T extends BaseEntity>(seed: T[] = []): FakeCrud<T> {
 
 function page<T>(items: T[], options: PaginationOptions): Paginated<T> {
     const start = (options.page - 1) * options.perPage;
-    return new Paginated<T>(items.slice(start, start + options.perPage), items.length, options);
+    return { items: items.slice(start, start + options.perPage), total: items.length, options };
 }
 
 export interface FakeAuth<TUser extends BaseEntity> extends IAuthProvider<TUser> {

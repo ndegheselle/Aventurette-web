@@ -1,4 +1,4 @@
-import { PaginationOptions, SortDirection, type BaseEntity } from '@chapelure/core';
+import { SortDirection, type BaseEntity } from '@chapelure/core';
 import { describe, expect, it } from 'vitest';
 import { createPocketBaseCached } from './cached';
 import { fakePocketBase, passthroughMapper } from './testing';
@@ -50,7 +50,7 @@ describe('createPocketBaseCached', () => {
         const pb = fakePocketBase(someBenefits());
         const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
 
-        const page = await cached.getList(new PaginationOptions(2, 2, 'name', SortDirection.ASC));
+        const page = await cached.getList({ page: 2, perPage: 2, sortBy: 'name', sortDirection: SortDirection.ASC });
 
         expect(page.items.map(b => b.name)).toEqual(['Coordination']);
         expect(page.total).toBe(3);
@@ -60,7 +60,7 @@ describe('createPocketBaseCached', () => {
         const pb = fakePocketBase(someBenefits());
         const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
 
-        const page = await cached.getList(new PaginationOptions(1, 3, 'name', SortDirection.DESC));
+        const page = await cached.getList({ page: 1, perPage: 3, sortBy: 'name', sortDirection: SortDirection.DESC });
 
         expect(page.items.map(b => b.name)).toEqual(['Coordination', 'Balance', 'Attention']);
     });
@@ -102,7 +102,7 @@ describe('createPocketBaseCached', () => {
         const cached = createPocketBaseCached(pb.client, 'benefits', passthroughMapper<Benefit>());
         await cached.getAll();
 
-        await cached.filter({ filters: [], combine: 'and' } as any, new PaginationOptions(1, 5));
+        await cached.filter({ filters: [], combine: 'and' } as any, { page: 1, perPage: 5 });
 
         expect(countOf(pb, 'getList')).toBe(1);
     });

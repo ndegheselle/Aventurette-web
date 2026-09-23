@@ -28,10 +28,69 @@
             "name": "Nom",
             "summary": "Description courte",
             "description": "Description",
-            "picture": "Image"
+            "picture": "Image",
+            "environnement": "Environnement",
+            "age": "Âge",
+            "participants": "Nombre d'enfants",
+            "hosts": "Nombre d'animateurs",
+            "fields": "Domaine",
+            "imaginary": "Imaginaire",
+            "season": "Saison",
+            "weather": "Météo",
+            "energy_level": "Niveau d'énergie",
+            "security": "Sécurité",
+            "develop_physical": "Développement physique",
+            "develop_intellectual": "Développement intellectuel",
+            "develop_affect": "Développement affectif",
+            "develop_social": "Développement social",
+            "develop_moral": "Développement moral",
+            "develop_spritual": "Développement spirituel"
         },
         "contraints": {
             "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
+        },
+        "environnement": {
+            "PARK": "Parc de jeux",
+            "HOUSE": "Maison",
+            "BALCONY": "Balcon",
+            "CAR": "Voiture",
+            "OUTDOOR": "Extérieur",
+            "CITY": "Ville",
+            "CAMPAIGN": "Campagne",
+            "FOREST": "Forêt",
+            "MOUTAIN": "Montagne",
+            "POOL": "Piscine",
+            "LAKE": "Lac",
+            "RIVER": "Rivière",
+            "BATH": "Bain",
+            "MEAL": "Repas"
+        },
+        "season": {
+            "AUTUMN": "Automne",
+            "WINTER": "Hiver",
+            "SPRING": "Printemps",
+            "SUMMER": "Été",
+            "CHRISTMAS": "Noël",
+            "NEW YEAR": "Nouvel An",
+            "HALLOWEEN": "Halloween",
+            "EASTER": "Pâques",
+            "VALENTINE": "Saint-Valentin"
+        },
+        "weather": {
+            "RAIN": "Jour de pluie",
+            "SNOW": "Jour de neige",
+            "SUNNY": "Beau temps",
+            "WINDY": "Venteux"
+        },
+        "energy_level": {
+            "LOW": "Bas",
+            "MEDIUM": "Moyen",
+            "HIGH": "Au top"
+        },
+        "bounds": {
+            "range": "{min} à {max}",
+            "minOnly": "À partir de {min}",
+            "maxOnly": "Jusqu'à {max}"
         }
     }
 }

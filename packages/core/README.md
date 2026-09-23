@@ -9,7 +9,7 @@ reason it exists as a separate package. `npm run lint:arch` fails if anything he
 ## Data
 
 ```ts
-import { type IDataCrud, PaginationOptions, Paginated, SortDirection } from '@chapelure/core';
+import { type IDataCrud, type PaginationOptions, type Paginated, SortDirection } from '@chapelure/core';
 ```
 
 `IDataCrud<T>` is the port every repository is written against:

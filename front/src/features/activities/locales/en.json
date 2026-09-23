@@ -28,10 +28,69 @@
             "name": "Name",
             "summary": "Short description",
             "description": "Description",
-            "picture": "Image"
+            "picture": "Image",
+            "environnement": "Environment",
+            "age": "Age",
+            "participants": "Children",
+            "hosts": "Leaders",
+            "fields": "Domain",
+            "imaginary": "Imaginary world",
+            "season": "Season",
+            "weather": "Weather",
+            "energy_level": "Energy level",
+            "security": "Safety",
+            "develop_physical": "Physical development",
+            "develop_intellectual": "Intellectual development",
+            "develop_affect": "Emotional development",
+            "develop_social": "Social development",
+            "develop_moral": "Moral development",
+            "develop_spritual": "Spiritual development"
         },
         "contraints": {
             "picture": "PNG, JPEG and JPG formats. 2MB maximum"
+        },
+        "environnement": {
+            "PARK": "Playground",
+            "HOUSE": "House",
+            "BALCONY": "Balcony",
+            "CAR": "Car",
+            "OUTDOOR": "Outdoors",
+            "CITY": "City",
+            "CAMPAIGN": "Countryside",
+            "FOREST": "Forest",
+            "MOUTAIN": "Mountain",
+            "POOL": "Swimming pool",
+            "LAKE": "Lake",
+            "RIVER": "River",
+            "BATH": "Bath",
+            "MEAL": "Mealtime"
+        },
+        "season": {
+            "AUTUMN": "Autumn",
+            "WINTER": "Winter",
+            "SPRING": "Spring",
+            "SUMMER": "Summer",
+            "CHRISTMAS": "Christmas",
+            "NEW YEAR": "New Year",
+            "HALLOWEEN": "Halloween",
+            "EASTER": "Easter",
+            "VALENTINE": "Valentine's Day"
+        },
+        "weather": {
+            "RAIN": "Rainy day",
+            "SNOW": "Snowy day",
+            "SUNNY": "Fair weather",
+            "WINDY": "Windy"
+        },
+        "energy_level": {
+            "LOW": "Low",
+            "MEDIUM": "Medium",
+            "HIGH": "High"
+        },
+        "bounds": {
+            "range": "{min} to {max}",
+            "minOnly": "{min} and up",
+            "maxOnly": "Up to {max}"
         }
     }
 }

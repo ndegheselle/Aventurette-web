@@ -14,3 +14,10 @@ export type BaseEntity = {
  */
 export type Entity<TPayload, TRelations extends object = object> =
     Omit<TPayload, keyof TRelations | 'expand'> & TRelations;
+
+export function distinctById<T extends BaseEntity>(items: T[]): T[] {
+    const byId = new Map<string, T>();
+    for (const item of items)
+        if (!byId.has(item.id)) byId.set(item.id, item);
+    return [...byId.values()];
+}

@@ -1,6 +1,8 @@
 package migrations
 
 import (
+	"fmt"
+
 	"github.com/pocketbase/pocketbase/core"
 	m "github.com/pocketbase/pocketbase/migrations"
 )
@@ -62,7 +64,10 @@ func retypeWordings(app core.App, name func(string) core.Field, description func
 	for _, collectionName := range translatedCollections() {
 		collection, err := app.FindCollectionByNameOrId(collectionName)
 		if err != nil {
-			return err
+			// PocketBase answers a missing collection with a bare "no rows in result set",
+			// which says nothing about which one — and a migration history out of step with
+			// the database is exactly how that happens. See `back/readme.md`.
+			return fmt.Errorf("collection %s: %w", collectionName, err)
 		}
 
 		collection.Fields.RemoveByName("name")

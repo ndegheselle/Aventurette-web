@@ -83,14 +83,60 @@ list is put back to what the record still holds, because no field on the form st
 **The mechanism is `@chapelure/ui/filter`'s; the criteria are this screen's.** A criterion is
 data — a key, a label, an icon, the kind of input it takes, the values it offers and the value
 it holds — and the package generates the modal's fields and the chips above the list from a list
-of them.
+of them. `activityCriteria()` declares sixteen, each naming a column or a relation of
+`activities`:
 
-**There are none today.** The catalogue that generated them was dropped with the attribute
-tables, and the columns that replaced it — age, participants, season, environment, the
-developmental relations — have no criteria behind them yet, so `useFilters` is handed an empty
-list and `buildActivityFilters` sends the search alone. The bar still renders: a search box that
-applies as soon as it is submitted, and a filter button whose modal has nothing in it until the
-criteria come back.
+| | |
+|---|---|
+| `range` | age, the number of children, the number of leaders |
+| `options` | environnement, saison, météo, niveau d'énergie — `select` columns, so a fixed set |
+| `tags` | Domaine, Imaginaire, Sécurité and the six developmental axes — the referentials |
+
+**Adding a filter means editing that function**, which is the trade the column model made: the
+catalogue this replaced generated its criteria from seeded rows, so a filter appeared without a
+release — and cost two queries to answer. Now one query answers the whole form.
+
+### A range matches by overlap
+
+The bounds a user gives are compared against the **opposite** ends of what is stored: the
+activity's `age_max` has to reach the asked-for minimum, and its `age_min` must not run past the
+asked-for maximum. Inclusive on both sides, so a 6-10 activity answers "for a 10 year old" —
+which is what `GreaterOrEquals` and `LessOrEquals` exist for.
+
+A single column bounded from both ends — the leader count — declares itself as *both* `minField`
+and `maxField` and falls out of the same two comparisons, so `criterionFilters` has one rule
+rather than two.
+
+Untouched criteria contribute filters with no value, and `removeEmptyFilters` drops them. So
+nothing branches on "not set", and an untouched form asks for everything. An open bound is
+dropped the same way, which is also why a minimum of `0` reads as no minimum.
+
+### A long vocabulary collapses
+
+An `options` criterion renders every choice as a checkbox, and environnement seeds fourteen of
+them — enough to push the next field off screen. Past `COLLAPSED_CHOICES` (6) the list is cut and
+the rest go behind a **Show more** button; météo and niveau d'énergie are shorter and stay whole.
+It is `@chapelure/ui`'s, not this feature's: the form is generated, so the field that renders it
+is the only place that knows how many choices there are.
+
+**Collapsing never hides a pick.** Opening the modal rebinds each field to a fresh clone of what
+the list is showing, and `collapseHidesPick` opens any criterion whose applied values sit past
+the fold. Without it a user would reopen the filter, see the box unticked because it was cut off,
+and clear a filter they never touched by confirming the form.
+
+`tags` criteria are unaffected — a referential is a searchable dropdown, not a checkbox list.
+
+### The referentials arrive late
+
+The `tags` criteria have nothing to offer until their rows do. `useReferentials` reads all nine
+— `cachedCrud`, so nine requests the first time and none after — and replaces its map once, when
+the lot has arrived, rather than nine times. `referentialChoices` then turns rows into choices in
+the locale on screen and `setChoices` fills them in.
+
+The criteria themselves are **declared, not loaded**, so the form is complete from the first
+paint; only the dropdowns fill in. A label is the row's own wording rather than a translation
+key, which is why `describeCriterion` renders a `tags` chip as-is and an `options` chip through
+`t`.
 
 `<ActivitiesFilters>` is the bar itself, and stays here because layout does
 ([ADR 0004](../adr/0004-daisyui-classes-at-the-call-site.md)): a search box, a filter button, a
@@ -104,13 +150,48 @@ to nothing, so the row collapses.
 `draft` is what the modal's inputs are bound to. Opening the modal copies applied → draft,
 confirming copies draft → applied and re-queries, cancelling copies applied → draft again.
 
+Search is the exception: it sits outside the modal and applies as soon as it is submitted.
+
 ## Rules that hold
 
-Two specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Four specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
 [ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md). What a criterion *is* — its
 reading, its copies, the filters it contributes — is `@chapelure/ui`'s, and tested there in
 `filter/criteria.spec.ts` and `filter/useFilters.spec.ts`.
+
+*`tests/activity.filters.spec.ts`* — the criteria, and the query they translate to
+
+- A criterion is offered per column and relation, taking its input from what the column holds.
+- A range matches by **overlap** and inclusively, so an activity whose range ends on the bound
+  still counts; an open bound is dropped rather than compared against nothing.
+- A single column declared as both fields is bounded from both ends.
+- A pick matches its own field with `anyEquals`, and its values are copied in so editing the
+  criterion cannot mutate a query already sent.
+- Search matches `name` **or** `description` and stays its own group, so its ORs cannot widen
+  the other criteria.
+- Every set criterion goes in one query.
+- A referential's choices read in the locale on screen, falling back to French.
+
+*`@chapelure/ui/filter/criteria.spec.ts`* — the fold, which is the package's
+
+- A long list is cut to `COLLAPSED_CHOICES` and whole once expanded; a short one is never cut.
+- The hidden count is what decides whether a button is offered at all.
+- Collapsing reports that it would hide a pick, which is what reopens the criterion.
+
+*`tests/referential.spec.ts`* — reading a seeded wording
+
+- The locale asked for, then French, then the empty string — never the text "undefined".
+
+*`tests/ActivitiesFilters.spec.ts`* — the bar's wiring, which is what mounting is for
+
+- A field is generated per criterion, named by the column it narrows.
+- A chip reads the values applied rather than the criterion holding them, and its cross takes
+  that criterion back out of the query.
+- A referential fills its dropdown in once its rows arrive.
+- A long vocabulary is cut down and offers the rest behind a button, which expands and collapses
+  it; a short one gets no button.
+- A criterion reopens expanded when what is applied sits past the fold.
 
 *`tests/activity.spec.ts`* — the mapper, and gathering what hangs off the steps
 
@@ -143,17 +224,20 @@ spec that moved out with the composable it covers
 Most of what follows is the editor's, and is listed here because it is about this feature's
 data. [activities-edit](activities-edit.md) has the gaps that belong to its screens.
 
-- **Nothing on an activity but its name, description and steps is edited or shown.** The
-  attribute catalogue that carried age, duration, environment and the developmental keywords is
-  gone, and the columns that replaced it are not read by any screen yet: no field on the form,
-  no badge on the list, no criterion in the filter modal. The data behind them exists —
-  `back/migrations` seeds the Domaine, Imaginaire, Sécurité and six developmental referentials,
-  and environnement, saison, météo and niveau d'énergie are `select` columns — so wiring a field
-  is a mapper and a binding, not a migration.
+- **The list filters on columns the form cannot set and the list does not show.** The filter
+  bar reads every one of them, but the editor has no field for age, participants, season or any
+  referential, and neither the list nor the detail screen shows a badge for them. Filtering on
+  what nobody can enter yet is the order the work happened in, not the order it should stay in.
+- **No filter for preparation or playing time.** The Glossaire asks for both; `activities` has
+  no column for either, so there is nothing to narrow.
 - **A referential's wordings are stored, not translated from a key.** `name` (and Sécurité's
   `description`) is a JSON object holding one entry per locale — `{"fr": …, "en": …}` — because a
-  seeded row cannot live in a feature's `locales/`. Reading one means picking the current locale
-  out of it, with `fr` as the fallback; no mapper does that yet.
+  seeded row cannot live in a feature's `locales/`. `wordingIn` picks the locale out of it with
+  `fr` as the fallback. Switching language does **not** relabel the choices already on screen:
+  they are filled in once, when the rows arrive.
+- **The referentials are readable by anyone**, like `activities` and `activities_steps`. They
+  hold the seeded Glossaire and nothing a user owns, and writing them is still superuser-only —
+  but it is a wider rule than "signed in", which is what the rest of the app assumes.
 - **The picture input goes nowhere.** The `activities` collection has no file field to store
   one in, so what the user picks is shown and then dropped. There is an `XXX` on it in the page.
 - **Cancelling leaves what was already written.** A step is a record before the modal opens, so

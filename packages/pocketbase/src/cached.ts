@@ -1,4 +1,4 @@
-import { Paginated, PaginationOptions, SortDirection, type BaseEntity, type EntityMapper, type IDataCrud } from "@chapelure/core";
+import { type Paginated, type PaginationOptions, SortDirection, type BaseEntity, type EntityMapper, type IDataCrud } from "@chapelure/core";
 import type PocketBase from 'pocketbase';
 import { createPocketBaseCrud } from "./crud";
 
@@ -67,7 +67,7 @@ export function createPocketBaseCached<TPayload extends BaseEntity, TEntity exte
         const start = (options.page - 1) * options.perPage;
         const paged = items.slice(start, start + options.perPage);
 
-        return new Paginated<TEntity>(paged, items.length, options);
+        return { items: paged, total: items.length, options };
     }
 
     async function create(data: TEntity): Promise<TEntity> {

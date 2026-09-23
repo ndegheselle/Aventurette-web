@@ -13,10 +13,10 @@ export const Collections = {
 	Superusers: "_superusers",
 	Activities: "activities",
 	ActivitiesDevelopAffect: "activities_develop_affect",
-	ActivitiesDevelopSocial: "activities_develop_social",
 	ActivitiesDevelopIntellectual: "activities_develop_intellectual",
 	ActivitiesDevelopMoral: "activities_develop_moral",
 	ActivitiesDevelopPhysical: "activities_develop_physical",
+	ActivitiesDevelopSocial: "activities_develop_social",
 	ActivitiesDevelopSpiritual: "activities_develop_spiritual",
 	ActivitiesFields: "activities_fields",
 	ActivitiesImaginary: "activities_imaginary",
@@ -163,10 +163,10 @@ export type ActivitiesRecord = {
 	created: IsoAutoDateString
 	description: HTMLString
 	develop_affect?: RecordIdString[]
-	develop_social?: RecordIdString[]
 	develop_intellectual?: RecordIdString[]
 	develop_moral?: RecordIdString[]
 	develop_physical?: RecordIdString[]
+	develop_social?: RecordIdString[]
 	develop_spritual?: RecordIdString[]
 	energy_level?: ActivitiesEnergyLevelOptions
 	environnement: ActivitiesEnvironnementOptions
@@ -187,67 +187,68 @@ export type ActivitiesRecord = {
 	weather?: ActivitiesWeatherOptions
 }
 
-export type ActivitiesDevelopAffectRecord = {
+export type ActivitiesDevelopAffectRecord<Tname = unknown> = {
 	created: IsoAutoDateString
 	id: string
-	name: string
+	name: null | Tname
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesDevelopSocialRecord = {
+export type ActivitiesDevelopIntellectualRecord<Tname = unknown> = {
 	created: IsoAutoDateString
 	id: string
-	name: string
+	name: null | Tname
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesDevelopIntellectualRecord = {
+export type ActivitiesDevelopMoralRecord<Tname = unknown> = {
 	created: IsoAutoDateString
 	id: string
-	name: string
+	name: null | Tname
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesDevelopMoralRecord = {
+export type ActivitiesDevelopPhysicalRecord<Tname = unknown> = {
 	created: IsoAutoDateString
 	id: string
-	name: string
+	name: null | Tname
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesDevelopPhysicalRecord = {
+export type ActivitiesDevelopSocialRecord<Tname = unknown> = {
 	created: IsoAutoDateString
 	id: string
-	name: string
+	name: null | Tname
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesDevelopSpiritualRecord = {
+export type ActivitiesDevelopSpiritualRecord<Tname = unknown> = {
 	created: IsoAutoDateString
 	id: string
-	name: string
+	name: null | Tname
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesFieldsRecord = {
+export type ActivitiesFieldsRecord<Tname = unknown> = {
 	created: IsoAutoDateString
 	id: string
-	name?: string
+	name?: null | Tname
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesImaginaryRecord = {
+export type ActivitiesImaginaryRecord<Tname = unknown> = {
 	created: IsoAutoDateString
 	id: string
-	name: string
+	name: null | Tname
 	updated: IsoAutoDateString
 }
 
-export type ActivitiesSecurityRecord = {
+export type ActivitiesSecurityRecord<Tdescription = unknown, Tname = unknown> = {
 	created: IsoAutoDateString
-	description?: HTMLString
+	description?: null | Tdescription
 	id: string
-	name: string
+	name: null | Tname
+	slug: string
 	updated: IsoAutoDateString
 }
 
@@ -285,10 +286,12 @@ export const UsersTypeOptions = {
 } as const
 export type UsersTypeOptions = typeof UsersTypeOptions[keyof typeof UsersTypeOptions]
 export type UsersRecord = {
+	avatar?: FileNameString
 	created: IsoAutoDateString
 	email: string
 	emailVisibility?: boolean
 	id: string
+	name?: string
 	password: string
 	tokenKey: string
 	type?: UsersTypeOptions
@@ -303,15 +306,15 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopAffectResponse<Texpand = unknown> = Required<ActivitiesDevelopAffectRecord> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopSocialResponse<Texpand = unknown> = Required<ActivitiesDevelopSocialRecord> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopIntellectualResponse<Texpand = unknown> = Required<ActivitiesDevelopIntellectualRecord> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopMoralResponse<Texpand = unknown> = Required<ActivitiesDevelopMoralRecord> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopPhysicalResponse<Texpand = unknown> = Required<ActivitiesDevelopPhysicalRecord> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopSpiritualResponse<Texpand = unknown> = Required<ActivitiesDevelopSpiritualRecord> & BaseSystemFields<Texpand>
-export type ActivitiesFieldsResponse<Texpand = unknown> = Required<ActivitiesFieldsRecord> & BaseSystemFields<Texpand>
-export type ActivitiesImaginaryResponse<Texpand = unknown> = Required<ActivitiesImaginaryRecord> & BaseSystemFields<Texpand>
-export type ActivitiesSecurityResponse<Texpand = unknown> = Required<ActivitiesSecurityRecord> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopAffectResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopAffectRecord<Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopIntellectualResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopIntellectualRecord<Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopMoralResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopMoralRecord<Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopPhysicalResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopPhysicalRecord<Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopSocialResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopSocialRecord<Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesDevelopSpiritualResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopSpiritualRecord<Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesFieldsResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesFieldsRecord<Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesImaginaryResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesImaginaryRecord<Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesSecurityResponse<Tdescription = unknown, Tname = unknown, Texpand = unknown> = Required<ActivitiesSecurityRecord<Tdescription, Tname>> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
 export type StepsMaterialsResponse<Texpand = unknown> = Required<StepsMaterialsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
@@ -327,10 +330,10 @@ export type CollectionRecords = {
 	_superusers: SuperusersRecord
 	activities: ActivitiesRecord
 	activities_develop_affect: ActivitiesDevelopAffectRecord
-	activities_develop_social: ActivitiesDevelopSocialRecord
 	activities_develop_intellectual: ActivitiesDevelopIntellectualRecord
 	activities_develop_moral: ActivitiesDevelopMoralRecord
 	activities_develop_physical: ActivitiesDevelopPhysicalRecord
+	activities_develop_social: ActivitiesDevelopSocialRecord
 	activities_develop_spiritual: ActivitiesDevelopSpiritualRecord
 	activities_fields: ActivitiesFieldsRecord
 	activities_imaginary: ActivitiesImaginaryRecord
@@ -349,10 +352,10 @@ export type CollectionResponses = {
 	_superusers: SuperusersResponse
 	activities: ActivitiesResponse
 	activities_develop_affect: ActivitiesDevelopAffectResponse
-	activities_develop_social: ActivitiesDevelopSocialResponse
 	activities_develop_intellectual: ActivitiesDevelopIntellectualResponse
 	activities_develop_moral: ActivitiesDevelopMoralResponse
 	activities_develop_physical: ActivitiesDevelopPhysicalResponse
+	activities_develop_social: ActivitiesDevelopSocialResponse
 	activities_develop_spiritual: ActivitiesDevelopSpiritualResponse
 	activities_fields: ActivitiesFieldsResponse
 	activities_imaginary: ActivitiesImaginaryResponse

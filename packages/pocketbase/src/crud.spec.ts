@@ -1,7 +1,6 @@
 import {
     createFilter,
     createGroup,
-    PaginationOptions,
     SortDirection,
     ValidationError,
     type BaseEntity,
@@ -68,7 +67,7 @@ describe('createPocketBaseCrud', () => {
         const pb = fakePocketBase(Array.from({ length: 12 }, (_, i) => ({ id: `act${i}` })));
         const crud = createPocketBaseCrud(pb.client, 'activities', passthroughMapper<BaseEntity>());
 
-        const paginated = await crud.getList(new PaginationOptions(1, 5));
+        const paginated = await crud.getList({ page: 1, perPage: 5 });
 
         expect(paginated.items).toHaveLength(5);
         expect(paginated.total).toBe(12);
@@ -78,7 +77,7 @@ describe('createPocketBaseCrud', () => {
         const pb = fakePocketBase();
         const crud = createPocketBaseCrud(pb.client, 'activities', passthroughMapper<BaseEntity>());
 
-        await crud.getList(new PaginationOptions(1, 5, 'name', SortDirection.DESC));
+        await crud.getList({ page: 1, perPage: 5, sortBy: 'name', sortDirection: SortDirection.DESC });
 
         expect(pb.lastCall('getList')?.[2]).toMatchObject({ sort: '-name' });
     });
@@ -87,7 +86,7 @@ describe('createPocketBaseCrud', () => {
         const pb = fakePocketBase();
         const crud = createPocketBaseCrud(pb.client, 'activities', passthroughMapper<BaseEntity>());
 
-        await crud.getList(new PaginationOptions(1, 5));
+        await crud.getList({ page: 1, perPage: 5 });
 
         expect(pb.lastCall('getList')?.[2]).toMatchObject({ sort: undefined });
     });
@@ -98,7 +97,7 @@ describe('createPocketBaseCrud', () => {
 
         await crud.filter(
             createGroup<BaseEntity>({ filters: [createFilter<BaseEntity>({ key: 'id', value: 'act1' })] }),
-            new PaginationOptions(1, 5),
+            { page: 1, perPage: 5 },
         );
 
         expect(pb.lastCall('getList')?.[2]).toMatchObject({ filter: "id~'act1'" });
@@ -108,7 +107,7 @@ describe('createPocketBaseCrud', () => {
         const pb = fakePocketBase();
         const crud = createPocketBaseCrud(pb.client, 'activities', passthroughMapper<BaseEntity>());
 
-        await crud.filter(createGroup<BaseEntity>({}), new PaginationOptions(1, 5));
+        await crud.filter(createGroup<BaseEntity>({}), { page: 1, perPage: 5 });
 
         expect(pb.lastCall('getList')?.[2]).toMatchObject({ filter: undefined });
     });

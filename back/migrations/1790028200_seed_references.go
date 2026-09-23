@@ -1,6 +1,8 @@
 package migrations
 
 import (
+	"fmt"
+
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/core"
 	m "github.com/pocketbase/pocketbase/migrations"
@@ -22,7 +24,7 @@ func init() {
 		for _, referential := range referentials() {
 			collection, err := app.FindCollectionByNameOrId(referential.collection)
 			if err != nil {
-				return err
+				return fmt.Errorf("collection %s: %w", referential.collection, err)
 			}
 
 			for _, entry := range referential.entries {
