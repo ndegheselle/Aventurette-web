@@ -11,11 +11,11 @@ import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import type { IEditModal } from '@chapelure/ui/modals/useModal';
 import StepEditModal from '@features/activities-authoring/components/StepEdit.modal.vue';
-import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
-import { type ActivityStepData } from '@features/activities/model/step';
-import { ActivityState } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities-authoring/routes';
+import StepSummary from '@features/activities/components/StepSummary.vue';
+import { ActivityState } from '@features/activities/model/activity';
+import { type ActivityStepData } from '@features/activities/model/step';
 import { ArrowLeftIcon, BadgeCheckIcon, LibraryIcon, ListOrderedIcon, MinusIcon, PenIcon, PlusIcon, SaveIcon, ScrollTextIcon, TriangleAlertIcon, UndoIcon } from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -85,7 +85,7 @@ async function remove(step: ActivityStepData) {
 
         <Panel>
             <h2 class="text-2xl flex items-center gap-2">
-                <LibraryIcon /> {{ $t('activities.edit.properties') }}
+                <LibraryIcon /> {{ $t('activities.authoring.properties') }}
             </h2>
             <Field label="activities.fields.picture">
                 <FilesInput accept="image/*" @change="updateImage">
@@ -105,7 +105,7 @@ async function remove(step: ActivityStepData) {
 
         <Panel>
             <h2 class="text-2xl flex items-center gap-2">
-                <ScrollTextIcon /> {{ $t('activities.edit.description') }}
+                <ScrollTextIcon /> {{ $t('activities.authoring.description') }}
             </h2>
             <TextEditor v-model="activity.description" class="min-h-64" />
             <FieldError :error="errors.get('description')" />
@@ -113,7 +113,7 @@ async function remove(step: ActivityStepData) {
 
         <Panel>
             <h2 class="text-2xl flex items-center gap-2">
-                <ListOrderedIcon /> {{ $t('activities.edit.steps') }}
+                <ListOrderedIcon /> {{ $t('activities.authoring.steps') }}
             </h2>
             <button class="btn btn-primary" :disabled="isAddingStep" @click="add">
                 <span v-if="isAddingStep" class="loading loading-spinner loading-sm"></span>

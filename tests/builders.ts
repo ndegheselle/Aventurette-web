@@ -6,7 +6,6 @@
  */
 import { UsersTypeOptions } from '@/backend/schema.g';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
-import type { ReferentialData } from '@features/activities/model/referential';
 import type { ActivityPayload } from '@features/activities/api/activity.mapper';
 import type {
     ActivityMaterialData,
@@ -29,19 +28,6 @@ const SYSTEM = {
     collectionId: 'fake-collection',
     collectionName: 'fake',
 };
-
-/**
- * A row of one of the nine referentials. `name` is a wording per locale, as the seed stores it;
- * pass one locale and the builder fills the other in with it.
- */
-export function aReferential(overrides: Partial<ReferentialData> = {}): ReferentialData {
-    return {
-        ...SYSTEM,
-        id: nextId('ref'),
-        name: { fr: 'coopération', en: 'cooperation' },
-        ...overrides,
-    } as ReferentialData;
-}
 
 export function aMaterial(overrides: Partial<ActivityMaterialData> = {}): ActivityMaterialData {
     return {

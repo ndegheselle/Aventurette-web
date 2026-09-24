@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
+import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
-import ActivitiesFilters from '@features/activities/components/ActivitiesFilters.vue';
 import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
 import { routesNames } from '@features/activities/routes';
 import { ArrowRightIcon } from 'lucide-vue-next';
 
-const { paginated, filters, refresh } = useActivitiesList();
+const { paginated, search, refresh } = useActivitiesList();
 </script>
 
 <template>
     <Container>
-        <ActivitiesFilters :filters="filters" />
+        <SearchInput @search="() => refresh()"
+                     v-model="search" />
         <List :items="paginated.items"
               v-slot="{ item }"
               class="flex-1">

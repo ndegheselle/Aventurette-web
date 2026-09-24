@@ -11,8 +11,8 @@ a mode.
 
 | Name | Path | Screen |
 |---|---|---|
-| `activities.edit` | `/my-activities` | The author's list, by state |
-| `activities.edit.page` | `/my-activities/:id` | Authoring, one form |
+| `activities.authoring` | `/my-activities` | The author's list, by state |
+| `activities.authoring.page` | `/my-activities/:id` | Authoring, one form |
 
 Both are behind the auth guard, like everything but login and register. The editor used to be
 `/activities/:id/edit`; it was never a view of that activity, so it moved under the list it
@@ -71,7 +71,7 @@ Nothing of its own. `ActivityData`, `ActivityStepData` and their factories stay 
 `activities/model/`, and this feature imports them: it writes activities, it does not redefine
 them. The dependency runs one way — `activities` imports nothing from here.
 
-Translations follow the same rule. `activities.edit.*`, `activities.state.*` and
+Translations follow the same rule. `activities.authoring.*`, `activities.state.*` and
 `activities.untitled` live here; `activities.fields.*` and `activities.steps.fields.*` stay
 with `activities`, because the read side uses parts of both and carving up a shared subtree
 would scatter one screen's labels across two files.

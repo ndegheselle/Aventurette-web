@@ -1,13 +1,13 @@
 import type { Paginated } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
-import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { createEmptyActivity, type ActivityData } from '@features/activities/model/activity';
 import {
     buildAuthoredFilters,
     type ActivityStateFilter,
 } from '@features/activities-authoring/model/activity.edit';
 import { routesNames } from '@features/activities-authoring/routes';
+import { activitiesApi as activities } from '@features/activities/api/activities.api';
+import { createEmptyActivity, type ActivityData } from '@features/activities/model/activity';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -71,7 +71,7 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
             return;
         }
 
-        alert.success(t('activities.edit.removed'));
+        alert.success(t('activities.authoring.removed'));
         await refresh();
     }
 

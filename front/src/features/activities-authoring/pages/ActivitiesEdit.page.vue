@@ -3,10 +3,10 @@ import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
-import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import ActivityRowActions from '@features/activities-authoring/components/ActivityRowActions.vue';
 import { useActivitiesEditList } from '@features/activities-authoring/composables/useActivitiesEditList';
 import { authoredStateTabs } from '@features/activities-authoring/model/activity.edit';
+import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import { PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 
@@ -39,7 +39,7 @@ async function remove(activity: ActivityData) {
 <template>
     <Container>
         <div class="flex gap-2">
-            <h1 class="text-2xl my-auto">{{ $t('activities.edit.title') }}</h1>
+            <h1 class="text-2xl my-auto">{{ $t('activities.authoring.title') }}</h1>
             <button class="btn btn-primary ms-auto"
                     :disabled="isCreating"
                     @click="createActivity">

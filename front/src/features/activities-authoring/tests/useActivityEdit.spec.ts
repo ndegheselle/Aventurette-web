@@ -1,6 +1,6 @@
+import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
 import type { ActivityData } from '@features/activities/model/activity';
 import type { ActivityStepData } from '@features/activities/model/step';
-import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
 import { anActivity, aStep, createTestRouter, fakeCrud, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -19,7 +19,7 @@ vi.mock('@features/activities-authoring/api/steps.api', () => ({
 }));
 
 const routes = [
-    { path: '/my-activities/:id', name: 'activities.edit.page', component: { template: '<div/>' } },
+    { path: '/my-activities/:id', name: 'activities.authoring.page', component: { template: '<div/>' } },
     { path: '/activities/:id', name: 'activities.page', component: { template: '<div/>' } },
 ];
 

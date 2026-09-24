@@ -18,9 +18,9 @@ export type ActivityStateFilter = ActivityData['state'] | null;
 
 /** The tabs above the authoring list, in display order. `label` is a translation key. */
 export const authoredStateTabs: { label: string, value: ActivityStateFilter }[] = [
-    { label: 'activities.edit.states.all', value: null },
-    { label: 'activities.edit.states.DRAFT', value: ActivityState.DRAFT },
-    { label: 'activities.edit.states.PUBLISHED', value: ActivityState.PUBLISHED },
+    { label: 'activities.authoring.states.all', value: null },
+    { label: 'activities.authoring.states.DRAFT', value: ActivityState.DRAFT },
+    { label: 'activities.authoring.states.PUBLISHED', value: ActivityState.PUBLISHED },
 ];
 
 /** Where the state button sends an activity, and what to call the button. */
@@ -38,8 +38,8 @@ export interface StateTransition {
  */
 export function stateTransition(state: ActivityData['state']): StateTransition {
     return state === ActivityState.PUBLISHED
-        ? { to: ActivityState.DRAFT, label: 'activities.edit.unpublish' }
-        : { to: ActivityState.PUBLISHED, label: 'activities.edit.publish' };
+        ? { to: ActivityState.DRAFT, label: 'activities.authoring.unpublish' }
+        : { to: ActivityState.PUBLISHED, label: 'activities.authoring.publish' };
 }
 
 /**

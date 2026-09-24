@@ -5,7 +5,7 @@
             "DRAFT": "Draft",
             "PUBLISHED": "Published"
         },
-        "edit": {
+        "authoring": {
             "title": "Edit activities",
             "description": "Description",
             "steps": "Steps",
@@ -20,5 +20,8 @@
             "remove": "Delete",
             "removed": "Activity deleted."
         }
+    },
+    "admin": {
+        "title": "Administration"
     }
 }

@@ -5,7 +5,7 @@
             "DRAFT": "Brouillon",
             "PUBLISHED": "Publiée"
         },
-        "edit": {
+        "authoring": {
             "title": "Modification",
             "description": "Description",
             "steps": "Étapes",
@@ -20,5 +20,8 @@
             "remove": "Supprimer",
             "removed": "Activité supprimée."
         }
+    },
+    "admin": {
+        "title": "Administration"
     }
 }

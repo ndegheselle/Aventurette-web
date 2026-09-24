@@ -36,7 +36,7 @@ wrong *invisibly*, in a way that takes the whole activity with it. Only the seco
 spec. The reasoning, and what the rule costs, is in
 [ADR 0013](adr/0013-specs-live-in-a-feature-tests-folder.md).
 
-The `activities` feature has four specs for 21 files, and that is the intended ratio — not a
+The `activities` feature has two specs for 15 files, and that is the intended ratio — not a
 gap to fill. Coverage is a diagnostic, never a target.
 
 ## Which kind of test to write
@@ -49,9 +49,9 @@ behaviour should be testable without mounting anything — that is what
 No mounting, no mocks.
 
 ```ts
-it('searches name and description, either of which may match', () => {
-    const group = buildActivityFilters(emptyCriteria(), 'hunt');
-    expect(leaves(group).map(f => f.key)).toEqual(['name', 'description']);
+it('narrows to one state when a tab is picked', () => {
+    const group = buildAuthoredFilters(ActivityState.DRAFT);
+    expect(valueOf(group, 'state')).toBe(ActivityState.DRAFT);
 });
 ```
 

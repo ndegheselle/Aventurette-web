@@ -28,7 +28,7 @@ const emit = defineEmits<{ remove: [] }>();
             </li>
             <li>
                 <a class="text-error" @click="emit('remove')">
-                    <TrashIcon class="icon-sm" /> {{ $t('activities.edit.remove') }}
+                    <TrashIcon class="icon-sm" /> {{ $t('activities.authoring.remove') }}
                 </a>
             </li>
         </ul>

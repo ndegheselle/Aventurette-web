@@ -1,9 +1,9 @@
 import { isFilterGroup, type Filter } from '@chapelure/core';
-import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import {
     buildAuthoredFilters,
     stateTransition,
 } from '@features/activities-authoring/model/activity.edit';
+import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import { describe, expect, it } from 'vitest';
 
 /** The filters of the group, which is all this query ever builds — no nesting. */
@@ -20,14 +20,14 @@ describe('stateTransition', () => {
         const { to, label } = stateTransition(ActivityState.DRAFT);
 
         expect(to).toBe(ActivityState.PUBLISHED);
-        expect(label).toBe('activities.edit.publish');
+        expect(label).toBe('activities.authoring.publish');
     });
 
     it('offers to take a published activity back to draft', () => {
         const { to, label } = stateTransition(ActivityState.PUBLISHED);
 
         expect(to).toBe(ActivityState.DRAFT);
-        expect(label).toBe('activities.edit.unpublish');
+        expect(label).toBe('activities.authoring.unpublish');
     });
 
     it('offers the forward move for any state that is not validated', () => {

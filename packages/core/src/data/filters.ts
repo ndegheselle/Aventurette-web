@@ -18,7 +18,7 @@ export const FilterLogical = {
 export type FilterLogical = typeof FilterLogical[keyof typeof FilterLogical];
 
 /** One field comparison. `combine` joins it to whatever follows it in the group. */
-export interface Filter<T> {
+export type Filter<T> = {
     key: keyof T;
     value: any;
     operator: FilterOperator;
@@ -26,7 +26,7 @@ export interface Filter<T> {
 }
 
 /** Filters and nested groups, combined as `combine` says. */
-export interface FilterGroup<T> {
+export type FilterGroup<T> = {
     filters: (Filter<T> | FilterGroup<T>)[];
     combine: FilterLogical;
 }
@@ -48,10 +48,10 @@ export function createGroup<T>(group: Partial<FilterGroup<T>>): FilterGroup<T> {
 }
 
 /** One OR group matching `search` against every key. Null for an empty search. */
-export function createSearchFilter<T>(search: string, keys: (keyof T)[]): FilterGroup<T> | null
+export function createSearchFilter<T>(search: string, keys: (keyof T)[]): FilterGroup<T>
 {
     if (!search)
-        return null;
+        return createGroup({filters: []});
 
     return createGroup({
         filters: keys.map(k => createFilter({
