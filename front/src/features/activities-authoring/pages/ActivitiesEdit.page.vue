@@ -9,6 +9,8 @@ import { authoredStateTabs } from '@features/activities-authoring/model/activity
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import { PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
+import { inject, onMounted } from 'vue';
+import { useNavbar } from '@/app/useNavbar';
 
 const {
     paginated,
@@ -34,56 +36,38 @@ async function remove(activity: ActivityData) {
 
     await removeActivity(activity);
 }
+
+useNavbar(t('activities.authoring.title'));
 </script>
 
 <template>
     <Container>
-        <div class="flex gap-2">
-            <h1 class="text-2xl my-auto">{{ $t('activities.authoring.title') }}</h1>
-            <button class="btn btn-primary ms-auto"
-                    :disabled="isCreating"
-                    @click="createActivity">
-                <span v-if="isCreating" class="loading loading-spinner loading-sm"></span>
-                <PlusIcon />
-                {{ $t('actions.add') }}
-            </button>
-        </div>
-
         <div role="tablist" class="tabs tabs-box">
-            <a v-for="tab in authoredStateTabs"
-               :key="tab.label"
-               role="tab"
-               class="tab"
-               :class="{ 'tab-active': state === tab.value }"
-               @click="selectState(tab.value)">
+            <a v-for="tab in authoredStateTabs" :key="tab.label" role="tab" class="tab"
+                :class="{ 'tab-active': state === tab.value }" @click="selectState(tab.value)">
                 {{ $t(tab.label) }}
             </a>
+            <button class="btn btn-primary btn-circle ms-auto" :disabled="isCreating" @click="createActivity">
+                <PlusIcon />
+            </button>
         </div>
-
-        <List :items="paginated.items"
-              v-slot="{ item }"
-              class="flex-1">
-            <div><img class="size-16 rounded-box"
-                     src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
+        <List :items="paginated.items" v-slot="{ item }" class="flex-1">
+            <div><img class="size-16 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <div>
                 <div class="flex flex-wrap gap-2">
                     <b class="my-auto">{{ item.name }}</b>
                     <span class="badge badge-sm my-auto"
-                          :class="item.state === ActivityState.PUBLISHED ? 'badge-success' : 'badge-ghost'">
+                        :class="item.state === ActivityState.PUBLISHED ? 'badge-success' : 'badge-ghost'">
                         {{ $t(`activities.state.${item.state}`) }}
                     </span>
                 </div>
-                <p class="text-xs"
-                   v-html="item.description"></p>
+                <p class="text-xs" v-html="item.description"></p>
             </div>
 
             <ActivityRowActions :id="item.id" @remove="() => remove(item)" />
         </List>
 
-        <Pagination v-if="paginated.options.perPage < paginated.total"
-                    v-model:page="paginated.options.page"
-                    v-model:perPage="paginated.options.perPage"
-                    :total="paginated.total"
-                    @change="refresh" />
+        <Pagination v-if="paginated.options.perPage < paginated.total" v-model:page="paginated.options.page"
+            v-model:perPage="paginated.options.perPage" :total="paginated.total" @change="refresh" />
     </Container>
 </template>

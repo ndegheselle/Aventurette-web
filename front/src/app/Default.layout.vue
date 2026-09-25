@@ -8,8 +8,10 @@ import { PanelLeftOpen, PanelLeftClose, PencilLineIcon, TreesIcon } from 'lucide
 
 import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
 import { ref } from 'vue';
+import { useNavbar } from '@/app/useNavbar';
 
 const isDrawerOpen = ref(false);
+const { title } = useNavbar();
 </script>
 
 <template>
@@ -17,11 +19,12 @@ const isDrawerOpen = ref(false);
         <input id="side-menu-drawer" type="checkbox" class="drawer-toggle inline" v-model="isDrawerOpen" />
         <div class="drawer-content flex flex-col">
             <!-- Navbar -->
-            <nav class="navbar bg-base-300">
+            <nav class="navbar bg-base-300 min-h-0 p-1">
                 <label for="side-menu-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost drawer-button">
                     <PanelLeftClose v-if="isDrawerOpen" />
                     <PanelLeftOpen v-else />
                 </label>
+                <span v-if="title" class="ms-2 text-lg truncate">{{ title }}</span>
 
                 <div class="ms-auto">
                     <ul>
