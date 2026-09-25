@@ -33,6 +33,11 @@ derived from `stepMapper.relations`, so a step arrives the same way whether it i
 own or under an activity. A relation the read did not expand maps to an empty list, never to
 the ids the record carries.
 
+`activity.tags` holds ids into `activities_tags`: the domains, imaginary universes, safety tags
+and developmental keywords, told apart by `type`
+([ADR 0017](../adr/0017-activity-tags-are-one-collection.md)). Nothing reads them yet, so
+`activityMapper` does not expand them.
+
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
 `file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
 name into `resource.url` — so a tile renders a url and a step is saved with ids, and neither
@@ -115,8 +120,8 @@ spec that moved out with the composable it covers
 Most of what follows is the editor's, and is listed here because it is about this feature's
 data. [activities-edit](activities-edit.md) has the gaps that belong to its screens.
 
-- **The list cannot be filtered or searched.** The filter bar and the referentials it read were
-  removed; every page lists every activity.
+- **The list cannot be filtered or searched.** The filter bar was removed; every page lists
+  every activity. The tags it would filter on are in `activities_tags`.
 - **The picture input goes nowhere.** The `activities` collection has no file field to store
   one in, so what the user picks is shown and then dropped. There is an `XXX` on it in the page.
 - **Cancelling leaves what was already written.** A step is a record before the modal opens, so

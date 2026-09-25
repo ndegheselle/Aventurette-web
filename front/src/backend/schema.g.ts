@@ -12,16 +12,8 @@ export const Collections = {
 	Otps: "_otps",
 	Superusers: "_superusers",
 	Activities: "activities",
-	ActivitiesDevelopAffect: "activities_develop_affect",
-	ActivitiesDevelopIntellectual: "activities_develop_intellectual",
-	ActivitiesDevelopMoral: "activities_develop_moral",
-	ActivitiesDevelopPhysical: "activities_develop_physical",
-	ActivitiesDevelopSocial: "activities_develop_social",
-	ActivitiesDevelopSpiritual: "activities_develop_spiritual",
-	ActivitiesFields: "activities_fields",
-	ActivitiesImaginary: "activities_imaginary",
-	ActivitiesSecurity: "activities_security",
 	ActivitiesSteps: "activities_steps",
+	ActivitiesTags: "activities_tags",
 	StepsMaterials: "steps_materials",
 	StepsResources: "steps_resources",
 	Users: "users",
@@ -162,94 +154,21 @@ export type ActivitiesRecord = {
 	age_min: number
 	created: IsoAutoDateString
 	description: HTMLString
-	develop_affect?: RecordIdString[]
-	develop_intellectual?: RecordIdString[]
-	develop_moral?: RecordIdString[]
-	develop_physical?: RecordIdString[]
-	develop_social?: RecordIdString[]
-	develop_spritual?: RecordIdString[]
 	energy_level?: ActivitiesEnergyLevelOptions
 	environnement: ActivitiesEnvironnementOptions
-	fields?: RecordIdString[]
 	id: string
-	imaginary?: RecordIdString[]
 	name: string
 	participants_max: number
 	participants_min: number
 	recommended_hosts_numbers?: number
 	season?: ActivitiesSeasonOptions
-	security?: RecordIdString[]
 	state: ActivitiesStateOptions
 	steps?: RecordIdString[]
+	tags?: RecordIdString[]
 	updated: IsoAutoDateString
 	user: RecordIdString
 	visual?: FileNameString
 	weather?: ActivitiesWeatherOptions
-}
-
-export type ActivitiesDevelopAffectRecord<Tname = unknown> = {
-	created: IsoAutoDateString
-	id: string
-	name: null | Tname
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesDevelopIntellectualRecord<Tname = unknown> = {
-	created: IsoAutoDateString
-	id: string
-	name: null | Tname
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesDevelopMoralRecord<Tname = unknown> = {
-	created: IsoAutoDateString
-	id: string
-	name: null | Tname
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesDevelopPhysicalRecord<Tname = unknown> = {
-	created: IsoAutoDateString
-	id: string
-	name: null | Tname
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesDevelopSocialRecord<Tname = unknown> = {
-	created: IsoAutoDateString
-	id: string
-	name: null | Tname
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesDevelopSpiritualRecord<Tname = unknown> = {
-	created: IsoAutoDateString
-	id: string
-	name: null | Tname
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesFieldsRecord<Tname = unknown> = {
-	created: IsoAutoDateString
-	id: string
-	name?: null | Tname
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesImaginaryRecord<Tname = unknown> = {
-	created: IsoAutoDateString
-	id: string
-	name: null | Tname
-	updated: IsoAutoDateString
-}
-
-export type ActivitiesSecurityRecord<Tdescription = unknown, Tname = unknown> = {
-	created: IsoAutoDateString
-	description?: null | Tdescription
-	id: string
-	name: null | Tname
-	slug: string
-	updated: IsoAutoDateString
 }
 
 export type ActivitiesStepsRecord = {
@@ -259,6 +178,28 @@ export type ActivitiesStepsRecord = {
 	id: string
 	materials?: RecordIdString[]
 	resources?: RecordIdString[]
+	updated: IsoAutoDateString
+}
+
+export const ActivitiesTagsTypeOptions = {
+	"FIELD": "FIELD",
+	"IMAGINARY": "IMAGINARY",
+	"SECURITY": "SECURITY",
+	"DEVELOP_PHYSICAL": "DEVELOP_PHYSICAL",
+	"DEVELOP_INTELLECTUAL": "DEVELOP_INTELLECTUAL",
+	"DEVELOP_AFFECT": "DEVELOP_AFFECT",
+	"DEVELOP_SOCIAL": "DEVELOP_SOCIAL",
+	"DEVELOP_MORAL": "DEVELOP_MORAL",
+	"DEVELOP_SPIRITUAL": "DEVELOP_SPIRITUAL",
+} as const
+export type ActivitiesTagsTypeOptions = typeof ActivitiesTagsTypeOptions[keyof typeof ActivitiesTagsTypeOptions]
+export type ActivitiesTagsRecord<Tdescription = unknown, Tname = unknown> = {
+	created: IsoAutoDateString
+	description?: null | Tdescription
+	id: string
+	name: null | Tname
+	slug: string
+	type: ActivitiesTagsTypeOptions
 	updated: IsoAutoDateString
 }
 
@@ -306,16 +247,8 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopAffectResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopAffectRecord<Tname>> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopIntellectualResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopIntellectualRecord<Tname>> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopMoralResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopMoralRecord<Tname>> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopPhysicalResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopPhysicalRecord<Tname>> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopSocialResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopSocialRecord<Tname>> & BaseSystemFields<Texpand>
-export type ActivitiesDevelopSpiritualResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesDevelopSpiritualRecord<Tname>> & BaseSystemFields<Texpand>
-export type ActivitiesFieldsResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesFieldsRecord<Tname>> & BaseSystemFields<Texpand>
-export type ActivitiesImaginaryResponse<Tname = unknown, Texpand = unknown> = Required<ActivitiesImaginaryRecord<Tname>> & BaseSystemFields<Texpand>
-export type ActivitiesSecurityResponse<Tdescription = unknown, Tname = unknown, Texpand = unknown> = Required<ActivitiesSecurityRecord<Tdescription, Tname>> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
+export type ActivitiesTagsResponse<Tdescription = unknown, Tname = unknown, Texpand = unknown> = Required<ActivitiesTagsRecord<Tdescription, Tname>> & BaseSystemFields<Texpand>
 export type StepsMaterialsResponse<Texpand = unknown> = Required<StepsMaterialsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -329,16 +262,8 @@ export type CollectionRecords = {
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
 	activities: ActivitiesRecord
-	activities_develop_affect: ActivitiesDevelopAffectRecord
-	activities_develop_intellectual: ActivitiesDevelopIntellectualRecord
-	activities_develop_moral: ActivitiesDevelopMoralRecord
-	activities_develop_physical: ActivitiesDevelopPhysicalRecord
-	activities_develop_social: ActivitiesDevelopSocialRecord
-	activities_develop_spiritual: ActivitiesDevelopSpiritualRecord
-	activities_fields: ActivitiesFieldsRecord
-	activities_imaginary: ActivitiesImaginaryRecord
-	activities_security: ActivitiesSecurityRecord
 	activities_steps: ActivitiesStepsRecord
+	activities_tags: ActivitiesTagsRecord
 	steps_materials: StepsMaterialsRecord
 	steps_resources: StepsResourcesRecord
 	users: UsersRecord
@@ -351,16 +276,8 @@ export type CollectionResponses = {
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
 	activities: ActivitiesResponse
-	activities_develop_affect: ActivitiesDevelopAffectResponse
-	activities_develop_intellectual: ActivitiesDevelopIntellectualResponse
-	activities_develop_moral: ActivitiesDevelopMoralResponse
-	activities_develop_physical: ActivitiesDevelopPhysicalResponse
-	activities_develop_social: ActivitiesDevelopSocialResponse
-	activities_develop_spiritual: ActivitiesDevelopSpiritualResponse
-	activities_fields: ActivitiesFieldsResponse
-	activities_imaginary: ActivitiesImaginaryResponse
-	activities_security: ActivitiesSecurityResponse
 	activities_steps: ActivitiesStepsResponse
+	activities_tags: ActivitiesTagsResponse
 	steps_materials: StepsMaterialsResponse
 	steps_resources: StepsResourcesResponse
 	users: UsersResponse
