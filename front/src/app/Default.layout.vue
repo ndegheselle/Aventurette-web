@@ -16,7 +16,7 @@ const { title } = useNavbar();
 </script>
 
 <template>
-    <div class="drawer md:drawer-open">
+    <div class="drawer md:drawer-open min-h-dvh">
         <input id="side-menu-drawer" type="checkbox" class="drawer-toggle inline" v-model="isDrawerOpen" />
         <div class="drawer-content flex flex-col">
             <!-- Navbar -->
@@ -25,7 +25,7 @@ const { title } = useNavbar();
                     <PanelLeftClose v-if="isDrawerOpen" />
                     <PanelLeftOpen v-else />
                 </label>
-                <span v-if="title" class="ms-2 text-lg truncate">{{ title }}</span>
+                <span v-if="title" class="ms-2 text-lg truncate sm:block hidden">{{ title }}</span>
 
                 <div class="ms-auto">
                     <ul>
