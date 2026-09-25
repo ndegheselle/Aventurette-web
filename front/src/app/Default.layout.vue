@@ -4,7 +4,8 @@ import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesEditRoutesNames } from '@features/activities-authoring/routes';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { PanelLeftOpen, PanelLeftClose, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
+import { routesNames as dashboardRoutesNames } from '@features/dashboard/routes';
+import { LayoutDashboardIcon, PanelLeftOpen, PanelLeftClose, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 
 import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
 import { ref } from 'vue';
@@ -55,7 +56,7 @@ const { title } = useNavbar();
         <div class="drawer-side is-drawer-close:overflow-visible">
             <label for="side-menu-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
             <div class="min-h-full flex flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
-                <RouterLink to="/" class="flex mt-4 mx-3 mb-2">
+                <RouterLink :to="{ name: dashboardRoutesNames.dashboard }"  class="flex mt-4 mx-3 mb-2">
                     <img class="my-auto" src="https://placeholder.pagebee.io/api/plain/32/32" style="height: 32px;" />
                     <span class="my-auto ms-2 is-drawer-close:hidden">Aventurette</span>
                 </RouterLink>
