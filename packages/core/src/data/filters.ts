@@ -47,11 +47,11 @@ export function createGroup<T>(group: Partial<FilterGroup<T>>): FilterGroup<T> {
     } as FilterGroup<T>;
 }
 
-/** One OR group matching `search` against every key. Null for an empty search. */
+/** One OR group matching `search` against every key. Empty for an empty search. */
 export function createSearchFilter<T>(search: string, keys: (keyof T)[]): FilterGroup<T>
 {
     if (!search)
-        return createGroup({filters: []});
+        return createGroup({});
 
     return createGroup({
         filters: keys.map(k => createFilter({

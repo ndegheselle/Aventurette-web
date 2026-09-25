@@ -35,16 +35,16 @@ describe('createFilter', () => {
 });
 
 describe('createSearchFilter', () => {
-    it('is null for an empty search, so callers can skip adding it', () => {
-        expect(createSearchFilter<Activity>('', ['name'])).toBeNull();
+    it('is an empty group for an empty search, so callers can pass it as is', () => {
+        expect(createSearchFilter<Activity>('', ['name']).filters).toEqual([]);
     });
 
     it('searches every key, any of which may match', () => {
         const group = createSearchFilter<Activity>('hunt', ['name', 'description']);
 
-        expect(group?.filters).toHaveLength(2);
-        expect(group?.filters.every(f => !isFilterGroup(f) && f.combine === FilterLogical.Or)).toBe(true);
-        expect(group?.filters.map(f => (f as any).key)).toEqual(['name', 'description']);
+        expect(group.filters).toHaveLength(2);
+        expect(group.filters.every(f => !isFilterGroup(f) && f.combine === FilterLogical.Or)).toBe(true);
+        expect(group.filters.map(f => (f as any).key)).toEqual(['name', 'description']);
     });
 });
 
