@@ -29,10 +29,6 @@ export function useEditModal<T extends BaseEntity>(modal: IModalController<T>, c
         modal.confirm(result);
     });
 
-    async function confirm() {
-        if (!data.value) return;
-        await submit();
-    }
 
     function show(child: T) {
         const raw = toRaw(child);
@@ -46,7 +42,7 @@ export function useEditModal<T extends BaseEntity>(modal: IModalController<T>, c
         data,
         errors,
         cancel: modal.cancel,
-        confirm,
+        confirm: submit,
         show
     };
 }

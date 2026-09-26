@@ -37,12 +37,7 @@ const { title } = useNavbar();
 
             <!-- Page content here -->
             <main class="flex flex-1 overflow-x-clip relative">
-                <router-view v-slot="{ Component, route }">
-                    <transition v-if="route.meta.transition" :name="route.meta.transition">
-                        <component :is="Component" />
-                    </transition>
-                    <component v-else :is="Component" />
-                </router-view>
+                <RouterView />
             </main>
             <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
                 <aside>

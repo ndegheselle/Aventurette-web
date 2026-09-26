@@ -7,9 +7,9 @@ import { TEST_LOCALE, testI18n } from './i18n';
 config.global.plugins = [testI18n];
 
 /**
- * `<RouterLink>` without a router: an anchor carrying its destination as `data-to`, which
- * `linkTarget` from @tests reads. In place under `mountWithRouter` too, so a link to a route the
- * test did not declare renders instead of warning.
+ * `<RouterLink>` without a router: an anchor carrying its destination as `data-to`. In place
+ * under `mountWithRouter` too, so a link to a route the test did not declare renders instead of
+ * warning.
  */
 config.global.stubs = {
     RouterLink: {

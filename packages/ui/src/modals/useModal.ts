@@ -32,17 +32,15 @@ export function useModal<T = boolean>(option: IModalOptions<T> = {}): IModalCont
     let deferred: Deferred<T | null> | null = null;
 
     function show(): Promise<T | null> {
-        // XXX : could replace by
-        // let { promise, resolve, reject } = Promise.withResolvers<T | null>();
         deferred = new Deferred<T | null>();
-        option?.onShow?.();
+        option.onShow?.();
         isShown.value = true;
         return deferred.promise;
     }
 
     function confirm(result: T | null = true as any) {
         isShown.value = false;
-        if (option?.onConfirm?.(result) === false)
+        if (option.onConfirm?.(result) === false)
             return;
         deferred?.resolve(result ?? true as any);
         deferred = null;
@@ -50,7 +48,7 @@ export function useModal<T = boolean>(option: IModalOptions<T> = {}): IModalCont
 
     function cancel() {
         isShown.value = false;
-        option?.onCancel?.();
+        option.onCancel?.();
         deferred?.resolve(null);
         deferred = null;
     }

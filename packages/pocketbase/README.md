@@ -12,25 +12,22 @@ rewriting that file and this package. In this repo that file is `front/src/backe
 
 ```ts
 import type { CrudFactory } from '@chapelure/core';
-import {
-    createPocketBaseAuth, createPocketBaseCached, createPocketBaseCrud, initPocketBase,
-} from '@chapelure/pocketbase';
+import { createPocketBaseCrud, initPocketBase } from '@chapelure/pocketbase';
 
 const client = initPocketBase(import.meta.env.VITE_API_URL);
 
 export const crud: CrudFactory = (collection, mapper) => createPocketBaseCrud(client, collection, mapper);
-export const cachedCrud: CrudFactory = (collection, mapper) => createPocketBaseCached(client, collection, mapper);
 ```
 
-Everything downstream depends on the core ports only.
+Everything downstream depends on the core ports only. The package exports those three factories
+and nothing else; the rest below is internal.
 
 ## What each piece does
 
 | | |
 |---|---|
-| `initPocketBase(url)` / `getPocketBase()` | Creates and returns the shared client. Idempotent. |
+| `initPocketBase(url)` | Creates and returns the shared client. Idempotent. |
 | `createPocketBaseCrud(client, collection, mapper)` | `IDataCrud`. Every record goes through the mapper, and `mapper.relations` becomes PocketBase's `expand`. Returns **only** the port — the `RecordService` and client stay closed over, so callers cannot reach around the seam. |
-| `createPocketBaseCached(client, collection, mapper)` | Same contract, but fetches the collection once and serves reads from memory. For small reference collections. Create it at module scope so the cache is shared. `filter()` always goes to the server. |
 | `createPocketBaseAuth(client, collection)` | `IAuthProvider`. Wraps `authWithPassword`, `authRefresh`, `requestVerification` and the auth store. |
 | `createPocketBaseFileUrls(client)` | `IFileUrlResolver`, over `pb.files.getURL`. The CRUD adapter builds one and hands it to every `toEntity`, so a mapper resolves a stored file without knowing the backend. |
 | `filterGroupToPocketBase(group)` | Core's filter tree → a PocketBase filter string. |

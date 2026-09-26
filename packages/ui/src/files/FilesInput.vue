@@ -1,6 +1,6 @@
 <!--
   Drag-and-drop / browse zone. `change` carries only files that passed `accept` and `maxMbSize`,
-  and never fires empty. Pair it with useOneFile / useMultipleFiles and FilesList:
+  and never fires empty. Pair it with useOneFile and FilesList:
 
     const { files, update } = useOneFile();
     <FilesInput accept="image/*" @change="update">
@@ -10,6 +10,7 @@
 -->
 <script setup lang="ts">
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
+import { formatBytes } from '@chapelure/ui/files/useFiles';
 import { FolderOpenIcon, UploadIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -86,14 +87,6 @@ function onChange() {
     if (!valid.length) return;
     
     emit('change', valid);
-}
-
-function formatBytes(bytes: number, decimals: number = 2): string {
-    const d = Math.max(0, decimals);
-
-    if (bytes < 1_048_576) return `${(bytes / 1024).toFixed(d)} KB`;
-    else if (bytes < 1_073_741_824) return `${(bytes / 1_048_576).toFixed(d)} MB`;
-    return `${(bytes / 1_073_741_824).toFixed(d)} GB`;
 }
 </script>
 

@@ -22,7 +22,6 @@ explicitly or they are silently dropped from the bundle:
 
 @source "../../../../packages/ui/src";   /* adjust the depth to your CSS entry */
 
-@import "@chapelure/ui/styles/transitions.css";
 @import "@chapelure/ui/styles/helpers.css";
 @import "./themes.css";                  /* your brand — this package ships no theme */
 
@@ -60,17 +59,17 @@ the composable driving them together, the way `settings/` holds `SettingsMenu` n
 | `alerts/` | AlertsContainer, `useAlert` |
 | `dropdown/` | Dropdown, DropdownTrigger, `vClickOutside` |
 | `data/` | List, Pagination, SearchInput |
-| `files/` | FilesInput, FilesList, `useFiles` |
+| `files/` | FilesInput, FilesList, `useOneFile` |
 | `forms/` | Field, FieldError, PasswordInput, TextEditor, `useSubmit`, `useValidationErrors` |
 | `settings/` | SettingsMenu, `useSettings` |
 | `layout/` | Container, Panel |
 
-Components are deep-imported; the barrel carries composables and types. Icons are imported from
-`lucide-vue-next` directly, under their real names.
+Everything is deep-imported, components and composables alike — there is no barrel. Icons are
+imported from `lucide-vue-next` directly, under their real names.
 
 ```ts
 import Modal from '@chapelure/ui/modals/Modal.vue';
-import { useModal } from '@chapelure/ui';
+import { useModal } from '@chapelure/ui/modals/useModal';
 import { XIcon } from 'lucide-vue-next';
 ```
 

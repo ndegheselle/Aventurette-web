@@ -24,7 +24,6 @@
             "@chapelure/core/*": [ "../packages/core/src/*" ],
             "@chapelure/pocketbase": [ "../packages/pocketbase/src/index.ts" ],
             "@chapelure/pocketbase/*": [ "../packages/pocketbase/src/*" ],
-            "@chapelure/ui": [ "../packages/ui/src/index.ts" ],
             "@chapelure/ui/*": [ "../packages/ui/src/*" ],
             "@features/*": [ "./src/features/*" ],
             "@/*": [ "./src/*" ],

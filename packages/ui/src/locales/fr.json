@@ -23,17 +23,9 @@
         "add": "Ajouter",
         "save": "Sauvegarder",
         "cancel": "Annuler",
-        "new": "Nouveau",
         "update": "Modifier",
         "confirm": "Confirmer",
-        "filter": "Filtrer",
-        "back": "Retour",
-        "previous": "Précédent",
-        "next": "Suivant",
-        "create": "Créer",
-        "reset": "Réinitialiser",
-        "remove": "Retirer",
-        "browse": "Parcourir"
+        "back": "Retour"
     },
     "inputs": {
         "file": {
@@ -63,7 +55,6 @@
             "previous": "Page précédente",
             "next": "Page suivante",
             "of": "de"
-        },
-        "none": "Aucun"
+        }
     }
 }

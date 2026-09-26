@@ -114,8 +114,7 @@ const { wrapper, router } = await mountWithRouter(LoginForm, {
 ```
 
 It returns the router, so assert where a navigation landed rather than that a function was
-called. `<RouterLink>` stays stubbed even then — assert on link targets with `linkTarget`, and
-navigate with `router.push`.
+called. `<RouterLink>` stays stubbed even then — navigate with `router.push`.
 
 ## Vue warnings are failures
 

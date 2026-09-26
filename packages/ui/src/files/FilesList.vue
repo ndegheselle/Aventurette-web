@@ -1,12 +1,13 @@
 <!--
-  The files held by useOneFile / useMultipleFiles: thumbnails for images, an icon otherwise.
+  The files held by useOneFile: thumbnails for images, an icon otherwise.
   Removing splices the prop array in place, so the parent's ref follows.
 
-    const { files, update } = useMultipleFiles(10);
-    <FilesInput multiple @change="update" />
+    const { files, update } = useOneFile();
+    <FilesInput @change="update" />
     <FilesList :files />
 -->
 <script setup lang="ts">
+import { formatBytes } from '@chapelure/ui/files/useFiles';
 import { FileIcon, XIcon } from 'lucide-vue-next';
 
 const {files = []} = defineProps<{ files: File[] }>();
@@ -19,14 +20,6 @@ const PREVIEWABLE_TYPES = new Set([
     "image/bmp",
     "image/avif",
 ]);
-
-function formatBytes(bytes: number, decimals: number = 2): string {
-    const d = Math.max(0, decimals);
-
-    if (bytes < 1_048_576) return `${(bytes / 1024).toFixed(d)} KB`;
-    else if (bytes < 1_073_741_824) return `${(bytes / 1_048_576).toFixed(d)} MB`;
-    return `${(bytes / 1_073_741_824).toFixed(d)} GB`;
-}
 
 function toLink(file: File) { return URL.createObjectURL(file); }
 

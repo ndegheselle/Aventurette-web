@@ -23,17 +23,9 @@
         "add": "Add",
         "save": "Save",
         "cancel": "Cancel",
-        "new": "New",
         "update": "Edit",
         "confirm": "Confirm",
-        "filter": "Filter",
-        "back": "Back",
-        "previous": "Previous",
-        "next": "Next",
-        "create": "Create",
-        "reset": "Reset",
-        "remove": "Remove",
-        "browse": "Browse"
+        "back": "Back"
     },
     "inputs": {
         "file": {
@@ -63,7 +55,6 @@
             "previous": "Previous page",
             "next": "Next page",
             "of": "of"
-        },
-        "none": "None"
+        }
     }
 }

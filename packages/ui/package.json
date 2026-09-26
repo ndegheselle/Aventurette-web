@@ -5,7 +5,6 @@
     "description": "Vue 3 behaviour library: modals, paged lists, file and rich-text input, alerts and settings. Styling is daisyUI, written at the call site.",
     "type": "module",
     "exports": {
-        ".": "./src/index.ts",
         "./*": "./src/*"
     },
     "files": [

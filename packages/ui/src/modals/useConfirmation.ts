@@ -29,21 +29,11 @@ export function useConfirmation() {
         return modalController.show();
     }
 
-    function confirm() {
-        modalController?.confirm(true);
-    }
-
-    function cancel() {
-        modalController?.cancel();
-    }
-
     return {
         registerModal,
         title,
         message,
         icon,
         show,
-        confirm,
-        cancel,
     };
 }

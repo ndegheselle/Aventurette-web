@@ -1,13 +1,6 @@
 import { aPickedFile, withSetup } from '@tests';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import { useMultipleFiles, useOneFile } from './useFiles';
-
-const alert = useAlert();
-
-beforeEach(() => {
-    alert.alerts.value = [];
-});
+import { describe, expect, it } from 'vitest';
+import { useOneFile } from './useFiles';
 
 describe('useOneFile', () => {
     it('starts empty', () => {
@@ -30,42 +23,5 @@ describe('useOneFile', () => {
         one.update([aPickedFile('second.png')]);
 
         expect(one.files.value.map(f => f.name)).toEqual(['second.png']);
-    });
-});
-
-describe('useMultipleFiles', () => {
-    it('accumulates across separate picks', () => {
-        const [many] = withSetup(() => useMultipleFiles(5));
-
-        many.update([aPickedFile('a.png')]);
-        many.update([aPickedFile('b.png')]);
-
-        expect(many.files.value.map(f => f.name)).toEqual(['a.png', 'b.png']);
-    });
-
-    it('takes what fits and says why the rest was dropped', () => {
-        const [many] = withSetup(() => useMultipleFiles(2));
-
-        many.update([aPickedFile('a.png'), aPickedFile('b.png'), aPickedFile('c.png')]);
-
-        expect(many.files.value.map(f => f.name)).toEqual(['a.png', 'b.png']);
-        expect(alert.alerts.value[0]?.message).toBe('2 files maximum.');
-    });
-
-    it('adds nothing once the limit is already reached', () => {
-        const [many] = withSetup(() => useMultipleFiles(1));
-        many.update([aPickedFile('a.png')]);
-
-        many.update([aPickedFile('b.png')]);
-
-        expect(many.files.value.map(f => f.name)).toEqual(['a.png']);
-    });
-
-    it('stays silent while there is room', () => {
-        const [many] = withSetup(() => useMultipleFiles(10));
-
-        many.update([aPickedFile('a.png')]);
-
-        expect(alert.alerts.value).toEqual([]);
     });
 });

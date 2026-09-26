@@ -28,6 +28,5 @@ export {
 } from './errors';
 export type { FieldErrors } from './errors';
 
-export { addDays, endOfMonth, formatDate } from './utils/date';
 export { debounce } from './utils/debounce';
 export { Deferred } from './utils/deferred';

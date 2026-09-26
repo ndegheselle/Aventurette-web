@@ -9,16 +9,10 @@ export enum EnumAlertType {
     Warning,
 }
 
-export class Alert {
+export interface Alert {
     id: number;
     message: string;
     type: EnumAlertType;
-
-    constructor(id: number, message: string, type: EnumAlertType) {
-        this.id = id;
-        this.message = message;
-        this.type = type;
-    }
 }
 
 const alerts = ref<Alert[]>([]);

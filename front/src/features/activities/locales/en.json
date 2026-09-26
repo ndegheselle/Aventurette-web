@@ -26,8 +26,6 @@
         },
         "fields": {
             "name": "Name",
-            "summary": "Short description",
-            "description": "Description",
             "picture": "Image",
             "environnement": "Environment",
             "age": "Age",
