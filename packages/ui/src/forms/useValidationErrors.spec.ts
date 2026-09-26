@@ -43,7 +43,7 @@ describe('useValidationErrors', () => {
     });
 
     it('uses the caller\'s own default message when given one', () => {
-        const errors = setup('users.login.defaultError');
+        const errors = setup('auth.login.defaultError');
 
         errors.set(new Error('nope'));
 

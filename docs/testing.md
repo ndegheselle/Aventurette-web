@@ -107,8 +107,7 @@ arms the next write to fail the way a backend rejection does. `fakeAuthProvider`
 stand-in. Use `mountWithRouter` when the subject navigates or reads a route param:
 
 ```ts
-const { wrapper, router } = await mountWithRouter(LoginForm, {
-    props: { registerRoute: 'register' },
+const { wrapper, router } = await mountWithRouter(LoginPage, {
     initialRoute: '/login',        // somewhere that is not the destination
 });
 ```

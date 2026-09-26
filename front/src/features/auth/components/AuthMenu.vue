@@ -23,11 +23,11 @@ const { isLoggedIn, current, logout } = useAuth<UserData>();
         <ul class="menu p-2 w-40">
             <li class="menu-title">{{ current?.email }}</li>
             <a @click="logout()" class="btn">
-                <LogOutIcon /> {{ $t('users.logout') }}
+                <LogOutIcon /> {{ $t('auth.logout') }}
             </a>
         </ul>
     </Dropdown>
     <RouterLink class="btn btn-primary btn-sm" v-else :to="{ name: authRoutesNames.login }">
-        {{ $t('users.login.title') }}
+        {{ $t('auth.login.title') }}
     </RouterLink>
 </template>

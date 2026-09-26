@@ -8,8 +8,6 @@ const provider = fakeAuthProvider(aUser());
 
 vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => provider }));
 
-const guard = authGuard(routesNames);
-
 /** Only the fields the guard reads; the rest of a route location does not matter. */
 const going = (name: string) => ({ name } as RouteLocationNormalized);
 
@@ -19,30 +17,30 @@ beforeEach(() => {
 
 describe('authGuard', () => {
     it('lets the login screen through, or nobody could ever sign in', async () => {
-        await expect(guard(going(routesNames.login))).resolves.toBeUndefined();
+        await expect(authGuard(going(routesNames.login))).resolves.toBeUndefined();
     });
 
     it('lets the registration screen through', async () => {
-        await expect(guard(going(routesNames.register))).resolves.toBeUndefined();
+        await expect(authGuard(going(routesNames.register))).resolves.toBeUndefined();
     });
 
     it('sends an anonymous visitor to the login screen', async () => {
-        await expect(guard(going('activities'))).resolves.toEqual({ name: routesNames.login });
+        await expect(authGuard(going('activities'))).resolves.toEqual({ name: routesNames.login });
     });
 
     it('admits a visitor whose stored session is still valid', async () => {
         // The session survives a reload, so the guard asks the backend before turning anyone away.
         provider.session = aUser();
 
-        await expect(guard(going('activities'))).resolves.toBeUndefined();
+        await expect(authGuard(going('activities'))).resolves.toBeUndefined();
     });
 
     it('admits an already signed-in visitor without asking the backend again', async () => {
         provider.session = aUser();
-        await guard(going('activities'));
+        await authGuard(going('activities'));
         const refresh = vi.spyOn(provider, 'refresh');
 
-        await guard(going('activities'));
+        await authGuard(going('activities'));
 
         expect(refresh).not.toHaveBeenCalled();
         refresh.mockRestore();

@@ -28,7 +28,7 @@ outside a component calls it.
 
 ## The guard
 
-`authGuard(routesNames)` is registered in `main.ts` as a global `beforeEach`. It lets the login
+`authGuard` is registered in `main.ts` as a global `beforeEach`. It lets the login
 and register routes through — otherwise nobody could ever sign in — and for anything else
 admits a visitor who is already signed in, or whose stored session `refresh()` revives.
 Everyone else is sent to `auth.login`.
@@ -57,7 +57,7 @@ One rule, in one place.
 - The guard lets login and register through, sends an anonymous visitor to login, admits a
   visitor whose stored session is valid, and does not ask the backend again once signed in.
 
-*`tests/LoginForm.spec.ts`, `tests/RegisterForm.spec.ts`*
+*`tests/Login.page.spec.ts`, `tests/Register.page.spec.ts`*
 
 - The submit button is disabled while the request is in flight, and enabled again after.
 - A field error from the backend appears against that field; a failure with no detail shows the

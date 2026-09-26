@@ -1,7 +1,7 @@
 import { aUser, fakeAuthProvider, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import LoginForm from '@features/auth/components/LoginForm.vue';
+import LoginPage from '@features/auth/pages/Login.page.vue';
 
 const user = aUser({ email: 'parent@example.com' });
 const auth = fakeAuthProvider(user);
@@ -12,8 +12,7 @@ vi.mock('@features/auth/api/session', () => ({
 }));
 
 async function mountForm() {
-    const { wrapper, router } = await mountWithRouter(LoginForm, {
-        props: { registerRoute: 'register' },
+    const { wrapper, router } = await mountWithRouter(LoginPage, {
         // Start somewhere that is not the destination, so "went home" is a real assertion.
         initialRoute: '/login',
     });
@@ -27,7 +26,7 @@ beforeEach(() => {
     auth.session = null;
 });
 
-describe('LoginForm', () => {
+describe('Login.page', () => {
     it('shows the fields a login needs', async () => {
         const { wrapper } = await mountForm();
 
