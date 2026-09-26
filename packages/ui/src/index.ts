@@ -8,31 +8,6 @@ export { useEditModal } from './modals/useEditModal';
 export { useModal } from './modals/useModal';
 export type { IEditModal, IModalController, IModalOptions } from './modals/useModal';
 
-export { useFilters } from './filter/useFilters';
-export type { Filters } from './filter/useFilters';
-export {
-    clearedCriteria,
-    cloneCriteria,
-    criterionFilters,
-    describeCriterion,
-    formatRange,
-    isCriterionSet,
-    optionsCriterion,
-    rangeCriterion,
-    tagsCriterion,
-    withChoices,
-    withoutCriterion,
-} from './filter/criteria';
-export type {
-    ChoiceCriterion,
-    Criterion,
-    CriterionChoice,
-    CriterionType,
-    RangeCriterion,
-    RangeValue,
-    Translate,
-} from './filter/criteria';
-
 export { useValidationErrors } from './forms/useValidationErrors';
 
 export { vClickOutside } from './dropdown/clickOutside';

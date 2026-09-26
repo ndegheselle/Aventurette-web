@@ -86,11 +86,6 @@
             "LOW": "Bas",
             "MEDIUM": "Moyen",
             "HIGH": "Au top"
-        },
-        "bounds": {
-            "range": "{min} à {max}",
-            "minOnly": "À partir de {min}",
-            "maxOnly": "Jusqu'à {max}"
         }
     }
 }

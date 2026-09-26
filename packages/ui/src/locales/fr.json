@@ -33,9 +33,7 @@
         "create": "Créer",
         "reset": "Réinitialiser",
         "remove": "Retirer",
-        "browse": "Parcourir",
-        "showMore": "Voir {count} de plus",
-        "showLess": "Voir moins"
+        "browse": "Parcourir"
     },
     "inputs": {
         "file": {
@@ -58,8 +56,6 @@
     "data": {
         "noData": "Aucune donnée",
         "created": "Créé avec succès !",
-        "minimum": "Min",
-        "maximum": "Max",
         "updated": "Mis à jour avec succès !",
         "pagination": {
             "first": "Première page",

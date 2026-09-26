@@ -59,10 +59,9 @@ the composable driving them together, the way `settings/` holds `SettingsMenu` n
 | `modals/` | Modal, ConfirmationModal, `useModal`, `useConfirmation`, `useEditModal` |
 | `alerts/` | AlertsContainer, `useAlert` |
 | `dropdown/` | Dropdown, DropdownTrigger, `vClickOutside` |
-| `data/` | List, Pagination, SearchInput, TagSelect |
-| `filter/` | CriterionField, `useFilters`, and the criterion model the two run on |
+| `data/` | List, Pagination, SearchInput |
 | `files/` | FilesInput, FilesList, `useFiles` |
-| `forms/` | Field, FieldError, PasswordInput, RangeInput, TextEditor, `useSubmit`, `useValidationErrors` |
+| `forms/` | Field, FieldError, PasswordInput, TextEditor, `useSubmit`, `useValidationErrors` |
 | `settings/` | SettingsMenu, `useSettings` |
 | `layout/` | Container, Panel |
 
@@ -75,14 +74,9 @@ import { useModal } from '@chapelure/ui';
 import { XIcon } from 'lucide-vue-next';
 ```
 
-`Container` is the page shell, `Panel` a titled surface. `PasswordInput`, `RangeInput` and
-`TextEditor` are the inputs left: one for its reveal toggle, one for its two thumbs that stop at
-each other, one for the tiptap instance it owns and tears down — none for the `input` class.
-
-```vue
-<RangeInput class="text-primary" :floor="0" :ceiling="18"
-            v-model:min="age.min" v-model:max="age.max" />
-```
+`Container` is the page shell, `Panel` a surface. `PasswordInput` and `TextEditor` are the inputs
+left: one for its reveal toggle, one for the tiptap instance it owns and tears down — none for
+the `input` class.
 
 ## Patterns
 
@@ -107,27 +101,6 @@ server knows it; `change` fires when a new query is needed:
 <Pagination v-model:page="options.page" v-model:perPage="options.perPage"
             :total="total" @change="refresh" />
 ```
-
-**Filters generated from criteria.** A criterion is data — a label, an icon, the kind of input
-it takes and the field it constrains — and the form, the chips and the query all come from the
-same list. Declaring one is the whole of adding a filter:
-
-```ts
-const criteria = [
-    rangeCriterion({ key: 'age', label: 'fields.age', icon: BabyIcon,
-                     display: 'age', minField: 'ageMin', maxField: 'ageMax',
-                     floor: 0, ceiling: 18 }),
-    tagsCriterion({ key: 'benefits', label: 'fields.benefits', icon: TrendingUpIcon,
-                    field: 'benefits', operator: FilterOperator.AnyEquals }),
-];
-
-const filters = useFilters(criteria, refresh);        // applied / draft / search
-const query = criteria.flatMap(criterionFilters);     // into a core FilterGroup
-```
-
-`applied` is what the list is showing and `draft` what the modal is editing; `applyDraft()`
-moves one to the other and calls back. Render a field with `<CriterionField :criterion>`, and a
-chip with `describeCriterion(t, criterion)`.
 
 **Validation errors.** `useValidationErrors` consumes core's `ValidationError`, so it does not
 know which backend produced the failure:

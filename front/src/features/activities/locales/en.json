@@ -86,11 +86,6 @@
             "LOW": "Low",
             "MEDIUM": "Medium",
             "HIGH": "High"
-        },
-        "bounds": {
-            "range": "{min} to {max}",
-            "minOnly": "{min} and up",
-            "maxOnly": "Up to {max}"
         }
     }
 }
