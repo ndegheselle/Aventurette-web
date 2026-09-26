@@ -52,7 +52,7 @@ describe('useSubmit', () => {
     });
 
     it('shows the caller\'s own message when the backend sent no field detail', async () => {
-        const form = setup(async () => { throw new Error('boom'); }, 'users.login.defaultError');
+        const form = setup(async () => { throw new Error('boom'); }, 'auth.login.defaultError');
 
         await form.submit();
 

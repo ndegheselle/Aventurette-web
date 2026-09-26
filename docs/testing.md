@@ -7,8 +7,8 @@ npm run test:coverage    # with a coverage report
 npm run check           # boundaries, typecheck and build, then tests — what CI runs
 ```
 
-Specs live in their feature's `tests/` folder — `features/activities/tests/step.spec.ts`
-covers `features/activities/model/step.ts`. They import through aliases like everything else,
+Specs live in their feature's `tests/` folder — `features/activities-authoring/tests/step.edit.spec.ts`
+covers `features/activities-authoring/model/step.edit.ts`. They import through aliases like everything else,
 and `npm run lint:arch` fails on a `.spec.ts` found anywhere else under a feature. They are
 typechecked with the app, so a spec that no longer compiles fails `npm run build`.
 
@@ -36,8 +36,8 @@ wrong *invisibly*, in a way that takes the whole activity with it. Only the seco
 spec. The reasoning, and what the rule costs, is in
 [ADR 0013](adr/0013-specs-live-in-a-feature-tests-folder.md).
 
-The `activities` feature has two specs for 15 files, and that is the intended ratio — not a
-gap to fill. Coverage is a diagnostic, never a target.
+The `activities` feature has two specs for a dozen files, and that is the intended ratio — not
+a gap to fill. Coverage is a diagnostic, never a target.
 
 ## Which kind of test to write
 
@@ -75,11 +75,11 @@ anything that ships imports it.
 one or two fields the test is about:
 
 ```ts
-const activity = anActivity({ name: 'Treasure hunt', ageMin: 6, ageMax: 10 });
+const activity = anActivity({ name: 'Treasure hunt', state: ActivityState.PUBLISHED });
 ```
 
-`anActivity`, `aStep`, `aMaterial`, `aResource`, `aBenefit`, `aChild`, `anInterest`, `aUser`,
-and `aPickedFile` for an upload that has no record yet.
+`anActivity`, `aStep`, `aMaterial`, `aResource`, `aUser`, and `aPickedFile` for an upload that
+has no record yet.
 
 They build **entities** — what everything above `api/` works on. The `*Payload` builders
 (`anActivityPayload`, `aStepPayload`, …) build the backend's shape instead, relation ids and
@@ -91,10 +91,10 @@ all, and only a mapper's spec has a reason to reach for one
 through its `api/` module, so swapping it is one line:
 
 ```ts
-const benefits = fakeCrud<BenefitData>();
+const activities = fakeCrud<ActivityData>();
 
 vi.mock('@features/activities/api/activities.api', () => ({
-    get benefitsApi() { return benefits; },   // a getter: vi.mock is hoisted above the const
+    get activitiesApi() { return activities; },   // a getter: vi.mock is hoisted above the const
 }));
 ```
 
@@ -107,15 +107,13 @@ arms the next write to fail the way a backend rejection does. `fakeAuthProvider`
 stand-in. Use `mountWithRouter` when the subject navigates or reads a route param:
 
 ```ts
-const { wrapper, router } = await mountWithRouter(LoginForm, {
-    props: { registerRoute: 'register' },
+const { wrapper, router } = await mountWithRouter(LoginPage, {
     initialRoute: '/login',        // somewhere that is not the destination
 });
 ```
 
 It returns the router, so assert where a navigation landed rather than that a function was
-called. `<RouterLink>` stays stubbed even then — assert on link targets with `linkTarget`, and
-navigate with `router.push`.
+called. `<RouterLink>` stays stubbed even then — navigate with `router.push`.
 
 ## Vue warnings are failures
 

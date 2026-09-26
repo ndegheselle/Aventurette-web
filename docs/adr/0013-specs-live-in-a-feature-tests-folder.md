@@ -75,9 +75,9 @@ feature without re-litigating it each time.
 - *"Could this be wrong in a way review would miss" is still a judgement.* It is a narrower one
   than "should this be tested", but it is not mechanical. The lint rule enforces *where* a spec
   goes, never *whether* one exists.
-- *Some real rules are now only covered indirectly.* The filter modal's draft/applied split has
-  no spec of its own; what it produces is covered by `buildActivityFilters`. If that split ever
-  grows a third state, it has crossed into decision territory and earns one.
+- *Some real rules are only covered indirectly.* `useActivitiesEditList` has no spec of its
+  own; the query it sends is covered by `buildAuthoredFilters`. If the list grows an ordering
+  rule of its own, it has crossed into decision territory and earns one.
 
 **What was not changed.** The existing `auth` and `users` specs were moved, not judged — four
 of the six are component tests this rule would not write today. Deleting them is its own pass,

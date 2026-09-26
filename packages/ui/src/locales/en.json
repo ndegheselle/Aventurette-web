@@ -23,19 +23,9 @@
         "add": "Add",
         "save": "Save",
         "cancel": "Cancel",
-        "new": "New",
         "update": "Edit",
         "confirm": "Confirm",
-        "filter": "Filter",
-        "back": "Back",
-        "previous": "Previous",
-        "next": "Next",
-        "create": "Create",
-        "reset": "Reset",
-        "remove": "Remove",
-        "browse": "Browse",
-        "showMore": "Show {count} more",
-        "showLess": "Show less"
+        "back": "Back"
     },
     "inputs": {
         "file": {
@@ -46,6 +36,9 @@
                 "exceedSize": "'{name}' exceeds the {maxSize} MB limit ({size})",
                 "exceedNumber": "{number} files maximum."
             }
+        },
+        "password": {
+            "reveal": "Show password"
         }
     },
     "confirmation": {
@@ -58,8 +51,6 @@
     "data": {
         "noData": "No data",
         "created": "Created successfully!",
-        "minimum": "Min",
-        "maximum": "Max",
         "updated": "Updated successfully!",
         "pagination": {
             "first": "First page",
@@ -67,7 +58,6 @@
             "previous": "Previous page",
             "next": "Next page",
             "of": "of"
-        },
-        "none": "None"
+        }
     }
 }

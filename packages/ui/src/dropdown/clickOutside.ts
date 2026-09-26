@@ -13,9 +13,7 @@ export const vClickOutside: Directive<ClickOutsideElement> = {
             if (!(el === event.target || el.contains(event.target)))
                 binding.value(event);
         };
-        if (el.clickOutsideEvent) {
-            document.addEventListener('click', el.clickOutsideEvent);
-        }
+        document.addEventListener('click', el.clickOutsideEvent);
     },
     unmounted(el) {
         if (el.clickOutsideEvent) {
@@ -23,5 +21,3 @@ export const vClickOutside: Directive<ClickOutsideElement> = {
         }
     },
 };
-
-export default vClickOutside;

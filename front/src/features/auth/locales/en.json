@@ -1,7 +1,5 @@
 {
-    "users": {
-        "account": "Account",
-        "title": "User",
+    "auth": {
         "logout": "Log out",
         "login": {
             "title": "Log in",

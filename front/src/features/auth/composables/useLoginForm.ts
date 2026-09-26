@@ -25,7 +25,7 @@ export function useLoginForm() {
             await auth.login(credentials.email, credentials.password);
             router.push('/');
         },
-        { defaultErrorKey: 'users.login.defaultError' },
+        { defaultErrorKey: 'auth.login.defaultError' },
     );
 
     return { credentials, rememberMe, isLoading, errors, submit };

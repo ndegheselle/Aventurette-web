@@ -42,7 +42,7 @@ export type RouterMountOptions<Props> = MountingOptions<Props> & RouterOptions;
  * `router.currentRoute.value.name`.
  *
  * `<RouterLink>` stays stubbed, so a link to a route the test did not declare still renders —
- * assert on those with `linkTarget`, and navigate with `router.push`.
+ * navigate with `router.push`.
  */
 export async function mountWithRouter<Props>(
     component: Component,
@@ -66,7 +66,7 @@ export async function mountWithRouter<Props>(
  * Run a composable inside a component instance — anything using `onMounted` or `inject` needs
  * one, and calling it bare warns, which fails the test.
  *
- *     const [filters] = withSetup(() => useActivityFilters(onChange));
+ *     const [subject] = withSetup(() => useActivityEdit(), router);
  *
  * Pass a router for a composable that uses `useRouter` or `useRoute`; it comes back third, to
  * assert on where it navigated. Unmount the wrapper when the test is about teardown.
@@ -87,10 +87,4 @@ export function withSetup<T>(composable: () => T, router?: Router) {
     );
 
     return router ? [result, wrapper, router] : [result, wrapper];
-}
-
-/** Where a stubbed `<RouterLink>` points. */
-export function linkTarget(link: { attributes(name: string): string | undefined }): unknown {
-    const raw = link.attributes('data-to');
-    return raw ? JSON.parse(raw) : null;
 }

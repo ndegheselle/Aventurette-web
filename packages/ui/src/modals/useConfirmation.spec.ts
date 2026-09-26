@@ -43,21 +43,21 @@ describe('useConfirmation', () => {
     });
 
     it('resolves true when confirmed', async () => {
-        const confirmation = useConfirmation();
-        confirmation.registerModal(useModal());
+        const controller = useModal();
+        useConfirmation().registerModal(controller);
 
-        const answer = confirmation.show('Remove?', 'Are you sure?');
-        confirmation.confirm();
+        const answer = useConfirmation().show('Remove?', 'Are you sure?');
+        controller.confirm(true);
 
         await expect(answer).resolves.toBe(true);
     });
 
     it('resolves null when cancelled, which callers read as declined', async () => {
-        const confirmation = useConfirmation();
-        confirmation.registerModal(useModal());
+        const controller = useModal();
+        useConfirmation().registerModal(controller);
 
-        const answer = confirmation.show('Remove?', 'Are you sure?');
-        confirmation.cancel();
+        const answer = useConfirmation().show('Remove?', 'Are you sure?');
+        controller.cancel();
 
         await expect(answer).resolves.toBeNull();
     });

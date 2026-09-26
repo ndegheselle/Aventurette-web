@@ -1,4 +1,4 @@
-# 0017 — An activity's tags are one collection
+# 0014 — An activity's tags are one collection
 
 **Status:** Accepted
 

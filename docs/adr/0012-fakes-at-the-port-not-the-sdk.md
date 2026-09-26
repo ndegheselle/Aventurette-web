@@ -18,7 +18,7 @@ A feature reaches the backend only through `features/<name>/api/*.api.ts`
 
 ```ts
 vi.mock('@features/activities/api/activities.api', () => ({
-    get benefitsApi() { return benefits; },
+    get activitiesApi() { return activities; },
 }));
 ```
 

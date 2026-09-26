@@ -1,6 +1,6 @@
 import Default from '@/app/Default.layout.vue';
 import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import activitiesEditRoutes from '@features/activities-authoring/routes';
+import authoringRoutes from '@features/activities-authoring/routes';
 import authRoutes from '@features/auth/routes';
 import dashboardRoutes from '@features/dashboard/routes';
 import type { RouteRecordRaw } from 'vue-router';
@@ -11,12 +11,12 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: Default,
         children: [
-            // XXX : until there is a dashboard to land on.
+            // XXX : until the dashboard has something to show.
             { path: '', redirect: { name: activitiesRoutesNames.all } },
             ...authRoutes,
             ...dashboardRoutes,
             ...activitiesRoutes,
-            ...activitiesEditRoutes
+            ...authoringRoutes,
         ]
     }
 ];

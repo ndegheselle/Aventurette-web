@@ -12,8 +12,11 @@ Signing in, signing up, and keeping everything else behind a session.
 ## The session
 
 `useAuth` is the session, and there is exactly one: `current` is module-level state, shared by
-every caller, so signing in anywhere signs in everywhere. `useUsers` in the users feature is
-`useAuth` narrowed to this app's user record and nothing more.
+every caller, so signing in anywhere signs in everywhere. `UserData` in `model/user.ts` is this
+app's user record, for callers that need more than an id: `useAuth<UserData>()`.
+
+`AuthMenu` is the session's corner of the navbar: the signed-in user's email and a logout, or a
+login link.
 
 The session itself is persisted by the backend adapter, not here. `refresh()` is what asks
 whether a stored one is still valid — which is what makes a reload keep you signed in.
@@ -25,7 +28,7 @@ outside a component calls it.
 
 ## The guard
 
-`authGuard(routesNames)` is registered in `main.ts` as a global `beforeEach`. It lets the login
+`authGuard` is registered in `main.ts` as a global `beforeEach`. It lets the login
 and register routes through — otherwise nobody could ever sign in — and for anything else
 admits a visitor who is already signed in, or whose stored session `refresh()` revives.
 Everyone else is sent to `auth.login`.
@@ -54,7 +57,7 @@ One rule, in one place.
 - The guard lets login and register through, sends an anonymous visitor to login, admits a
   visitor whose stored session is valid, and does not ask the backend again once signed in.
 
-*`tests/LoginForm.spec.ts`, `tests/RegisterForm.spec.ts`*
+*`tests/Login.page.spec.ts`, `tests/Register.page.spec.ts`*
 
 - The submit button is disabled while the request is in flight, and enabled again after.
 - A field error from the backend appears against that field; a failure with no detail shows the

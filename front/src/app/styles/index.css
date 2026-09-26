@@ -10,7 +10,6 @@
 @source "../../../../packages/ui/src";
 
 /* Mechanics live with the design system; the brand theme belongs to this app. */
-@import "@chapelure/ui/styles/transitions.css";
 @import "@chapelure/ui/styles/helpers.css";
 @import "./themes.css";
 

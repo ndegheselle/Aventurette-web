@@ -1,8 +1,8 @@
 <script setup lang="ts">
-const emit = defineEmits(['provider-selected'])
+const emit = defineEmits<{ 'provider-selected': [provider: string] }>();
 
 function emitProvider(provider: string) {
-  emit('provider-selected', provider)
+    emit('provider-selected', provider);
 }
 </script>
 

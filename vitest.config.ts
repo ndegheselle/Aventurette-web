@@ -22,7 +22,6 @@ export default defineConfig({
         include: [
             'front/src/**/*.spec.ts',
             'packages/*/src/**/*.spec.ts',
-            'tests/**/*.spec.ts',
         ],
         coverage: {
             provider: 'v8',

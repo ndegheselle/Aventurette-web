@@ -6,12 +6,29 @@ import {
     type FilterGroup,
 } from "@chapelure/core";
 import { ActivityState, type ActivityData } from "@features/activities/model/activity";
+import type { ActivityStepData } from "@features/activities/model/step";
 
 /**
  * The activity seen from its author's side: which of them the list shows, and the one transition
  * the editor offers. Its shape stays in `activities/model` — this feature writes activities, it
  * does not redefine them.
  */
+
+/**
+ * A blank activity: written when the user starts one, and bound to the edit form until the real
+ * record arrives.
+ *
+ * `description` and `state` are seeded because the collection requires them, and an activity is
+ * created before it is filled in. `name` is the caller's — only it can translate a placeholder.
+ */
+export function createEmptyActivity(): ActivityData {
+    return {
+        name: "",
+        description: "",
+        state: ActivityState.DRAFT,
+        steps: [] as ActivityStepData[],
+    } as ActivityData;
+}
 
 /** A state to narrow the authoring list to, or `null` for every one of them. */
 export type ActivityStateFilter = ActivityData['state'] | null;

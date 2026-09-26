@@ -2,7 +2,8 @@
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import ResourceDisplay from '@features/activities-authoring/components/ResourceDisplay.vue';
 import { useStepResources } from '@features/activities-authoring/composables/useStepEdit';
-import { ACCEPTED_RESOURCE_TYPES, type ActivityResourceData } from '@features/activities/model/step';
+import { ACCEPTED_RESOURCE_TYPES } from '@features/activities-authoring/model/step.edit';
+import type { ActivityResourceData } from '@features/activities/model/step';
 import { CircleOffIcon, TrashIcon } from 'lucide-vue-next';
 
 /** The step these belong to: a resource is written against it as soon as it is picked. */

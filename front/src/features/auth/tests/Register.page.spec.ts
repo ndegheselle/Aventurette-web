@@ -1,7 +1,7 @@
 import { aUser, fakeAuthProvider, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import RegisterForm from '@features/auth/components/RegisterForm.vue';
+import RegisterPage from '@features/auth/pages/Register.page.vue';
 
 const user = aUser();
 const auth = fakeAuthProvider(user);
@@ -9,8 +9,7 @@ const auth = fakeAuthProvider(user);
 vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => auth }));
 
 async function mountForm() {
-    return mountWithRouter(RegisterForm, {
-        props: { loginRoute: 'login' },
+    return mountWithRouter(RegisterPage, {
         initialRoute: '/register',
     });
 }
@@ -21,7 +20,7 @@ beforeEach(() => {
     auth.session = null;
 });
 
-describe('RegisterForm', () => {
+describe('Register.page', () => {
     it('asks for the password twice', async () => {
         const { wrapper } = await mountForm();
 

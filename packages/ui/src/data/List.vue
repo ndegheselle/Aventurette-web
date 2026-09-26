@@ -2,7 +2,7 @@
 <script setup lang="ts" generic="T extends BaseEntity">
 import type { BaseEntity } from '@chapelure/core';
 import { CircleQuestionMarkIcon } from 'lucide-vue-next';
-const props = defineProps<{
+defineProps<{
     items?: T[];
 }>();
 

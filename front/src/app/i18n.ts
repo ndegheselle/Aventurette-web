@@ -8,20 +8,11 @@ import uiFr from '@chapelure/ui/locales/fr.json';
 /** The boot default, and the fallback for a key missing from another locale. */
 export const DEFAULT_LOCALE = 'fr';
 
-export type Messages = Record<string, any>;
+type Messages = Record<string, any>;
 
-// Each feature's locales/ is picked up automatically; nothing to register.
-const featureFiles = import.meta.glob('@/features/**/locales/*.json', { eager: true });
-
-/**
- * The words for a locale, falling back to French and then to nothing.
- *
- * Empty rather than undefined for a row with no wording at all: a badge with no text is a
- * smaller lie than the string "undefined", and a seeded row always has one.
- */
-export function getMessage(wording: Messages | null | undefined, locale: string): string {
-    return wording?.[locale] ?? wording?.[DEFAULT_LOCALE] ?? '';
-}
+// Every locales/ folder under src — the app's own and each feature's — is picked up; nothing to
+// register.
+const featureFiles = import.meta.glob('@/**/locales/*.json', { eager: true });
 
 /** Recursive: two features sharing a top-level key must keep both subtrees. */
 function mergeMessages(target: Messages, source: Messages): Messages {
@@ -41,7 +32,7 @@ function isPlainObject(value: unknown): value is Messages {
 }
 
 /**
- * The whole catalogue: design system strings first, then every feature's. Exported so tests
+ * The whole catalogue: design system strings first, then the app's and every feature's. Exported so tests
  * mount against the same messages and assert on the copy a user would read.
  */
 export const messages: Record<string, Messages> = {

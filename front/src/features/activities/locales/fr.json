@@ -26,8 +26,6 @@
         },
         "fields": {
             "name": "Nom",
-            "summary": "Description courte",
-            "description": "Description",
             "picture": "Image",
             "environnement": "Environnement",
             "age": "Âge",
@@ -46,7 +44,7 @@
             "develop_moral": "Développement moral",
             "develop_spritual": "Développement spirituel"
         },
-        "contraints": {
+        "constraints": {
             "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
         },
         "environnement": {
@@ -86,11 +84,6 @@
             "LOW": "Bas",
             "MEDIUM": "Moyen",
             "HIGH": "Au top"
-        },
-        "bounds": {
-            "range": "{min} à {max}",
-            "minOnly": "À partir de {min}",
-            "maxOnly": "Jusqu'à {max}"
         }
     }
 }

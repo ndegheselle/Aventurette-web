@@ -6,7 +6,6 @@ import { Collections } from '@/backend/schema.g';
 import type { BaseEntity, CrudFactory, EntityMapper, IAuthProvider } from '@chapelure/core';
 import {
     createPocketBaseAuth,
-    createPocketBaseCached,
     createPocketBaseCrud,
     initPocketBase,
 } from '@chapelure/pocketbase';
@@ -22,15 +21,6 @@ export const crud: CrudFactory = <TPayload extends BaseEntity, TEntity extends B
     collection: string,
     mapper: EntityMapper<TPayload, TEntity>,
 ) => createPocketBaseCrud<TPayload, TEntity>(client, collection, mapper);
-
-/**
- * Same contract as `crud`, fetched once and read from memory. Only for small reference
- * collections, and only at module scope — the cache lives on the instance.
- */
-export const cachedCrud: CrudFactory = <TPayload extends BaseEntity, TEntity extends BaseEntity>(
-    collection: string,
-    mapper: EntityMapper<TPayload, TEntity>,
-) => createPocketBaseCached<TPayload, TEntity>(client, collection, mapper);
 
 const auth = createPocketBaseAuth<BaseEntity>(client, Collections.Users);
 

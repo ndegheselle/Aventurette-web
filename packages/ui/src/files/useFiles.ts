@@ -1,6 +1,4 @@
-import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 /**
  * One picked file, replaced on each pick.
@@ -22,31 +20,10 @@ export function useOneFile() {
     }
 }
 
-/**
- * Picked files, appended on each pick. Over the limit, what fits is kept and the user alerted.
- *
- *     const { files, update } = useMultipleFiles(5);
- *     <FilesInput multiple @change="update" />
- *     <FilesList :files />
- */
-export function useMultipleFiles(maxFilesNumber: number = 10) {
-    const { t } = useI18n();
-    const alert = useAlert();
+export function formatBytes(bytes: number, decimals: number = 2): string {
+    const d = Math.max(0, decimals);
 
-    const files = ref<File[]>([]);
-
-    function update(newFiles: File[]) {
-        if (files.value.length + newFiles.length > maxFilesNumber) {
-            alert.error(t('inputs.file.upload.exceedNumber', { number: maxFilesNumber }));
-            newFiles = newFiles.slice(0, maxFilesNumber - files.value.length);
-        }
-        
-        if (newFiles.length)
-            files.value = files.value.concat(newFiles);
-    }
-
-    return {
-        files,
-        update
-    }
+    if (bytes < 1_048_576) return `${(bytes / 1024).toFixed(d)} KB`;
+    else if (bytes < 1_073_741_824) return `${(bytes / 1_048_576).toFixed(d)} MB`;
+    return `${(bytes / 1_073_741_824).toFixed(d)} GB`;
 }

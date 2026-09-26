@@ -24,7 +24,7 @@ down, which is what makes it testable without mounting anything.
 | `features/<name>/api/` | the feature's backend calls, and `<entity>.mapper.ts` — the payload type and the translation to the model | `@/backend`, the feature's `model/`. **No `vue`.** |
 | `features/<name>/composables/` | reactive state and orchestration | `vue`, the feature's `api/` and `model/` |
 | `features/<name>/components/` | markup and bindings | anything above |
-| `features/<name>/pages/` | route targets, and what only they use | anything above |
+| `features/<name>/pages/` | route targets, `Name.page.vue` | anything above |
 | `features/<name>/tests/` | the feature's specs — and the only place they may live | anything |
 
 Adding behaviour usually means: a pure function in `model/`, then a line in a composable, then
@@ -36,7 +36,7 @@ types, its factory, its enums and its formatters together; `model/step.ts` does 
 step and the materials and resources hanging off it. What the backend sends is not part of that:
 an entity's payload type and its `EntityMapper` live in `api/<entity>.mapper.ts`, with the rest
 of the code that knows a backend exists. A three-line type alias is not a file.
-A composable covers a screen — `useActivitiesList` owns the public list and its filters,
+A composable covers a screen — `useActivitiesList` owns the public list and its search,
 `useActivitiesEditList` the author's own and its add and delete buttons — rather than one
 slice of one.
 
@@ -79,6 +79,9 @@ app's real catalogue, so assertions are on the copy a user would read.
 - **Destructure a composable** in `<script setup>` — a ref reached through an object is not
   unwrapped in a template.
 - Comments explain *why*, not what. The codebase's existing comments are the register to match.
+- **Delete what has no caller**, in the change that removes its last caller — exports,
+  translations, styles, docs included. Flat before nested; names follow the feature
+  ([coding guidelines](docs/coding-guidelines.md)).
 
 ## Things that will bite
 

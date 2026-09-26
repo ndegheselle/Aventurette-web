@@ -1,4 +1,4 @@
-import { ValidationError, type BaseEntity } from '@chapelure/core';
+import type { BaseEntity } from '@chapelure/core';
 import { fakeCrud, withSetup } from '@tests';
 import { describe, expect, it, vi } from 'vitest';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
@@ -127,13 +127,12 @@ describe('useEditModal', () => {
         expect(edit.cancel).toBe(modal.cancel);
     });
 
-    it('surfaces a rejection as a ValidationError from the adapter, not a raw throw', async () => {
+    it('resolves to false on a rejection rather than throwing', async () => {
         const { edit, crud } = setup();
         crud.failNextWith({ name: { code: 'validation_required' } });
         edit.show({ name: '' } as Child);
 
-        await expect(edit.confirm()).resolves.toBeUndefined();
+        await expect(edit.confirm()).resolves.toBe(false);
         expect(crud.items).toHaveLength(0);
-        expect(new ValidationError({}).name).toBe('ValidationError');
     });
 });

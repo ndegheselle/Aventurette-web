@@ -11,7 +11,7 @@ import (
 
 // Folds the nine referentials into `activities_tags`, told apart by `type`, and their nine
 // relation fields on `activities` into one `tags` field. Record ids are kept, so links carry over
-// as they are. See docs/adr/0017-activity-tags-are-one-collection.md.
+// as they are. See docs/adr/0014-activity-tags-are-one-collection.md.
 func init() {
 	m.Register(mergeReferentialsIntoTags, splitTagsIntoReferentials)
 }

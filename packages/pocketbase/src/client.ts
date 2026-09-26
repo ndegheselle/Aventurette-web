@@ -7,9 +7,3 @@ export function initPocketBase(url: string): PocketBase {
     client ??= new PocketBase(url);
     return client;
 }
-
-export function getPocketBase(): PocketBase {
-    if (!client)
-        throw new Error('PocketBase is not initialised. Call initPocketBase(url) first.');
-    return client;
-}

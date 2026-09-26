@@ -19,7 +19,7 @@ const isRevealed = ref(false);
                :type="isRevealed ? 'text' : 'password'"
                v-model="model" />
         <button class="btn btn-ghost btn-sm btn-circle absolute right-1"
-                :aria-label="$t('users.form.password')"
+                :aria-label="$t('inputs.password.reveal')"
                 @click="isRevealed = !isRevealed">
             <EyeIcon v-if="isRevealed" />
             <EyeClosedIcon v-else />

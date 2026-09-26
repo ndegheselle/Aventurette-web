@@ -76,6 +76,13 @@ const RULES = [
             && /from ['"](vue|vue-i18n|vue-router|pocketbase|@\/|@features\/)/.test(f.text),
     },
     {
+        name: 'features do not import the app',
+        why: 'The app composes features; a feature reaching back into app/ points the dependency '
+            + 'the wrong way. Shared behaviour goes in @chapelure/ui.',
+        check: f => f.path.startsWith('front/src/features/')
+            && /from ['"]@\/app\//.test(f.text),
+    },
+    {
         name: 'feature model/ and api/ are framework-free',
         why: 'Domain types and repositories should outlive the view layer.',
         check: f => /^front\/src\/features\/[^/]+\/(model|api)\//.test(f.path)

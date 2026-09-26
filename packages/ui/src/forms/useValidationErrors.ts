@@ -19,7 +19,7 @@ export function useValidationErrors(defaultErrorKey: string = "validation.errors
 
     function get(fieldName: string): string | undefined {
         if (!properties.value) return undefined;
-        let code = properties.value[fieldName]?.code;
+        const code = properties.value[fieldName]?.code;
         return code ? t(`validation.errors.${code}`) : undefined;
     }
 

@@ -2,7 +2,7 @@
  * Domain object builders. Each fills a complete, valid record — system fields included — and
  * takes an override for the one or two fields the test is actually about:
  *
- *     anActivity({ name: 'Treasure hunt', ageMin: 6, ageMax: 10 })
+ *     anActivity({ name: 'Treasure hunt', state: ActivityState.PUBLISHED })
  */
 import { UsersTypeOptions } from '@/backend/schema.g';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
@@ -17,7 +17,7 @@ import type {
     ActivityResourcePayload,
     ActivityStepPayload,
 } from '@features/activities/api/step.mapper';
-import type { UserData } from '@features/users/model/user';
+import type { UserData } from '@features/auth/model/user';
 
 let sequence = 0;
 const nextId = (prefix: string) => `${prefix}${(++sequence).toString().padStart(12, '0')}`;

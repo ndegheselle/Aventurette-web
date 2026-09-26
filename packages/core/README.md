@@ -80,4 +80,4 @@ backend's error shape — adapters are responsible for the mapping. Plus
 
 ## Utils
 
-`debounce`, `Deferred`, and `formatDate` / `endOfMonth` / `addDays`.
+`debounce` and `Deferred`.

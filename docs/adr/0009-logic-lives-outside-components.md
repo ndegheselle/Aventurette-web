@@ -17,19 +17,19 @@ change is wrong.
 Three layers, and a component is the last of them.
 
 **`model/` — framework-free.** Rules that hold whatever renders them. Pure functions over
-plain data: `buildActivityFilters` turning criteria into a query, `filesWithinLimit`
-enforcing a step's capacity, `withSelection` marking which interests a child has. No `vue`
-import, checked by `lint:arch`.
+plain data: `buildAuthoredFilters` turning a tab into a query, `filesWithinLimit` enforcing a
+step's capacity, `materialNameSuggestions` choosing which names to offer. No `vue` import,
+checked by `lint:arch`.
 
-**`composables/` — Vue, no markup.** Reactive state and orchestration: which criteria are
-applied versus being edited, what to load on mount, what to do when a form is submitted.
+**`composables/` — Vue, no markup.** Reactive state and orchestration: which tab is
+selected, what to load on mount, what to do when a form is submitted.
 Reaches the backend only through the feature's `api/`.
 
 **Components — wiring and markup.** Bindings, event handlers that call a composable, and the
 template. A handful of lines of `<script setup>`, ideally none of them a decision.
 
-A component still owns what is genuinely presentational: `ageDisplay` in `ActivitiesFilters`
-is a `computed` over a formatter, and belongs there.
+A component still owns what is genuinely presentational: `isImage` in `ResourceDisplay` picks
+a thumbnail from a file extension, and belongs there.
 
 ## Consequences
 
