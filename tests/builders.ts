@@ -17,7 +17,7 @@ import type {
     ActivityResourcePayload,
     ActivityStepPayload,
 } from '@features/activities/api/step.mapper';
-import type { UserData } from '@features/users/model/user';
+import type { UserData } from '@features/auth/model/user';
 
 let sequence = 0;
 const nextId = (prefix: string) => `${prefix}${(++sequence).toString().padStart(12, '0')}`;

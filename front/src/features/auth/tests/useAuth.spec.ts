@@ -2,7 +2,7 @@ import { NotAuthentifiedError } from '@chapelure/core';
 import { aUser, createTestRouter, fakeAuthProvider, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { UserData } from '@features/users/model/user';
+import type { UserData } from '@features/auth/model/user';
 import { routesNames } from '@features/auth/routes';
 import { useAuth } from '@features/auth/composables/useAuth';
 
