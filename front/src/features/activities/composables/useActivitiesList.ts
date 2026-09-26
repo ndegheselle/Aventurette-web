@@ -3,7 +3,8 @@ import { activitiesApi as activities } from '@features/activities/api/activities
 import type { ActivityData } from '@features/activities/model/activity';
 import { onMounted, ref } from 'vue';
 
-const DEFAULT_PER_PAGE = 20;
+// One of <Pagination>'s page sizes, or its selector shows blank.
+const DEFAULT_PER_PAGE = 25;
 
 /**
  * The public activity list. Read-only — writing an activity is the `activities-authoring`

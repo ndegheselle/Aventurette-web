@@ -21,9 +21,9 @@ watchEffect(() => {
                 v-for="alert in alerts.toReversed()" :key="alert.id" 
                 :class="{
                     'alert-warning alert-dash': alert.type === EnumAlertType.Debug,
-                    'alert-warning alert-soft border border-error': alert.type === EnumAlertType.Warning,
+                    'alert-warning alert-soft border border-warning': alert.type === EnumAlertType.Warning,
                     'alert-error alert-soft border border-error': alert.type === EnumAlertType.Error,
-                    'alert-success alert-soft border border-error': alert.type === EnumAlertType.Success
+                    'alert-success alert-soft border border-success': alert.type === EnumAlertType.Success
                 }">
                 <CircleAlertIcon v-if="alert.type === EnumAlertType.Info" />
                 <TriangleAlertIcon v-else-if="alert.type === EnumAlertType.Warning || alert.type === EnumAlertType.Error" />
