@@ -22,11 +22,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0011](0011-tests-fail-on-vue-warnings.md) | Tests fail on Vue warnings, and use the real translations | Accepted |
 | [0012](0012-fakes-at-the-port-not-the-sdk.md) | Tests fake the port, never the SDK | Accepted |
 | [0013](0013-specs-live-in-a-feature-tests-folder.md) | Specs live in a feature's `tests/` folder, and fewer are written | Accepted |
-| [0017](0017-activity-tags-are-one-collection.md) | An activity's tags are one collection, told apart by `type` | Accepted |
-| [0018](0018-code-earns-its-place.md) | Code is kept only while something uses it | Accepted |
-
-0014 to 0016 were taken but never written down, and those numbers stay skipped rather than
-being handed to something else.
+| [0014](0014-activity-tags-are-one-collection.md) | An activity's tags are one collection, told apart by `type` | Accepted |
 
 ## Writing a new one
 

@@ -35,7 +35,7 @@ the ids the record carries.
 
 `activity.tags` holds ids into `activities_tags`: the domains, imaginary universes, safety tags
 and developmental keywords, told apart by `type`
-([ADR 0017](../adr/0017-activity-tags-are-one-collection.md)). Nothing reads them yet, so
+([ADR 0014](../adr/0014-activity-tags-are-one-collection.md)). Nothing reads them yet, so
 `activityMapper` does not expand them.
 
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire

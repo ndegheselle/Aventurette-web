@@ -81,7 +81,7 @@ app's real catalogue, so assertions are on the copy a user would read.
 - Comments explain *why*, not what. The codebase's existing comments are the register to match.
 - **Delete what has no caller**, in the change that removes its last caller — exports,
   translations, styles, docs included. Flat before nested; names follow the feature
-  ([ADR 0018](docs/adr/0018-code-earns-its-place.md)).
+  ([coding guidelines](docs/coding-guidelines.md)).
 
 ## Things that will bite
 

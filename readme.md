@@ -8,6 +8,7 @@ An npm workspace: the `front/` app on top of three `packages/`, and a PocketBase
 | [ARCHITECTURE.md](ARCHITECTURE.md) | the layout, and the boundaries between the parts |
 | [docs/adr/](docs/adr/README.md) | why it is that way — one file per decision |
 | [docs/features/](docs/features/README.md) | what each feature does, and what is not finished |
+| [docs/coding-guidelines.md](docs/coding-guidelines.md) | how to write code that stays simple to read |
 | [docs/testing.md](docs/testing.md) | how to test any of it |
 | [DEPLOYMENT.md](DEPLOYMENT.md) | putting it on a server |
 
