@@ -10,13 +10,11 @@ import type { ActivityMaterialData, ActivityResourceData } from '@features/activ
 import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-/**
- * What a step carries: the materials it needs and the files attached to it. Both are records of
- * the step's own, written the moment they are chosen, and edited from the same modal.
- *
- * Pass `step` as a getter: the modal shows one step after another without being rebuilt, so the
- * id has to be read on each write rather than captured.
- */
+// What a step carries: the materials it needs and the files attached to it. Both are records of
+// the step's own, written the moment they are chosen, and edited from the same modal.
+//
+// `step` is a getter: the modal shows one step after another without being rebuilt, so the id
+// has to be read on each write rather than captured.
 
 /**
  * The materials a step needs. Choosing a name writes a row for this step — names used elsewhere

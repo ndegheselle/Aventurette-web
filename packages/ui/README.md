@@ -83,14 +83,14 @@ the `input` class.
 cancel:
 
 ```ts
-const controller = useModal<Child>();
-const result = await controller.show();   // Child | null
+const controller = useModal<Step>();
+const result = await controller.show();   // Step | null
 ```
 
 **Edit modal over a repository** — handles create vs update, loading, and field errors:
 
 ```ts
-const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, childrenRepository);
+const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, stepsApi);
 ```
 
 **Paged list.** `page` and `perPage` are two-way; `total` is a plain prop because only the

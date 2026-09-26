@@ -21,15 +21,15 @@ export type Paginated<T> = {
     options: PaginationOptions;
 };
 
-export interface IDataCrud<TResponse extends BaseEntity> {
-    create(data: TResponse): Promise<TResponse>;
-    update(id: string, data: Partial<TResponse>): Promise<TResponse>;
+export interface IDataCrud<TEntity extends BaseEntity> {
+    create(data: TEntity): Promise<TEntity>;
+    update(id: string, data: Partial<TEntity>): Promise<TEntity>;
     remove(id: string): Promise<void>;
 
-    getById(id: string): Promise<TResponse | null>;
-    getAll(): Promise<TResponse[]>;
-    getList(options: PaginationOptions): Promise<Paginated<TResponse>>;
-    filter(group: FilterGroup<TResponse>, options: PaginationOptions): Promise<Paginated<TResponse>>;
+    getById(id: string): Promise<TEntity | null>;
+    getAll(): Promise<TEntity[]>;
+    getList(options: PaginationOptions): Promise<Paginated<TEntity>>;
+    filter(group: FilterGroup<TEntity>, options: PaginationOptions): Promise<Paginated<TEntity>>;
 }
 
 /**

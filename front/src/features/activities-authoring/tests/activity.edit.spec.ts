@@ -30,7 +30,7 @@ describe('stateTransition', () => {
         expect(label).toBe('activities.authoring.unpublish');
     });
 
-    it('offers the forward move for any state that is not validated', () => {
+    it('offers the forward move for any state that is not published', () => {
         // The button should stay publishable for a state the enum grows later, rather than
         // falling through to one that undoes something.
         const { to } = stateTransition('ARCHIVED' as ActivityData['state']);

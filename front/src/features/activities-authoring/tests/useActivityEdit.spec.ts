@@ -19,12 +19,12 @@ vi.mock('@features/activities-authoring/api/steps.api', () => ({
 }));
 
 const routes = [
-    { path: '/my-activities/:id', name: 'activities.authoring.page', component: { template: '<div/>' } },
+    { path: '/activities/authoring/:id', name: 'activities.authoring.page', component: { template: '<div/>' } },
     { path: '/activities/:id', name: 'activities.page', component: { template: '<div/>' } },
 ];
 
 async function setup(id = 'act-1') {
-    const router = await createTestRouter({ routes, initialRoute: `/my-activities/${id}` });
+    const router = await createTestRouter({ routes, initialRoute: `/activities/authoring/${id}` });
     const [subject] = withSetup(() => useActivityEdit(), router);
     await flushPromises();
     return subject;

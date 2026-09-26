@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
-import { useEditModal } from '@chapelure/ui/modals/useEditModal';
-import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
-import { SaveIcon, XIcon } from 'lucide-vue-next';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
+import { useEditModal } from '@chapelure/ui/modals/useEditModal';
+import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import { stepsApi } from '@features/activities-authoring/api/steps.api';
 import MaterialsSelection from '@features/activities-authoring/components/MaterialsSelection.vue';
 import ResourcesSelection from '@features/activities-authoring/components/ResourcesSelection.vue';
-import { type ActivityStepData } from '@features/activities/model/step';
-import { computed } from 'vue';
+import type { ActivityStepData } from '@features/activities/model/step';
+import { SaveIcon, XIcon } from 'lucide-vue-next';
 
 // Only ever updates: a step is written blank when it is added, so what this opens on is already
 // a record — which is what lets its materials and files be saved as they are chosen.
 const controller = useModal<ActivityStepData>();
-const { show, confirm, cancel, data, errors, isLoading } = useEditModal(controller, stepsApi);
-const step = computed(() => data.value);
+const { show, confirm, cancel, data: step, errors, isLoading } = useEditModal(controller, stepsApi);
 
 defineExpose<IEditModal<ActivityStepData>>({ show });
 </script>

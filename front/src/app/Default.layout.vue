@@ -3,11 +3,11 @@ import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
-import { routesNames as activitiesEditRoutesNames } from '@features/activities-authoring/routes';
+import { routesNames as authoringRoutesNames } from '@features/activities-authoring/routes';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as dashboardRoutesNames } from '@features/dashboard/routes';
 import AuthMenu from '@features/auth/components/AuthMenu.vue';
-import { PanelLeftOpen, PanelLeftClose, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
+import { PanelLeftCloseIcon, PanelLeftOpenIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const isDrawerOpen = ref(false);
@@ -18,11 +18,10 @@ const { title } = useNavbar();
     <div class="drawer md:drawer-open min-h-dvh">
         <input id="side-menu-drawer" type="checkbox" class="drawer-toggle inline" v-model="isDrawerOpen" />
         <div class="drawer-content flex flex-col">
-            <!-- Navbar -->
             <nav class="navbar bg-base-300 min-h-0 p-1">
                 <label for="side-menu-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost drawer-button">
-                    <PanelLeftClose v-if="isDrawerOpen" />
-                    <PanelLeftOpen v-else />
+                    <PanelLeftCloseIcon v-if="isDrawerOpen" />
+                    <PanelLeftOpenIcon v-else />
                 </label>
                 <span v-if="title" class="ms-2 text-lg truncate sm:block hidden">{{ title }}</span>
 
@@ -34,7 +33,6 @@ const { title } = useNavbar();
                 </div>
             </nav>
 
-            <!-- Page content here -->
             <main class="flex flex-1 overflow-x-clip relative">
                 <RouterView />
             </main>
@@ -54,7 +52,6 @@ const { title } = useNavbar();
                     <img class="my-auto" src="https://placeholder.pagebee.io/api/plain/32/32" style="height: 32px;" />
                     <span class="my-auto ms-2 is-drawer-close:hidden">Aventurette</span>
                 </RouterLink>
-                <!-- Sidebar content here -->
                 <ul class="menu w-full grow">
                     <li>
                         <RouterLink class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
@@ -67,7 +64,7 @@ const { title } = useNavbar();
                     <li class="menu-title is-drawer-close:hidden">{{ $t('admin.title') }}</li>
                     <li>
                         <RouterLink class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                            :to="{ name: activitiesEditRoutesNames.all }" :data-tip="$t('activities.authoring.title')">
+                            :to="{ name: authoringRoutesNames.all }" :data-tip="$t('activities.authoring.title')">
                             <PencilLineIcon />
                             <span class="is-drawer-close:hidden">{{ $t('activities.authoring.title') }}</span>
                         </RouterLink>

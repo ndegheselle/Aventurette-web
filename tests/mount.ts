@@ -66,7 +66,7 @@ export async function mountWithRouter<Props>(
  * Run a composable inside a component instance — anything using `onMounted` or `inject` needs
  * one, and calling it bare warns, which fails the test.
  *
- *     const [filters] = withSetup(() => useActivityFilters(onChange));
+ *     const [subject] = withSetup(() => useActivityEdit(), router);
  *
  * Pass a router for a composable that uses `useRouter` or `useRoute`; it comes back third, to
  * assert on where it navigated. Unmount the wrapper when the test is about teardown.

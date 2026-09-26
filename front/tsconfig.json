@@ -5,8 +5,8 @@
         "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
         "types": [
             "vite/client",
-            // Vitest globals (describe/it/expect) — specs live beside the code they cover and
-            // are typechecked with it, so a broken test fails `npm run build` too.
+            // Vitest globals (describe/it/expect) — specs are typechecked with the app, so a
+            // broken test fails `npm run build` too.
             "vitest/globals"
         ],
         /* Linting */

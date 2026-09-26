@@ -44,7 +44,7 @@
             "develop_moral": "Moral development",
             "develop_spritual": "Spiritual development"
         },
-        "contraints": {
+        "constraints": {
             "picture": "PNG, JPEG and JPG formats. 2MB maximum"
         },
         "environnement": {

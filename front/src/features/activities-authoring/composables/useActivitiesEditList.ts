@@ -15,6 +15,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 const DEFAULT_PER_PAGE = 10;
+
+/** The author's list: its state tabs, its page, and the add and delete buttons. */
 export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     const paginated = ref<Paginated<ActivityData>>(
         { items: [], total: 0, options: { page: 1, perPage } },

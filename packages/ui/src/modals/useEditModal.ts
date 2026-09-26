@@ -30,9 +30,8 @@ export function useEditModal<T extends BaseEntity>(modal: IModalController<T>, c
     });
 
 
-    function show(child: T) {
-        const raw = toRaw(child);
-        data.value = structuredClone(raw);
+    function show(record: T) {
+        data.value = structuredClone(toRaw(record));
         return modal.show();
     }
 

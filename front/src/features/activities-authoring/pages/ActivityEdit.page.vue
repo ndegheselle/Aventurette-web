@@ -38,7 +38,7 @@ const { t } = useI18n();
 const confirm = useConfirmation();
 const modal = useTemplateRef<IEditModal<ActivityStepData>>('modal');
 
-// XXX : the picture goes nowhere — the activities collection has no file field to store it in.
+// XXX : the picture goes nowhere — the collection's `visual` field is not wired to the form yet.
 const { files, update: updateImage } = useOneFile();
 
 // Adding writes the step first, so the modal only ever has one to update.
@@ -90,7 +90,7 @@ async function remove(step: ActivityStepData) {
             <Field label="activities.fields.picture">
                 <FilesInput accept="image/*" @change="updateImage">
                     <template #constraints>
-                        {{ $t('activities.contraints.picture') }}
+                        {{ $t('activities.constraints.picture') }}
                     </template>
                 </FilesInput>
                 <FilesList :files />

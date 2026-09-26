@@ -13,11 +13,10 @@ export interface IModalController<T = boolean> {
 
 /**
  * A modal component that opens on a record.
- * Example : defineExpose<IEditModal<ChildrenData>>({ show });
+ * Example : defineExpose<IEditModal<ActivityStepData>>({ show });
  */
-export interface IEditModal<T>
-{
-    show(child: T): Promise<T | null>;
+export interface IEditModal<T> {
+    show(record: T): Promise<T | null>;
 }
 
 /** Hooks around the modal's lifetime. Return false from `onConfirm` to leave the promise pending. */
