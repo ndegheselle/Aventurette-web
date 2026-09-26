@@ -3,11 +3,12 @@ import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import {
     buildAuthoredFilters,
+    createEmptyActivity,
     type ActivityStateFilter,
 } from '@features/activities-authoring/model/activity.edit';
 import { routesNames } from '@features/activities-authoring/routes';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { createEmptyActivity, type ActivityData } from '@features/activities/model/activity';
+import type { ActivityData } from '@features/activities/model/activity';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

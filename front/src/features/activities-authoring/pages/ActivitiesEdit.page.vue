@@ -2,6 +2,7 @@
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
+import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import ActivityRowActions from '@features/activities-authoring/components/ActivityRowActions.vue';
 import { useActivitiesEditList } from '@features/activities-authoring/composables/useActivitiesEditList';
@@ -9,7 +10,6 @@ import { authoredStateTabs } from '@features/activities-authoring/model/activity
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import { PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
-import { useNavbar } from '@/app/useNavbar';
 
 const {
     paginated,

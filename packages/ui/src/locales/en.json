@@ -36,6 +36,9 @@
                 "exceedSize": "'{name}' exceeds the {maxSize} MB limit ({size})",
                 "exceedNumber": "{number} files maximum."
             }
+        },
+        "password": {
+            "reveal": "Show password"
         }
     },
     "confirmation": {

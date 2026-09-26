@@ -5,9 +5,8 @@ import {
     filesWithinLimit,
     materialNameSuggestions,
     MAX_STEP_RESOURCES,
-    type ActivityMaterialData,
-    type ActivityResourceData,
-} from '@features/activities/model/step';
+} from '@features/activities-authoring/model/step.edit';
+import type { ActivityMaterialData, ActivityResourceData } from '@features/activities/model/step';
 import { computed, onMounted, ref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

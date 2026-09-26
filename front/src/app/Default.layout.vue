@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
+import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesEditRoutesNames } from '@features/activities-authoring/routes';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
@@ -8,7 +9,6 @@ import { routesNames as dashboardRoutesNames } from '@features/dashboard/routes'
 import AuthMenu from '@features/auth/components/AuthMenu.vue';
 import { PanelLeftOpen, PanelLeftClose, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { useNavbar } from '@/app/useNavbar';
 
 const isDrawerOpen = ref(false);
 const { title } = useNavbar();

@@ -20,8 +20,5 @@
             "remove": "Delete",
             "removed": "Activity deleted."
         }
-    },
-    "admin": {
-        "title": "Administration"
     }
 }

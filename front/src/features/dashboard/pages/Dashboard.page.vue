@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
+import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { useI18n } from 'vue-i18n';
-import { useNavbar } from '@/app/useNavbar';
 
 const { t } = useI18n();
 

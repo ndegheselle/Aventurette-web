@@ -10,8 +10,9 @@ export const DEFAULT_LOCALE = 'fr';
 
 type Messages = Record<string, any>;
 
-// Each feature's locales/ is picked up automatically; nothing to register.
-const featureFiles = import.meta.glob('@/features/**/locales/*.json', { eager: true });
+// Every locales/ folder under src — the app's own and each feature's — is picked up; nothing to
+// register.
+const featureFiles = import.meta.glob('@/**/locales/*.json', { eager: true });
 
 /** Recursive: two features sharing a top-level key must keep both subtrees. */
 function mergeMessages(target: Messages, source: Messages): Messages {
@@ -31,7 +32,7 @@ function isPlainObject(value: unknown): value is Messages {
 }
 
 /**
- * The whole catalogue: design system strings first, then every feature's. Exported so tests
+ * The whole catalogue: design system strings first, then the app's and every feature's. Exported so tests
  * mount against the same messages and assert on the copy a user would read.
  */
 export const messages: Record<string, Messages> = {
