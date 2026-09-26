@@ -5,7 +5,7 @@ import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesEditRoutesNames } from '@features/activities-authoring/routes';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as dashboardRoutesNames } from '@features/dashboard/routes';
-import { LayoutDashboardIcon, PanelLeftOpen, PanelLeftClose, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
+import { PanelLeftOpen, PanelLeftClose, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 
 import AuthMenu from '@features/users/components/navbar/AuthMenu.vue';
 import { ref } from 'vue';

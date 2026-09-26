@@ -9,7 +9,6 @@ import { authoredStateTabs } from '@features/activities-authoring/model/activity
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import { PlusIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
-import { inject, onMounted } from 'vue';
 import { useNavbar } from '@/app/useNavbar';
 
 const {
