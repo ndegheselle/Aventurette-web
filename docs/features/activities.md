@@ -2,11 +2,11 @@
 
 Browsing the public activity catalogue.
 
-Read-only. Writing an activity is [activities-edit](activities-edit.md), which owns the editor,
-the step modal and the author's own list. What stays here is the **shape**: `model/activity.ts`
-and `model/step.ts`, their mappers in `api/`, and `api/activities.api.ts` describe what an
-activity is — which both halves need — and the dependency runs one way: nothing here imports
-`activities-edit`.
+Read-only. Writing an activity is [activities-authoring](activities-authoring.md), which owns the
+editor, the step modal, the author's own list and the rules for writing. What stays here is the
+**shape**: `model/activity.ts` and `model/step.ts`, their mappers in `api/`, and
+`api/activities.api.ts` describe what an activity is — which both halves need — and the
+dependency runs one way: nothing here imports `activities-authoring`.
 
 ## Routes
 
@@ -17,7 +17,7 @@ activity is — which both halves need — and the dependency runs one way: noth
 
 `/` redirects to `activities`.
 
-One composable to a screen: `useActivitiesList` holds the results,
+One composable to a screen: `useActivitiesList` holds the results and the search,
 `useActivity` the detail screen.
 
 ## Data
@@ -46,7 +46,7 @@ has to ask which it is holding.
 ## Saving
 
 Nothing on these two screens writes. What follows describes how the editor in
-[activities-edit](activities-edit.md) persists what this feature then reads back, because it is
+[activities-authoring](activities-authoring.md) persists what this feature then reads back, because it is
 the reason `ActivityData` has the shape it does.
 
 An activity is three collections and relations are stored as ids, so nothing can be saved
@@ -68,8 +68,9 @@ single update, and then the detail screen.
 
 A blank record is still a valid one: `createEmptyActivity` fills in the `description` and
 `state` the collection requires — a new activity starts as `DRAFT` — and
-`useActivitiesList` adds the placeholder name and the owner from the session. `createEmptyStep`
-does the same for the one field a step must have. A material is **not** picked from a reference
+`useActivitiesEditList` adds the placeholder name and the owner from the session.
+`createEmptyStep` does the same for the one field a step must have. Both are the authoring
+feature's. A material is **not** picked from a reference
 collection: it belongs to one step, so choosing a name writes a row of that step's own and the
 names already used elsewhere are only suggestions.
 
@@ -97,16 +98,14 @@ or an api wrapper does not earn one — see
 - Materials and resources shown for an activity are gathered from the steps that own them,
   deduplicated by id, in first-use order.
 
-*`tests/step.spec.ts`* — suggesting a material, and the file limit
+*`tests/step.spec.ts`* — the step and resource mappers
 
-- The names offered are the distinct ones used anywhere, minus what this step already has,
-  narrowed by what was typed — all matched case-insensitively, first spelling wins.
-- Creating is offered only for a name that is neither already on the step nor a suggestion.
-- A step takes at most `MAX_STEP_RESOURCES` (10) files. Over the limit, the files that fit are
-  still taken and the rest reported — a partial pick beats dropping all of it.
+- A step reads its relations out of `expand` and leaves no trace of it; an unexpanded relation
+  reads as empty. Relations are written back as ids.
+- A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 
-*`activities-edit/tests/useActivityEdit.spec.ts`* — the one order that matters, and the one
-spec that moved out with the composable it covers
+*`activities-authoring/tests/useActivityEdit.spec.ts`* — the one order that matters, in the
+feature that owns the composable
 
 - Adding a step writes a blank one and links it before the modal opens; if the link fails there
   is nothing to open.
@@ -118,12 +117,13 @@ spec that moved out with the composable it covers
 ## Not finished
 
 Most of what follows is the editor's, and is listed here because it is about this feature's
-data. [activities-edit](activities-edit.md) has the gaps that belong to its screens.
+data. [activities-authoring](activities-authoring.md) has the gaps that belong to its screens.
 
-- **The list cannot be filtered or searched.** The filter bar was removed; every page lists
-  every activity. The tags it would filter on are in `activities_tags`.
-- **The picture input goes nowhere.** The `activities` collection has no file field to store
-  one in, so what the user picks is shown and then dropped. There is an `XXX` on it in the page.
+- **The list cannot be filtered**, only searched by name and description. The filter bar was
+  removed; the tags it would filter on are in `activities_tags`.
+- **The picture input goes nowhere.** The `activities` collection has a `visual` file field,
+  but the form is not wired to it, so what the user picks is shown and then dropped. There is an
+  `XXX` on it in the page.
 - **Cancelling leaves what was already written.** A step is a record before the modal opens, so
   cancelling keeps an empty one on the activity; a file uploaded inside the modal is stored
   before the step points at it. `back/hooks` reclaims a resource no step references any more,

@@ -13,7 +13,7 @@ Aventurette-web/
 ├── packages/
 │   ├── core/          @chapelure/core        contracts. no framework, no backend, no deps
 │   ├── pocketbase/    @chapelure/pocketbase  the backend adapter
-│   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, filters
+│   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, forms
 ├── front/             @sagace/front          the app
 ├── tests/                                    the test toolkit: builders, fakes, mount helpers
 ├── docs/                                     ADRs, feature docs, testing guide
@@ -45,7 +45,7 @@ the app's `backend/` folder is the only thing that does.
 
 | Folder | Holds | Notes |
 |---|---|---|
-| `app/` | `main.ts`, `router.ts`, `i18n.ts`, `App.vue`, `layouts/`, `styles/` | Composition root. Wiring, no logic. |
+| `app/` | `main.ts`, `router.ts`, `i18n.ts`, `App.vue`, `Default.layout.vue`, `locales/`, `styles/` | Composition root. Wiring, no logic. |
 | `backend/` | `index.ts`, `schema.g.ts` | The backend seam, and the pocketbase-typegen output. |
 | `features/<name>/` | one vertical slice | Same shape every time, see below. |
 
@@ -57,7 +57,7 @@ Every feature has the same shape, so you never have to guess:
 | `api/` | `*.api.ts` — the only place `@/backend` may be imported — and `*.mapper.ts` |
 | `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
 | `components/` | feature components |
-| `pages/` | route targets, plus the structural files only they use — see below |
+| `pages/` | route targets, named `Name.page.vue` |
 | `tests/` | the feature's specs, and the only place they may live |
 | `locales/` | translations, and nothing else |
 | `routes.ts` | the route records plus a `routesNames` map |
@@ -68,11 +68,11 @@ a component is wiring and markup. [ADR 0009](docs/adr/0009-logic-lives-outside-c
 has the reasoning; a feature with no logic needs no composable.
 
 Within a folder the unit is an **entity or a screen, not a concept**: `model/activity.ts` holds
-the activity's types, factory, enums and formatters together, and `useActivitiesList` owns the
-list screen — its results, its filters and its add button. Splitting finer than that was tried
-and produced `model/benefit.ts`, three lines long. The exception is the backend seam: an
-entity's payload type and mapper sit in `model/<entity>.mapper.ts`, so the model reads as the
-domain alone.
+the activity's types, its state enum and what the read screens derive from it, and
+`useActivitiesList` owns the list screen — its results and its search. Splitting finer than
+that was tried and produced `model/benefit.ts`, three lines long. The exception is the backend
+seam: an entity's payload type and mapper sit in `api/<entity>.mapper.ts`, so the model reads
+as the domain alone.
 
 Specs do **not** sit beside what they cover. They live in the feature's `tests/`, and there are
 fewer of them than there were — [ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)
@@ -80,30 +80,16 @@ says which code earns one.
 
 #### `pages/`
 
-A file belongs in `pages/` when nothing outside its own folder — or that folder's children —
-has a reason to import it. Route targets qualify by definition; so does the layout wrapping
-them, and the odd component that exists only to cut one page into readable pieces. The moment
-a second part of the feature wants that component, it is no longer scoped to the page and
-belongs in `components/`.
-
-Three markers, so a filename says which it is:
-
-| | |
-|---|---|
-| `Name.page.vue` | a route target — something `routes.ts` names as a `component` |
-| `_layout.vue` | the layout wrapping this folder's pages and those of its children |
-| `_folder/` | scoped to this folder's pages, and not itself part of the route tree |
-
-`_` reads as "structural, not a page". It also floats these to the top of the file list in
-VS Code.
-
-One layout to a folder is just `_layout.vue`. A folder that needs several names them —
-`_Edit.layout.vue`, `_Preview.layout.vue` — and keeps the prefix.
+A route target is `Name.page.vue`, and that is the whole convention: `routes.ts` names it as a
+`component`. A page that is only a wrapper around one component is that component — the login
+form is `Login.page.vue`, not a page holding a `<LoginForm>`. Anything else is in
+`components/`, one level deep.
 
 ### `packages/ui`
 
-`modals/`, `alerts/`, `dropdown/`, `data/`, `filter/`, `files/`, `forms/`, `settings/`,
-`layout/`, `styles/` and `locales/`.
+`modals/`, `alerts/`, `dropdown/`, `data/`, `files/`, `forms/`, `settings/`, `layout/`,
+`styles/` and `locales/`. There is no barrel: components and composables are deep-imported
+alike.
 
 A folder is one family and holds everything that family is made of — `modals/` has `Modal.vue`
 next to `useModal`, `dropdown/` has the `v-click-outside` directive it is the only user of.
@@ -144,6 +130,7 @@ import { XIcon } from 'lucide-vue-next';
 | `packages/core` imports no `vue`, no SDK, no app | Contracts survive any framework or backend change |
 | `features/*/model` and `features/*/api` import no framework | Domain and data survive a framework change |
 | `packages/ui` imports neither the app nor the adapter | The design system stays reusable |
+| `features/*` never import `@/app` | The app composes features, never the other way round |
 | Nothing that ships imports `@tests` or the SDK test double | Builders and fakes stay out of the bundle |
 | A feature's `.spec.ts` files are all under its `tests/` | Source folders list source, not half tests |
 | `scripts/aliases.mjs` and the `paths` in `front/tsconfig.json` agree | The two resolvers cannot drift apart |
@@ -186,7 +173,7 @@ Three deliberate compromises:
   it and every class used only inside the design system silently vanishes from the bundle.
   Check with `grep modal-box front/dist/assets/*.css`.
 - **i18n**: the design system ships `packages/ui/src/locales/*.json` and the app imports it
-  explicitly; feature translations are globbed from `features/**/locales/*.json`. The merge
+  explicitly; the app's own and every feature's translations are globbed from `src/**/locales/*.json`. The merge
   is recursive, so two files sharing a top-level key do not clobber each other.
 - **Docker builds from the repository root**, not `front/`, because the app needs
   `packages/`: `docker build -f front/Dockerfile .`
