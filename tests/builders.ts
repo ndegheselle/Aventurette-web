@@ -5,19 +5,22 @@
  *     anActivity({ name: 'Treasure hunt', state: ActivityState.PUBLISHED })
  */
 import { UsersTypeOptions } from '@/backend/schema.g';
-import { ActivityState, type ActivityData } from '@features/activities/model/activity';
+import { ActivityState, emptyDevelopment, type ActivityData } from '@features/activities/model/activity';
 import type { ActivityPayload } from '@features/activities/api/activity.mapper';
-import type {
-    ActivityMaterialData,
-    ActivityResourceData,
-    ActivityStepData,
+import type { ActivityMaterialData } from '@features/activities/model/material';
+import {
+    StepKind,
+    type ActivityResourceData,
+    type ActivityStepData,
 } from '@features/activities/model/step';
+import type { ActivityWorkshopData } from '@features/activities/model/workshop';
+import type { ActivityMaterialPayload } from '@features/activities/api/material.mapper';
 import type {
-    ActivityMaterialPayload,
     ActivityResourcePayload,
     ActivityStepPayload,
 } from '@features/activities/api/step.mapper';
 import type { ActivityTagPayload } from '@features/activities/api/tag.mapper';
+import type { ActivityWorkshopPayload } from '@features/activities/api/workshop.mapper';
 import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
 import type { UserData } from '@features/auth/model/user';
 
@@ -36,7 +39,8 @@ export function aMaterial(overrides: Partial<ActivityMaterialData> = {}): Activi
         ...SYSTEM,
         id: nextId('mat'),
         name: 'Rope',
-        step: nextId('stp'),
+        quantity: '',
+        activity: nextId('act'),
         ...overrides,
     } as ActivityMaterialData;
 }
@@ -58,6 +62,14 @@ export function aStep(overrides: Partial<ActivityStepData> = {}): ActivityStepDa
         id: nextId('stp'),
         activity: nextId('act'),
         description: '<p>Line everyone up.</p>',
+        title: '',
+        kind: StepKind.CUSTOM,
+        duration: 0,
+        visual_brief: '',
+        actions: [],
+        tip: '',
+        end_criteria: [],
+        end_criteria_other: '',
         materials: [],
         resources: [],
         ...overrides,
@@ -68,7 +80,7 @@ export function aTag(overrides: Partial<ActivityTagData> = {}): ActivityTagData 
     return {
         ...SYSTEM,
         id: nextId('tag'),
-        type: ActivityTagType.FIELD,
+        type: ActivityTagType.THEME,
         slug: 'art',
         name: 'art',
         description: '',
@@ -76,6 +88,21 @@ export function aTag(overrides: Partial<ActivityTagData> = {}): ActivityTagData 
     } as ActivityTagData;
 }
 
+export function aWorkshop(overrides: Partial<ActivityWorkshopData> = {}): ActivityWorkshopData {
+    return {
+        ...SYSTEM,
+        id: nextId('wks'),
+        activity: nextId('act'),
+        name: 'Knots',
+        theme: '',
+        challenges: '',
+        adults_required: 1,
+        materials: [],
+        ...overrides,
+    } as ActivityWorkshopData;
+}
+
+/** An activity with every family present and empty; override a family whole. */
 export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData {
     return {
         ...SYSTEM,
@@ -84,8 +111,22 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
         description: '<p>Hide, then seek.</p>',
         state: ActivityState.DRAFT,
         user: nextId('usr'),
+        visual: '',
+        visualBrief: '',
+        classification: { format: '', practices: [], themes: [] },
+        imaginary: { rule: '', universes: [] },
+        audience: { ageMin: 0, ageMax: 0, participantsMin: 0, participantsMax: 0, childrenPace: '', ageVariants: '' },
+        supervision: { hostEffort: '', hostsRequired: 0, crossSupervision: false, notes: '' },
+        place: { indoor: false, outdoor: false, locations: [], conditions: '', seasons: [] },
+        safety: { tags: [] },
+        pedagogy: {
+            goals: [],
+            idealFor: [],
+            development: emptyDevelopment(),
+        },
         steps: [],
-        tags: [],
+        materials: [],
+        workshops: [],
         ...overrides,
     } as ActivityData;
 }
@@ -114,7 +155,7 @@ export function aPickedFile(name = 'photo.png', type = 'image/png'): File {
  */
 
 export function aMaterialPayload(overrides: Partial<ActivityMaterialPayload> = {}): ActivityMaterialPayload {
-    return { ...SYSTEM, id: nextId('mat'), name: 'Rope', step: nextId('stp'), ...overrides } as ActivityMaterialPayload;
+    return { ...SYSTEM, id: nextId('mat'), name: 'Rope', quantity: '', activity: nextId('act'), ...overrides } as ActivityMaterialPayload;
 }
 
 export function aResourcePayload(overrides: Partial<ActivityResourcePayload> = {}): ActivityResourcePayload {
@@ -134,6 +175,14 @@ export function aStepPayload(overrides: Partial<ActivityStepPayload> = {}): Acti
         id: nextId('stp'),
         activity: nextId('act'),
         description: '<p>Line everyone up.</p>',
+        title: '',
+        kind: StepKind.CUSTOM,
+        duration: 0,
+        visual_brief: '',
+        actions: [],
+        tip: '',
+        end_criteria: [],
+        end_criteria_other: '',
         materials: [],
         resources: [],
         ...overrides,
@@ -144,12 +193,26 @@ export function aTagPayload(overrides: Partial<ActivityTagPayload> = {}): Activi
     return {
         ...SYSTEM,
         id: nextId('tag'),
-        type: ActivityTagType.FIELD,
+        type: ActivityTagType.THEME,
         slug: 'art',
         name: 'art',
         description: '',
         ...overrides,
     } as ActivityTagPayload;
+}
+
+export function aWorkshopPayload(overrides: Partial<ActivityWorkshopPayload> = {}): ActivityWorkshopPayload {
+    return {
+        ...SYSTEM,
+        id: nextId('wks'),
+        activity: nextId('act'),
+        name: 'Knots',
+        theme: '',
+        challenges: '',
+        adults_required: 1,
+        materials: [],
+        ...overrides,
+    } as ActivityWorkshopPayload;
 }
 
 export function anActivityPayload(overrides: Partial<ActivityPayload> = {}): ActivityPayload {
@@ -160,8 +223,35 @@ export function anActivityPayload(overrides: Partial<ActivityPayload> = {}): Act
         description: '<p>Hide, then seek.</p>',
         state: ActivityState.DRAFT,
         user: nextId('usr'),
+        visual: '',
+        visual_brief: '',
+        format: '',
+        practices: [],
+        imaginary_rule: '',
+        age_min: 0,
+        age_max: 0,
+        participants_min: 0,
+        participants_max: 0,
+        children_pace: '',
+        age_variants: '',
+        host_effort: '',
+        recommended_hosts_numbers: 0,
+        cross_supervision: false,
+        supervision_notes: '',
+        indoor: false,
+        outdoor: false,
+        locations: [],
+        conditions: '',
+        seasons: [],
         steps: [],
-        tags: [],
+        materials: [],
+        workshops: [],
+        theme_tags: [],
+        imaginary_tags: [],
+        safety_tags: [],
+        goal_tags: [],
+        ideal_for_tags: [],
+        development_tags: [],
         ...overrides,
     } as ActivityPayload;
 }

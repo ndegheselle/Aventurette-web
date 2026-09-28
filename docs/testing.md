@@ -78,8 +78,9 @@ one or two fields the test is about:
 const activity = anActivity({ name: 'Treasure hunt', state: ActivityState.PUBLISHED });
 ```
 
-`anActivity`, `aStep`, `aMaterial`, `aResource`, `aUser`, and `aPickedFile` for an upload that
-has no record yet.
+`anActivity`, `aStep`, `aMaterial`, `aWorkshop`, `aResource`, `aTag`, `aUser`, and
+`aPickedFile` for an upload that has no record yet. `anActivity` comes with every family present
+and empty; override a family whole (`anActivity({ safety: { tags: [...] } })`).
 
 They build **entities** — what everything above `api/` works on. The `*Payload` builders
 (`anActivityPayload`, `aStepPayload`, …) build the backend's shape instead, relation ids and

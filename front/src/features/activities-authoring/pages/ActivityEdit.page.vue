@@ -11,21 +11,49 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import type { IEditModal } from '@chapelure/ui/modals/useModal';
+import MaterialsSelection from '@features/activities-authoring/components/MaterialsSelection.vue';
+import RecordsPicker from '@features/activities-authoring/components/RecordsPicker.vue';
 import StepEditModal from '@features/activities-authoring/components/StepEdit.modal.vue';
-import TagsSelection from '@features/activities-authoring/components/TagsSelection.vue';
-import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
+import WorkshopEditModal from '@features/activities-authoring/components/WorkshopEdit.modal.vue';
+import { useActivityEdit, useTagOptions } from '@features/activities-authoring/composables/useActivityEdit';
 import { AGE_BOUNDS, PARTICIPANTS_BOUNDS } from '@features/activities-authoring/model/activity.edit';
 import { routesNames } from '@features/activities-authoring/routes';
 import StepSummary from '@features/activities/components/StepSummary.vue';
 import {
-    ActivitiesEnergyLevel,
-    ActivitiesEnvironnement,
-    ActivitiesSeason,
-    ActivitiesWeather,
+    ActivityFormat,
+    ActivityLocation,
+    ActivityPractice,
+    ActivitySeason,
     ActivityState,
+    ChildrenPace,
+    DEVELOPMENT_AXES,
+    HostEffort,
+    ImaginaryRule,
 } from '@features/activities/model/activity';
 import { type ActivityStepData } from '@features/activities/model/step';
-import { ArrowLeftIcon, BadgeCheckIcon, LibraryIcon, ListOrderedIcon, MinusIcon, PenIcon, PlusIcon, SaveIcon, ScrollTextIcon, TagsIcon, TriangleAlertIcon, UndoIcon } from 'lucide-vue-next';
+import { type ActivityWorkshopData } from '@features/activities/model/workshop';
+import {
+    ArrowLeftIcon,
+    BadgeCheckIcon,
+    BookOpenIcon,
+    GraduationCapIcon,
+    LibraryIcon,
+    ListOrderedIcon,
+    MapPinIcon,
+    MinusIcon,
+    PackageOpenIcon,
+    PenIcon,
+    PlusIcon,
+    SaveIcon,
+    ScrollTextIcon,
+    ShapesIcon,
+    ShieldAlertIcon,
+    SparklesIcon,
+    TriangleAlertIcon,
+    UndoIcon,
+    UserCheckIcon,
+    UsersIcon,
+} from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -33,6 +61,7 @@ const {
     activity,
     isLoading,
     isAddingStep,
+    isAddingWorkshop,
     isChangingState,
     transition,
     ageMin,
@@ -41,42 +70,70 @@ const {
     participantsMin,
     participantsMax,
     participantsLabel,
+    timing,
     errors,
     save,
     changeState,
     addStep,
     replaceStep,
     detachStep,
+    addMaterial,
+    updateMaterial,
+    removeMaterial,
+    addWorkshop,
+    replaceWorkshop,
+    removeWorkshop,
 } = useActivityEdit();
+
+const { tagOptions } = useTagOptions();
 
 const { t } = useI18n();
 const confirm = useConfirmation();
-const modal = useTemplateRef<IEditModal<ActivityStepData>>('modal');
+const stepModal = useTemplateRef<IEditModal<ActivityStepData>>('stepModal');
+const workshopModal = useTemplateRef<IEditModal<ActivityWorkshopData>>('workshopModal');
 
-const environnements = Object.values(ActivitiesEnvironnement);
-const seasons = Object.values(ActivitiesSeason);
-const weathers = Object.values(ActivitiesWeather);
-const energyLevels = Object.values(ActivitiesEnergyLevel);
+const formats = Object.values(ActivityFormat);
+const practices = Object.values(ActivityPractice);
+const imaginaryRules = Object.values(ImaginaryRule);
+const childrenPaces = Object.values(ChildrenPace);
+const hostEfforts = Object.values(HostEffort);
+const locations = Object.values(ActivityLocation);
+const seasons = Object.values(ActivitySeason);
 
 // XXX : the picture goes nowhere — the collection's `visual` field is not wired to the form yet.
 const { files, update: updateImage } = useOneFile();
 
-// Adding writes the step first, so the modal only ever has one to update.
-async function add() {
+// Adding writes the record first, so a modal only ever has one to update.
+async function addAndEditStep() {
     const created = await addStep();
-    if (created) await edit(created);
+    if (created) await editStep(created);
 }
 
-async function edit(step: ActivityStepData) {
-    const updated = await modal.value?.show(step);
+async function editStep(step: ActivityStepData) {
+    const updated = await stepModal.value?.show(step);
     if (updated) replaceStep(updated);
 }
 
-async function remove(step: ActivityStepData) {
-    if (await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.messageSimple'), TriangleAlertIcon) !== true)
-        return;
+async function addAndEditWorkshop() {
+    const created = await addWorkshop();
+    if (created) await editWorkshop(created);
+}
 
-    await detachStep(step);
+async function editWorkshop(workshop: ActivityWorkshopData) {
+    const updated = await workshopModal.value?.show(workshop);
+    if (updated) replaceWorkshop(updated);
+}
+
+async function confirmed(): Promise<boolean> {
+    return await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.messageSimple'), TriangleAlertIcon) === true;
+}
+
+async function removeStep(step: ActivityStepData) {
+    if (await confirmed()) await detachStep(step);
+}
+
+async function removeWorkshopConfirmed(workshop: ActivityWorkshopData) {
+    if (await confirmed()) await removeWorkshop(workshop);
 }
 </script>
 
@@ -105,8 +162,12 @@ async function remove(step: ActivityStepData) {
 
         <Panel>
             <h2 class="text-2xl flex items-center gap-2">
-                <LibraryIcon /> {{ $t('activities.authoring.properties') }}
+                <LibraryIcon /> {{ $t('activities.families.informations') }}
             </h2>
+            <Field label="activities.fields.name" :error="errors.get('name')">
+                <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
+                    v-model="activity.name" />
+            </Field>
             <Field label="activities.fields.picture">
                 <FilesInput accept="image/*" @change="updateImage">
                     <template #constraints>
@@ -115,79 +176,9 @@ async function remove(step: ActivityStepData) {
                 </FilesInput>
                 <FilesList :files />
             </Field>
-            <div class="flex flex-1 flex-col">
-                <Field label="activities.fields.name" :error="errors.get('name')">
-                    <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
-                        v-model="activity.name" />
-                </Field>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                    <Field label="activities.fields.environnement" :error="errors.get('environnement')">
-                        <select class="select w-full" :class="{ 'select-error': !!errors.get('environnement') }"
-                            v-model="activity.environnement">
-                            <option v-for="value in environnements" :key="value" :value="value">
-                                {{ $t(`activities.environnement.${value}`) }}
-                            </option>
-                        </select>
-                    </Field>
-                    <Field label="activities.fields.hosts" :error="errors.get('recommended_hosts_numbers')">
-                        <input type="number" min="0" class="input w-full"
-                            :class="{ 'input-error': !!errors.get('recommended_hosts_numbers') }"
-                            v-model.number="activity.recommended_hosts_numbers" />
-                    </Field>
-                    <Field :error="errors.get('age_min') || errors.get('age_max')">
-                        <template #label>
-                            {{ $t('activities.fields.age') }}
-                            <span class="font-normal opacity-60">{{ $t(ageLabel.key, ageLabel.params) }}</span>
-                        </template>
-                        <RangeInput class="text-primary" v-bind="AGE_BOUNDS"
-                            v-model:min="ageMin" v-model:max="ageMax" />
-                    </Field>
-                    <Field :error="errors.get('participants_min') || errors.get('participants_max')">
-                        <template #label>
-                            {{ $t('activities.fields.participants') }}
-                            <span class="font-normal opacity-60">{{ $t(participantsLabel.key, participantsLabel.params) }}</span>
-                        </template>
-                        <RangeInput class="text-primary" v-bind="PARTICIPANTS_BOUNDS"
-                            v-model:min="participantsMin" v-model:max="participantsMax" />
-                    </Field>
-                    <!-- Optional columns: an empty string is how PocketBase stores "none" for a select. -->
-                    <Field label="activities.fields.season" :error="errors.get('season')">
-                        <select class="select w-full" :class="{ 'select-error': !!errors.get('season') }"
-                            v-model="activity.season">
-                            <option value="">{{ $t('activities.fields.unset') }}</option>
-                            <option v-for="value in seasons" :key="value" :value="value">
-                                {{ $t(`activities.season.${value}`) }}
-                            </option>
-                        </select>
-                    </Field>
-                    <Field label="activities.fields.weather" :error="errors.get('weather')">
-                        <select class="select w-full" :class="{ 'select-error': !!errors.get('weather') }"
-                            v-model="activity.weather">
-                            <option value="">{{ $t('activities.fields.unset') }}</option>
-                            <option v-for="value in weathers" :key="value" :value="value">
-                                {{ $t(`activities.weather.${value}`) }}
-                            </option>
-                        </select>
-                    </Field>
-                    <Field label="activities.fields.energy_level" :error="errors.get('energy_level')">
-                        <select class="select w-full" :class="{ 'select-error': !!errors.get('energy_level') }"
-                            v-model="activity.energy_level">
-                            <option value="">{{ $t('activities.fields.unset') }}</option>
-                            <option v-for="value in energyLevels" :key="value" :value="value">
-                                {{ $t(`activities.energy_level.${value}`) }}
-                            </option>
-                        </select>
-                    </Field>
-                </div>
-            </div>
-        </Panel>
-
-        <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <TagsIcon /> {{ $t('activities.authoring.tags') }}
-            </h2>
-            <TagsSelection v-model="activity.tags" />
-            <FieldError :error="errors.get('tags')" />
+            <Field label="activities.fields.visualBrief" :error="errors.get('visual_brief')">
+                <textarea class="textarea w-full" v-model="activity.visualBrief"></textarea>
+            </Field>
         </Panel>
 
         <Panel>
@@ -198,11 +189,217 @@ async function remove(step: ActivityStepData) {
             <FieldError :error="errors.get('description')" />
         </Panel>
 
+        <!-- Optional selects: an empty string is how PocketBase stores "none". -->
         <Panel>
             <h2 class="text-2xl flex items-center gap-2">
-                <ListOrderedIcon /> {{ $t('activities.authoring.steps') }}
+                <ShapesIcon /> {{ $t('activities.families.classification') }}
             </h2>
-            <button class="btn btn-primary" :disabled="isAddingStep" @click="add">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                <Field label="activities.fields.format" :error="errors.get('format')">
+                    <select class="select w-full" v-model="activity.classification.format">
+                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                        <option v-for="value in formats" :key="value" :value="value">
+                            {{ $t(`activities.format.${value}`) }}
+                        </option>
+                    </select>
+                </Field>
+                <RecordsPicker label="activities.tagType.THEME" :items="tagOptions.THEME"
+                    :error="errors.get('theme_tags')" v-model="activity.classification.themes" />
+            </div>
+            <Field label="activities.fields.practices" :error="errors.get('practices')">
+                <div class="flex flex-wrap gap-x-4">
+                    <label class="label" v-for="value in practices" :key="value">
+                        <input type="checkbox" class="checkbox checkbox-sm" :value
+                            v-model="activity.classification.practices" />
+                        {{ $t(`activities.practice.${value}`) }}
+                    </label>
+                </div>
+            </Field>
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <SparklesIcon /> {{ $t('activities.families.imaginary') }}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                <Field label="activities.fields.imaginaryRule" :error="errors.get('imaginary_rule')">
+                    <select class="select w-full" v-model="activity.imaginary.rule">
+                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                        <option v-for="value in imaginaryRules" :key="value" :value="value">
+                            {{ $t(`activities.imaginaryRule.${value}`) }}
+                        </option>
+                    </select>
+                </Field>
+                <RecordsPicker label="activities.tagType.IMAGINARY" :items="tagOptions.IMAGINARY"
+                    :error="errors.get('imaginary_tags')" v-model="activity.imaginary.universes" />
+            </div>
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <UsersIcon /> {{ $t('activities.families.audience') }}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                <Field :error="errors.get('age_min') || errors.get('age_max')">
+                    <template #label>
+                        {{ $t('activities.fields.age') }}
+                        <span class="font-normal opacity-60">{{ $t(ageLabel.key, ageLabel.params) }}</span>
+                    </template>
+                    <RangeInput class="text-primary" v-bind="AGE_BOUNDS"
+                        v-model:min="ageMin" v-model:max="ageMax" />
+                </Field>
+                <Field :error="errors.get('participants_min') || errors.get('participants_max')">
+                    <template #label>
+                        {{ $t('activities.fields.participants') }}
+                        <span class="font-normal opacity-60">{{ $t(participantsLabel.key, participantsLabel.params) }}</span>
+                    </template>
+                    <RangeInput class="text-primary" v-bind="PARTICIPANTS_BOUNDS"
+                        v-model:min="participantsMin" v-model:max="participantsMax" />
+                </Field>
+                <Field label="activities.fields.childrenPace" :error="errors.get('children_pace')">
+                    <select class="select w-full" v-model="activity.audience.childrenPace">
+                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                        <option v-for="value in childrenPaces" :key="value" :value="value">
+                            {{ $t(`activities.childrenPace.${value}`) }}
+                        </option>
+                    </select>
+                </Field>
+            </div>
+            <Field label="activities.fields.ageVariants" :error="errors.get('age_variants')">
+                <TextEditor v-model="activity.audience.ageVariants" class="min-h-24" />
+            </Field>
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <UserCheckIcon /> {{ $t('activities.families.supervision') }}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                <Field label="activities.fields.hostEffort" :error="errors.get('host_effort')">
+                    <select class="select w-full" v-model="activity.supervision.hostEffort">
+                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                        <option v-for="value in hostEfforts" :key="value" :value="value">
+                            {{ $t(`activities.hostEffort.${value}`) }}
+                        </option>
+                    </select>
+                </Field>
+                <Field label="activities.fields.hosts" :error="errors.get('recommended_hosts_numbers')">
+                    <input type="number" min="0" class="input w-full"
+                        :class="{ 'input-error': !!errors.get('recommended_hosts_numbers') }"
+                        v-model.number="activity.supervision.hostsRequired" />
+                </Field>
+            </div>
+            <label class="label mt-2">
+                <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.supervision.crossSupervision" />
+                {{ $t('activities.fields.crossSupervision') }}
+            </label>
+            <Field label="activities.fields.supervisionNotes" :error="errors.get('supervision_notes')">
+                <TextEditor v-model="activity.supervision.notes" class="min-h-24" />
+            </Field>
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <MapPinIcon /> {{ $t('activities.families.place') }}
+            </h2>
+            <div class="flex gap-4">
+                <label class="label">
+                    <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.place.indoor" />
+                    {{ $t('activities.fields.indoor') }}
+                </label>
+                <label class="label">
+                    <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.place.outdoor" />
+                    {{ $t('activities.fields.outdoor') }}
+                </label>
+            </div>
+            <Field label="activities.fields.seasons" :error="errors.get('seasons')">
+                <div class="flex flex-wrap gap-x-4">
+                    <label class="label" v-for="value in seasons" :key="value">
+                        <input type="checkbox" class="checkbox checkbox-sm" :value v-model="activity.place.seasons" />
+                        {{ $t(`activities.season.${value}`) }}
+                    </label>
+                </div>
+            </Field>
+            <Field label="activities.fields.locations" :error="errors.get('locations')">
+                <div class="flex flex-wrap gap-x-4">
+                    <label class="label" v-for="value in locations" :key="value">
+                        <input type="checkbox" class="checkbox checkbox-sm" :value v-model="activity.place.locations" />
+                        {{ $t(`activities.location.${value}`) }}
+                    </label>
+                </div>
+            </Field>
+            <Field label="activities.fields.conditions" :error="errors.get('conditions')">
+                <TextEditor v-model="activity.place.conditions" class="min-h-24" />
+            </Field>
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <ShieldAlertIcon /> {{ $t('activities.families.safety') }}
+            </h2>
+            <RecordsPicker label="activities.tagType.SECURITY" :items="tagOptions.SECURITY"
+                :error="errors.get('safety_tags')" v-model="activity.safety.tags" />
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <GraduationCapIcon /> {{ $t('activities.families.pedagogy') }}
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
+                <RecordsPicker label="activities.tagType.GOAL" :items="tagOptions.GOAL"
+                    :error="errors.get('goal_tags')" v-model="activity.pedagogy.goals" />
+                <RecordsPicker label="activities.tagType.IDEAL_FOR" :items="tagOptions.IDEAL_FOR"
+                    :error="errors.get('ideal_for_tags')" v-model="activity.pedagogy.idealFor" />
+                <RecordsPicker v-for="axis in DEVELOPMENT_AXES" :key="axis" :label="`activities.tagType.${axis}`"
+                    :items="tagOptions[axis]" v-model="activity.pedagogy.development[axis]" />
+            </div>
+            <!-- The six axes share one relation, so its error shows once, under all of them. -->
+            <FieldError :error="errors.get('development_tags')" />
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <PackageOpenIcon /> {{ $t('activities.materials.title') }}
+            </h2>
+            <MaterialsSelection v-model="activity.materials"
+                @add="addMaterial" @update="updateMaterial" @remove="removeMaterial" />
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <BookOpenIcon /> {{ $t('activities.workshops.title') }}
+            </h2>
+            <button class="btn btn-primary" :disabled="isAddingWorkshop" @click="addAndEditWorkshop">
+                <span v-if="isAddingWorkshop" class="loading loading-spinner loading-sm"></span>
+                <PlusIcon />
+                {{ $t('actions.add') }}
+            </button>
+            <List :items="activity.workshops" v-slot="{ item }">
+                <div>
+                    <b>{{ item.name }}</b>
+                    <span v-if="item.theme" class="ms-2 text-sm opacity-60">{{ item.theme }}</span>
+                </div>
+                <span v-if="item.adults_required" class="badge my-auto">
+                    {{ $t('activities.workshops.adults', { count: item.adults_required }) }}
+                </span>
+                <button class="btn btn-ghost btn-square" @click="() => removeWorkshopConfirmed(item)">
+                    <MinusIcon />
+                </button>
+                <button class="btn btn-ghost btn-square" @click="() => editWorkshop(item)">
+                    <PenIcon />
+                </button>
+            </List>
+        </Panel>
+
+        <Panel>
+            <h2 class="text-2xl flex items-center gap-2">
+                <ListOrderedIcon /> {{ $t('activities.authoring.steps.title') }}
+                <span class="ms-auto text-sm font-normal opacity-60">
+                    {{ $t('activities.fields.preparationTime') }} {{ $t('activities.minutes', { minutes: timing.preparation }) }}
+                    · {{ $t('activities.fields.playTime') }} {{ $t('activities.minutes', { minutes: timing.play }) }}
+                </span>
+            </h2>
+            <button class="btn btn-primary" :disabled="isAddingStep" @click="addAndEditStep">
                 <span v-if="isAddingStep" class="loading loading-spinner loading-sm"></span>
                 <PlusIcon />
                 {{ $t('actions.add') }}
@@ -210,14 +407,15 @@ async function remove(step: ActivityStepData) {
             <List :items="activity.steps" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
 
-                <button class="btn btn-ghost btn-square" @click="() => remove(item)">
+                <button class="btn btn-ghost btn-square" @click="() => removeStep(item)">
                     <MinusIcon />
                 </button>
-                <button class="btn btn-ghost btn-square" @click="() => edit(item)">
+                <button class="btn btn-ghost btn-square" @click="() => editStep(item)">
                     <PenIcon />
                 </button>
             </List>
         </Panel>
     </Container>
-    <StepEditModal ref="modal" />
+    <StepEditModal ref="stepModal" :materials="activity.materials" />
+    <WorkshopEditModal ref="workshopModal" :materials="activity.materials" />
 </template>

@@ -11,20 +11,21 @@ import (
 const stepsCollection = "activities_steps"
 
 // What a step owns: the field listing them, and the collection they live in. The editor keeps
-// both as a list on the step, so dropping an id from that list is what says it is unneeded.
+// them as a list on the step, so dropping an id from that list is what says it is unneeded.
+// A step's materials are not here: they are the activity's, and the step only recalls them.
 var stepChildren = map[string]string{
 	"resources": "steps_resources",
-	"materials": "steps_materials",
 }
 
 // Register binds every application hook. Called once from main.
 func Register(app core.App) {
 	registerStepChildrenCleanup(app)
+	registerTagKindsCheck(app)
 }
 
-// registerStepChildrenCleanup deletes a step's resources and materials once no step points at
-// them. The editor only ever unlinks: `activities_steps.resources` and `.materials` cascade, so
-// deleting from the client would take the step down with the last of its children.
+// registerStepChildrenCleanup deletes a step's resources once no step points at them. The editor
+// only ever unlinks: `activities_steps.resources` cascades, so deleting from the client would
+// take the step down with the last of its resources.
 func registerStepChildrenCleanup(app core.App) {
 	app.OnRecordUpdate(stepsCollection).BindFunc(func(e *core.RecordEvent) error {
 		previous := make(map[string][]string, len(stepChildren))

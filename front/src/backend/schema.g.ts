@@ -12,9 +12,10 @@ export const Collections = {
 	Otps: "_otps",
 	Superusers: "_superusers",
 	Activities: "activities",
+	ActivitiesMaterials: "activities_materials",
 	ActivitiesSteps: "activities_steps",
 	ActivitiesTags: "activities_tags",
-	StepsMaterials: "steps_materials",
+	ActivitiesWorkshops: "activities_workshops",
 	StepsResources: "steps_resources",
 	Users: "users",
 } as const
@@ -104,86 +105,156 @@ export const ActivitiesStateOptions = {
 } as const
 export type ActivitiesStateOptions = typeof ActivitiesStateOptions[keyof typeof ActivitiesStateOptions]
 
-export const ActivitiesEnvironnementOptions = {
+export const ActivitiesHostEffortOptions = {
+	"LOW": "LOW",
+	"MEDIUM": "MEDIUM",
+	"HIGH": "HIGH",
+} as const
+export type ActivitiesHostEffortOptions = typeof ActivitiesHostEffortOptions[keyof typeof ActivitiesHostEffortOptions]
+
+export const ActivitiesFormatOptions = {
+	"SMALL_GAME": "SMALL_GAME",
+	"BIG_GAME": "BIG_GAME",
+	"WORKSHOP": "WORKSHOP",
+} as const
+export type ActivitiesFormatOptions = typeof ActivitiesFormatOptions[keyof typeof ActivitiesFormatOptions]
+
+export const ActivitiesPracticesOptions = {
+	"MANUAL_CREATION": "MANUAL_CREATION",
+	"EXPRESSION": "EXPRESSION",
+	"COOKING": "COOKING",
+	"OBSERVATION": "OBSERVATION",
+	"MUSIC": "MUSIC",
+	"EXPERIMENTATION": "EXPERIMENTATION",
+} as const
+export type ActivitiesPracticesOptions = typeof ActivitiesPracticesOptions[keyof typeof ActivitiesPracticesOptions]
+
+export const ActivitiesImaginaryRuleOptions = {
+	"NONE": "NONE",
+	"ADAPTABLE": "ADAPTABLE",
+	"REQUIRED": "REQUIRED",
+} as const
+export type ActivitiesImaginaryRuleOptions = typeof ActivitiesImaginaryRuleOptions[keyof typeof ActivitiesImaginaryRuleOptions]
+
+export const ActivitiesChildrenPaceOptions = {
+	"CALM": "CALM",
+	"DYNAMIC": "DYNAMIC",
+} as const
+export type ActivitiesChildrenPaceOptions = typeof ActivitiesChildrenPaceOptions[keyof typeof ActivitiesChildrenPaceOptions]
+
+export const ActivitiesLocationsOptions = {
 	"PARK": "PARK",
 	"HOUSE": "HOUSE",
 	"BALCONY": "BALCONY",
 	"CAR": "CAR",
-	"OUTDOOR": "OUTDOOR",
 	"CITY": "CITY",
 	"CAMPAIGN": "CAMPAIGN",
 	"FOREST": "FOREST",
-	"MOUTAIN": "MOUTAIN",
+	"MOUNTAIN": "MOUNTAIN",
 	"POOL": "POOL",
 	"LAKE": "LAKE",
 	"RIVER": "RIVER",
 	"BATH": "BATH",
 	"MEAL": "MEAL",
 } as const
-export type ActivitiesEnvironnementOptions = typeof ActivitiesEnvironnementOptions[keyof typeof ActivitiesEnvironnementOptions]
+export type ActivitiesLocationsOptions = typeof ActivitiesLocationsOptions[keyof typeof ActivitiesLocationsOptions]
 
-export const ActivitiesSeasonOptions = {
+export const ActivitiesSeasonsOptions = {
 	"AUTUMN": "AUTUMN",
 	"WINTER": "WINTER",
 	"SPRING": "SPRING",
 	"SUMMER": "SUMMER",
-	"CHRISTMAS": "CHRISTMAS",
-	"NEW YEAR": "NEW YEAR",
-	"HALLOWEEN": "HALLOWEEN",
-	"EASTER": "EASTER",
-	"VALENTINE": "VALENTINE",
 } as const
-export type ActivitiesSeasonOptions = typeof ActivitiesSeasonOptions[keyof typeof ActivitiesSeasonOptions]
-
-export const ActivitiesWeatherOptions = {
-	"RAIN": "RAIN",
-	"SNOW": "SNOW",
-	"SUNNY": "SUNNY",
-	"WINDY": "WINDY",
-} as const
-export type ActivitiesWeatherOptions = typeof ActivitiesWeatherOptions[keyof typeof ActivitiesWeatherOptions]
-
-export const ActivitiesEnergyLevelOptions = {
-	"LOW": "LOW",
-	"MEDIUM": "MEDIUM",
-	"HIGH": "HIGH",
-} as const
-export type ActivitiesEnergyLevelOptions = typeof ActivitiesEnergyLevelOptions[keyof typeof ActivitiesEnergyLevelOptions]
+export type ActivitiesSeasonsOptions = typeof ActivitiesSeasonsOptions[keyof typeof ActivitiesSeasonsOptions]
 export type ActivitiesRecord = {
-	age_max: number
-	age_min: number
+	age_max?: number
+	age_min?: number
+	age_variants?: HTMLString
+	children_pace?: ActivitiesChildrenPaceOptions
+	conditions?: HTMLString
 	created: IsoAutoDateString
-	description: HTMLString
-	energy_level?: ActivitiesEnergyLevelOptions
-	environnement: ActivitiesEnvironnementOptions
+	cross_supervision?: boolean
+	description?: HTMLString
+	development_tags?: RecordIdString[]
+	format?: ActivitiesFormatOptions
+	goal_tags?: RecordIdString[]
+	host_effort?: ActivitiesHostEffortOptions
 	id: string
+	ideal_for_tags?: RecordIdString[]
+	imaginary_rule?: ActivitiesImaginaryRuleOptions
+	imaginary_tags?: RecordIdString[]
+	indoor?: boolean
+	locations?: ActivitiesLocationsOptions[]
+	materials?: RecordIdString[]
 	name: string
-	participants_max: number
-	participants_min: number
+	outdoor?: boolean
+	participants_max?: number
+	participants_min?: number
+	practices?: ActivitiesPracticesOptions[]
 	recommended_hosts_numbers?: number
-	season?: ActivitiesSeasonOptions
+	safety_tags?: RecordIdString[]
+	seasons?: ActivitiesSeasonsOptions[]
 	state: ActivitiesStateOptions
 	steps?: RecordIdString[]
-	tags?: RecordIdString[]
+	supervision_notes?: HTMLString
+	theme_tags?: RecordIdString[]
 	updated: IsoAutoDateString
 	user: RecordIdString
 	visual?: FileNameString
-	weather?: ActivitiesWeatherOptions
+	visual_brief?: string
+	workshops?: RecordIdString[]
 }
 
-export type ActivitiesStepsRecord = {
+export type ActivitiesMaterialsRecord = {
 	activity: RecordIdString
 	created: IsoAutoDateString
-	description: HTMLString
 	id: string
-	materials?: RecordIdString[]
-	resources?: RecordIdString[]
+	name: string
+	quantity?: string
 	updated: IsoAutoDateString
 }
 
+export const ActivitiesStepsKindOptions = {
+	"PREPARE": "PREPARE",
+	"EXPLAIN": "EXPLAIN",
+	"TEAMS": "TEAMS",
+	"LAUNCH": "LAUNCH",
+	"CUSTOM": "CUSTOM",
+	"ANNOUNCE_END": "ANNOUNCE_END",
+	"CONCLUSION": "CONCLUSION",
+} as const
+export type ActivitiesStepsKindOptions = typeof ActivitiesStepsKindOptions[keyof typeof ActivitiesStepsKindOptions]
+
+export const ActivitiesStepsEndCriteriaOptions = {
+	"TIME_UP": "TIME_UP",
+	"ENOUGH_DONE": "ENOUGH_DONE",
+	"ATTENTION_DROPS": "ATTENTION_DROPS",
+	"TEAM_WON": "TEAM_WON",
+} as const
+export type ActivitiesStepsEndCriteriaOptions = typeof ActivitiesStepsEndCriteriaOptions[keyof typeof ActivitiesStepsEndCriteriaOptions]
+export type ActivitiesStepsRecord<Tactions = unknown> = {
+	actions?: null | Tactions
+	activity: RecordIdString
+	created: IsoAutoDateString
+	description: HTMLString
+	duration?: number
+	end_criteria?: ActivitiesStepsEndCriteriaOptions[]
+	end_criteria_other?: string
+	id: string
+	kind: ActivitiesStepsKindOptions
+	materials?: RecordIdString[]
+	resources?: RecordIdString[]
+	tip?: HTMLString
+	title?: string
+	updated: IsoAutoDateString
+	visual_brief?: string
+}
+
 export const ActivitiesTagsTypeOptions = {
-	"FIELD": "FIELD",
+	"THEME": "THEME",
 	"IMAGINARY": "IMAGINARY",
+	"GOAL": "GOAL",
+	"IDEAL_FOR": "IDEAL_FOR",
 	"SECURITY": "SECURITY",
 	"DEVELOP_PHYSICAL": "DEVELOP_PHYSICAL",
 	"DEVELOP_INTELLECTUAL": "DEVELOP_INTELLECTUAL",
@@ -203,11 +274,15 @@ export type ActivitiesTagsRecord = {
 	updated: IsoAutoDateString
 }
 
-export type StepsMaterialsRecord = {
+export type ActivitiesWorkshopsRecord = {
+	activity: RecordIdString
+	adults_required?: number
+	challenges?: HTMLString
 	created: IsoAutoDateString
 	id: string
+	materials?: RecordIdString[]
 	name: string
-	step: RecordIdString
+	theme?: string
 	updated: IsoAutoDateString
 }
 
@@ -247,9 +322,10 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
-export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
+export type ActivitiesMaterialsResponse<Texpand = unknown> = Required<ActivitiesMaterialsRecord> & BaseSystemFields<Texpand>
+export type ActivitiesStepsResponse<Tactions = unknown, Texpand = unknown> = Required<ActivitiesStepsRecord<Tactions>> & BaseSystemFields<Texpand>
 export type ActivitiesTagsResponse<Texpand = unknown> = Required<ActivitiesTagsRecord> & BaseSystemFields<Texpand>
-export type StepsMaterialsResponse<Texpand = unknown> = Required<StepsMaterialsRecord> & BaseSystemFields<Texpand>
+export type ActivitiesWorkshopsResponse<Texpand = unknown> = Required<ActivitiesWorkshopsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
@@ -262,9 +338,10 @@ export type CollectionRecords = {
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
 	activities: ActivitiesRecord
+	activities_materials: ActivitiesMaterialsRecord
 	activities_steps: ActivitiesStepsRecord
 	activities_tags: ActivitiesTagsRecord
-	steps_materials: StepsMaterialsRecord
+	activities_workshops: ActivitiesWorkshopsRecord
 	steps_resources: StepsResourcesRecord
 	users: UsersRecord
 }
@@ -276,9 +353,10 @@ export type CollectionResponses = {
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
 	activities: ActivitiesResponse
+	activities_materials: ActivitiesMaterialsResponse
 	activities_steps: ActivitiesStepsResponse
 	activities_tags: ActivitiesTagsResponse
-	steps_materials: StepsMaterialsResponse
+	activities_workshops: ActivitiesWorkshopsResponse
 	steps_resources: StepsResourcesResponse
 	users: UsersResponse
 }

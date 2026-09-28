@@ -21,14 +21,38 @@ Every tag lives in `activities_tags`:
 
 | field | kind | |
 |---|---|---|
-| `type` | `select`, required | `FIELD`, `IMAGINARY`, `SECURITY`, `DEVELOP_PHYSICAL`, `DEVELOP_INTELLECTUAL`, `DEVELOP_AFFECT`, `DEVELOP_SOCIAL`, `DEVELOP_MORAL`, `DEVELOP_SPIRITUAL` |
+| `type` | `select`, required | `THEME`, `IMAGINARY`, `GOAL`, `IDEAL_FOR`, `SECURITY`, `DEVELOP_PHYSICAL`, `DEVELOP_INTELLECTUAL`, `DEVELOP_AFFECT`, `DEVELOP_SOCIAL`, `DEVELOP_MORAL`, `DEVELOP_SPIRITUAL` |
 | `slug` | text, required | `^[a-z0-9-]+$`, unique per `type` |
 | `name` | text, required | one language |
 | `description` | editor | used by safety tags |
 
-`activities.tags` is one relation to it. There is no field per type: PocketBase cannot restrict
-a relation to the records of one type, so nine fields pointing at the same collection would add
-back the boilerplate without adding any safety.
+The kinds were nine at first, with `FIELD` for domains. `FIELD` became `THEME`, and `GOAL` and
+`IDEAL_FOR` were added, when the activity was grouped by family
+([ADR 0015](0015-activity-attributes-grouped-by-family.md)).
+
+**An activity links tags through one relation per place a tag goes in its families**
+([ADR 0015](0015-activity-attributes-grouped-by-family.md)), all pointing at `activities_tags`:
+
+| relation | accepts |
+|---|---|
+| `theme_tags` | THEME |
+| `imaginary_tags` | IMAGINARY |
+| `safety_tags` | SECURITY |
+| `goal_tags` | GOAL |
+| `ideal_for_tags` | IDEAL_FOR |
+| `development_tags` | the six DEVELOP_* kinds |
+
+PocketBase cannot restrict a relation to the records of one type, so `back/hooks/tag_kinds.go`
+checks it: an activity linking a tag in a relation not meant for its kind is refused, with the
+error keyed by that relation.
+
+This was one `tags` relation at first, holding every kind, on the grounds that fields per type
+pointing at one collection added boilerplate without adding safety. Grouping the activity by
+family turned that around: with one relation, four families shared one column, the mapper had to
+split and rebuild it on every write, and an update carrying one family had to be refused lest it
+unlink the others' tags. Now each family writes its own relations. The six development axes
+share one because they are one family's single list in all but name; the front sorts them apart
+by kind. Migration `1790700300_tag_relations_per_family.go` made the split, schema only.
 
 `type` is a `select` because the list of kinds is closed. It is part of the schema, like
 `season` and `weather`. The tags inside each kind are data and can grow without a migration.
@@ -45,12 +69,14 @@ text, keeping the French, until data is translated some more systematic way.
 
 - One collection, one API rule, one type. A new kind is a new `select` value, and a new tag is
   a new row.
-- Filtering is the same for every kind: `tags.id ?= {:id}`, and `tags.type = 'SECURITY'` to
-  narrow by kind.
-- Expanded tags arrive mixed together. Grouping them by `type` is the front's job, a pure
-  function in `model/`.
-- **Per-kind rules are no longer schema.** `maxSelect` and `required` used to be set per
-  referential (10 each). `tags` now accepts up to 999 of any mix. A rule like "at most three
-  safety tags" or "at least one domain" would need a record hook in `back/hooks`.
+- Filtering reads by relation: `safety_tags.id ?= {:id}`. Only a development axis needs the
+  kind as well: `development_tags.type = 'DEVELOP_SOCIAL'`.
+- Each relation arrives expanded on its own, so the mapper reads it straight into its family.
+  `tagOptions` groups every tag by kind for the pickers.
+- **Per-kind rules can be schema again.** Each relation has its own `maxSelect` and
+  `required` — 999 and optional for now. "At most three safety tags" is a setting; a rule per
+  development axis is not, since the six share a relation.
+- The kind of each link is checked by a hook, not by the schema. A record saved without
+  validation (a migration's `SaveNoValidate`) skips it.
 - If one kind later needs columns of its own, the answer is to move it back out into a
   collection of its own. The same id-preserving migration makes that cheap.

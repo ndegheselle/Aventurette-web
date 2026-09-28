@@ -23,6 +23,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0012](0012-fakes-at-the-port-not-the-sdk.md) | Tests fake the port, never the SDK | Accepted |
 | [0013](0013-specs-live-in-a-feature-tests-folder.md) | Specs live in a feature's `tests/` folder, and fewer are written | Accepted |
 | [0014](0014-activity-tags-are-one-collection.md) | An activity's tags are one collection, told apart by `type` | Accepted |
+| [0015](0015-activity-attributes-grouped-by-family.md) | An activity's attributes are grouped by family in the model, flat in the database | Accepted |
 
 ## Writing a new one
 

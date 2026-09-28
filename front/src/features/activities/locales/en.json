@@ -2,10 +2,50 @@
     "activities": {
         "title": "Activities",
         "description": "Description",
+        "minutes": "{minutes} min",
+        "families": {
+            "informations": "Details",
+            "classification": "Classification",
+            "imaginary": "Imaginary world",
+            "audience": "Audience",
+            "supervision": "Supervision",
+            "place": "Place and conditions",
+            "safety": "Safety",
+            "pedagogy": "Pedagogy",
+            "development": "Development"
+        },
         "steps": {
             "title": "Steps",
+            "kind": {
+                "PREPARE": "Set up the game",
+                "EXPLAIN": "Explain the activity",
+                "TEAMS": "Form teams",
+                "LAUNCH": "Start the game",
+                "CUSTOM": "Free step",
+                "ANNOUNCE_END": "Announce the end",
+                "CONCLUSION": "Wrap up"
+            },
+            "endCriterion": {
+                "TIME_UP": "Time is up",
+                "ENOUGH_DONE": "Enough challenges or steps completed",
+                "ATTENTION_DROPS": "The group's attention drops",
+                "TEAM_WON": "A team has won"
+            },
             "fields": {
+                "title": "Title",
+                "kind": "Kind of step",
+                "duration": "Estimated duration (minutes)",
+                "visualBrief": "Visual brief",
                 "description": "Description",
+                "actions": {
+                    "title": "Actions to tick",
+                    "count": "{count} actions"
+                },
+                "tip": "Tip",
+                "endCriteria": {
+                    "title": "What ends it",
+                    "other": "Other criterion"
+                },
                 "resources": {
                     "title": "Resources",
                     "constraints": "PNG, JPEG, JPG and PDF formats. 10 files max, 2MB max per file.",
@@ -13,10 +53,24 @@
                     "uploadFailed": "The file could not be uploaded."
                 },
                 "materials": {
-                    "title": "Materials",
-                    "notNeeded": "No materials required",
-                    "create": "Add \"{name}\""
+                    "title": "Materials used"
                 }
+            }
+        },
+        "materials": {
+            "title": "Materials",
+            "notNeeded": "No materials required",
+            "quantity": "Quantity"
+        },
+        "workshops": {
+            "title": "Workshops",
+            "adults": "{count} adult(s)",
+            "fields": {
+                "name": "Workshop",
+                "theme": "Theme",
+                "challenges": "Challenge(s)",
+                "materials": "Materials",
+                "adultsRequired": "Adults needed at the station"
             }
         },
         "actions": {
@@ -26,29 +80,67 @@
         },
         "fields": {
             "name": "Name",
-            "picture": "Image",
-            "environnement": "Environment",
+            "picture": "Cover visual",
+            "visualBrief": "Cover visual brief",
+            "format": "Format",
+            "practices": "Practice (workshop)",
+            "imaginaryRule": "Imaginary world rule",
             "age": "Age",
-            "participants": "Children",
-            "hosts": "Leaders",
-            "season": "Season",
-            "weather": "Weather",
-            "energy_level": "Energy level",
+            "participants": "Recommended group size",
+            "childrenPace": "Children's pace",
+            "ageVariants": "Durations by age / variants",
+            "hostEffort": "Leader effort",
+            "hosts": "Leaders needed",
+            "crossSupervision": "Someone watches over every workshop",
+            "supervisionNotes": "Supervision constraints",
+            "indoor": "Indoors",
+            "outdoor": "Outdoors",
+            "locations": "Detailed location",
+            "conditions": "Requirements",
+            "seasons": "Seasons",
+            "preparationTime": "Preparation time",
+            "playTime": "Playing time",
             "unset": "Not specified"
         },
         "constraints": {
             "picture": "PNG, JPEG and JPG formats. 2MB maximum"
         },
-        "environnement": {
+        "format": {
+            "SMALL_GAME": "Small game",
+            "BIG_GAME": "Big game",
+            "WORKSHOP": "Workshop"
+        },
+        "practice": {
+            "MANUAL_CREATION": "Crafts",
+            "EXPRESSION": "Expression",
+            "COOKING": "Cooking",
+            "OBSERVATION": "Observation",
+            "MUSIC": "Music",
+            "EXPERIMENTATION": "Experiments"
+        },
+        "imaginaryRule": {
+            "NONE": "No imaginary world needed",
+            "ADAPTABLE": "Adaptable theme",
+            "REQUIRED": "Imaginary world required"
+        },
+        "childrenPace": {
+            "CALM": "Calm",
+            "DYNAMIC": "Lively"
+        },
+        "hostEffort": {
+            "LOW": "Low",
+            "MEDIUM": "Medium",
+            "HIGH": "High"
+        },
+        "location": {
             "PARK": "Playground",
             "HOUSE": "House",
             "BALCONY": "Balcony",
             "CAR": "Car",
-            "OUTDOOR": "Outdoors",
             "CITY": "City",
             "CAMPAIGN": "Countryside",
             "FOREST": "Forest",
-            "MOUTAIN": "Mountain",
+            "MOUNTAIN": "Mountain",
             "POOL": "Swimming pool",
             "LAKE": "Lake",
             "RIVER": "River",
@@ -59,33 +151,19 @@
             "AUTUMN": "Autumn",
             "WINTER": "Winter",
             "SPRING": "Spring",
-            "SUMMER": "Summer",
-            "CHRISTMAS": "Christmas",
-            "NEW YEAR": "New Year",
-            "HALLOWEEN": "Halloween",
-            "EASTER": "Easter",
-            "VALENTINE": "Valentine's Day"
-        },
-        "weather": {
-            "RAIN": "Rainy day",
-            "SNOW": "Snowy day",
-            "SUNNY": "Fair weather",
-            "WINDY": "Windy"
-        },
-        "energy_level": {
-            "LOW": "Low",
-            "MEDIUM": "Medium",
-            "HIGH": "High"
+            "SUMMER": "Summer"
         },
         "tagType": {
-            "FIELD": "Domain",
+            "THEME": "Theme",
             "IMAGINARY": "Imaginary world",
+            "GOAL": "Pedagogical goals",
+            "IDEAL_FOR": "Ideal for…",
             "SECURITY": "Safety",
             "DEVELOP_PHYSICAL": "Physical development",
             "DEVELOP_INTELLECTUAL": "Intellectual development",
             "DEVELOP_AFFECT": "Emotional development",
             "DEVELOP_SOCIAL": "Social development",
-            "DEVELOP_MORAL": "Moral development",
+            "DEVELOP_MORAL": "Moral development / character",
             "DEVELOP_SPIRITUAL": "Spiritual development"
         }
     }

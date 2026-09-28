@@ -8,9 +8,10 @@
         "authoring": {
             "title": "Modification",
             "description": "Description",
-            "steps": "Étapes",
-            "properties": "Informations",
-            "tags": "Tags",
+            "steps": {
+                "title": "Étapes",
+                "addAction": "Ajouter une action"
+            },
             "states": {
                 "all": "Toutes",
                 "DRAFT": "Brouillons",
@@ -19,7 +20,13 @@
             "publish": "Publier",
             "unpublish": "Repasser en brouillon",
             "remove": "Supprimer",
-            "removed": "Activité supprimée."
+            "removed": "Activité supprimée.",
+            "materials": {
+                "create": "Créer « {name} »"
+            }
+        },
+        "workshops": {
+            "untitled": "Nouvel atelier"
         }
     }
 }

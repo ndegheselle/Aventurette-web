@@ -2,13 +2,9 @@ import { isFilterGroup, type Filter } from '@chapelure/core';
 import {
     buildAuthoredFilters,
     stateTransition,
-    columnOf,
     pickedAmong,
-    rangeEndOf,
-    replaceTagsOfType,
 } from '@features/activities-authoring/model/activity.edit';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
-import { ActivityTagType } from '@features/activities/model/tag';
 import { aTag } from '@tests';
 import { describe, expect, it } from 'vitest';
 
@@ -70,36 +66,5 @@ describe('pickedAmong', () => {
 
         expect(picked).toHaveLength(1);
         expect(picked[0]).toBe(options[1]);
-    });
-});
-
-describe('replaceTagsOfType', () => {
-    it("replaces one kind's tags and leaves the other kinds' alone", () => {
-        const domain = aTag({ type: ActivityTagType.FIELD });
-        const safety = aTag({ type: ActivityTagType.SECURITY });
-        const newSafety = aTag({ type: ActivityTagType.SECURITY });
-
-        expect(replaceTagsOfType([domain, safety], ActivityTagType.SECURITY, [newSafety]))
-            .toEqual([domain, newSafety]);
-    });
-
-    it('empties a kind when its picker is cleared', () => {
-        const safety = aTag({ type: ActivityTagType.SECURITY });
-
-        expect(replaceTagsOfType([safety], ActivityTagType.SECURITY, [])).toEqual([]);
-    });
-});
-
-describe('rangeEndOf', () => {
-    it('reads a stored 0 as unset, which is what PocketBase stores for an empty number', () => {
-        // Otherwise a new activity's age_max of 0 would pin the upper thumb to the floor.
-        expect(rangeEndOf(0)).toBeNull();
-        expect(rangeEndOf(undefined)).toBeNull();
-        expect(rangeEndOf(6)).toBe(6);
-    });
-
-    it('stores an unset end as 0, and a set one as it is', () => {
-        expect(columnOf(null)).toBe(0);
-        expect(columnOf(6)).toBe(6);
     });
 });

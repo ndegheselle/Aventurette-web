@@ -8,9 +8,10 @@
         "authoring": {
             "title": "Edit activities",
             "description": "Description",
-            "steps": "Steps",
-            "properties": "Details",
-            "tags": "Tags",
+            "steps": {
+                "title": "Steps",
+                "addAction": "Add an action"
+            },
             "states": {
                 "all": "All",
                 "DRAFT": "Drafts",
@@ -19,7 +20,13 @@
             "publish": "Publish",
             "unpublish": "Back to draft",
             "remove": "Delete",
-            "removed": "Activity deleted."
+            "removed": "Activity deleted.",
+            "materials": {
+                "create": "Add \"{name}\""
+            }
+        },
+        "workshops": {
+            "untitled": "New workshop"
         }
     }
 }

@@ -1,19 +1,29 @@
 <script setup lang="ts">
+import List from '@chapelure/ui/data/List.vue';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import MaterialDisplay from '@features/activities-authoring/components/MaterialDisplay.vue';
-import { useStepMaterials } from '@features/activities-authoring/composables/useStepEdit';
-import { type ActivityMaterialData } from '@features/activities/model/step';
+import { useMaterialSuggestions } from '@features/activities-authoring/composables/useActivityEdit';
+import { type ActivityMaterialData } from '@features/activities/model/material';
 import { CircleOffIcon, CircleQuestionMarkIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-/** The step these belong to: choosing a name writes a row against it. */
-const props = defineProps<{ step: string }>();
-
+// The activity's material list. Every change is a write of its own, made by the parent: adding
+// a name creates a row, a quantity is saved as it is typed, and removing deletes the row.
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });
 
-const { search, suggestions, isNewName, add, remove } = useStepMaterials(selected, () => props.step);
+const emit = defineEmits<{
+    add: [name: string];
+    update: [material: ActivityMaterialData];
+    remove: [material: ActivityMaterialData];
+}>();
+
+const { search, suggestions, isNewName } = useMaterialSuggestions(selected);
 
 const open = ref<boolean>(false);
+
+function add(name: string) {
+    emit('add', name);
+    search.value = '';
+}
 </script>
 
 <template>
@@ -29,11 +39,11 @@ const open = ref<boolean>(false);
             </summary>
         </template>
         <ul class="menu p-2 w-full">
-            <!-- An unused name is still worth offering: the row is this step's either way. -->
+            <!-- An unused name is still worth offering: the row is this activity's either way. -->
             <li v-if="isNewName">
                 <a @click="() => add(search)">
                     <PlusIcon class="icon-sm" />
-                    {{ $t('activities.steps.fields.materials.create', { name: search.trim() }) }}
+                    {{ $t('activities.authoring.materials.create', { name: search.trim() }) }}
                 </a>
             </li>
             <li v-for="name in suggestions" :key="name">
@@ -48,15 +58,17 @@ const open = ref<boolean>(false);
             </li>
         </ul>
     </Dropdown>
-    <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
-        <MaterialDisplay :material="value" v-for="(value, index) in selected" :key="value.id" class="relative">
-            <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="() => remove(index)">
-                <TrashIcon class="icon-sm" />
-            </button>
-        </MaterialDisplay>
-        <div v-if="!selected.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
-            <CircleOffIcon />
-            <span>{{ $t('activities.steps.fields.materials.notNeeded') }}</span>
-        </div>
+    <List v-if="selected.length" :items="selected" v-slot="{ item }" class="mt-1 bg-base-200">
+        <img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" />
+        <span class="my-auto">{{ item.name }}</span>
+        <input type="text" class="input input-sm w-40" :placeholder="$t('activities.materials.quantity')"
+            v-model="item.quantity" @change="() => emit('update', item)" />
+        <button class="btn btn-ghost btn-square btn-sm" @click="() => emit('remove', item)">
+            <TrashIcon class="icon-sm" />
+        </button>
+    </List>
+    <div v-else class="opacity-60 flex mx-auto items-center gap-2 h-10">
+        <CircleOffIcon />
+        <span>{{ $t('activities.materials.notNeeded') }}</span>
     </div>
 </template>

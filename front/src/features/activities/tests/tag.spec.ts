@@ -1,35 +1,35 @@
-import { ActivityTagType, groupTagsByType, type ActivityTagData } from '@features/activities/model/tag';
+import { ActivityTagType, tagOptions, type ActivityTagData } from '@features/activities/model/tag';
 import { aTag } from '@tests';
 import { describe, expect, it } from 'vitest';
 
-describe('groupTagsByType', () => {
-    it('groups tags by kind, in the order the kinds are declared rather than the order they arrive', () => {
-        const groups = groupTagsByType([
+describe('tagOptions', () => {
+    it('groups tags by kind, whatever order they arrive in', () => {
+        const options = tagOptions([
             aTag({ type: ActivityTagType.SECURITY }),
-            aTag({ type: ActivityTagType.FIELD }),
+            aTag({ type: ActivityTagType.THEME }),
             aTag({ type: ActivityTagType.SECURITY }),
         ]);
 
-        expect(groups.map(group => group.type)).toEqual([ActivityTagType.FIELD, ActivityTagType.SECURITY]);
-        expect(groups[1]!.tags).toHaveLength(2);
+        expect(options.SECURITY).toHaveLength(2);
+        expect(options.THEME).toHaveLength(1);
     });
 
-    it('leaves out a kind with no tag, so no empty heading shows', () => {
-        const groups = groupTagsByType([aTag({ type: ActivityTagType.IMAGINARY })]);
+    it('has an empty list for a kind with no tag, so every picker can read its own', () => {
+        const options = tagOptions([aTag({ type: ActivityTagType.IMAGINARY })]);
 
-        expect(groups.map(group => group.type)).toEqual([ActivityTagType.IMAGINARY]);
+        expect(options.GOAL).toEqual([]);
+        expect(Object.keys(options)).toEqual(Object.values(ActivityTagType));
     });
 
-    it('keeps a kind the enum does not know yet, after the known ones', () => {
+    it('keeps a kind the enum does not know yet rather than dropping its tags', () => {
         const unknown = 'DEVELOP_ARTISTIC' as ActivityTagData['type'];
-        const groups = groupTagsByType([aTag({ type: unknown }), aTag({ type: ActivityTagType.FIELD })]);
 
-        expect(groups.map(group => group.type)).toEqual([ActivityTagType.FIELD, unknown]);
+        expect(tagOptions([aTag({ type: unknown })])[unknown]).toHaveLength(1);
     });
 
     it('sorts a kind by name', () => {
         const tags = [aTag({ name: 'forêt' }), aTag({ name: 'art' }), aTag({ name: 'ingénierie' })];
 
-        expect(groupTagsByType(tags)[0]!.tags.map(tag => tag.name)).toEqual(['art', 'forêt', 'ingénierie']);
+        expect(tagOptions(tags).THEME.map(tag => tag.name)).toEqual(['art', 'forêt', 'ingénierie']);
     });
 });

@@ -2,10 +2,50 @@
     "activities": {
         "title": "Activités",
         "description": "Description",
+        "minutes": "{minutes} min",
+        "families": {
+            "informations": "Informations",
+            "classification": "Classification",
+            "imaginary": "Imaginaire",
+            "audience": "Public",
+            "supervision": "Encadrement",
+            "place": "Lieu et conditions",
+            "safety": "Sécurité",
+            "pedagogy": "Pédagogie",
+            "development": "Développement"
+        },
         "steps": {
             "title": "Étapes",
+            "kind": {
+                "PREPARE": "Préparer le jeu",
+                "EXPLAIN": "Expliquer l'activité",
+                "TEAMS": "Constituer les équipes",
+                "LAUNCH": "Lancer le jeu",
+                "CUSTOM": "Étape libre",
+                "ANNOUNCE_END": "Annoncer la fin",
+                "CONCLUSION": "Conclusion"
+            },
+            "endCriterion": {
+                "TIME_UP": "Temps alloué écoulé",
+                "ENOUGH_DONE": "Nombre de défis ou d'étapes suffisant réalisé",
+                "ATTENTION_DROPS": "Attention du groupe qui retombe",
+                "TEAM_WON": "Une équipe a remporté la partie"
+            },
             "fields": {
+                "title": "Titre",
+                "kind": "Type d'étape",
+                "duration": "Durée estimée (minutes)",
+                "visualBrief": "Brief du visuel",
                 "description": "Description",
+                "actions": {
+                    "title": "Actions à cocher",
+                    "count": "{count} actions"
+                },
+                "tip": "Conseil",
+                "endCriteria": {
+                    "title": "Critères de fin",
+                    "other": "Autre critère"
+                },
                 "resources": {
                     "title": "Ressources",
                     "constraints": "Formats PNG, JPEG, JPG et PDF. 10 fichiers max, 2MB max par fichier.",
@@ -13,10 +53,24 @@
                     "uploadFailed": "L'envoi du fichier a échoué."
                 },
                 "materials": {
-                    "title": "Matériel",
-                    "notNeeded": "Aucun matériel requis",
-                    "create": "Créer « {name} »"
+                    "title": "Matériel utilisé"
                 }
+            }
+        },
+        "materials": {
+            "title": "Matériel",
+            "notNeeded": "Aucun matériel requis",
+            "quantity": "Quantité"
+        },
+        "workshops": {
+            "title": "Ateliers",
+            "adults": "{count} adulte(s)",
+            "fields": {
+                "name": "Atelier",
+                "theme": "Thématique",
+                "challenges": "Défi(s) proposé(s)",
+                "materials": "Matériel",
+                "adultsRequired": "Adultes requis au poste"
             }
         },
         "actions": {
@@ -26,29 +80,67 @@
         },
         "fields": {
             "name": "Nom",
-            "picture": "Image",
-            "environnement": "Environnement",
+            "picture": "Visuel principal",
+            "visualBrief": "Brief du visuel principal",
+            "format": "Format",
+            "practices": "Pratique (atelier)",
+            "imaginaryRule": "Règle d'imaginaire",
             "age": "Âge",
-            "participants": "Nombre d'enfants",
-            "hosts": "Nombre d'animateurs",
-            "season": "Saison",
-            "weather": "Météo",
-            "energy_level": "Niveau d'énergie",
+            "participants": "Effectif recommandé",
+            "childrenPace": "Rythme des enfants",
+            "ageVariants": "Durées selon âge / variantes",
+            "hostEffort": "Mobilisation de l'animateur",
+            "hosts": "Nombre d'animateurs requis",
+            "crossSupervision": "Surveillance transversale des ateliers",
+            "supervisionNotes": "Contraintes d'encadrement",
+            "indoor": "Intérieur",
+            "outdoor": "Extérieur",
+            "locations": "Localisation détaillée",
+            "conditions": "Conditions de réalisation",
+            "seasons": "Saisons",
+            "preparationTime": "Temps de préparation",
+            "playTime": "Temps de jeu",
             "unset": "Non précisé"
         },
         "constraints": {
             "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
         },
-        "environnement": {
+        "format": {
+            "SMALL_GAME": "Petit jeu",
+            "BIG_GAME": "Grand jeu",
+            "WORKSHOP": "Atelier"
+        },
+        "practice": {
+            "MANUAL_CREATION": "Création manuelle",
+            "EXPRESSION": "Expression",
+            "COOKING": "Cuisine",
+            "OBSERVATION": "Observation",
+            "MUSIC": "Musique",
+            "EXPERIMENTATION": "Expérimentation"
+        },
+        "imaginaryRule": {
+            "NONE": "Aucun imaginaire nécessaire",
+            "ADAPTABLE": "Habillage adaptable",
+            "REQUIRED": "Imaginaire imposé"
+        },
+        "childrenPace": {
+            "CALM": "Calme",
+            "DYNAMIC": "Dynamique"
+        },
+        "hostEffort": {
+            "LOW": "Faible",
+            "MEDIUM": "Moyenne",
+            "HIGH": "Importante"
+        },
+        "location": {
             "PARK": "Parc de jeux",
             "HOUSE": "Maison",
             "BALCONY": "Balcon",
             "CAR": "Voiture",
-            "OUTDOOR": "Extérieur",
             "CITY": "Ville",
             "CAMPAIGN": "Campagne",
             "FOREST": "Forêt",
-            "MOUTAIN": "Montagne",
+            "MOUNTAIN": "Montagne",
             "POOL": "Piscine",
             "LAKE": "Lac",
             "RIVER": "Rivière",
@@ -59,33 +151,19 @@
             "AUTUMN": "Automne",
             "WINTER": "Hiver",
             "SPRING": "Printemps",
-            "SUMMER": "Été",
-            "CHRISTMAS": "Noël",
-            "NEW YEAR": "Nouvel An",
-            "HALLOWEEN": "Halloween",
-            "EASTER": "Pâques",
-            "VALENTINE": "Saint-Valentin"
-        },
-        "weather": {
-            "RAIN": "Jour de pluie",
-            "SNOW": "Jour de neige",
-            "SUNNY": "Beau temps",
-            "WINDY": "Venteux"
-        },
-        "energy_level": {
-            "LOW": "Bas",
-            "MEDIUM": "Moyen",
-            "HIGH": "Au top"
+            "SUMMER": "Été"
         },
         "tagType": {
-            "FIELD": "Domaine",
+            "THEME": "Thème",
             "IMAGINARY": "Imaginaire",
+            "GOAL": "Tags pédagogiques",
+            "IDEAL_FOR": "Idéal pour…",
             "SECURITY": "Sécurité",
             "DEVELOP_PHYSICAL": "Développement physique",
             "DEVELOP_INTELLECTUAL": "Développement intellectuel",
             "DEVELOP_AFFECT": "Développement affectif",
             "DEVELOP_SOCIAL": "Développement social",
-            "DEVELOP_MORAL": "Développement moral",
+            "DEVELOP_MORAL": "Développement moral / caractère",
             "DEVELOP_SPIRITUAL": "Développement spirituel"
         }
     }

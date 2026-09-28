@@ -1,5 +1,6 @@
+import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { materialsOf, resourcesOf, type ActivityData } from '@features/activities/model/activity';
+import { rangeEndOf, resourcesOf, timingOf, type ActivityData } from '@features/activities/model/activity';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -20,9 +21,15 @@ export function useActivity() {
         { immediate: true },
     );
 
+    const audience = computed(() => activity.value?.audience);
+
     return {
         activity,
-        materials: computed(() => materialsOf(activity.value)),
+        ageLabel: computed(() => rangeLabel(
+            rangeEndOf(audience.value?.ageMin), rangeEndOf(audience.value?.ageMax))),
+        participantsLabel: computed(() => rangeLabel(
+            rangeEndOf(audience.value?.participantsMin), rangeEndOf(audience.value?.participantsMax))),
         resources: computed(() => resourcesOf(activity.value)),
+        timing: computed(() => timingOf(activity.value)),
     };
 }

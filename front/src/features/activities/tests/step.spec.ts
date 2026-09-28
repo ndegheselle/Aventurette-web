@@ -52,6 +52,15 @@ describe('stepMapper', () => {
         expect(stepMapper.toPayload({ description: '<p>Hide.</p>' }))
             .toEqual({ description: '<p>Hide.</p>' });
     });
+
+    it('reads actions never set as no action', () => {
+        expect(stepMapper.toEntity(aStepPayload({ actions: null }), files).actions).toEqual([]);
+    });
+
+    it('does not write an action left blank in the editor', () => {
+        expect(stepMapper.toPayload({ actions: ['Mark the field. ', '  ', 'Hide the flags.'] }))
+            .toEqual({ actions: ['Mark the field.', 'Hide the flags.'] });
+    });
 });
 
 describe('resourceMapper', () => {

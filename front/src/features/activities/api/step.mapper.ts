@@ -1,19 +1,7 @@
-import type { ActivitiesStepsResponse, StepsMaterialsResponse, StepsResourcesResponse } from "@/backend/schema.g";
+import type { ActivitiesStepsResponse, StepsResourcesResponse } from "@/backend/schema.g";
 import type { EntityMapper } from "@chapelure/core";
-import type {
-    ActivityMaterialData,
-    ActivityResourceData,
-    ActivityStepData,
-} from "@features/activities/model/step";
-
-/** A material as the backend stores it. */
-export type ActivityMaterialPayload = StepsMaterialsResponse;
-
-export const materialMapper: EntityMapper<ActivityMaterialPayload, ActivityMaterialData> = {
-    relations: [],
-    toEntity: ({ expand: _expand, ...material }) => material,
-    toPayload: (material) => material,
-};
+import { materialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
+import type { ActivityResourceData, ActivityStepData } from "@features/activities/model/step";
 
 /**
  * A resource as the backend stores it. `file` is the stored file's name coming back and the
@@ -31,20 +19,26 @@ export const resourceMapper: EntityMapper<ActivityResourcePayload, ActivityResou
 };
 
 /** A step as the backend stores it, with what an expanded read carries alongside. */
-export type ActivityStepPayload = ActivitiesStepsResponse<{
+export type ActivityStepPayload = ActivitiesStepsResponse<string[], {
     materials?: ActivityMaterialPayload[];
     resources?: ActivityResourcePayload[];
 }>;
 
+/**
+ * Reads and writes a step. `actions` is a JSON column: never set reads as no action, and an
+ * action left blank in the editor is not written.
+ */
 export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
     relations: ["materials", "resources"],
-    toEntity: ({ expand, ...step }, files) => ({
+    toEntity: ({ expand, actions, ...step }, files) => ({
         ...step,
+        actions: actions ?? [],
         materials: (expand?.materials ?? []).map(material => materialMapper.toEntity(material, files)),
         resources: (expand?.resources ?? []).map(resource => resourceMapper.toEntity(resource, files)),
     }),
-    toPayload: ({ materials, resources, ...step }) => ({
+    toPayload: ({ materials, resources, actions, ...step }) => ({
         ...step,
+        ...(actions && { actions: actions.map(action => action.trim()).filter(Boolean) }),
         ...(materials && { materials: materials.map(material => material.id) }),
         ...(resources && { resources: resources.map(resource => resource.id) }),
     }),

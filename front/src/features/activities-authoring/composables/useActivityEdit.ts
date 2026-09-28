@@ -2,29 +2,42 @@ import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
+import { materialsApi as materials } from '@features/activities-authoring/api/materials.api';
 import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
 import { tagsApi as tags } from '@features/activities-authoring/api/tags.api';
+import { workshopsApi as workshops } from '@features/activities-authoring/api/workshops.api';
+import { createEmptyActivity, stateTransition } from '@features/activities-authoring/model/activity.edit';
+import {
+    canCreateMaterial,
+    materialNameSuggestions,
+    withoutMaterial,
+} from '@features/activities-authoring/model/material.edit';
+import { createEmptyStep } from '@features/activities-authoring/model/step.edit';
+import { createEmptyWorkshop } from '@features/activities-authoring/model/workshop.edit';
 import {
     columnOf,
-    createEmptyActivity,
-    pickedAmong,
     rangeEndOf,
-    replaceTagsOfType,
-    stateTransition,
+    timingOf,
+    type ActivityAudience,
+    type ActivityData,
     type RangeEnd,
-} from '@features/activities-authoring/model/activity.edit';
-import { createEmptyStep } from '@features/activities-authoring/model/step.edit';
-import type { ActivityData } from '@features/activities/model/activity';
+} from '@features/activities/model/activity';
+import type { ActivityMaterialData } from '@features/activities/model/material';
 import type { ActivityStepData } from '@features/activities/model/step';
-import { groupTagsByType, type ActivityTagData, type TagGroup } from '@features/activities/model/tag';
+import { tagOptions, type ActivityTagData } from '@features/activities/model/tag';
+import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { computed, onMounted, ref, toRaw, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
+/** The lists of records an activity links, each written on its own as it changes. */
+type LinkedRecords = 'steps' | 'materials' | 'workshops';
+
 /**
  * The activity the edit form is bound to, and what saving it does. Saving writes the activity's
- * own fields only — it already exists by the time this screen opens, and so does every step.
+ * own fields only — it already exists by the time this screen opens, and so does every step,
+ * material and workshop.
  *
  * `activity` is never null, so the form can `v-model` straight onto it: an empty activity stands
  * in until the real one arrives.
@@ -37,6 +50,7 @@ export function useActivityEdit() {
 
     const activity = ref<ActivityData>(createEmptyActivity());
     const isAddingStep = ref(false);
+    const isAddingWorkshop = ref(false);
     const isChangingState = ref(false);
 
     watch(
@@ -50,6 +64,24 @@ export function useActivityEdit() {
     );
 
     /**
+     * Write one of the activity's lists of links. A save of its own — nothing on the form is
+     * involved — so a failure alerts and rolls the list back to what the record still holds.
+     */
+    async function relink<K extends LinkedRecords>(field: K, next: ActivityData[K]): Promise<boolean> {
+        const previous = activity.value[field];
+        activity.value[field] = next;
+
+        try {
+            await activities.update(activity.value.id, { [field]: next } as Partial<ActivityData>);
+            return true;
+        } catch {
+            activity.value[field] = previous;
+            alert.error(t('validation.errors.default'));
+            return false;
+        }
+    }
+
+    /**
      * Write a blank step, link it to the activity, and hand it back for the modal to fill in.
      * Null when the write failed — the caller's cue not to open the modal on nothing.
      */
@@ -59,7 +91,7 @@ export function useActivityEdit() {
         isAddingStep.value = true;
         try {
             const created = await steps.create(createEmptyStep(activity.value.id));
-            return await relinkSteps([...activity.value.steps, created]) ? created : null;
+            return await relink('steps', [...activity.value.steps, created]) ? created : null;
         } catch {
             alert.error(t('validation.errors.default'));
             return null;
@@ -82,7 +114,7 @@ export function useActivityEdit() {
      * deleted id leaves it with none, so removing a still-linked last step takes the activity too.
      */
     async function detachStep(step: ActivityStepData) {
-        if (!await relinkSteps(activity.value.steps.filter(current => current.id !== step.id)))
+        if (!await relink('steps', activity.value.steps.filter(current => current.id !== step.id)))
             return;
 
         try {
@@ -94,42 +126,96 @@ export function useActivityEdit() {
         }
     }
 
-    /**
-     * Write the activity's step list. A save of its own — nothing on the form is involved — so a
-     * failure alerts and rolls the list back to what the record still holds.
-     */
-    async function relinkSteps(next: ActivityStepData[]): Promise<boolean> {
-        const previous = activity.value.steps;
-        activity.value.steps = next;
-
+    /** Write a material of this activity's own, then list it. */
+    async function addMaterial(name: string) {
         try {
-            await activities.update(activity.value.id, { steps: next });
-            return true;
+            const created = await materials.create(name, activity.value.id);
+            await relink('materials', [...activity.value.materials, created]);
         } catch {
-            activity.value.steps = previous;
             alert.error(t('validation.errors.default'));
-            return false;
+        }
+    }
+
+    /** Write a material's quantity, as it is typed: the activity's save does not reach it. */
+    async function updateMaterial(material: ActivityMaterialData) {
+        try {
+            await materials.update(material);
+        } catch {
+            alert.error(t('validation.errors.default'));
         }
     }
 
     /**
-     * One end of a range, as the slider binds it, over the column that stores it — the slider's
-     * unset is `null`, the column's is 0.
+     * Delete a material outright — no unlinking first, unlike a step: nothing linking a material
+     * cascades, so the backend only drops it from the lists that held it.
      */
-    function rangeEnd(column: 'age_min' | 'age_max' | 'participants_min' | 'participants_max') {
+    async function removeMaterial(material: ActivityMaterialData) {
+        try {
+            await materials.remove(material.id);
+        } catch {
+            alert.error(t('validation.errors.default'));
+            return;
+        }
+
+        activity.value = withoutMaterial(activity.value, material.id);
+    }
+
+    /** Write a blank workshop and link it, as `addStep` does. */
+    async function addWorkshop(): Promise<ActivityWorkshopData | null> {
+        if (isAddingWorkshop.value) return null;
+
+        isAddingWorkshop.value = true;
+        try {
+            const created = await workshops.create(
+                createEmptyWorkshop(activity.value.id, t('activities.workshops.untitled')),
+            );
+            return await relink('workshops', [...activity.value.workshops, created]) ? created : null;
+        } catch {
+            alert.error(t('validation.errors.default'));
+            return null;
+        } finally {
+            isAddingWorkshop.value = false;
+        }
+    }
+
+    function replaceWorkshop(workshop: ActivityWorkshopData) {
+        activity.value.workshops = activity.value.workshops.map(
+            current => current.id === workshop.id ? workshop : current,
+        );
+    }
+
+    /** Delete a workshop outright: `activities.workshops` does not cascade, so no unlink first. */
+    async function removeWorkshop(workshop: ActivityWorkshopData) {
+        try {
+            await workshops.remove(workshop.id);
+        } catch {
+            alert.error(t('validation.errors.default'));
+            return;
+        }
+
+        activity.value.workshops = activity.value.workshops.filter(current => current.id !== workshop.id);
+    }
+
+    /**
+     * One bound of the audience, as the slider binds it, over the field that stores it — the
+     * slider's unset is `null`, the field's is 0.
+     */
+    function rangeEnd(bound: keyof Pick<ActivityAudience, 'ageMin' | 'ageMax' | 'participantsMin' | 'participantsMax'>) {
         return computed<RangeEnd>({
-            get: () => rangeEndOf(activity.value[column]),
-            set: value => { activity.value[column] = columnOf(value); },
+            get: () => rangeEndOf(activity.value.audience[bound]),
+            set: value => { activity.value.audience[bound] = columnOf(value); },
         });
     }
 
-    const ageMin = rangeEnd('age_min');
-    const ageMax = rangeEnd('age_max');
+    const ageMin = rangeEnd('ageMin');
+    const ageMax = rangeEnd('ageMax');
     const ageLabel = computed(() => rangeLabel(ageMin.value, ageMax.value));
 
-    const participantsMin = rangeEnd('participants_min');
-    const participantsMax = rangeEnd('participants_max');
+    const participantsMin = rangeEnd('participantsMin');
+    const participantsMax = rangeEnd('participantsMax');
     const participantsLabel = computed(() => rangeLabel(participantsMin.value, participantsMax.value));
+
+    const timing = computed(() => timingOf(activity.value));
 
     /** Where the state button takes this activity, and what the button reads. */
     const transition = computed(() => stateTransition(activity.value.state));
@@ -167,6 +253,7 @@ export function useActivityEdit() {
         activity,
         isLoading,
         isAddingStep,
+        isAddingWorkshop,
         isChangingState,
         transition,
         ageMin,
@@ -175,38 +262,51 @@ export function useActivityEdit() {
         participantsMin,
         participantsMax,
         participantsLabel,
+        timing,
         errors,
         save: submit,
         changeState,
         addStep,
         replaceStep,
         detachStep,
+        addMaterial,
+        updateMaterial,
+        removeMaterial,
+        addWorkshop,
+        replaceWorkshop,
+        removeWorkshop,
     };
 }
 
 /**
- * The tags an activity can carry, one picker per kind. Picking only changes the list: the links
- * are written with the rest of the form, on save.
- *
- * @param selected the activity's tags, as the input binds them
+ * Every tag, as each kind's picker offers them. Picking only changes the activity: the links are
+ * written with the rest of the form, on save.
  */
-export function useActivityTags(selected: Ref<ActivityTagData[]>) {
+export function useTagOptions() {
     const known = ref<ActivityTagData[]>([]);
-
-    const groups = computed(() => groupTagsByType(known.value));
-
-    /** What one kind's picker holds — the options themselves, which is how `TagSelect` matches. */
-    function pickedOf(group: TagGroup): ActivityTagData[] {
-        return pickedAmong(group.tags, selected.value);
-    }
-
-    function pick(group: TagGroup, picked: ActivityTagData[]) {
-        selected.value = replaceTagsOfType(selected.value, group.type, picked);
-    }
 
     onMounted(async () => {
         known.value = await tags.getAll();
     });
 
-    return { groups, pickedOf, pick };
+    return { tagOptions: computed(() => tagOptions(known.value)) };
+}
+
+/**
+ * The names to offer while typing a material, drawn from every activity's.
+ *
+ * @param selected the activity's materials
+ */
+export function useMaterialSuggestions(selected: Ref<ActivityMaterialData[]>) {
+    const known = ref<ActivityMaterialData[]>([]);
+    const search = ref('');
+
+    const suggestions = computed(() => materialNameSuggestions(known.value, selected.value, search.value));
+    const isNewName = computed(() => canCreateMaterial(search.value, suggestions.value, selected.value));
+
+    onMounted(async () => {
+        known.value = await materials.getAll();
+    });
+
+    return { search, suggestions, isNewName };
 }
