@@ -46,3 +46,18 @@ export function percentOf(bounds: RangeBounds, value: number): number {
 export function isLowOnTop(bounds: RangeBounds, low: number): boolean {
     return percentOf(bounds, low) > 50;
 }
+
+/** What a range reads as beside its label. `key` is a translation key, `params` its values. */
+export interface RangeLabel {
+    key: string;
+    params: { min?: number; max?: number };
+}
+
+export function rangeLabel(min: number | null, max: number | null): RangeLabel {
+    if (min === null && max === null) return { key: 'inputs.range.any', params: {} };
+    if (max === null) return { key: 'inputs.range.from', params: { min: min! } };
+    if (min === null) return { key: 'inputs.range.upTo', params: { max } };
+    if (min === max) return { key: 'inputs.range.exactly', params: { min } };
+
+    return { key: 'inputs.range.between', params: { min, max } };
+}

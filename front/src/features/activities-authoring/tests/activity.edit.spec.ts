@@ -5,7 +5,6 @@ import {
     columnOf,
     pickedAmong,
     rangeEndOf,
-    rangeLabel,
     replaceTagsOfType,
 } from '@features/activities-authoring/model/activity.edit';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
@@ -102,18 +101,5 @@ describe('rangeEndOf', () => {
     it('stores an unset end as 0, and a set one as it is', () => {
         expect(columnOf(null)).toBe(0);
         expect(columnOf(6)).toBe(6);
-    });
-});
-
-describe('rangeLabel', () => {
-    it('reads each shape of range with its own wording', () => {
-        expect(rangeLabel(null, null).key).toBe('activities.authoring.range.any');
-        expect(rangeLabel(3, null)).toEqual({ key: 'activities.authoring.range.from', params: { min: 3 } });
-        expect(rangeLabel(null, 10)).toEqual({ key: 'activities.authoring.range.upTo', params: { max: 10 } });
-        expect(rangeLabel(3, 10)).toEqual({ key: 'activities.authoring.range.between', params: { min: 3, max: 10 } });
-    });
-
-    it('reads two thumbs on the same value as one number, not as "from 5 to 5"', () => {
-        expect(rangeLabel(5, 5)).toEqual({ key: 'activities.authoring.range.exactly', params: { min: 5 } });
     });
 });

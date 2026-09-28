@@ -1,5 +1,6 @@
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
+import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
 import { tagsApi as tags } from '@features/activities-authoring/api/tags.api';
@@ -8,7 +9,6 @@ import {
     createEmptyActivity,
     pickedAmong,
     rangeEndOf,
-    rangeLabel,
     replaceTagsOfType,
     stateTransition,
     type RangeEnd,

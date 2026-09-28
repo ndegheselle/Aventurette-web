@@ -39,6 +39,13 @@
         },
         "password": {
             "reveal": "Afficher le mot de passe"
+        },
+        "range": {
+            "any": "Tous",
+            "from": "{min} et plus",
+            "upTo": "Jusqu'à {max}",
+            "between": "De {min} à {max}",
+            "exactly": "{min}"
         }
     },
     "confirmation": {

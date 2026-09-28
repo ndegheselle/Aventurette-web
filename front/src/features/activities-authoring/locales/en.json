@@ -19,14 +19,7 @@
             "publish": "Publish",
             "unpublish": "Back to draft",
             "remove": "Delete",
-            "removed": "Activity deleted.",
-            "range": {
-                "any": "Any",
-                "from": "{min} and up",
-                "upTo": "Up to {max}",
-                "between": "{min} to {max}",
-                "exactly": "{min}"
-            }
+            "removed": "Activity deleted."
         }
     }
 }

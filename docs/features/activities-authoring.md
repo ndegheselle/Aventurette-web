@@ -55,8 +55,8 @@ none.
 `AGE_BOUNDS` (0–18) and `PARTICIPANTS_BOUNDS` (1–30). The slider's unset end is `null`; the
 column's is 0, which is what PocketBase stores for an empty number. `rangeEndOf` and `columnOf`
 translate between the two — without it a new activity's `age_max: 0` would pin the upper thumb
-to the floor. `useActivityEdit` binds each end through a writable `computed`, and `rangeLabel`
-says what the range reads as beside its label ("3 to 10", "up to 10", "any").
+to the floor. `useActivityEdit` binds each end through a writable `computed`, and `rangeLabel`, from
+the same package, says what the range reads as beside its label ("3 to 10", "up to 10", "any").
 
 **Tags are one `TagSelect` per kind.** `useActivityTags` reads every tag once, through the
 read-only `tags.api.ts`, and groups them with `groupTagsByType`. `TagSelect` tells a picked item

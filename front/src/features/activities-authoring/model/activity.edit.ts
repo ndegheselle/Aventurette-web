@@ -82,21 +82,6 @@ export function columnOf(value: RangeEnd | undefined): number {
     return value ?? 0;
 }
 
-/** What a range reads as beside its label. `key` is a translation key, `params` its values. */
-export interface RangeLabel {
-    key: string;
-    params: { min?: number; max?: number };
-}
-
-export function rangeLabel(min: RangeEnd, max: RangeEnd): RangeLabel {
-    if (min === null && max === null) return { key: 'activities.authoring.range.any', params: {} };
-    if (max === null) return { key: 'activities.authoring.range.from', params: { min: min! } };
-    if (min === null) return { key: 'activities.authoring.range.upTo', params: { max } };
-    if (min === max) return { key: 'activities.authoring.range.exactly', params: { min } };
-
-    return { key: 'activities.authoring.range.between', params: { min, max } };
-}
-
 /** A state to narrow the authoring list to, or `null` for every one of them. */
 export type ActivityStateFilter = ActivityData['state'] | null;
 
