@@ -7,6 +7,8 @@ import {
     aResourcePayload,
     aStep,
     aStepPayload,
+    aTag,
+    aTagPayload,
     anActivity,
     anActivityPayload,
     fakeFileUrls,
@@ -21,6 +23,7 @@ describe('activityMapper', () => {
             'steps',
             'steps.materials',
             'steps.resources',
+            'tags',
         ]);
     });
 
@@ -44,10 +47,21 @@ describe('activityMapper', () => {
         expect(activity.steps[0]!.resources[0]!.url).toBe('https://files.test/res1/rules.pdf');
     });
 
+    it('inlines the tags it links', () => {
+        const activity = activityMapper.toEntity(anActivityPayload({
+            tags: ['tag1'],
+            expand: { tags: [aTagPayload({ id: 'tag1', slug: 'foret' })] },
+        }), files);
+
+        expect(activity.tags.map(tag => tag.slug)).toEqual(['foret']);
+        expect(activity.tags[0]).not.toHaveProperty('expand');
+    });
+
     it('reads a relation the request did not expand as empty', () => {
-        const activity = activityMapper.toEntity(anActivityPayload({ steps: ['stp1'] }), files);
+        const activity = activityMapper.toEntity(anActivityPayload({ steps: ['stp1'], tags: ['tag1'] }), files);
 
         expect(activity.steps).toEqual([]);
+        expect(activity.tags).toEqual([]);
         expect(activity).not.toHaveProperty('expand');
     });
 
@@ -55,9 +69,10 @@ describe('activityMapper', () => {
         const payload = activityMapper.toPayload({
             name: 'Treasure hunt',
             steps: [aStep({ id: 'stp1' })],
+            tags: [aTag({ id: 'tag1' })],
         });
 
-        expect(payload).toEqual({ name: 'Treasure hunt', steps: ['stp1'] });
+        expect(payload).toEqual({ name: 'Treasure hunt', steps: ['stp1'], tags: ['tag1'] });
     });
 
     it('leaves out a relation the caller did not mention, so an update stays partial', () => {

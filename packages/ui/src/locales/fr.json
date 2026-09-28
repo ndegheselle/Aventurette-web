@@ -50,6 +50,8 @@
     },
     "data": {
         "noData": "Aucune donnée",
+        "minimum": "Minimum",
+        "maximum": "Maximum",
         "created": "Créé avec succès !",
         "updated": "Mis à jour avec succès !",
         "pagination": {

@@ -2,12 +2,25 @@ import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
-import { createEmptyActivity, stateTransition } from '@features/activities-authoring/model/activity.edit';
+import { tagsApi as tags } from '@features/activities-authoring/api/tags.api';
+import {
+    columnOf,
+    createEmptyActivity,
+    pickedAmong,
+    rangeEndOf,
+    rangeLabel,
+    replaceTagsOfType,
+    stateTransition,
+    tagOptions,
+    type RangeEnd,
+    type TagOption,
+} from '@features/activities-authoring/model/activity.edit';
 import { createEmptyStep } from '@features/activities-authoring/model/step.edit';
 import type { ActivityData } from '@features/activities/model/activity';
 import type { ActivityStepData } from '@features/activities/model/step';
+import { groupTagsByType, type ActivityTagData, type TagGroup } from '@features/activities/model/tag';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { computed, ref, toRaw, watch } from 'vue';
+import { computed, onMounted, ref, toRaw, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -101,6 +114,25 @@ export function useActivityEdit() {
         }
     }
 
+    /**
+     * One end of a range, as the slider binds it, over the column that stores it — the slider's
+     * unset is `null`, the column's is 0.
+     */
+    function rangeEnd(column: 'age_min' | 'age_max' | 'participants_min' | 'participants_max') {
+        return computed<RangeEnd>({
+            get: () => rangeEndOf(activity.value[column]),
+            set: value => { activity.value[column] = columnOf(value); },
+        });
+    }
+
+    const ageMin = rangeEnd('age_min');
+    const ageMax = rangeEnd('age_max');
+    const ageLabel = computed(() => rangeLabel(ageMin.value, ageMax.value));
+
+    const participantsMin = rangeEnd('participants_min');
+    const participantsMax = rangeEnd('participants_max');
+    const participantsLabel = computed(() => rangeLabel(participantsMin.value, participantsMax.value));
+
     /** Where the state button takes this activity, and what the button reads. */
     const transition = computed(() => stateTransition(activity.value.state));
 
@@ -139,6 +171,12 @@ export function useActivityEdit() {
         isAddingStep,
         isChangingState,
         transition,
+        ageMin,
+        ageMax,
+        ageLabel,
+        participantsMin,
+        participantsMax,
+        participantsLabel,
         errors,
         save: submit,
         changeState,
@@ -146,4 +184,33 @@ export function useActivityEdit() {
         replaceStep,
         detachStep,
     };
+}
+
+/**
+ * The tags an activity can carry, one picker per kind. Picking only changes the list: the links
+ * are written with the rest of the form, on save.
+ *
+ * @param selected the activity's tags, as the input binds them
+ */
+export function useActivityTags(selected: Ref<ActivityTagData[]>) {
+    const { locale } = useI18n();
+
+    const known = ref<ActivityTagData[]>([]);
+
+    const groups = computed(() => groupTagsByType(tagOptions(known.value, locale.value), locale.value));
+
+    /** What one kind's picker holds — the options themselves, which is how `TagSelect` matches. */
+    function pickedOf(group: TagGroup<TagOption>): TagOption[] {
+        return pickedAmong(group.tags, selected.value);
+    }
+
+    function pick(group: TagGroup<TagOption>, picked: TagOption[]) {
+        selected.value = replaceTagsOfType(selected.value, group.type, picked);
+    }
+
+    onMounted(async () => {
+        known.value = await tags.getAll();
+    });
+
+    return { groups, pickedOf, pick };
 }

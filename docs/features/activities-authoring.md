@@ -46,7 +46,25 @@ Adding writes the activity and opens the editor on it.
 `steps.api.ts`. How saving works, and why every record is written the moment it is added, is
 described in [activities](activities.md#saving).
 
-The form is thin: a picture input, a name, a description and the steps panel.
+The form is thin: a picture input, the activity's own columns — name, environment, age and
+participant ranges, recommended leaders, season, weather, energy level — its tags, a description
+and the steps panel. The optional selects offer an empty choice, which is how PocketBase stores
+none.
+
+**Age and participants are two-thumb sliders**, `RangeInput` from @chapelure/ui, over
+`AGE_BOUNDS` (0–18) and `PARTICIPANTS_BOUNDS` (1–30). The slider's unset end is `null`; the
+column's is 0, which is what PocketBase stores for an empty number. `rangeEndOf` and `columnOf`
+translate between the two — without it a new activity's `age_max: 0` would pin the upper thumb
+to the floor. `useActivityEdit` binds each end through a writable `computed`, and `rangeLabel`
+says what the range reads as beside its label ("3 to 10", "up to 10", "any").
+
+**Tags are one `TagSelect` per kind.** `useActivityTags` reads every tag once, through the
+read-only `tags.api.ts`, and groups them with `groupTagsByType`. `TagSelect` tells a picked item
+by reference and shows a string key, so the options are `tagOptions` — each tag with its name in
+the language shown as `label` — and what a picker holds is `pickedAmong` those options, matched
+by id against the activity's own copies. A pick replaces that kind's tags only
+(`replaceTagsOfType`). Nothing is written until save, which sends the ids with the rest of the
+form.
 
 **The state button sits beside save.** `stateTransition` decides it: there are two states, so
 the button is not a choice between them but the other end of a toggle, and it returns the
@@ -63,8 +81,8 @@ failure is an alert rather than a field error — no field on the form stands fo
 The types are not this feature's. `ActivityData`, `ActivityStepData` and their mappers stay in
 `activities/`, and this feature imports them: it writes activities, it does not redefine them.
 What is its own is the writing side, in `model/activity.edit.ts` and `model/step.edit.ts`: the
-blank records written on add, the tabs and the state toggle, the material suggestions and the
-file limit. The dependency runs one way — `activities` imports nothing from here.
+blank records written on add, the tabs and the state toggle, picking a tag, the material
+suggestions and the file limit. The dependency runs one way — `activities` imports nothing from here.
 
 Translations follow the same rule. `activities.authoring.*`, `activities.state.*` and
 `activities.untitled` live here; `activities.fields.*` and `activities.steps.fields.*` stay
@@ -75,12 +93,17 @@ would scatter one screen's labels across two files.
 
 Four specs, in `tests/`.
 
-*`tests/activity.edit.spec.ts`* — the state toggle and the authored query
+*`tests/activity.edit.spec.ts`* — the state toggle, the authored query, picking tags and the
+ranges
 
 - A draft offers "publish", a published activity offers "back to draft", and the label always
   matches the state that will be written.
 - Any state that is not published offers the forward move.
 - The "all" tab drops the state filter rather than taking a branch of its own.
+- A kind's picker holds the options themselves, matched by id to the activity's tags, and a pick
+  replaces that kind's tags only.
+- A stored 0 reads as an unset range end, and an unset end is stored as 0. Each shape of range
+  has its wording, and two thumbs on one value read as that number.
 
 *`tests/step.edit.spec.ts`* — suggesting a material, and the file limit
 
@@ -108,6 +131,9 @@ between them.
   and then publishes has to press save as well, and nothing on screen says so.
 - **The authoring link in the navbar shows when signed out**, and clicking it bounces to login.
   The public activity list already behaves that way, so this is consistent rather than special.
-- **The form edits three fields.** The columns an activity carries — age, participants, season,
-  environment, weather, energy level, tags — have no inputs behind them yet.
+- **No per-kind limit on tags** — ADR 0014 leaves rules like "at most three safety tags" to a
+  backend hook. A safety tag's description is not shown anywhere on the form.
+- **A range has no "exactly 0" and no open top above the ceiling.** 0 is unset, and an end at
+  the slider's edge is unset too, so "18 and up" is as high as age can say.
+- **Nothing checks that a range's minimum is below its maximum**, for age or participants.
 - The rows reuse the placeholder images the rest of the app does.

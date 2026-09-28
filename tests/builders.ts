@@ -17,6 +17,8 @@ import type {
     ActivityResourcePayload,
     ActivityStepPayload,
 } from '@features/activities/api/step.mapper';
+import type { ActivityTagPayload } from '@features/activities/api/tag.mapper';
+import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
 import type { UserData } from '@features/auth/model/user';
 
 let sequence = 0;
@@ -62,6 +64,18 @@ export function aStep(overrides: Partial<ActivityStepData> = {}): ActivityStepDa
     } as ActivityStepData;
 }
 
+export function aTag(overrides: Partial<ActivityTagData> = {}): ActivityTagData {
+    return {
+        ...SYSTEM,
+        id: nextId('tag'),
+        type: ActivityTagType.FIELD,
+        slug: 'art',
+        name: { fr: 'art', en: 'art' },
+        description: null,
+        ...overrides,
+    } as ActivityTagData;
+}
+
 export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData {
     return {
         ...SYSTEM,
@@ -71,6 +85,7 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
         state: ActivityState.DRAFT,
         user: nextId('usr'),
         steps: [],
+        tags: [],
         ...overrides,
     } as ActivityData;
 }
@@ -125,6 +140,18 @@ export function aStepPayload(overrides: Partial<ActivityStepPayload> = {}): Acti
     } as ActivityStepPayload;
 }
 
+export function aTagPayload(overrides: Partial<ActivityTagPayload> = {}): ActivityTagPayload {
+    return {
+        ...SYSTEM,
+        id: nextId('tag'),
+        type: ActivityTagType.FIELD,
+        slug: 'art',
+        name: { fr: 'art', en: 'art' },
+        description: null,
+        ...overrides,
+    } as ActivityTagPayload;
+}
+
 export function anActivityPayload(overrides: Partial<ActivityPayload> = {}): ActivityPayload {
     return {
         ...SYSTEM,
@@ -134,6 +161,7 @@ export function anActivityPayload(overrides: Partial<ActivityPayload> = {}): Act
         state: ActivityState.DRAFT,
         user: nextId('usr'),
         steps: [],
+        tags: [],
         ...overrides,
     } as ActivityPayload;
 }

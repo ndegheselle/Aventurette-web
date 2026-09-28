@@ -31,18 +31,10 @@
             "age": "Âge",
             "participants": "Nombre d'enfants",
             "hosts": "Nombre d'animateurs",
-            "fields": "Domaine",
-            "imaginary": "Imaginaire",
             "season": "Saison",
             "weather": "Météo",
             "energy_level": "Niveau d'énergie",
-            "security": "Sécurité",
-            "develop_physical": "Développement physique",
-            "develop_intellectual": "Développement intellectuel",
-            "develop_affect": "Développement affectif",
-            "develop_social": "Développement social",
-            "develop_moral": "Développement moral",
-            "develop_spritual": "Développement spirituel"
+            "unset": "Non précisé"
         },
         "constraints": {
             "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
@@ -84,6 +76,17 @@
             "LOW": "Bas",
             "MEDIUM": "Moyen",
             "HIGH": "Au top"
+        },
+        "tagType": {
+            "FIELD": "Domaine",
+            "IMAGINARY": "Imaginaire",
+            "SECURITY": "Sécurité",
+            "DEVELOP_PHYSICAL": "Développement physique",
+            "DEVELOP_INTELLECTUAL": "Développement intellectuel",
+            "DEVELOP_AFFECT": "Développement affectif",
+            "DEVELOP_SOCIAL": "Développement social",
+            "DEVELOP_MORAL": "Développement moral",
+            "DEVELOP_SPIRITUAL": "Développement spirituel"
         }
     }
 }

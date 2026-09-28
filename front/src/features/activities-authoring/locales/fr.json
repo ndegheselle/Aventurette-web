@@ -10,6 +10,7 @@
             "description": "Description",
             "steps": "Étapes",
             "properties": "Informations",
+            "tags": "Tags",
             "states": {
                 "all": "Toutes",
                 "DRAFT": "Brouillons",
@@ -18,7 +19,14 @@
             "publish": "Publier",
             "unpublish": "Repasser en brouillon",
             "remove": "Supprimer",
-            "removed": "Activité supprimée."
+            "removed": "Activité supprimée.",
+            "range": {
+                "any": "Tous",
+                "from": "{min} et plus",
+                "upTo": "Jusqu'à {max}",
+                "between": "De {min} à {max}",
+                "exactly": "{min}"
+            }
         }
     }
 }

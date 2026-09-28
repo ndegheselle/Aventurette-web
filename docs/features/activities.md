@@ -33,10 +33,13 @@ derived from `stepMapper.relations`, so a step arrives the same way whether it i
 own or under an activity. A relation the read did not expand maps to an empty list, never to
 the ids the record carries.
 
-`activity.tags` holds ids into `activities_tags`: the domains, imaginary universes, safety tags
-and developmental keywords, told apart by `type`
-([ADR 0014](../adr/0014-activity-tags-are-one-collection.md)). Nothing reads them yet, so
-`activityMapper` does not expand them.
+`activity.tags` holds the tags themselves, expanded from `activities_tags`: the domains,
+imaginary universes, safety tags and developmental keywords, told apart by `type`
+([ADR 0014](../adr/0014-activity-tags-are-one-collection.md)). They arrive mixed together, and
+`groupTagsByType` in `model/tag.ts` sorts them back into kinds. `name` and `description` are a
+wording per locale; `translated` reads the one the app is showing, and falls back to any other
+rather than to nothing, since the rows are seeded in French first. The editor is the only screen
+that shows them so far.
 
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
 `file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
@@ -63,8 +66,9 @@ soon as it is added**:
 Nothing is ever created from a modal: what it opens on already exists, so it only updates, and
 the materials and files chosen in it have a record to belong to.
 
-What is left for the save button is the activity's own fields — name, description — which is a
-single update, and then the detail screen.
+What is left for the save button is the activity's own fields — its columns, its description
+and which tags it carries — which is a single update, and then the detail screen. A tag is
+reference data: picking one links a row that already exists, so nothing is written until save.
 
 A blank record is still a valid one: `createEmptyActivity` fills in the `description` and
 `state` the collection requires — a new activity starts as `DRAFT` — and
@@ -86,17 +90,25 @@ list is put back to what the record still holds, because no field on the form st
 
 ## Rules that hold
 
-Two specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Three specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
 [ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md).
 
 *`tests/activity.spec.ts`* — the mapper, and gathering what hangs off the steps
 
-- `activityMapper` asks for the nested relations a step needs, inlines them down to the file
-  urls, and reads a relation the request did not expand as empty rather than as ids.
-- Relations are written back as ids: saving an activity links its steps, it does not save them.
+- `activityMapper` asks for the nested relations a step needs and the tags, inlines them down
+  to the file urls, and reads a relation the request did not expand as empty rather than as ids.
+- Relations are written back as ids: saving an activity links its steps and tags, it does not
+  save them.
 - Materials and resources shown for an activity are gathered from the steps that own them,
   deduplicated by id, in first-use order.
+
+*`tests/tag.spec.ts`* — reading tags
+
+- A wording is read in the locale shown, and falls back to another one rather than to nothing.
+- Tags are grouped by kind in the order the enum declares the kinds, whatever order they arrive
+  in; an empty kind is left out, and one the enum does not know yet still shows, last.
+- Inside a kind, tags are sorted by their wording in the locale shown.
 
 *`tests/step.spec.ts`* — the step and resource mappers
 

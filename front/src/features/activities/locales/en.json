@@ -31,18 +31,10 @@
             "age": "Age",
             "participants": "Children",
             "hosts": "Leaders",
-            "fields": "Domain",
-            "imaginary": "Imaginary world",
             "season": "Season",
             "weather": "Weather",
             "energy_level": "Energy level",
-            "security": "Safety",
-            "develop_physical": "Physical development",
-            "develop_intellectual": "Intellectual development",
-            "develop_affect": "Emotional development",
-            "develop_social": "Social development",
-            "develop_moral": "Moral development",
-            "develop_spritual": "Spiritual development"
+            "unset": "Not specified"
         },
         "constraints": {
             "picture": "PNG, JPEG and JPG formats. 2MB maximum"
@@ -84,6 +76,17 @@
             "LOW": "Low",
             "MEDIUM": "Medium",
             "HIGH": "High"
+        },
+        "tagType": {
+            "FIELD": "Domain",
+            "IMAGINARY": "Imaginary world",
+            "SECURITY": "Safety",
+            "DEVELOP_PHYSICAL": "Physical development",
+            "DEVELOP_INTELLECTUAL": "Intellectual development",
+            "DEVELOP_AFFECT": "Emotional development",
+            "DEVELOP_SOCIAL": "Social development",
+            "DEVELOP_MORAL": "Moral development",
+            "DEVELOP_SPIRITUAL": "Spiritual development"
         }
     }
 }

@@ -5,8 +5,9 @@ import {
     removeEmptyFilters,
     type FilterGroup,
 } from "@chapelure/core";
-import { ActivityState, type ActivityData } from "@features/activities/model/activity";
+import { ActivitiesEnvironnement, ActivityState, type ActivityData } from "@features/activities/model/activity";
 import type { ActivityStepData } from "@features/activities/model/step";
+import { translated, type ActivityTagData } from "@features/activities/model/tag";
 
 /**
  * The activity seen from its author's side: which of them the list shows, and the one transition
@@ -23,11 +24,84 @@ import type { ActivityStepData } from "@features/activities/model/step";
  */
 export function createEmptyActivity(): ActivityData {
     return {
+        age_max: 0,
+        age_min: 0,
+        participants_max: 0,
+        participants_min: 0,
+        environnement: ActivitiesEnvironnement.OUTDOOR,
         name: "",
         description: "",
         state: ActivityState.DRAFT,
         steps: [] as ActivityStepData[],
+        tags: [] as ActivityTagData[],
     } as ActivityData;
+}
+
+/** A tag as the picker offers it: `label` is its name in the language shown, for `displayKey`. */
+export type TagOption = ActivityTagData & { label: string };
+
+export function tagOptions(tags: ActivityTagData[], locale: string): TagOption[] {
+    return tags.map(tag => ({ ...tag, label: translated(tag.name, locale) }));
+}
+
+/**
+ * The options the activity already carries — as the options themselves, not as the activity's
+ * copies. `TagSelect` tells a picked item by reference, and the activity and the options are two
+ * reads of the same rows, so matching by id has to happen here.
+ */
+export function pickedAmong<T extends ActivityTagData>(options: T[], selected: ActivityTagData[]): T[] {
+    const ids = new Set(selected.map(tag => tag.id));
+    return options.filter(option => ids.has(option.id));
+}
+
+/**
+ * The activity's tags with one kind's replaced by what its picker now holds. Each kind has a
+ * picker of its own, so a pick in one must leave the others' tags where they are.
+ */
+export function replaceTagsOfType(
+    selected: ActivityTagData[],
+    type: ActivityTagData['type'],
+    picked: ActivityTagData[],
+): ActivityTagData[] {
+    return [...selected.filter(tag => tag.type !== type), ...picked];
+}
+
+/** A range end as the slider binds it: `null` is unset, no limit on that side. */
+export type RangeEnd = number | null;
+
+/** How far the age slider goes. An end left at its edge is unset: no limit on that side. */
+export const AGE_BOUNDS = { floor: 0, ceiling: 18 };
+
+/** How far the participants slider goes. */
+export const PARTICIPANTS_BOUNDS = { floor: 1, ceiling: 30 };
+
+/**
+ * A stored bound as the slider reads it. PocketBase stores an empty number as 0, and no range
+ * here means anything by a 0 — so 0 is unset, and a new activity's `age_max: 0` does not pin
+ * the upper thumb to the floor.
+ */
+export function rangeEndOf(value: number | null | undefined): RangeEnd {
+    return value ? value : null;
+}
+
+/** And back: an unset end is stored as the 0 PocketBase would store anyway. */
+export function columnOf(value: RangeEnd | undefined): number {
+    return value ?? 0;
+}
+
+/** What a range reads as beside its label. `key` is a translation key, `params` its values. */
+export interface RangeLabel {
+    key: string;
+    params: { min?: number; max?: number };
+}
+
+export function rangeLabel(min: RangeEnd, max: RangeEnd): RangeLabel {
+    if (min === null && max === null) return { key: 'activities.authoring.range.any', params: {} };
+    if (max === null) return { key: 'activities.authoring.range.from', params: { min: min! } };
+    if (min === null) return { key: 'activities.authoring.range.upTo', params: { max } };
+    if (min === max) return { key: 'activities.authoring.range.exactly', params: { min } };
+
+    return { key: 'activities.authoring.range.between', params: { min, max } };
 }
 
 /** A state to narrow the authoring list to, or `null` for every one of them. */
