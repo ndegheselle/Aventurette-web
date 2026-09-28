@@ -78,9 +78,7 @@ app's real catalogue, so assertions are on the copy a user would read.
   locale is allowed to lag. `fr` is the fallback, so a key missing from `en` renders in French.
 - **Destructure a composable** in `<script setup>` — a ref reached through an object is not
   unwrapped in a template.
-- Comments explain *why*, not what. The codebase's existing comments are the register to match.
-- **Delete what has no caller**, in the change that removes its last caller — exports,
-  translations, styles, docs included. Flat before nested; names follow the feature
+- Follow the global
   ([coding guidelines](docs/coding-guidelines.md)).
 
 ## Things that will bite

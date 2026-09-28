@@ -11,16 +11,12 @@ import type { ActivityTagData } from "@features/activities/model/tag";
 
 /**
  * The activity seen from its author's side: which of them the list shows, and the one transition
- * the editor offers. Its shape stays in `activities/model` — this feature writes activities, it
- * does not redefine them.
+ * the editor offers.
  */
 
 /**
  * A blank activity: written when the user starts one, and bound to the edit form until the real
  * record arrives.
- *
- * `description` and `state` are seeded because the collection requires them, and an activity is
- * created before it is filled in. `name` is the caller's — only it can translate a placeholder.
  */
 export function createEmptyActivity(): ActivityData {
     return {
