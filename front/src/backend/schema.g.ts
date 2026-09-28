@@ -193,11 +193,11 @@ export const ActivitiesTagsTypeOptions = {
 	"DEVELOP_SPIRITUAL": "DEVELOP_SPIRITUAL",
 } as const
 export type ActivitiesTagsTypeOptions = typeof ActivitiesTagsTypeOptions[keyof typeof ActivitiesTagsTypeOptions]
-export type ActivitiesTagsRecord<Tdescription = unknown, Tname = unknown> = {
+export type ActivitiesTagsRecord = {
 	created: IsoAutoDateString
-	description?: null | Tdescription
+	description?: HTMLString
 	id: string
-	name: null | Tname
+	name: string
 	slug: string
 	type: ActivitiesTagsTypeOptions
 	updated: IsoAutoDateString
@@ -248,7 +248,7 @@ export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemF
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
-export type ActivitiesTagsResponse<Tdescription = unknown, Tname = unknown, Texpand = unknown> = Required<ActivitiesTagsRecord<Tdescription, Tname>> & BaseSystemFields<Texpand>
+export type ActivitiesTagsResponse<Texpand = unknown> = Required<ActivitiesTagsRecord> & BaseSystemFields<Texpand>
 export type StepsMaterialsResponse<Texpand = unknown> = Required<StepsMaterialsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>

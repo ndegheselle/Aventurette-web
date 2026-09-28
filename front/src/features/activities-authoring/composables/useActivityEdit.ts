@@ -11,9 +11,7 @@ import {
     rangeLabel,
     replaceTagsOfType,
     stateTransition,
-    tagOptions,
     type RangeEnd,
-    type TagOption,
 } from '@features/activities-authoring/model/activity.edit';
 import { createEmptyStep } from '@features/activities-authoring/model/step.edit';
 import type { ActivityData } from '@features/activities/model/activity';
@@ -193,18 +191,16 @@ export function useActivityEdit() {
  * @param selected the activity's tags, as the input binds them
  */
 export function useActivityTags(selected: Ref<ActivityTagData[]>) {
-    const { locale } = useI18n();
-
     const known = ref<ActivityTagData[]>([]);
 
-    const groups = computed(() => groupTagsByType(tagOptions(known.value, locale.value), locale.value));
+    const groups = computed(() => groupTagsByType(known.value));
 
     /** What one kind's picker holds — the options themselves, which is how `TagSelect` matches. */
-    function pickedOf(group: TagGroup<TagOption>): TagOption[] {
+    function pickedOf(group: TagGroup): ActivityTagData[] {
         return pickedAmong(group.tags, selected.value);
     }
 
-    function pick(group: TagGroup<TagOption>, picked: TagOption[]) {
+    function pick(group: TagGroup, picked: ActivityTagData[]) {
         selected.value = replaceTagsOfType(selected.value, group.type, picked);
     }
 

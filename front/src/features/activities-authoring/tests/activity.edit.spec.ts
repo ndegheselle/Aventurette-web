@@ -7,7 +7,6 @@ import {
     rangeEndOf,
     rangeLabel,
     replaceTagsOfType,
-    tagOptions,
 } from '@features/activities-authoring/model/activity.edit';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
 import { ActivityTagType } from '@features/activities/model/tag';
@@ -65,7 +64,7 @@ describe('pickedAmong', () => {
     it('hands back the options themselves, since the picker tells a picked item by reference', () => {
         const art = aTag({ id: 'tag1' });
         const forest = aTag({ id: 'tag2' });
-        const options = tagOptions([art, forest], 'fr');
+        const options = [art, forest];
 
         // The activity holds its own copy of the row, from another read.
         const picked = pickedAmong(options, [{ ...forest }]);

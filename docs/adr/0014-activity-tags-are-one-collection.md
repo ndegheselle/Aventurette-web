@@ -23,8 +23,8 @@ Every tag lives in `activities_tags`:
 |---|---|---|
 | `type` | `select`, required | `FIELD`, `IMAGINARY`, `SECURITY`, `DEVELOP_PHYSICAL`, `DEVELOP_INTELLECTUAL`, `DEVELOP_AFFECT`, `DEVELOP_SOCIAL`, `DEVELOP_MORAL`, `DEVELOP_SPIRITUAL` |
 | `slug` | text, required | `^[a-z0-9-]+$`, unique per `type` |
-| `name` | JSON, required | `{"fr": "…", "en": "…"}` |
-| `description` | JSON | same shape, used by safety tags |
+| `name` | text, required | one language |
+| `description` | editor | used by safety tags |
 
 `activities.tags` is one relation to it. There is no field per type: PocketBase cannot restrict
 a relation to the records of one type, so nine fields pointing at the same collection would add
@@ -36,6 +36,10 @@ back the boilerplate without adding any safety.
 Migration `1790028400_merge_referentials_into_tags.go` keeps every record's id, so an activity's
 links carry over as they are. Slugs for the tags that had none are derived from their French
 wording.
+
+`name` and `description` were first stored as one wording per locale, `{"fr": "…", "en": "…"}`.
+Migration `1790603343_single_language_tag_wordings.go` turned them back into single-language
+text, keeping the French, until data is translated some more systematic way.
 
 ## Consequences
 

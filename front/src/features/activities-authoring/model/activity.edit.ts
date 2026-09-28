@@ -7,7 +7,7 @@ import {
 } from "@chapelure/core";
 import { ActivitiesEnvironnement, ActivityState, type ActivityData } from "@features/activities/model/activity";
 import type { ActivityStepData } from "@features/activities/model/step";
-import { translated, type ActivityTagData } from "@features/activities/model/tag";
+import type { ActivityTagData } from "@features/activities/model/tag";
 
 /**
  * The activity seen from its author's side: which of them the list shows, and the one transition
@@ -35,13 +35,6 @@ export function createEmptyActivity(): ActivityData {
         steps: [] as ActivityStepData[],
         tags: [] as ActivityTagData[],
     } as ActivityData;
-}
-
-/** A tag as the picker offers it: `label` is its name in the language shown, for `displayKey`. */
-export type TagOption = ActivityTagData & { label: string };
-
-export function tagOptions(tags: ActivityTagData[], locale: string): TagOption[] {
-    return tags.map(tag => ({ ...tag, label: translated(tag.name, locale) }));
 }
 
 /**

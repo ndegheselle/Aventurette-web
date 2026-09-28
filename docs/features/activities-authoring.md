@@ -60,9 +60,8 @@ says what the range reads as beside its label ("3 to 10", "up to 10", "any").
 
 **Tags are one `TagSelect` per kind.** `useActivityTags` reads every tag once, through the
 read-only `tags.api.ts`, and groups them with `groupTagsByType`. `TagSelect` tells a picked item
-by reference and shows a string key, so the options are `tagOptions` — each tag with its name in
-the language shown as `label` — and what a picker holds is `pickedAmong` those options, matched
-by id against the activity's own copies. A pick replaces that kind's tags only
+by reference, so what a picker holds is `pickedAmong` the options, matched by id against the
+activity's own copies. A pick replaces that kind's tags only
 (`replaceTagsOfType`). Nothing is written until save, which sends the ids with the rest of the
 form.
 

@@ -36,10 +36,9 @@ the ids the record carries.
 `activity.tags` holds the tags themselves, expanded from `activities_tags`: the domains,
 imaginary universes, safety tags and developmental keywords, told apart by `type`
 ([ADR 0014](../adr/0014-activity-tags-are-one-collection.md)). They arrive mixed together, and
-`groupTagsByType` in `model/tag.ts` sorts them back into kinds. `name` and `description` are a
-wording per locale; `translated` reads the one the app is showing, and falls back to any other
-rather than to nothing, since the rows are seeded in French first. The editor is the only screen
-that shows them so far.
+`groupTagsByType` in `model/tag.ts` sorts them back into kinds. `name` and `description` are in
+one language, French, whatever locale the app is showing. The editor is the only screen that
+shows them so far.
 
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
 `file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
@@ -103,12 +102,11 @@ or an api wrapper does not earn one — see
 - Materials and resources shown for an activity are gathered from the steps that own them,
   deduplicated by id, in first-use order.
 
-*`tests/tag.spec.ts`* — reading tags
+*`tests/tag.spec.ts`* — grouping tags
 
-- A wording is read in the locale shown, and falls back to another one rather than to nothing.
 - Tags are grouped by kind in the order the enum declares the kinds, whatever order they arrive
   in; an empty kind is left out, and one the enum does not know yet still shows, last.
-- Inside a kind, tags are sorted by their wording in the locale shown.
+- Inside a kind, tags are sorted by name.
 
 *`tests/step.spec.ts`* — the step and resource mappers
 
@@ -131,6 +129,8 @@ feature that owns the composable
 Most of what follows is the editor's, and is listed here because it is about this feature's
 data. [activities-authoring](activities-authoring.md) has the gaps that belong to its screens.
 
+- **Tags read in French whatever the locale.** Their wordings were per locale for a while and
+  are one language again until data gets a systematic way to be translated.
 - **The list cannot be filtered**, only searched by name and description. The filter bar was
   removed; the tags it would filter on are in `activities_tags`.
 - **The picture input goes nowhere.** The `activities` collection has a `visual` file field,

@@ -70,8 +70,8 @@ export function aTag(overrides: Partial<ActivityTagData> = {}): ActivityTagData 
         id: nextId('tag'),
         type: ActivityTagType.FIELD,
         slug: 'art',
-        name: { fr: 'art', en: 'art' },
-        description: null,
+        name: 'art',
+        description: '',
         ...overrides,
     } as ActivityTagData;
 }
@@ -146,8 +146,8 @@ export function aTagPayload(overrides: Partial<ActivityTagPayload> = {}): Activi
         id: nextId('tag'),
         type: ActivityTagType.FIELD,
         slug: 'art',
-        name: { fr: 'art', en: 'art' },
-        description: null,
+        name: 'art',
+        description: '',
         ...overrides,
     } as ActivityTagPayload;
 }
