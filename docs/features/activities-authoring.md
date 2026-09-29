@@ -63,16 +63,16 @@ same package, says what the range reads as beside its label ("3 to 10", "up to 1
 
 **Tags are one picker per kind, placed in their family's panel.** `useTagOptions` reads every
 tag once, through the read-only `tags.api.ts`, and `tagOptions` groups them by kind.
-`RecordsPicker` wraps a `TagSelect` bound straight to the family's list, for example
-`activity.safety.tags`, and shows the error the backend keys by that relation (the development
-axes share one, shown under all six). `TagSelect` tells a picked item by reference, so what a
-picker holds is `pickedAmong` the options, matched by id against the activity's own copies.
-Nothing is written until save, which sends the ids with the rest of the form.
+Each is a `TagSelect` bound straight to the family's list, for example `activity.safety.tags`,
+in a `Field` showing the error the backend keys by that relation (the development axes share
+one, shown under all six). The activity's tags are its own copies, not the options, so every
+picker passes `keyBy="id"`. Nothing is written until save, which sends the ids with the rest of
+the form.
 
 **Materials are the activity's list.** `MaterialsSelection` suggests names from every
 activity's materials (`useMaterialSuggestions`) and lets the author type a quantity per row.
 It emits, and `useActivityEdit` writes. The step and workshop modals take the activity's
-materials as a prop and pick among them with the same `RecordsPicker`. They never create one.
+materials as a prop and pick among them with the same `TagSelect`. They never create one.
 
 **The step modal** edits a step's title, duration, kind, description, actions to tick, visual
 brief, tip, materials and resources. The end criteria show only on the step announcing the end

@@ -2,11 +2,11 @@
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
+import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useEditModal } from '@chapelure/ui/modals/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import { workshopsApi } from '@features/activities-authoring/api/workshops.api';
-import RecordsPicker from '@features/activities-authoring/components/RecordsPicker.vue';
 import type { ActivityMaterialData } from '@features/activities/model/material';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import { SaveIcon, XIcon } from 'lucide-vue-next';
@@ -42,8 +42,9 @@ defineExpose<IEditModal<ActivityWorkshopData>>({ show });
             <Field label="activities.workshops.fields.challenges" :error="errors.get('challenges')">
                 <TextEditor v-model="workshop.challenges" class="min-h-32" />
             </Field>
-            <RecordsPicker label="activities.workshops.fields.materials" :items="materials"
-                v-model="workshop.materials" />
+            <Field label="activities.workshops.fields.materials">
+                <TagSelect :items="materials" displayKey="name" keyBy="id" v-model="workshop.materials" />
+            </Field>
         </div>
         <FieldError :error="errors.global.value" />
         <template #actions>

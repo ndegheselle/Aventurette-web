@@ -7,12 +7,12 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import RangeInput from '@chapelure/ui/inputs/RangeInput.vue';
+import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import type { IEditModal } from '@chapelure/ui/modals/useModal';
 import MaterialsSelection from '@features/activities-authoring/components/MaterialsSelection.vue';
-import RecordsPicker from '@features/activities-authoring/components/RecordsPicker.vue';
 import StepEditModal from '@features/activities-authoring/components/StepEdit.modal.vue';
 import WorkshopEditModal from '@features/activities-authoring/components/WorkshopEdit.modal.vue';
 import { useActivityEdit, useTagOptions } from '@features/activities-authoring/composables/useActivityEdit';
@@ -128,11 +128,11 @@ async function confirmed(): Promise<boolean> {
     return await confirm.show(t('confirmation.remove.title'), t('confirmation.remove.messageSimple'), TriangleAlertIcon) === true;
 }
 
-async function removeStep(step: ActivityStepData) {
+async function confirmRemoveStep(step: ActivityStepData) {
     if (await confirmed()) await detachStep(step);
 }
 
-async function removeWorkshopConfirmed(workshop: ActivityWorkshopData) {
+async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
     if (await confirmed()) await removeWorkshop(workshop);
 }
 </script>
@@ -203,8 +203,10 @@ async function removeWorkshopConfirmed(workshop: ActivityWorkshopData) {
                         </option>
                     </select>
                 </Field>
-                <RecordsPicker label="activities.tagType.THEME" :items="tagOptions.THEME"
-                    :error="errors.get('theme_tags')" v-model="activity.classification.themes" />
+                <Field label="activities.tagType.THEME" :error="errors.get('theme_tags')">
+                    <TagSelect :items="tagOptions.THEME" displayKey="name" keyBy="id"
+                        v-model="activity.classification.themes" />
+                </Field>
             </div>
             <Field label="activities.fields.practices" :error="errors.get('practices')">
                 <div class="flex flex-wrap gap-x-4">
@@ -230,8 +232,10 @@ async function removeWorkshopConfirmed(workshop: ActivityWorkshopData) {
                         </option>
                     </select>
                 </Field>
-                <RecordsPicker label="activities.tagType.IMAGINARY" :items="tagOptions.IMAGINARY"
-                    :error="errors.get('imaginary_tags')" v-model="activity.imaginary.universes" />
+                <Field label="activities.tagType.IMAGINARY" :error="errors.get('imaginary_tags')">
+                    <TagSelect :items="tagOptions.IMAGINARY" displayKey="name" keyBy="id"
+                        v-model="activity.imaginary.universes" />
+                </Field>
             </div>
         </Panel>
 
@@ -337,8 +341,10 @@ async function removeWorkshopConfirmed(workshop: ActivityWorkshopData) {
             <h2 class="text-2xl flex items-center gap-2">
                 <ShieldAlertIcon /> {{ $t('activities.families.safety') }}
             </h2>
-            <RecordsPicker label="activities.tagType.SECURITY" :items="tagOptions.SECURITY"
-                :error="errors.get('safety_tags')" v-model="activity.safety.tags" />
+            <Field label="activities.tagType.SECURITY" :error="errors.get('safety_tags')">
+                <TagSelect :items="tagOptions.SECURITY" displayKey="name" keyBy="id"
+                    v-model="activity.safety.tags" />
+            </Field>
         </Panel>
 
         <Panel>
@@ -346,12 +352,18 @@ async function removeWorkshopConfirmed(workshop: ActivityWorkshopData) {
                 <GraduationCapIcon /> {{ $t('activities.families.pedagogy') }}
             </h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
-                <RecordsPicker label="activities.tagType.GOAL" :items="tagOptions.GOAL"
-                    :error="errors.get('goal_tags')" v-model="activity.pedagogy.goals" />
-                <RecordsPicker label="activities.tagType.IDEAL_FOR" :items="tagOptions.IDEAL_FOR"
-                    :error="errors.get('ideal_for_tags')" v-model="activity.pedagogy.idealFor" />
-                <RecordsPicker v-for="axis in DEVELOPMENT_AXES" :key="axis" :label="`activities.tagType.${axis}`"
-                    :items="tagOptions[axis]" v-model="activity.pedagogy.development[axis]" />
+                <Field label="activities.tagType.GOAL" :error="errors.get('goal_tags')">
+                    <TagSelect :items="tagOptions.GOAL" displayKey="name" keyBy="id"
+                        v-model="activity.pedagogy.goals" />
+                </Field>
+                <Field label="activities.tagType.IDEAL_FOR" :error="errors.get('ideal_for_tags')">
+                    <TagSelect :items="tagOptions.IDEAL_FOR" displayKey="name" keyBy="id"
+                        v-model="activity.pedagogy.idealFor" />
+                </Field>
+                <Field v-for="axis in DEVELOPMENT_AXES" :key="axis" :label="`activities.tagType.${axis}`">
+                    <TagSelect :items="tagOptions[axis]" displayKey="name" keyBy="id"
+                        v-model="activity.pedagogy.development[axis]" />
+                </Field>
             </div>
             <!-- The six axes share one relation, so its error shows once, under all of them. -->
             <FieldError :error="errors.get('development_tags')" />
@@ -382,7 +394,7 @@ async function removeWorkshopConfirmed(workshop: ActivityWorkshopData) {
                 <span v-if="item.adults_required" class="badge my-auto">
                     {{ $t('activities.workshops.adults', { count: item.adults_required }) }}
                 </span>
-                <button class="btn btn-ghost btn-square" @click="() => removeWorkshopConfirmed(item)">
+                <button class="btn btn-ghost btn-square" @click="() => confirmRemoveWorkshop(item)">
                     <MinusIcon />
                 </button>
                 <button class="btn btn-ghost btn-square" @click="() => editWorkshop(item)">
@@ -407,7 +419,7 @@ async function removeWorkshopConfirmed(workshop: ActivityWorkshopData) {
             <List :items="activity.steps" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
 
-                <button class="btn btn-ghost btn-square" @click="() => removeStep(item)">
+                <button class="btn btn-ghost btn-square" @click="() => confirmRemoveStep(item)">
                     <MinusIcon />
                 </button>
                 <button class="btn btn-ghost btn-square" @click="() => editStep(item)">

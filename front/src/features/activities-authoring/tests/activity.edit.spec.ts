@@ -2,10 +2,8 @@ import { isFilterGroup, type Filter } from '@chapelure/core';
 import {
     buildAuthoredFilters,
     stateTransition,
-    pickedAmong,
 } from '@features/activities-authoring/model/activity.edit';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
-import { aTag } from '@tests';
 import { describe, expect, it } from 'vitest';
 
 /** The filters of the group, which is all this query ever builds — no nesting. */
@@ -52,19 +50,5 @@ describe('buildAuthoredFilters', () => {
         const group = buildAuthoredFilters(ActivityState.DRAFT);
 
         expect(valueOf(group, 'state')).toBe(ActivityState.DRAFT);
-    });
-});
-
-describe('pickedAmong', () => {
-    it('hands back the options themselves, since the picker tells a picked item by reference', () => {
-        const art = aTag({ id: 'tag1' });
-        const forest = aTag({ id: 'tag2' });
-        const options = [art, forest];
-
-        // The activity holds its own copy of the row, from another read.
-        const picked = pickedAmong(options, [{ ...forest }]);
-
-        expect(picked).toHaveLength(1);
-        expect(picked[0]).toBe(options[1]);
     });
 });

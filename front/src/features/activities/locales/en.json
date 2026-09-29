@@ -48,12 +48,14 @@
                 },
                 "resources": {
                     "title": "Resources",
+                    "count": "{count} resource(s)",
                     "constraints": "PNG, JPEG, JPG and PDF formats. 10 files max, 2MB max per file.",
                     "empty": "No resources",
                     "uploadFailed": "The file could not be uploaded."
                 },
                 "materials": {
-                    "title": "Materials used"
+                    "title": "Materials used",
+                    "count": "{count} material(s)"
                 }
             }
         },

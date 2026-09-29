@@ -31,6 +31,11 @@ export function hasEndCriteria(step: Pick<ActivityStepData, 'kind'>): boolean {
     return step.kind === StepKind.ANNOUNCE_END;
 }
 
+/** A step's position as the list shows it: `01`, `02`… from its zero-based index. */
+export function stepNumber(index: number): string {
+    return String(index + 1).padStart(2, '0');
+}
+
 // ── Its resources ───────────────────────────────────────────────────────────────────────────
 
 /**

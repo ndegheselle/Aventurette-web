@@ -3,7 +3,6 @@ import {
     createGroup,
     FilterOperator,
     removeEmptyFilters,
-    type BaseEntity,
     type FilterGroup,
 } from "@chapelure/core";
 import { ActivityState, emptyDevelopment, type ActivityData } from "@features/activities/model/activity";
@@ -53,16 +52,6 @@ export function createEmptyActivity(): ActivityData {
 }
 
 // ── The form ────────────────────────────────────────────────────────────────────────────────
-
-/**
- * The records a field already holds — as the options themselves, not as its own copies.
- * `TagSelect` tells a picked item by reference, and the field and the options are two reads of
- * the same rows, so matching by id has to happen here.
- */
-export function pickedAmong<T extends BaseEntity>(options: T[], selected: BaseEntity[]): T[] {
-    const ids = new Set(selected.map(record => record.id));
-    return options.filter(option => ids.has(option.id));
-}
 
 /** How far the age slider goes. An end left at its edge is unset: no limit on that side. */
 export const AGE_BOUNDS = { floor: 0, ceiling: 18 };

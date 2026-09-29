@@ -28,7 +28,7 @@ Reaches the backend only through the feature's `api/`.
 **Components — wiring and markup.** Bindings, event handlers that call a composable, and the
 template. A handful of lines of `<script setup>`, ideally none of them a decision.
 
-A component still owns what is genuinely presentational: `isImage` in `ResourceDisplay` picks
+A component still owns what is genuinely presentational: `isImage` in `ResourcesSelection` picks
 a thumbnail from a file extension, and belongs there.
 
 ## Consequences

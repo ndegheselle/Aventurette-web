@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ActivityStepData } from "@features/activities/model/step";
+import { stepNumber, type ActivityStepData } from "@features/activities/model/step";
 
 const { index, step } = defineProps<{
     index: number;
@@ -7,7 +7,7 @@ const { index, step } = defineProps<{
 }>();
 </script>
 <template>
-    <div class="text-4xl font-thin opacity-30 tabular-nums">{{ String(index + 1).padStart(2, '0') }}</div>
+    <div class="text-4xl font-thin opacity-30 tabular-nums">{{ stepNumber(index) }}</div>
     <div>
         <b v-if="step.title">{{ step.title }}</b>
         <p class="text-xs"
@@ -25,11 +25,11 @@ const { index, step } = defineProps<{
         </span>
         <span class="ms-1 badge"
               v-if="step.materials.length">
-            {{ step.materials.length + ' ' + $t('activities.materials.title')}}
+            {{ $t('activities.steps.fields.materials.count', { count: step.materials.length }) }}
         </span>
         <span class="ms-1 badge"
               v-if="step.resources.length">
-            {{ step.resources.length + ' ' + $t('activities.steps.fields.resources.title') }}
+            {{ $t('activities.steps.fields.resources.count', { count: step.resources.length }) }}
         </span>
     </div>
 </template>

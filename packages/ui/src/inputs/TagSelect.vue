@@ -3,16 +3,24 @@ import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import { CircleQuestionMarkIcon, XIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
-const { items = [], displayKey } = defineProps<{
+/** `keyBy` matches a picked item to an option by that key, rather than by reference. */
+const { items = [], displayKey, keyBy } = defineProps<{
     items: T[],
-    displayKey?: keyof T
+    displayKey?: keyof T,
+    keyBy?: keyof T
 }>();
 
 const selected = defineModel<T[]>({ default: () => [] });
 
 const availableItems = computed(() => items.filter(
-    x => selected.value.indexOf(x) === -1 && getDisplay(x).toLowerCase().includes(search.value.toLowerCase())
+    x => !isSelected(x) && getDisplay(x).toLowerCase().includes(search.value.toLowerCase())
 ));
+
+function isSelected(item: T): boolean {
+    if (!keyBy)
+        return selected.value.includes(item);
+    return selected.value.some(picked => picked[keyBy] === item[keyBy]);
+}
 
 const open = ref<boolean>(false);
 const search = ref<string>("");

@@ -2,11 +2,11 @@
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
+import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useEditModal } from '@chapelure/ui/modals/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import { stepsApi } from '@features/activities-authoring/api/steps.api';
-import RecordsPicker from '@features/activities-authoring/components/RecordsPicker.vue';
 import ResourcesSelection from '@features/activities-authoring/components/ResourcesSelection.vue';
 import type { ActivityMaterialData } from '@features/activities/model/material';
 import { EndCriterion, hasEndCriteria, StepKind, type ActivityStepData } from '@features/activities/model/step';
@@ -89,8 +89,9 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
             <Field label="activities.steps.fields.tip" :error="errors.get('tip')">
                 <TextEditor v-model="step.tip" class="min-h-24" />
             </Field>
-            <RecordsPicker label="activities.steps.fields.materials.title" :items="materials"
-                v-model="step.materials" />
+            <Field label="activities.steps.fields.materials.title">
+                <TagSelect :items="materials" displayKey="name" keyBy="id" v-model="step.materials" />
+            </Field>
             <Field label="activities.steps.fields.resources.title">
                 <ResourcesSelection v-model="step.resources" :step="step.id" />
             </Field>
