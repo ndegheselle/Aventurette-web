@@ -102,6 +102,7 @@
             "seasons": "Saisons",
             "preparationTime": "Temps de préparation",
             "playTime": "Temps de jeu",
+            "totalTime": "Durée totale",
             "unset": "Non précisé"
         },
         "constraints": {

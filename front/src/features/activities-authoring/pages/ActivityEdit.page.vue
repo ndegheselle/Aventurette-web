@@ -176,9 +176,6 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                 </FilesInput>
                 <FilesList :files />
             </Field>
-            <Field label="activities.fields.visualBrief" :error="errors.get('visual_brief')">
-                <textarea class="textarea w-full" v-model="activity.visualBrief"></textarea>
-            </Field>
         </Panel>
 
         <Panel>
@@ -191,190 +188,200 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
         <!-- Optional selects: an empty string is how PocketBase stores "none". -->
         <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <ShapesIcon /> {{ $t('activities.families.classification') }}
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                <Field label="activities.fields.format" :error="errors.get('format')">
-                    <select class="select w-full" v-model="activity.classification.format">
-                        <option value="">{{ $t('activities.fields.unset') }}</option>
-                        <option v-for="value in formats" :key="value" :value="value">
-                            {{ $t(`activities.format.${value}`) }}
-                        </option>
-                    </select>
-                </Field>
-                <Field label="activities.tagType.THEME" :error="errors.get('theme_tags')">
-                    <TagSelect :items="tagOptions.THEME" displayKey="name" keyBy="id"
-                        v-model="activity.classification.themes" />
-                </Field>
-            </div>
-            <Field label="activities.fields.practices" :error="errors.get('practices')">
-                <div class="flex flex-wrap gap-x-4">
-                    <label class="label" v-for="value in practices" :key="value">
-                        <input type="checkbox" class="checkbox checkbox-sm" :value
-                            v-model="activity.classification.practices" />
-                        {{ $t(`activities.practice.${value}`) }}
-                    </label>
-                </div>
-            </Field>
-        </Panel>
-
-        <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <SparklesIcon /> {{ $t('activities.families.imaginary') }}
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                <Field label="activities.fields.imaginaryRule" :error="errors.get('imaginary_rule')">
-                    <select class="select w-full" v-model="activity.imaginary.rule">
-                        <option value="">{{ $t('activities.fields.unset') }}</option>
-                        <option v-for="value in imaginaryRules" :key="value" :value="value">
-                            {{ $t(`activities.imaginaryRule.${value}`) }}
-                        </option>
-                    </select>
-                </Field>
-                <Field label="activities.tagType.IMAGINARY" :error="errors.get('imaginary_tags')">
-                    <TagSelect :items="tagOptions.IMAGINARY" displayKey="name" keyBy="id"
-                        v-model="activity.imaginary.universes" />
-                </Field>
-            </div>
-        </Panel>
-
-        <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <UsersIcon /> {{ $t('activities.families.audience') }}
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                <Field :error="errors.get('age_min') || errors.get('age_max')">
-                    <template #label>
-                        {{ $t('activities.fields.age') }}
-                        <span class="font-normal opacity-60">{{ $t(ageLabel.key, ageLabel.params) }}</span>
-                    </template>
-                    <RangeInput class="text-primary" v-bind="AGE_BOUNDS"
-                        v-model:min="ageMin" v-model:max="ageMax" />
-                </Field>
-                <Field :error="errors.get('participants_min') || errors.get('participants_max')">
-                    <template #label>
-                        {{ $t('activities.fields.participants') }}
-                        <span class="font-normal opacity-60">{{ $t(participantsLabel.key, participantsLabel.params) }}</span>
-                    </template>
-                    <RangeInput class="text-primary" v-bind="PARTICIPANTS_BOUNDS"
-                        v-model:min="participantsMin" v-model:max="participantsMax" />
-                </Field>
-                <Field label="activities.fields.childrenPace" :error="errors.get('children_pace')">
-                    <select class="select w-full" v-model="activity.audience.childrenPace">
-                        <option value="">{{ $t('activities.fields.unset') }}</option>
-                        <option v-for="value in childrenPaces" :key="value" :value="value">
-                            {{ $t(`activities.childrenPace.${value}`) }}
-                        </option>
-                    </select>
-                </Field>
-            </div>
-            <Field label="activities.fields.ageVariants" :error="errors.get('age_variants')">
-                <TextEditor v-model="activity.audience.ageVariants" class="min-h-24" />
-            </Field>
-        </Panel>
-
-        <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <UserCheckIcon /> {{ $t('activities.families.supervision') }}
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                <Field label="activities.fields.hostEffort" :error="errors.get('host_effort')">
-                    <select class="select w-full" v-model="activity.supervision.hostEffort">
-                        <option value="">{{ $t('activities.fields.unset') }}</option>
-                        <option v-for="value in hostEfforts" :key="value" :value="value">
-                            {{ $t(`activities.hostEffort.${value}`) }}
-                        </option>
-                    </select>
-                </Field>
-                <Field label="activities.fields.hosts" :error="errors.get('recommended_hosts_numbers')">
-                    <input type="number" min="0" class="input w-full"
-                        :class="{ 'input-error': !!errors.get('recommended_hosts_numbers') }"
-                        v-model.number="activity.supervision.hostsRequired" />
-                </Field>
-            </div>
-            <label class="label mt-2">
-                <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.supervision.crossSupervision" />
-                {{ $t('activities.fields.crossSupervision') }}
-            </label>
-            <Field label="activities.fields.supervisionNotes" :error="errors.get('supervision_notes')">
-                <TextEditor v-model="activity.supervision.notes" class="min-h-24" />
-            </Field>
-        </Panel>
-
-        <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <MapPinIcon /> {{ $t('activities.families.place') }}
-            </h2>
-            <div class="flex gap-4">
-                <label class="label">
-                    <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.place.indoor" />
-                    {{ $t('activities.fields.indoor') }}
+            <div class="tabs tabs-box">
+                <label class="tab gap-2">
+                    <input type="radio" name="activity-families" checked />
+                    <ShapesIcon /> {{ $t('activities.families.classification') }}
                 </label>
-                <label class="label">
-                    <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.place.outdoor" />
-                    {{ $t('activities.fields.outdoor') }}
+                <div class="tab-content p-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                        <Field label="activities.fields.format" :error="errors.get('format')">
+                            <select class="select w-full" v-model="activity.classification.format">
+                                <option value="">{{ $t('activities.fields.unset') }}</option>
+                                <option v-for="value in formats" :key="value" :value="value">
+                                    {{ $t(`activities.format.${value}`) }}
+                                </option>
+                            </select>
+                        </Field>
+                        <Field label="activities.tagType.THEME" :error="errors.get('theme_tags')">
+                            <TagSelect :items="tagOptions.THEME" displayKey="name" keyBy="id"
+                                v-model="activity.classification.themes" />
+                        </Field>
+                    </div>
+                    <Field label="activities.fields.practices" :error="errors.get('practices')">
+                        <div class="flex flex-wrap gap-x-4">
+                            <label class="label" v-for="value in practices" :key="value">
+                                <input type="checkbox" class="checkbox checkbox-sm" :value
+                                    v-model="activity.classification.practices" />
+                                {{ $t(`activities.practice.${value}`) }}
+                            </label>
+                        </div>
+                    </Field>
+                </div>
+
+                <label class="tab gap-2">
+                    <input type="radio" name="activity-families" />
+                    <SparklesIcon /> {{ $t('activities.families.imaginary') }}
                 </label>
-            </div>
-            <Field label="activities.fields.seasons" :error="errors.get('seasons')">
-                <div class="flex flex-wrap gap-x-4">
-                    <label class="label" v-for="value in seasons" :key="value">
-                        <input type="checkbox" class="checkbox checkbox-sm" :value v-model="activity.place.seasons" />
-                        {{ $t(`activities.season.${value}`) }}
-                    </label>
+                <div class="tab-content p-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                        <Field label="activities.fields.imaginaryRule" :error="errors.get('imaginary_rule')">
+                            <select class="select w-full" v-model="activity.imaginary.rule">
+                                <option value="">{{ $t('activities.fields.unset') }}</option>
+                                <option v-for="value in imaginaryRules" :key="value" :value="value">
+                                    {{ $t(`activities.imaginaryRule.${value}`) }}
+                                </option>
+                            </select>
+                        </Field>
+                        <Field label="activities.tagType.IMAGINARY" :error="errors.get('imaginary_tags')">
+                            <TagSelect :items="tagOptions.IMAGINARY" displayKey="name" keyBy="id"
+                                v-model="activity.imaginary.universes" />
+                        </Field>
+                    </div>
                 </div>
-            </Field>
-            <Field label="activities.fields.locations" :error="errors.get('locations')">
-                <div class="flex flex-wrap gap-x-4">
-                    <label class="label" v-for="value in locations" :key="value">
-                        <input type="checkbox" class="checkbox checkbox-sm" :value v-model="activity.place.locations" />
-                        {{ $t(`activities.location.${value}`) }}
-                    </label>
+
+                <label class="tab gap-2">
+                    <input type="radio" name="activity-families" />
+                    <UsersIcon /> {{ $t('activities.families.audience') }}
+                </label>
+                <div class="tab-content p-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                        <Field :error="errors.get('age_min') || errors.get('age_max')">
+                            <template #label>
+                                {{ $t('activities.fields.age') }}
+                                <span class="font-normal opacity-60">{{ $t(ageLabel.key, ageLabel.params) }}</span>
+                            </template>
+                            <RangeInput class="text-primary" v-bind="AGE_BOUNDS" v-model:min="ageMin" v-model:max="ageMax" />
+                        </Field>
+                        <Field :error="errors.get('participants_min') || errors.get('participants_max')">
+                            <template #label>
+                                {{ $t('activities.fields.participants') }}
+                                <span class="font-normal opacity-60">{{ $t(participantsLabel.key, participantsLabel.params)
+                                }}</span>
+                            </template>
+                            <RangeInput class="text-primary" v-bind="PARTICIPANTS_BOUNDS" v-model:min="participantsMin"
+                                v-model:max="participantsMax" />
+                        </Field>
+                        <Field label="activities.fields.childrenPace" :error="errors.get('children_pace')">
+                            <select class="select w-full" v-model="activity.audience.childrenPace">
+                                <option value="">{{ $t('activities.fields.unset') }}</option>
+                                <option v-for="value in childrenPaces" :key="value" :value="value">
+                                    {{ $t(`activities.childrenPace.${value}`) }}
+                                </option>
+                            </select>
+                        </Field>
+                    </div>
+                    <Field label="activities.fields.ageVariants" :error="errors.get('age_variants')">
+                        <TextEditor v-model="activity.audience.ageVariants" class="min-h-24" />
+                    </Field>
                 </div>
-            </Field>
-            <Field label="activities.fields.conditions" :error="errors.get('conditions')">
-                <TextEditor v-model="activity.place.conditions" class="min-h-24" />
-            </Field>
-        </Panel>
 
-        <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <ShieldAlertIcon /> {{ $t('activities.families.safety') }}
-            </h2>
-            <Field label="activities.tagType.SECURITY" :error="errors.get('safety_tags')">
-                <TagSelect :items="tagOptions.SECURITY" displayKey="name" keyBy="id"
-                    v-model="activity.safety.tags" />
-            </Field>
-        </Panel>
+                <label class="tab gap-2">
+                    <input type="radio" name="activity-families" />
+                    <UserCheckIcon /> {{ $t('activities.families.supervision') }}
+                </label>
+                <div class="tab-content p-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                        <Field label="activities.fields.hostEffort" :error="errors.get('host_effort')">
+                            <select class="select w-full" v-model="activity.supervision.hostEffort">
+                                <option value="">{{ $t('activities.fields.unset') }}</option>
+                                <option v-for="value in hostEfforts" :key="value" :value="value">
+                                    {{ $t(`activities.hostEffort.${value}`) }}
+                                </option>
+                            </select>
+                        </Field>
+                        <Field label="activities.fields.hosts" :error="errors.get('recommended_hosts_numbers')">
+                            <input type="number" min="0" class="input w-full"
+                                :class="{ 'input-error': !!errors.get('recommended_hosts_numbers') }"
+                                v-model.number="activity.supervision.hostsRequired" />
+                        </Field>
+                    </div>
+                    <label class="label mt-2">
+                        <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.supervision.crossSupervision" />
+                        {{ $t('activities.fields.crossSupervision') }}
+                    </label>
+                    <Field label="activities.fields.supervisionNotes" :error="errors.get('supervision_notes')">
+                        <TextEditor v-model="activity.supervision.notes" class="min-h-24" />
+                    </Field>
+                </div>
 
-        <Panel>
-            <h2 class="text-2xl flex items-center gap-2">
-                <GraduationCapIcon /> {{ $t('activities.families.pedagogy') }}
-            </h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
-                <Field label="activities.tagType.GOAL" :error="errors.get('goal_tags')">
-                    <TagSelect :items="tagOptions.GOAL" displayKey="name" keyBy="id"
-                        v-model="activity.pedagogy.goals" />
-                </Field>
-                <Field label="activities.tagType.IDEAL_FOR" :error="errors.get('ideal_for_tags')">
-                    <TagSelect :items="tagOptions.IDEAL_FOR" displayKey="name" keyBy="id"
-                        v-model="activity.pedagogy.idealFor" />
-                </Field>
-                <Field v-for="axis in DEVELOPMENT_AXES" :key="axis" :label="`activities.tagType.${axis}`">
-                    <TagSelect :items="tagOptions[axis]" displayKey="name" keyBy="id"
-                        v-model="activity.pedagogy.development[axis]" />
-                </Field>
+                <label class="tab gap-2">
+                    <input type="radio" name="activity-families" />
+                    <MapPinIcon /> {{ $t('activities.families.place') }}
+                </label>
+                <div class="tab-content p-3">
+                    <div class="flex gap-4">
+                        <label class="label">
+                            <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.place.indoor" />
+                            {{ $t('activities.fields.indoor') }}
+                        </label>
+                        <label class="label">
+                            <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.place.outdoor" />
+                            {{ $t('activities.fields.outdoor') }}
+                        </label>
+                    </div>
+                    <Field label="activities.fields.seasons" :error="errors.get('seasons')">
+                        <div class="flex flex-wrap gap-x-4">
+                            <label class="label" v-for="value in seasons" :key="value">
+                                <input type="checkbox" class="checkbox checkbox-sm" :value v-model="activity.place.seasons" />
+                                {{ $t(`activities.season.${value}`) }}
+                            </label>
+                        </div>
+                    </Field>
+                    <Field label="activities.fields.locations" :error="errors.get('locations')">
+                        <div class="flex flex-wrap gap-x-4">
+                            <label class="label" v-for="value in locations" :key="value">
+                                <input type="checkbox" class="checkbox checkbox-sm" :value v-model="activity.place.locations" />
+                                {{ $t(`activities.location.${value}`) }}
+                            </label>
+                        </div>
+                    </Field>
+                    <Field label="activities.fields.conditions" :error="errors.get('conditions')">
+                        <TextEditor v-model="activity.place.conditions" class="min-h-24" />
+                    </Field>
+                </div>
+
+                <label class="tab gap-2">
+                    <input type="radio" name="activity-families" />
+                    <ShieldAlertIcon /> {{ $t('activities.families.safety') }}
+                </label>
+                <div class="tab-content p-3">
+                    <Field label="activities.tagType.SECURITY" :error="errors.get('safety_tags')">
+                        <TagSelect :items="tagOptions.SECURITY" displayKey="name" keyBy="id" v-model="activity.safety.tags" />
+                    </Field>
+                </div>
+
+                <label class="tab gap-2">
+                    <input type="radio" name="activity-families" />
+                    <GraduationCapIcon /> {{ $t('activities.families.pedagogy') }}
+                </label>
+                <div class="tab-content p-3">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
+                        <Field label="activities.tagType.GOAL" :error="errors.get('goal_tags')">
+                            <TagSelect :items="tagOptions.GOAL" displayKey="name" keyBy="id"
+                                v-model="activity.pedagogy.goals" />
+                        </Field>
+                        <Field label="activities.tagType.IDEAL_FOR" :error="errors.get('ideal_for_tags')">
+                            <TagSelect :items="tagOptions.IDEAL_FOR" displayKey="name" keyBy="id"
+                                v-model="activity.pedagogy.idealFor" />
+                        </Field>
+                        <Field v-for="axis in DEVELOPMENT_AXES" :key="axis" :label="`activities.tagType.${axis}`">
+                            <TagSelect :items="tagOptions[axis]" displayKey="name" keyBy="id"
+                                v-model="activity.pedagogy.development[axis]" />
+                        </Field>
+                    </div>
+                    <!-- The six axes share one relation, so its error shows once, under all of them. -->
+                    <FieldError :error="errors.get('development_tags')" />
+                </div>
             </div>
-            <!-- The six axes share one relation, so its error shows once, under all of them. -->
-            <FieldError :error="errors.get('development_tags')" />
         </Panel>
 
         <Panel>
             <h2 class="text-2xl flex items-center gap-2">
                 <PackageOpenIcon /> {{ $t('activities.materials.title') }}
             </h2>
-            <MaterialsSelection v-model="activity.materials"
-                @add="addMaterial" @update="updateMaterial" @remove="removeMaterial" />
+            <MaterialsSelection v-model="activity.materials" @add="addMaterial" @update="updateMaterial"
+                @remove="removeMaterial" />
         </Panel>
 
         <Panel>
@@ -407,7 +414,11 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
             <h2 class="text-2xl flex items-center gap-2">
                 <ListOrderedIcon /> {{ $t('activities.authoring.steps.title') }}
                 <span class="ms-auto text-sm font-normal opacity-60">
-                    {{ $t('activities.fields.preparationTime') }} {{ $t('activities.minutes', { minutes: timing.preparation }) }}
+                    {{ $t('activities.fields.preparationTime') }} {{ $t('activities.minutes', {
+                        minutes:
+                            timing.preparation
+                    })
+                    }}
                     · {{ $t('activities.fields.playTime') }} {{ $t('activities.minutes', { minutes: timing.play }) }}
                 </span>
             </h2>

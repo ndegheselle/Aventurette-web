@@ -207,3 +207,9 @@ export function timingOf(activity: Pick<ActivityData, 'steps'> | null | undefine
 
     return timing;
 }
+
+/** How long the activity takes from start to finish, preparation included, in minutes. */
+export function totalMinutesOf(activity: Pick<ActivityData, 'steps'> | null | undefined): number {
+    const { preparation, play } = timingOf(activity);
+    return preparation + play;
+}

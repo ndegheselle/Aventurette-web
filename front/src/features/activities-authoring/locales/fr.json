@@ -23,6 +23,36 @@
             "removed": "Activité supprimée.",
             "materials": {
                 "create": "Créer « {name} »"
+            },
+            "import": {
+                "title": "Importer une fiche",
+                "stages": {
+                    "sheet": "Fiche JSON",
+                    "visual": "Visuel"
+                },
+                "sheet": {
+                    "constraints": "Un fichier JSON produit à partir du template de fiche d'activité.",
+                    "summary": "{steps} étape(s), {materials} matériel(s), {workshops} atelier(s)"
+                },
+                "visual": {
+                    "optional": "Facultatif : l'activité peut être importée sans visuel et en recevoir un plus tard."
+                },
+                "unknownTags": "Ces tags n'existent pas et ne seront pas liés :",
+                "problems": {
+                    "title": "{file} ne peut pas être importé :",
+                    "json": "Le fichier n'est pas un JSON valide.",
+                    "version": "La version de fiche {value} n'est pas prise en charge.",
+                    "required": "{path} : champ obligatoire.",
+                    "object": "{path} : un objet est attendu.",
+                    "text": "{path} : un texte est attendu.",
+                    "number": "{path} : un nombre positif est attendu.",
+                    "boolean": "{path} : true ou false est attendu.",
+                    "list": "{path} : une liste est attendue.",
+                    "choice": "{path} : « {value} » n'est pas une valeur reconnue."
+                },
+                "next": "Suivant",
+                "back": "Précédent",
+                "confirm": "Importer"
             }
         },
         "workshops": {

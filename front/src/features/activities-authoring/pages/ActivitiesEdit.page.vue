@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
-import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import DropdownTrigger from '@chapelure/ui/dropdown/DropdownTrigger.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
+import ActivityImportModal from '@features/activities-authoring/components/ActivityImport.modal.vue';
 import { useActivitiesEditList } from '@features/activities-authoring/composables/useActivitiesEditList';
 import { authoredStateTabs } from '@features/activities-authoring/model/activity.edit';
 import { routesNames } from '@features/activities-authoring/routes';
 import { ActivityState, type ActivityData } from '@features/activities/model/activity';
-import { EllipsisVerticalIcon, PenIcon, PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
+import { ImportIcon, PenIcon, PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
+import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const {
@@ -25,6 +25,7 @@ const {
 
 const { t } = useI18n();
 const confirm = useConfirmation();
+const importModal = useTemplateRef('importModal');
 
 // The confirmation is the screen's; the write is the composable's.
 async function remove(activity: ActivityData) {
@@ -48,7 +49,11 @@ useNavbar(t('activities.authoring.title'));
                 :class="{ 'tab-active': state === tab.value }" @click="selectState(tab.value)">
                 {{ $t(tab.label) }}
             </a>
-            <button class="btn btn-primary btn-circle ms-auto" :disabled="isCreating" @click="createActivity">
+            <button class="btn btn-soft btn-square ms-auto" :title="$t('activities.authoring.import.title')"
+                @click="() => importModal?.show()">
+                <ImportIcon />
+            </button>
+            <button class="btn btn-primary btn-square ms-2" :disabled="isCreating" @click="createActivity">
                 <PlusIcon />
             </button>
         </div>
@@ -64,29 +69,17 @@ useNavbar(t('activities.authoring.title'));
                 </div>
                 <p class="text-xs" v-html="item.description"></p>
             </div>
-
-            <Dropdown class="dropdown-end my-auto">
-                <template #summary>
-                    <DropdownTrigger>
-                        <EllipsisVerticalIcon />
-                    </DropdownTrigger>
-                </template>
-                <ul class="menu p-2 w-44">
-                    <li>
-                        <RouterLink :to="{ name: routesNames.page, params: { id: item.id } }">
-                            <PenIcon class="icon-sm" /> {{ $t('actions.update') }}
-                        </RouterLink>
-                    </li>
-                    <li>
-                        <a class="text-error" @click="() => remove(item)">
-                            <TrashIcon class="icon-sm" /> {{ $t('activities.authoring.remove') }}
-                        </a>
-                    </li>
-                </ul>
-            </Dropdown>
+            <RouterLink class="btn btn-soft btn-square" :to="{ name: routesNames.page, params: { id: item.id } }">
+                <PenIcon class="icon-sm" />
+            </RouterLink>
+            <a class="btn btn-soft btn-square btn-error" @click="() => remove(item)">
+                <TrashIcon class="icon-sm" />
+            </a>
         </List>
 
         <Pagination v-if="paginated.options.perPage < paginated.total" v-model:page="paginated.options.page"
             v-model:perPage="paginated.options.perPage" :total="paginated.total" @change="refresh" />
+
+        <ActivityImportModal ref="importModal" />
     </Container>
 </template>

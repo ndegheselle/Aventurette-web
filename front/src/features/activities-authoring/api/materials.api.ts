@@ -9,8 +9,8 @@ const materials = crud(Collections.ActivitiesMaterials, materialMapper);
 // row. Each write is its own — saving the activity stores which materials it lists, not them.
 export const materialsApi = {
     /** Add a material to an activity. The cast is what a create costs: the collection fills in the id. */
-    async create(name: string, activity: string): Promise<ActivityMaterialData> {
-        return await materials.create({ name: name.trim(), quantity: "", activity } as ActivityMaterialData);
+    async create(name: string, activity: string, quantity: string = ""): Promise<ActivityMaterialData> {
+        return await materials.create({ name: name.trim(), quantity, activity } as ActivityMaterialData);
     },
 
     update(material: ActivityMaterialData): Promise<ActivityMaterialData> {

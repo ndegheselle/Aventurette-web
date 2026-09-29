@@ -40,6 +40,31 @@ materials and workshops go with the activity, and the resources go with the step
 
 Adding writes the activity and opens the editor on it.
 
+## Importing a sheet
+
+The **import** button beside add opens `ActivityImport.modal`, in two stages: a JSON sheet, then
+an optional cover visual. The JSON is what the `fiche-to-json` skill (`.claude/skills/`) writes
+from the Confluence activity sheet template. `model/activity.import.ts` is what defines the
+format, and a spec reads the skill's `example.json` through it so the two cannot drift.
+
+`readActivitySheet` reads the file's text. It collects **every** problem with where it is
+(`steps[2].kind`) rather than stopping at the first, and the modal lists them. Anything missing
+or `null` reads as unset. `name` is required, and so is a title or a description on each step.
+The sheet reads as `ActivityData` does, family by family, except that **tags and materials are
+names**: the file is written before anything exists to point at.
+
+- **Tags are matched, never created.** A name links the tag of the same kind whose name or slug
+  it is, whatever the case. One that matches nothing is listed in the modal and left off.
+- **Materials are the sheet's list plus whatever a step or workshop recalls** that the list
+  forgot, each name once. Steps and workshops then recall the written materials by name.
+- **A step with no description gets its title as one**: the collection refuses a blank
+  description, and most steps of the template are a title over actions.
+
+`useActivityImport` writes it all, in order: the activity (a draft, by the signed-in user), its
+materials, its steps, its workshops, then the links, then the visual through `visuals.api.ts`.
+One write at a time, and **all or nothing**: a failure part way deletes the activity, and the
+cascades take what was already written under it. On success the editor opens on the new draft.
+
 ## The form
 
 `useActivityEdit` holds it. It also covers the material list, the workshops and the steps,
@@ -109,7 +134,7 @@ would scatter one screen's labels across two files.
 
 ## Rules that hold
 
-Five specs, in `tests/`.
+The specs, in `tests/`.
 
 *`tests/activity.edit.spec.ts`* — the state toggle, the authored query and picking records
 
@@ -130,6 +155,18 @@ Five specs, in `tests/`.
 
 - A step takes at most `MAX_STEP_RESOURCES` (10) files. Over the limit, the files that fit are
   still taken and the rest reported — a partial pick beats dropping all of it.
+
+*`tests/activity.import.spec.ts`* — reading a sheet and turning it into records
+
+- Every problem is reported at once, each with its path; a version other than 1 is refused.
+- Missing and `null` read as unset; a step that does not say its kind is a free one.
+- A tag links by name or slug, whatever the case, within its own kind, and one that matches
+  nothing is reported rather than created.
+- The materials are the list plus what steps and workshops recall, each name once.
+- The skill's `example.json` reads without a problem.
+
+*`tests/useActivityImport.spec.ts`* — the write order: the links are the last write, the visual
+is uploaded only when picked, and a failure part way deletes the activity and links nothing.
 
 *`tests/useActivityEdit.spec.ts`* — the one order that matters; see
 [activities](activities.md#rules-that-hold).
@@ -160,3 +197,9 @@ between them.
 - **Removing a material asks for no confirmation**, unlike a step or a workshop. It is one row
   and cheap to add back, but the steps that recalled it lose the link for good.
 - The rows reuse the placeholder images the rest of the app does.
+- **An import leaves resources behind.** A fiche links its files, and a step resource is an
+  upload, so the skill lists them for the author to upload from the editor.
+- **An imported visual shows nowhere yet.** It is stored, but the mapper hands `visual` back as
+  the file's name, and the list and the editor do not read it.
+- **Picking the same JSON file again after fixing it does nothing** in some browsers: the file
+  input keeps its value, so no `change` fires. `FilesInput` would have to clear it after a pick.

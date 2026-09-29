@@ -23,6 +23,36 @@
             "removed": "Activity deleted.",
             "materials": {
                 "create": "Add \"{name}\""
+            },
+            "import": {
+                "title": "Import a sheet",
+                "stages": {
+                    "sheet": "JSON sheet",
+                    "visual": "Visual"
+                },
+                "sheet": {
+                    "constraints": "A JSON file produced from the activity sheet template.",
+                    "summary": "{steps} step(s), {materials} material(s), {workshops} workshop(s)"
+                },
+                "visual": {
+                    "optional": "Optional: the activity can be imported without a visual and get one later."
+                },
+                "unknownTags": "These tags do not exist and will not be linked:",
+                "problems": {
+                    "title": "{file} cannot be imported:",
+                    "json": "The file is not valid JSON.",
+                    "version": "Sheet version {value} is not supported.",
+                    "required": "{path}: required.",
+                    "object": "{path}: an object is expected.",
+                    "text": "{path}: a text is expected.",
+                    "number": "{path}: a positive number is expected.",
+                    "boolean": "{path}: true or false is expected.",
+                    "list": "{path}: a list is expected.",
+                    "choice": "{path}: \"{value}\" is not a known value."
+                },
+                "next": "Next",
+                "back": "Back",
+                "confirm": "Import"
             }
         },
         "workshops": {
