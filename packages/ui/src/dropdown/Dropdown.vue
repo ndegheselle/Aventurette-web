@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { vClickOutside } from '@chapelure/ui/dropdown/clickOutside';
+import { useId } from 'vue';
 
 defineSlots<{
     default(): any;
@@ -11,6 +12,8 @@ const { isFullWidth } = defineProps<{
 }>();
 
 const model = defineModel<boolean>({ default: false });
+
+const anchor = `--dropdown-${useId()}`;
 
 function closeOnInteractible(event: MouseEvent)
 {
@@ -24,11 +27,15 @@ function closeOnInteractible(event: MouseEvent)
     <details
         v-click-outside="() => model = false"
         class="dropdown"
+        :style="{ anchorName: anchor }"
         :open="model"
         @toggle="model = ($event.target as HTMLDetailsElement).open"
     >
         <slot name="summary" />
-        <div class="dropdown-content bg-base-200 rounded-box shadow-md" :class="{'right-0 left-0': isFullWidth}" @click="closeOnInteractible">
+        <div class="dropdown-content bg-base-200 rounded-box shadow-md"
+            :class="{'right-0 left-0 full-width': isFullWidth}"
+            :style="{ positionAnchor: anchor }"
+            @click="closeOnInteractible">
             <slot />
         </div>
     </details>
@@ -42,8 +49,15 @@ details>summary {
 details>summary::-webkit-details-marker {
     display: none;
 }
-/* Fix dropdown position in modal with scroll */
-.modal .dropdown-content  {
-    position:fixed;
+/* Fixed, so a modal's overflow neither clips it nor scrolls; anchored, so it stays under its summary. */
+.modal .dropdown-content {
+    position: fixed;
+    top: anchor(bottom);
+    left: anchor(left);
+}
+
+.modal .dropdown-content.full-width {
+    right: auto;
+    width: anchor-size(width);
 }
 </style>

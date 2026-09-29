@@ -34,7 +34,7 @@
             "fields": {
                 "title": "Titre",
                 "kind": "Type d'étape",
-                "duration": "Durée estimée (minutes)",
+                "duration": "Durée estimée",
                 "visualBrief": "Brief du visuel",
                 "description": "Description",
                 "actions": {

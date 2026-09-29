@@ -8,9 +8,11 @@ import { useEditModal } from '@chapelure/ui/modals/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import { stepsApi } from '@features/activities-authoring/api/steps.api';
 import ResourcesSelection from '@features/activities-authoring/components/ResourcesSelection.vue';
+import { joinDuration, splitDuration } from '@features/activities-authoring/model/step.edit';
 import type { ActivityMaterialData } from '@features/activities/model/material';
 import { EndCriterion, hasEndCriteria, StepKind, type ActivityStepData } from '@features/activities/model/step';
-import { MinusIcon, PlusIcon, SaveIcon, XIcon } from 'lucide-vue-next';
+import { MinusIcon, PlusIcon, SaveIcon, TrashIcon, XIcon } from 'lucide-vue-next';
+import { computed } from 'vue';
 
 /** The activity's materials: a step recalls the ones it uses, it does not own any. */
 const { materials = [] } = defineProps<{ materials?: ActivityMaterialData[] }>();
@@ -22,6 +24,15 @@ const { show, confirm, cancel, data: step, errors, isLoading } = useEditModal(co
 
 const kinds = Object.values(StepKind);
 const endCriteria = Object.values(EndCriterion);
+
+const hours = computed({
+    get: () => splitDuration(step.value.duration).hours,
+    set: (value: number | string) => { step.value.duration = joinDuration(value, minutes.value); },
+});
+const minutes = computed({
+    get: () => splitDuration(step.value.duration).minutes,
+    set: (value: number | string) => { step.value.duration = joinDuration(hours.value, value); },
+});
 
 function addAction() {
     step.value.actions = [...step.value.actions, ""];
@@ -45,7 +56,16 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
                     <input type="text" class="input w-full" v-model="step.title" />
                 </Field>
                 <Field label="activities.steps.fields.duration" :error="errors.get('duration')">
-                    <input type="number" min="0" class="input w-full" v-model.number="step.duration" />
+                    <div class="join w-full">
+                        <label class="join-item input w-full">
+                            <input type="number" min="0" v-model.number="hours" />
+                            <span class="label">{{ $t('activities.authoring.steps.hours') }}</span>
+                        </label>
+                        <label class="join-item input w-full">
+                            <input type="number" min="0" max="59" v-model.number="minutes" />
+                            <span class="label">{{ $t('activities.authoring.steps.minutes') }}</span>
+                        </label>
+                    </div>
                 </Field>
             </div>
             <Field label="activities.steps.fields.kind" :error="errors.get('kind')">
@@ -64,7 +84,7 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
                         <span class="join-item btn btn-sm tabular-nums">{{ index + 1 }}</span>
                         <input type="text" class="join-item input input-sm w-full" v-model="step.actions[index]" />
                         <button class="join-item btn btn-sm" @click="() => removeAction(index)">
-                            <MinusIcon class="icon-sm" />
+                            <TrashIcon class="icon-sm" />
                         </button>
                     </div>
                     <button class="btn btn-sm btn-ghost self-start" @click="addAction">

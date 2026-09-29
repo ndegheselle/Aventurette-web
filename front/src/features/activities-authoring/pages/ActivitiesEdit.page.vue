@@ -49,13 +49,15 @@ useNavbar(t('activities.authoring.title'));
                 :class="{ 'tab-active': state === tab.value }" @click="selectState(tab.value)">
                 {{ $t(tab.label) }}
             </a>
-            <button class="btn btn-soft btn-square ms-auto" :title="$t('activities.authoring.import.title')"
-                @click="() => importModal?.show()">
-                <ImportIcon />
-            </button>
-            <button class="btn btn-primary btn-square ms-2" :disabled="isCreating" @click="createActivity">
-                <PlusIcon />
-            </button>
+            <div class="ms-auto my-auto flex gap-2 me-2">
+                <button class="btn btn-sm btn-soft btn-square" :title="$t('activities.authoring.import.title')"
+                    @click="() => importModal?.show()">
+                    <ImportIcon />
+                </button>
+                <button class="btn btn-sm btn-primary btn-square" :disabled="isCreating" @click="createActivity">
+                    <PlusIcon />
+                </button>
+            </div>
         </div>
         <List :items="paginated.items" v-slot="{ item }" class="flex-1">
             <div><img class="size-16 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
@@ -69,12 +71,14 @@ useNavbar(t('activities.authoring.title'));
                 </div>
                 <p class="text-xs" v-html="item.description"></p>
             </div>
-            <RouterLink class="btn btn-soft btn-square" :to="{ name: routesNames.page, params: { id: item.id } }">
-                <PenIcon class="icon-sm" />
-            </RouterLink>
-            <a class="btn btn-soft btn-square btn-error" @click="() => remove(item)">
-                <TrashIcon class="icon-sm" />
-            </a>
+            <div class="my-auto flex gap-2">
+                <a class="btn btn-soft btn-square btn-error" @click="() => remove(item)">
+                    <TrashIcon class="icon-sm" />
+                </a>
+                <RouterLink class="btn btn-soft btn-square" :to="{ name: routesNames.page, params: { id: item.id } }">
+                    <PenIcon class="icon-sm" />
+                </RouterLink>
+            </div>
         </List>
 
         <Pagination v-if="paginated.options.perPage < paginated.total" v-model:page="paginated.options.page"

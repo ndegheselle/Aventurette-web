@@ -49,9 +49,9 @@ function openDropdown() {
                 <div class="flex flex-wrap gap-1 me-2">
                     <span class="badge badge-primary whitespace-nowrap pe-0" v-for="(value, index) in selected">
                         {{ getDisplay(value) }}
-                        <button class="btn btn-xs btn-ghost" @click="() => removeItem(index)">
+                        <span class="cursor-pointer p-1" @click="() => removeItem(index)">
                             <XIcon class="icon-sm" />
-                        </button>
+                        </span>
                     </span>
                 </div>
                 <div class="flex-1 min-w-32 flex items-center">

@@ -33,6 +33,7 @@ import {
 import { type ActivityStepData } from '@features/activities/model/step';
 import { type ActivityWorkshopData } from '@features/activities/model/workshop';
 import {
+    TrashIcon,
     ArrowLeftIcon,
     BadgeCheckIcon,
     BookOpenIcon,
@@ -160,6 +161,9 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
         </div>
         <FieldError :error="errors.global.value" />
 
+        <div class="grid gap-2 col-2">
+
+        </div>
         <Panel>
             <h2 class="text-2xl flex items-center gap-2">
                 <LibraryIcon /> {{ $t('activities.families.informations') }}
@@ -251,13 +255,15 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                 {{ $t('activities.fields.age') }}
                                 <span class="font-normal opacity-60">{{ $t(ageLabel.key, ageLabel.params) }}</span>
                             </template>
-                            <RangeInput class="text-primary" v-bind="AGE_BOUNDS" v-model:min="ageMin" v-model:max="ageMax" />
+                            <RangeInput class="text-primary" v-bind="AGE_BOUNDS" v-model:min="ageMin"
+                                v-model:max="ageMax" />
                         </Field>
                         <Field :error="errors.get('participants_min') || errors.get('participants_max')">
                             <template #label>
                                 {{ $t('activities.fields.participants') }}
-                                <span class="font-normal opacity-60">{{ $t(participantsLabel.key, participantsLabel.params)
-                                }}</span>
+                                <span class="font-normal opacity-60">{{ $t(participantsLabel.key,
+                                    participantsLabel.params)
+                                    }}</span>
                             </template>
                             <RangeInput class="text-primary" v-bind="PARTICIPANTS_BOUNDS" v-model:min="participantsMin"
                                 v-model:max="participantsMax" />
@@ -297,7 +303,8 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </Field>
                     </div>
                     <label class="label mt-2">
-                        <input type="checkbox" class="checkbox checkbox-sm" v-model="activity.supervision.crossSupervision" />
+                        <input type="checkbox" class="checkbox checkbox-sm"
+                            v-model="activity.supervision.crossSupervision" />
                         {{ $t('activities.fields.crossSupervision') }}
                     </label>
                     <Field label="activities.fields.supervisionNotes" :error="errors.get('supervision_notes')">
@@ -323,7 +330,8 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <Field label="activities.fields.seasons" :error="errors.get('seasons')">
                         <div class="flex flex-wrap gap-x-4">
                             <label class="label" v-for="value in seasons" :key="value">
-                                <input type="checkbox" class="checkbox checkbox-sm" :value v-model="activity.place.seasons" />
+                                <input type="checkbox" class="checkbox checkbox-sm" :value
+                                    v-model="activity.place.seasons" />
                                 {{ $t(`activities.season.${value}`) }}
                             </label>
                         </div>
@@ -331,7 +339,8 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <Field label="activities.fields.locations" :error="errors.get('locations')">
                         <div class="flex flex-wrap gap-x-4">
                             <label class="label" v-for="value in locations" :key="value">
-                                <input type="checkbox" class="checkbox checkbox-sm" :value v-model="activity.place.locations" />
+                                <input type="checkbox" class="checkbox checkbox-sm" :value
+                                    v-model="activity.place.locations" />
                                 {{ $t(`activities.location.${value}`) }}
                             </label>
                         </div>
@@ -347,7 +356,8 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                 </label>
                 <div class="tab-content p-3">
                     <Field label="activities.tagType.SECURITY" :error="errors.get('safety_tags')">
-                        <TagSelect :items="tagOptions.SECURITY" displayKey="name" keyBy="id" v-model="activity.safety.tags" />
+                        <TagSelect :items="tagOptions.SECURITY" displayKey="name" keyBy="id"
+                            v-model="activity.safety.tags" />
                     </Field>
                 </div>
 
@@ -401,12 +411,15 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                 <span v-if="item.adults_required" class="badge my-auto">
                     {{ $t('activities.workshops.adults', { count: item.adults_required }) }}
                 </span>
-                <button class="btn btn-ghost btn-square" @click="() => confirmRemoveWorkshop(item)">
-                    <MinusIcon />
-                </button>
-                <button class="btn btn-ghost btn-square" @click="() => editWorkshop(item)">
-                    <PenIcon />
-                </button>
+
+                <div class="ms-auto my-auto flex gap-2">
+                    <button class="btn btn-soft btn-error btn-square" @click="() => confirmRemoveWorkshop(item)">
+                        <TrashIcon class="icon-sm" />
+                    </button>
+                    <button class="btn btn-soft btn-square" @click="() => editWorkshop(item)">
+                        <PenIcon class="icon-sm" />
+                    </button>
+                </div>
             </List>
         </Panel>
 
@@ -430,12 +443,14 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
             <List :items="activity.steps" v-slot="{ item, index }">
                 <StepSummary :index="index" :step="item" />
 
-                <button class="btn btn-ghost btn-square" @click="() => confirmRemoveStep(item)">
-                    <MinusIcon />
-                </button>
-                <button class="btn btn-ghost btn-square" @click="() => editStep(item)">
-                    <PenIcon />
-                </button>
+                <div class="my-auto flex gap-2">
+                    <button class="btn btn-soft btn-error btn-square" @click="() => confirmRemoveStep(item)">
+                        <TrashIcon class="icon-sm" />
+                    </button>
+                    <button class="btn btn-soft btn-square" @click="() => editStep(item)">
+                        <PenIcon class="icon-sm" />
+                    </button>
+                </div>
             </List>
         </Panel>
     </Container>

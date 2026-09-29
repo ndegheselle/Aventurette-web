@@ -34,7 +34,7 @@
             "fields": {
                 "title": "Title",
                 "kind": "Kind of step",
-                "duration": "Estimated duration (minutes)",
+                "duration": "Estimated duration",
                 "visualBrief": "Visual brief",
                 "description": "Description",
                 "actions": {

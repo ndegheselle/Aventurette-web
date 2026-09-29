@@ -23,6 +23,28 @@ export function createEmptyStep(activity: string): ActivityStepData {
     } as ActivityStepData;
 }
 
+// ── Its duration ────────────────────────────────────────────────────────────────────────────
+
+export interface DurationParts {
+    hours: number;
+    minutes: number;
+}
+
+/** A duration in minutes, split for the hours and minutes inputs. */
+export function splitDuration(duration: number | undefined): DurationParts {
+    const total = duration || 0;
+    return { hours: Math.floor(total / 60), minutes: total % 60 };
+}
+
+/**
+ * The hours and minutes inputs, back in minutes. A cleared input counts as zero, and minutes past
+ * 59 carry over — they come back split on the next read.
+ */
+export function joinDuration(hours: number | string, minutes: number | string): number {
+    const total = (Number(hours) || 0) * 60 + (Number(minutes) || 0);
+    return Math.max(total, 0);
+}
+
 // ── Its files ───────────────────────────────────────────────────────────────────────────────
 
 /** How many files one step may carry. The constraints line in the locales repeats it. */

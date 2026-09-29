@@ -10,7 +10,9 @@
             "description": "Description",
             "steps": {
                 "title": "Étapes",
-                "addAction": "Ajouter une action"
+                "addAction": "Ajouter une action",
+                "hours": "h",
+                "minutes": "min"
             },
             "states": {
                 "all": "Toutes",
