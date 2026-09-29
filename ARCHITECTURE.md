@@ -45,7 +45,7 @@ the app's `backend/` folder is the only thing that does.
 
 | Folder | Holds | Notes |
 |---|---|---|
-| `app/` | `main.ts`, `router.ts`, `i18n.ts`, `App.vue`, `Default.layout.vue`, `locales/`, `styles/` | Composition root. Wiring, no logic. |
+| `app/` | `main.ts`, `router.ts`, `i18n.ts`, `App.vue`, `Default.layout.vue`, `Auth.layout.vue`, `locales/`, `styles/` | Composition root. Wiring, no logic. |
 | `backend/` | `index.ts`, `schema.g.ts` | The backend seam, and the pocketbase-typegen output. |
 | `features/<name>/` | one vertical slice | Same shape every time, see below. |
 

@@ -9,6 +9,9 @@ Signing in, signing up, and keeping everything else behind a session.
 | `auth.login` | `/user/login` | Log in |
 | `auth.register` | `/user/register` | Sign up |
 
+Both hang under `Auth.layout.vue` rather than the default one: no sidebar, and a navbar holding
+only a home link and the theme and language menus, above the same footer.
+
 ## The session
 
 `useAuth` is the session, and there is exactly one: `current` is module-level state, shared by
