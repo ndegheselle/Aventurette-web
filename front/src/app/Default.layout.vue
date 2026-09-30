@@ -3,11 +3,11 @@ import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
-import { routesNames as authoringRoutesNames } from '@features/activities-authoring/routes';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
+import { routesNames as authoringRoutesNames } from '@features/admin/activities-authoring/routes';
+import { routesNames as materialsRoutesNames } from '@features/admin/materials-authoring/routes';
 import AuthMenu from '@features/auth/components/AuthMenu.vue';
 import { routesNames as dashboardRoutesNames } from '@features/dashboard/routes';
-import { routesNames as materialsRoutesNames } from '@features/materials-authoring/routes';
 import { PackageOpenIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
