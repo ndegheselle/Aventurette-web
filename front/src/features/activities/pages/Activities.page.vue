@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
-import Container from '@chapelure/ui/layout/Container.vue';
 import { rangeLabel } from '@chapelure/ui/inputs/range';
+import Container from '@chapelure/ui/layout/Container.vue';
 import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
 import { rangeEndOf, totalMinutesOf, type ActivityData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';
@@ -26,9 +26,9 @@ function ageLabelOf(activity: ActivityData) {
             </div>
         </div>
 
-        <div v-else class="flex flex-1 flex-wrap content-start gap-2">
+        <div v-else class="flex-1 grid content-start grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2">
             <RouterLink v-for="item in paginated.items" :key="item.id"
-                class="w-64 card bg-base-200 border border-base-content/5 shadow-sm hover:border-primary transitions transition-colors"
+                class="card bg-base-200 border border-base-content/5 hover:shadow-lg"
                 :to="{ name: routesNames.page, params: { id: item.id } }">
 
                 <figure>

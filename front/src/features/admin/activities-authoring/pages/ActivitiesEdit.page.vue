@@ -44,45 +44,65 @@ useNavbar(t('activities.authoring.title'));
 
 <template>
     <Container>
-        <div role="tablist" class="tabs tabs-box">
-            <a v-for="tab in authoredStateTabs" :key="tab.label" role="tab" class="tab"
-                :class="{ 'tab-active': state === tab.value }" @click="selectState(tab.value)">
-                {{ $t(tab.label) }}
-            </a>
-            <div class="ms-auto my-auto flex gap-2 me-2">
-                <button class="btn btn-sm btn-soft btn-square" :title="$t('activities.authoring.import.title')"
-                    @click="() => importModal?.show()">
+        <div class="flex gap-2">
+            <div role="tablist"
+                 class="tabs flex-1 tabs-box">
+                <a v-for="tab in authoredStateTabs"
+                   :key="tab.label"
+                   role="tab"
+                   class="tab"
+                   :class="{ 'tab-active': state === tab.value }"
+                   @click="selectState(tab.value)">
+                    {{ $t(tab.label) }}
+                </a>
+            </div>
+            <div class="ms-auto my-auto flex gap-2">
+                <button class="btn btn-soft btn-square"
+                        :title="$t('activities.authoring.import.title')"
+                        @click="() => importModal?.show()">
                     <ImportIcon />
                 </button>
-                <button class="btn btn-sm btn-primary btn-square" :disabled="isCreating" @click="createActivity">
+                <button class="btn btn-primary btn-square"
+                        :disabled="isCreating"
+                        @click="createActivity">
                     <PlusIcon />
                 </button>
             </div>
         </div>
-        <List :items="paginated.items" v-slot="{ item }" class="flex-1">
-            <div><img class="size-16 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
+
+        <List :items="paginated.items"
+              v-slot="{ item }"
+              class="flex-1">
+            <div><img class="size-16 rounded-box"
+                     src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <div>
                 <div class="flex flex-wrap gap-2">
                     <b class="my-auto">{{ item.name }}</b>
                     <span class="badge badge-sm my-auto"
-                        :class="item.state === ActivityState.PUBLISHED ? 'badge-success' : 'badge-ghost'">
+                          :class="item.state === ActivityState.PUBLISHED ? 'badge-success' : 'badge-ghost'">
                         {{ $t(`activities.state.${item.state}`) }}
                     </span>
                 </div>
-                <p class="text-xs" v-html="item.description"></p>
+                <p class="text-xs"
+                   v-html="item.description"></p>
             </div>
             <div class="my-auto flex gap-2">
-                <a class="btn btn-soft btn-square btn-error" @click="() => remove(item)">
+                <a class="btn btn-soft btn-square btn-error"
+                   @click="() => remove(item)">
                     <TrashIcon class="icon-sm" />
                 </a>
-                <RouterLink class="btn btn-soft btn-square" :to="{ name: routesNames.page, params: { id: item.id } }">
+                <RouterLink class="btn btn-soft btn-square"
+                            :to="{ name: routesNames.page, params: { id: item.id } }">
                     <PenIcon class="icon-sm" />
                 </RouterLink>
             </div>
         </List>
 
-        <Pagination v-if="paginated.options.perPage < paginated.total" v-model:page="paginated.options.page"
-            v-model:perPage="paginated.options.perPage" :total="paginated.total" @change="refresh" />
+        <Pagination v-if="paginated.options.perPage < paginated.total"
+                    v-model:page="paginated.options.page"
+                    v-model:perPage="paginated.options.perPage"
+                    :total="paginated.total"
+                    @change="refresh" />
 
         <ActivityImportModal ref="importModal" />
     </Container>

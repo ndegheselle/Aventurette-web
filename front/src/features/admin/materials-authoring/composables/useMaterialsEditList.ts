@@ -21,7 +21,6 @@ export function useMaterialsEditList(perPage: number = DEFAULT_PER_PAGE) {
         options: { page: 1, perPage, sortBy: 'name', sortDirection: SortDirection.ASC },
     });
     const search = ref('');
-    const name = ref('');
 
     const alert = useAlert();
     const { t } = useI18n();
@@ -39,12 +38,17 @@ export function useMaterialsEditList(perPage: number = DEFAULT_PER_PAGE) {
     }
 
     /** Add a name to the catalogue. A name it already has is refused, and the refusal lands on the field. */
-    const { isLoading: isCreating, errors, submit: createMaterial } = useSubmit(async () => {
-        await materials.create({ name: name.value.trim() } as MaterialData);
-        name.value = '';
+    const { submit } = useSubmit(async () => {
+        await materials.create({ name: search.value.trim() } as MaterialData);
+        search.value = '';
         alert.success(t('materials.authoring.created'));
         await refresh();
     });
+
+    async function createMaterial() {
+        if (await submit() == false)
+            alert.error(t('materials.authoring.renameRefused'));
+    }
 
     /**
      * Write a material's name, as its field is left. A blank or unchanged field writes nothing
@@ -90,10 +94,7 @@ export function useMaterialsEditList(perPage: number = DEFAULT_PER_PAGE) {
     return {
         paginated,
         search,
-        name,
         refresh,
-        isCreating,
-        errors,
         createMaterial,
         renameMaterial,
         removeMaterial,

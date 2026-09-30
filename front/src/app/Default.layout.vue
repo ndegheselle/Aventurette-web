@@ -53,9 +53,9 @@ const { title } = useNavbar();
                     <img class="my-auto" src="https://placeholder.pagebee.io/api/plain/32/32" style="height: 32px;" />
                     <span class="my-auto ms-2 is-drawer-close:hidden">Aventurette</span>
                 </RouterLink>
-                <ul class="menu w-full grow">
+                <ul class="menu w-full">
                     <li>
-                        <RouterLink class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                        <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
                             :to="{ name: activitiesRoutesNames.all }" :data-tip="$t('activities.title')">
                             <TreesIcon />
                             <span class="is-drawer-close:hidden">{{ $t('activities.title') }}</span>
@@ -64,14 +64,14 @@ const { title } = useNavbar();
                     <div class="divider is-drawer-open:hidden m-0"></div>
                     <li class="menu-title is-drawer-close:hidden">{{ $t('admin.title') }}</li>
                     <li>
-                        <RouterLink class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                        <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
                             :to="{ name: authoringRoutesNames.all }" :data-tip="$t('activities.authoring.title')">
                             <PencilLineIcon />
                             <span class="is-drawer-close:hidden">{{ $t('activities.authoring.title') }}</span>
                         </RouterLink>
                     </li>
                     <li>
-                        <RouterLink class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                        <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
                             :to="{ name: materialsRoutesNames.all }" :data-tip="$t('materials.authoring.title')">
                             <PackageOpenIcon />
                             <span class="is-drawer-close:hidden">{{ $t('materials.authoring.title') }}</span>
