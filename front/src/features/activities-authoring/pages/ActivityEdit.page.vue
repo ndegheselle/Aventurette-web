@@ -39,7 +39,6 @@ import {
     LibraryIcon,
     ListOrderedIcon,
     MapPinIcon,
-    MinusIcon,
     PackageOpenIcon,
     PenIcon,
     PlusIcon,

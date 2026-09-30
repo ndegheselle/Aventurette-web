@@ -11,7 +11,7 @@ import ResourcesSelection from '@features/activities-authoring/components/Resour
 import { joinDuration, splitDuration } from '@features/activities-authoring/model/step.edit';
 import type { ActivityMaterialData } from '@features/activities/model/material';
 import { EndCriterion, hasEndCriteria, StepKind, type ActivityStepData } from '@features/activities/model/step';
-import { MinusIcon, PlusIcon, SaveIcon, TrashIcon, XIcon } from 'lucide-vue-next';
+import { PlusIcon, SaveIcon, TrashIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 /** The activity's materials: a step recalls the ones it uses, it does not own any. */

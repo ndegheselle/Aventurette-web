@@ -6,7 +6,7 @@ import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
 import { rangeEndOf, totalMinutesOf, type ActivityData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';
-import { ArrowRightIcon, CakeIcon, CircleQuestionMarkIcon, ClockIcon } from 'lucide-vue-next';
+import { CakeIcon, CircleQuestionMarkIcon, ClockIcon } from 'lucide-vue-next';
 
 const { paginated, search, refresh } = useActivitiesList();
 
