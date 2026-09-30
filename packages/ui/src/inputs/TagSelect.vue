@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="T">
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
+import { isPicked } from '@chapelure/ui/inputs/selection';
 import { CircleQuestionMarkIcon, XIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
@@ -13,14 +14,8 @@ const { items = [], displayKey, keyBy } = defineProps<{
 const selected = defineModel<T[]>({ default: () => [] });
 
 const availableItems = computed(() => items.filter(
-    x => !isSelected(x) && getDisplay(x).toLowerCase().includes(search.value.toLowerCase())
+    x => !isPicked(selected.value, x, keyBy) && getDisplay(x).toLowerCase().includes(search.value.toLowerCase())
 ));
-
-function isSelected(item: T): boolean {
-    if (!keyBy)
-        return selected.value.includes(item);
-    return selected.value.some(picked => picked[keyBy] === item[keyBy]);
-}
 
 const open = ref<boolean>(false);
 const search = ref<string>("");
