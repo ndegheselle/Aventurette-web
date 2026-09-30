@@ -8,6 +8,10 @@
         "authoring": {
             "title": "Modification",
             "description": "Description",
+            "navigation": {
+                "title": "Sommaire",
+                "families": "Caractéristiques"
+            },
             "steps": {
                 "title": "Étapes",
                 "addAction": "Ajouter une action",

@@ -8,6 +8,10 @@
         "authoring": {
             "title": "Edit activities",
             "description": "Description",
+            "navigation": {
+                "title": "Contents",
+                "families": "Characteristics"
+            },
             "steps": {
                 "title": "Steps",
                 "addAction": "Add an action",
