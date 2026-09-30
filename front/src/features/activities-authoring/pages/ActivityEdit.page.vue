@@ -6,6 +6,7 @@ import { useOneFile } from '@chapelure/ui/files/useFiles';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
+import MultiSelect from '@chapelure/ui/inputs/MultiSelect.vue';
 import RangeInput from '@chapelure/ui/inputs/RangeInput.vue';
 import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
@@ -213,13 +214,8 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </Field>
                     </div>
                     <Field label="activities.fields.practices" :error="errors.get('practices')">
-                        <div class="flex flex-wrap gap-x-4">
-                            <label class="label" v-for="value in practices" :key="value">
-                                <input type="checkbox" class="checkbox checkbox-sm" :value
-                                    v-model="activity.classification.practices" />
-                                {{ $t(`activities.practice.${value}`) }}
-                            </label>
-                        </div>
+                        <MultiSelect :items="practices" :display="value => $t(`activities.practice.${value}`)"
+                            v-model="activity.classification.practices" />
                     </Field>
                 </div>
 
@@ -328,22 +324,12 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </label>
                     </div>
                     <Field label="activities.fields.seasons" :error="errors.get('seasons')">
-                        <div class="flex flex-wrap gap-x-4">
-                            <label class="label" v-for="value in seasons" :key="value">
-                                <input type="checkbox" class="checkbox checkbox-sm" :value
-                                    v-model="activity.place.seasons" />
-                                {{ $t(`activities.season.${value}`) }}
-                            </label>
-                        </div>
+                        <MultiSelect :items="seasons" :display="value => $t(`activities.season.${value}`)"
+                            v-model="activity.place.seasons" />
                     </Field>
                     <Field label="activities.fields.locations" :error="errors.get('locations')">
-                        <div class="flex flex-wrap gap-x-4">
-                            <label class="label" v-for="value in locations" :key="value">
-                                <input type="checkbox" class="checkbox checkbox-sm" :value
-                                    v-model="activity.place.locations" />
-                                {{ $t(`activities.location.${value}`) }}
-                            </label>
-                        </div>
+                        <MultiSelect :items="locations" :display="value => $t(`activities.location.${value}`)"
+                            v-model="activity.place.locations" />
                     </Field>
                     <Field label="activities.fields.conditions" :error="errors.get('conditions')">
                         <TextEditor v-model="activity.place.conditions" class="min-h-24" />
