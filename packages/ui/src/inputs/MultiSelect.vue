@@ -1,8 +1,7 @@
 <!--
   Picks several items from a dropdown of checkboxes. Picked items stay listed, checked, and read
   as a comma-separated summary. `keyBy` matches a picked item to an option by that key, rather
-  than by reference. `display` labels an item, for when `displayKey` is not enough (a translated
-  enum value).
+  than by reference. To pick plain values, give it `Option`s from `inputs/selection`.
 -->
 <script setup lang="ts" generic="T">
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
@@ -10,10 +9,9 @@ import { isPicked, toggled } from '@chapelure/ui/inputs/selection';
 import { ChevronDownIcon, CircleQuestionMarkIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
-const { items = [], displayKey, display, keyBy, placeholder } = defineProps<{
+const { items = [], displayKey, keyBy, placeholder } = defineProps<{
     items: T[],
     displayKey?: keyof T,
-    display?: (item: T) => string,
     keyBy?: keyof T,
     placeholder?: string
 }>();
@@ -25,8 +23,6 @@ const open = ref<boolean>(false);
 const summary = computed(() => selected.value.map(getDisplay).join(', '));
 
 function getDisplay(value: T): string {
-    if (display)
-        return display(value);
     return displayKey ? new String(value[displayKey]).toString() : new String(value).toString();
 }
 

@@ -14,3 +14,22 @@ export function toggled<T>(selected: T[], item: T, keyBy?: keyof T): T[] {
         return [...selected, item];
     return selected.filter(picked => !isPicked([item], picked, keyBy));
 }
+
+/** What a picker offers for a plain value: the value, and what it reads as. */
+export interface Option<V> {
+    value: V;
+    label: string;
+}
+
+export function optionsOf<V>(values: readonly V[], label: (value: V) => string): Option<V>[] {
+    return values.map(value => ({ value, label: label(value) }));
+}
+
+/** The options standing for `values`, in the options' order. A value no option offers is dropped. */
+export function optionsFor<V>(options: Option<V>[], values: readonly V[]): Option<V>[] {
+    return options.filter(option => values.includes(option.value));
+}
+
+export function valuesOf<V>(options: Option<V>[]): V[] {
+    return options.map(option => option.value);
+}

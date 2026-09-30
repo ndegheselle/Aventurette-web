@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toggled } from './selection';
+import { optionsFor, optionsOf, toggled } from './selection';
 
 const art = { id: 'a', name: 'Art' };
 const forest = { id: 'b', name: 'Forest' };
@@ -20,5 +20,17 @@ describe('toggled', () => {
 
     it('adds a copy without keyBy, as another item', () => {
         expect(toggled([{ ...art }], art)).toHaveLength(2);
+    });
+});
+
+describe('optionsFor', () => {
+    const options = optionsOf(['spring', 'summer', 'winter'], value => value.toUpperCase());
+
+    it('follows the options order, not the stored one', () => {
+        expect(optionsFor(options, ['winter', 'spring']).map(option => option.value)).toEqual(['spring', 'winter']);
+    });
+
+    it('drops a value no option offers', () => {
+        expect(optionsFor(options, ['summer', 'autumn']).map(option => option.value)).toEqual(['summer']);
     });
 });

@@ -22,9 +22,6 @@ import { routesNames } from '@features/activities-authoring/routes';
 import StepSummary from '@features/activities/components/StepSummary.vue';
 import {
     ActivityFormat,
-    ActivityLocation,
-    ActivityPractice,
-    ActivitySeason,
     ActivityState,
     ChildrenPace,
     DEVELOPMENT_AXES,
@@ -72,6 +69,12 @@ const {
     participantsMin,
     participantsMax,
     participantsLabel,
+    practiceOptions,
+    practices,
+    seasonOptions,
+    seasons,
+    locationOptions,
+    locations,
     timing,
     errors,
     save,
@@ -95,12 +98,9 @@ const stepModal = useTemplateRef<IEditModal<ActivityStepData>>('stepModal');
 const workshopModal = useTemplateRef<IEditModal<ActivityWorkshopData>>('workshopModal');
 
 const formats = Object.values(ActivityFormat);
-const practices = Object.values(ActivityPractice);
 const imaginaryRules = Object.values(ImaginaryRule);
 const childrenPaces = Object.values(ChildrenPace);
 const hostEfforts = Object.values(HostEffort);
-const locations = Object.values(ActivityLocation);
-const seasons = Object.values(ActivitySeason);
 
 // XXX : the picture goes nowhere — the collection's `visual` field is not wired to the form yet.
 const { files, update: updateImage } = useOneFile();
@@ -214,8 +214,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </Field>
                     </div>
                     <Field label="activities.fields.practices" :error="errors.get('practices')">
-                        <MultiSelect :items="practices" :display="value => $t(`activities.practice.${value}`)"
-                            v-model="activity.classification.practices" />
+                        <MultiSelect :items="practiceOptions" displayKey="label" keyBy="value" v-model="practices" />
                     </Field>
                 </div>
 
@@ -324,12 +323,10 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </label>
                     </div>
                     <Field label="activities.fields.seasons" :error="errors.get('seasons')">
-                        <MultiSelect :items="seasons" :display="value => $t(`activities.season.${value}`)"
-                            v-model="activity.place.seasons" />
+                        <MultiSelect :items="seasonOptions" displayKey="label" keyBy="value" v-model="seasons" />
                     </Field>
                     <Field label="activities.fields.locations" :error="errors.get('locations')">
-                        <MultiSelect :items="locations" :display="value => $t(`activities.location.${value}`)"
-                            v-model="activity.place.locations" />
+                        <MultiSelect :items="locationOptions" displayKey="label" keyBy="value" v-model="locations" />
                     </Field>
                     <Field label="activities.fields.conditions" :error="errors.get('conditions')">
                         <TextEditor v-model="activity.place.conditions" class="min-h-24" />
