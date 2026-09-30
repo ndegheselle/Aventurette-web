@@ -17,7 +17,7 @@ was linked through a field named `develop_spritual`.
 
 ## Decision
 
-Every tag lives in `activities_tags`:
+Every tag lives in `tags`:
 
 | field | kind | |
 |---|---|---|
@@ -31,7 +31,7 @@ The kinds were nine at first, with `FIELD` for domains. `FIELD` became `THEME`, 
 ([ADR 0015](0015-activity-attributes-grouped-by-family.md)).
 
 **An activity links tags through one relation per place a tag goes in its families**
-([ADR 0015](0015-activity-attributes-grouped-by-family.md)), all pointing at `activities_tags`:
+([ADR 0015](0015-activity-attributes-grouped-by-family.md)), all pointing at `tags`:
 
 | relation | accepts |
 |---|---|
@@ -58,7 +58,10 @@ by kind. Migration `1790700300_tag_relations_per_family.go` made the split, sche
 `season` and `weather`. The tags inside each kind are data and can grow without a migration.
 
 Migration `1790028400_merge_referentials_into_tags.go` keeps every record's id, so an activity's
-links carry over as they are. Slugs for the tags that had none are derived from their French
+links carry over as they are. It named the collection `activities_tags`; migration
+`1790770000_tags_collection_renamed.go` renamed it `tags`, the way the material catalogue is
+`materials` ([ADR 0016](0016-materials-are-a-catalogue.md)), and the relations, which hold its
+id, did not change. Slugs for the tags that had none are derived from their French
 wording.
 
 `name` and `description` were first stored as one wording per locale, `{"fr": "…", "en": "…"}`.

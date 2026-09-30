@@ -1,0 +1,14 @@
+{
+    "materials": {
+        "authoring": {
+            "title": "Matériel",
+            "name": "Nom du matériel",
+            "add": "Ajouter au catalogue",
+            "remove": "Supprimer du catalogue",
+            "created": "Matériel ajouté.",
+            "removed": "Matériel supprimé.",
+            "renameRefused": "Ce nom est vide ou déjà utilisé : l'ancien est rétabli.",
+            "removeWarning": "Supprimer {name} du catalogue le retire de toutes les activités qui l'utilisent, de leurs étapes et de leurs ateliers."
+        }
+    }
+}

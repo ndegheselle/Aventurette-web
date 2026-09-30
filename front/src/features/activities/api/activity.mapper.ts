@@ -1,6 +1,6 @@
 import type { ActivitiesResponse } from "@/backend/schema.g";
 import type { BaseEntity, EntityMapper } from "@chapelure/core";
-import { materialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
+import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import { stepMapper, type ActivityStepPayload } from "@features/activities/api/step.mapper";
 import { tagMapper, type ActivityTagPayload } from "@features/activities/api/tag.mapper";
 import { workshopMapper, type ActivityWorkshopPayload } from "@features/activities/api/workshop.mapper";
@@ -49,6 +49,7 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
         "steps",
         ...stepMapper.relations.map(relation => `steps.${relation}`),
         "materials",
+        ...activityMaterialMapper.relations.map(relation => `materials.${relation}`),
         "workshops",
         ...workshopMapper.relations.map(relation => `workshops.${relation}`),
         ...TAG_RELATIONS,
@@ -114,7 +115,7 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             },
 
             steps: (expand?.steps ?? []).map(step => stepMapper.toEntity(step, files)),
-            materials: (expand?.materials ?? []).map(material => materialMapper.toEntity(material, files)),
+            materials: (expand?.materials ?? []).map(material => activityMaterialMapper.toEntity(material, files)),
             workshops: (expand?.workshops ?? []).map(workshop => workshopMapper.toEntity(workshop, files)),
         };
     },

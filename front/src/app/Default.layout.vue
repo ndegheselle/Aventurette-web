@@ -7,7 +7,8 @@ import { routesNames as authoringRoutesNames } from '@features/activities-author
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import AuthMenu from '@features/auth/components/AuthMenu.vue';
 import { routesNames as dashboardRoutesNames } from '@features/dashboard/routes';
-import { PanelLeftCloseIcon, PanelLeftOpenIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
+import { routesNames as materialsRoutesNames } from '@features/materials-authoring/routes';
+import { PackageOpenIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const isDrawerOpen = ref(false);
@@ -67,6 +68,13 @@ const { title } = useNavbar();
                             :to="{ name: authoringRoutesNames.all }" :data-tip="$t('activities.authoring.title')">
                             <PencilLineIcon />
                             <span class="is-drawer-close:hidden">{{ $t('activities.authoring.title') }}</span>
+                        </RouterLink>
+                    </li>
+                    <li>
+                        <RouterLink class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                            :to="{ name: materialsRoutesNames.all }" :data-tip="$t('materials.authoring.title')">
+                            <PackageOpenIcon />
+                            <span class="is-drawer-close:hidden">{{ $t('materials.authoring.title') }}</span>
                         </RouterLink>
                     </li>
                 </ul>

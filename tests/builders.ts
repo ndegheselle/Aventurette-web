@@ -7,14 +7,14 @@
 import { UsersTypeOptions } from '@/backend/schema.g';
 import { ActivityState, emptyDevelopment, type ActivityData } from '@features/activities/model/activity';
 import type { ActivityPayload } from '@features/activities/api/activity.mapper';
-import type { ActivityMaterialData } from '@features/activities/model/material';
+import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
 import {
     StepKind,
     type ActivityResourceData,
     type ActivityStepData,
 } from '@features/activities/model/step';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
-import type { ActivityMaterialPayload } from '@features/activities/api/material.mapper';
+import type { ActivityMaterialPayload, MaterialPayload } from '@features/activities/api/material.mapper';
 import type {
     ActivityResourcePayload,
     ActivityStepPayload,
@@ -34,15 +34,22 @@ const SYSTEM = {
     collectionName: 'fake',
 };
 
+/** What an activity needs: its link to a catalogue material, the material's name folded in. */
 export function aMaterial(overrides: Partial<ActivityMaterialData> = {}): ActivityMaterialData {
     return {
         ...SYSTEM,
-        id: nextId('mat'),
+        id: nextId('amt'),
+        activity: nextId('act'),
+        material: nextId('mat'),
         name: 'Rope',
         quantity: '',
-        activity: nextId('act'),
         ...overrides,
     } as ActivityMaterialData;
+}
+
+/** A material of the catalogue, before any activity links it. */
+export function aCatalogueMaterial(overrides: Partial<MaterialData> = {}): MaterialData {
+    return { ...SYSTEM, id: nextId('mat'), name: 'Rope', ...overrides } as MaterialData;
 }
 
 export function aResource(overrides: Partial<ActivityResourceData> = {}): ActivityResourceData {
@@ -154,8 +161,24 @@ export function aPickedFile(name = 'photo.png', type = 'image/png'): File {
  * everything above it works on entities.
  */
 
-export function aMaterialPayload(overrides: Partial<ActivityMaterialPayload> = {}): ActivityMaterialPayload {
-    return { ...SYSTEM, id: nextId('mat'), name: 'Rope', quantity: '', activity: nextId('act'), ...overrides } as ActivityMaterialPayload;
+/** An activity's link to a catalogue material, the material expanded under it and named `name`. */
+export function aMaterialPayload(
+    { name = 'Rope', ...overrides }: Partial<ActivityMaterialPayload> & { name?: string } = {},
+): ActivityMaterialPayload {
+    const material = aCatalogueMaterialPayload({ name });
+    return {
+        ...SYSTEM,
+        id: nextId('amt'),
+        activity: nextId('act'),
+        material: material.id,
+        quantity: '',
+        expand: { material },
+        ...overrides,
+    } as ActivityMaterialPayload;
+}
+
+export function aCatalogueMaterialPayload(overrides: Partial<MaterialPayload> = {}): MaterialPayload {
+    return { ...SYSTEM, id: nextId('mat'), name: 'Rope', ...overrides } as MaterialPayload;
 }
 
 export function aResourcePayload(overrides: Partial<ActivityResourcePayload> = {}): ActivityResourcePayload {

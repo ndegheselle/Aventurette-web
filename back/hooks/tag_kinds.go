@@ -10,7 +10,7 @@ import (
 
 const (
 	activitiesCollection = "activities"
-	tagsCollection       = "activities_tags"
+	tagsCollection       = "tags"
 )
 
 // The tag kinds each of an activity's tag relations accepts. Every relation points at the same

@@ -42,10 +42,13 @@ derived from `stepMapper.relations` and `workshopMapper.relations`, so a step ar
 way whether it is read on its own or under an activity. A relation the read did not expand maps
 to an empty list, never to the ids the record carries.
 
-**Materials belong to the activity**: one row each in `activities_materials`, with a free-text
-`quantity` ("one per team" is a quantity too). A step or a workshop *recalls* the ones it uses.
-Its `materials` links the activity's rows and owns none. None of those links cascades, so
-deleting a material only drops it from the lists holding it.
+**Materials come from a catalogue** ([ADR 0016](../adr/0016-materials-are-a-catalogue.md)).
+`materials` holds one row per name, and `activities_materials` holds what an activity needs of
+one: a link with a free-text `quantity` ("one per team" is a quantity too). `activity.materials`
+is those links, as `ActivityMaterialData`, with the catalogue material's `name` folded in by
+`activityMaterialMapper`. A step or a workshop *recalls* the links it uses and owns none. None
+of those lists cascades, so deleting a link only drops it from the lists holding it. Both the
+link's relations do cascade: deleting an activity, or a catalogue material, deletes its links.
 
 **A step** has a `kind`: preparing the game, explaining, forming teams, starting, a free step,
 announcing the end or concluding. It also has a `title`, an estimated `duration` in minutes, the
@@ -56,7 +59,7 @@ durations: preparation is the steps preparing the game, play is every other step
 **A workshop** is one of the stations an activity runs in parallel. It has a name, a theme, its
 challenges, the materials it recalls and the adults it takes to hold it.
 
-Tags all live in `activities_tags`, and an activity links them through one relation per place
+Tags all live in `tags`, and an activity links them through one relation per place
 ([ADR 0014](../adr/0014-activity-tags-are-one-collection.md)): `theme_tags` into
 `classification.themes`, `imaginary_tags` into `imaginary.universes`, `safety_tags` into
 `safety.tags`, and `goal_tags`, `ideal_for_tags` and `development_tags` into `pedagogy`. The six
@@ -87,7 +90,7 @@ soon as it is added**:
 | a step, blank, and its link to the activity | on **Add** in the steps panel, before the modal opens | `useActivityEdit.addStep` |
 | a file | as it is picked | `useStepEdit` |
 | the step's own content | as the modal is confirmed | `StepEdit.modal` (`useEditModal`) |
-| a material, and its link to the activity | as its name is chosen | `useActivityEdit.addMaterial` |
+| a material's link to the activity, and a new catalogue name first if one was typed | as it is chosen | `useActivityEdit.addMaterial`, `useMaterialCatalogue.create` |
 | a material's quantity | as it is typed | `useActivityEdit.updateMaterial` |
 | a workshop, blank, and its link | on **Add** in the workshops panel, before the modal opens | `useActivityEdit.addWorkshop` |
 | the workshop's own content | as the modal is confirmed | `WorkshopEdit.modal` (`useEditModal`) |
@@ -106,12 +109,13 @@ A blank record is still a valid one: `createEmptyActivity` fills in every family
 `createEmptyStep` does the same for the two fields a step must have, `description` and `kind`,
 and `createEmptyWorkshop` for a workshop's name. They are the authoring feature's.
 
-A material is **not** picked from a reference collection. It belongs to one activity, so
-choosing a name writes a row of that activity's own, and the names already used elsewhere are
-only suggestions. **Deleting a material is one call**, since nothing linking it cascades.
-`withoutMaterial` then takes it off the steps and workshops held in memory too. Otherwise their
-next save would send the dead id back and be refused. A workshop is deleted in one call for the
-same reason.
+A material **is** picked from a reference collection, the catalogue, but unlike a tag the
+pick is written at once: it is a link of the activity's own, carrying the quantity. Should the
+activity's list fail to take the link, the link is deleted again. **Taking a material off is one
+call**, the link's delete: the backend drops it from the activity's list and from every step and
+workshop recalling it. `withoutMaterial` then takes it off the steps and workshops held in
+memory too, or their next save would send the dead id back and be refused. A workshop is
+deleted in one call for the same reason.
 
 **Deleting a step means unlinking it first.** `activities.steps` has `cascadeDelete` on, which
 in PocketBase deletes the record *holding* the relation once the deleted id leaves it with no
@@ -125,14 +129,14 @@ list is put back to what the record still holds, because no field on the form st
 
 ## Rules that hold
 
-Three specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Four specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
 [ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md).
 
 *`tests/activity.spec.ts`* — the mapper, the durations and the range bounds
 
-- `activityMapper` asks for the nested relations steps and workshops need, and every tag
-  relation. It
+- `activityMapper` asks for the nested relations steps, material links and workshops need, and
+  every tag relation. It
   inlines them down to the file urls, and reads a relation the request did not expand as empty
   rather than as ids.
 - Columns are grouped by family on read and flattened back on write. Each tag relation is read
@@ -144,6 +148,12 @@ or an api wrapper does not earn one — see
 - Preparation time is the steps preparing the game, and play is every other step. A step with no
   duration counts as 0.
 - A stored 0 reads as an unset range end, and an unset end is stored as 0.
+
+*`tests/material.spec.ts`* — the link to a catalogue material
+
+- A link reads with the catalogue material's name folded in, and no trace of `expand`; an
+  unexpanded material reads as no name.
+- The name is never written back: renaming is the catalogue's.
 
 *`tests/tag.spec.ts`* — the pickers' options
 
@@ -164,6 +174,7 @@ feature that owns the composable
 - Adding a step writes a blank one and links it before the modal opens; if the link fails there
   is nothing to open.
 - A removed step is unlinked **before** it is deleted, never the other way round.
+- A material's link the activity's list could not take is deleted again.
 - A link that cannot be written puts the list back and deletes nothing, rather than leaving the
   screen claiming a step the record does not have.
 - A delete that fails after the unlink landed leaves the step off the activity anyway.

@@ -36,7 +36,8 @@ split as the step list inside the editor.
 
 **Deleting an activity is one call, unlike deleting a step.** `activities_steps.activity`,
 `activities_materials.activity` and `activities_workshops.activity` cascade, so the steps,
-materials and workshops go with the activity, and the resources go with the steps. The relation that makes step deletion delicate is the other one, `activities.steps`.
+material links and workshops go with the activity, and the resources go with the steps. The
+catalogue materials stay. The relation that makes step deletion delicate is the other one, `activities.steps`.
 
 Adding writes the activity and opens the editor on it.
 
@@ -56,14 +57,17 @@ names**: the file is written before anything exists to point at.
 - **Tags are matched, never created.** A name links the tag of the same kind whose name or slug
   it is, whatever the case. One that matches nothing is listed in the modal and left off.
 - **Materials are the sheet's list plus whatever a step or workshop recalls** that the list
-  forgot, each name once. Steps and workshops then recall the written materials by name.
+  forgot, each name once. Each is the catalogue material of that name, whatever the case, or a
+  new one when the catalogue has none. The activity links each with its quantity, and steps and
+  workshops recall the links by name.
 - **A step with no description gets its title as one**: the collection refuses a blank
   description, and most steps of the template are a title over actions.
 
 `useActivityImport` writes it all, in order: the activity (a draft, by the signed-in user), its
 materials, its steps, its workshops, then the links, then the visual through `visuals.api.ts`.
 One write at a time, and **all or nothing**: a failure part way deletes the activity, and the
-cascades take what was already written under it. On success the editor opens on the new draft.
+cascades take what was already written under it. A name the import added to the catalogue stays
+there. On success the editor opens on the new draft.
 
 ## The form
 
@@ -95,10 +99,14 @@ one, shown under all six). The activity's tags are its own copies, not the optio
 picker passes `keyBy="id"`. Nothing is written until save, which sends the ids with the rest of
 the form.
 
-**Materials are the activity's list.** `MaterialsSelection` suggests names from every
-activity's materials (`useMaterialSuggestions`) and lets the author type a quantity per row.
-It emits, and `useActivityEdit` writes. The step and workshop modals take the activity's
-materials as a prop and pick among them with the same `TagSelect`. They never create one.
+**Materials are picked from the catalogue.** `MaterialsSelection` suggests the catalogue
+materials the activity does not list yet (`useMaterialCatalogue`), and offers to add a name the
+catalogue does not have. That one write is `useMaterialCatalogue`'s, since it has to remember
+the new name to offer it again. The author types a quantity per row. It emits, and
+`useActivityEdit` links, writes the quantity or unlinks. Renaming and deleting a catalogue
+material is [materials-authoring](materials-authoring.md)'s. The step and workshop modals take
+the activity's links as a prop and pick among them with the same `TagSelect`. They never create
+one.
 
 **The step modal** edits a step's title, duration, kind, description, actions to tick, visual
 brief, tip, materials and resources. The end criteria show only on the step announcing the end
@@ -126,7 +134,7 @@ The types are not this feature's. `ActivityData`, `ActivityStepData` and their m
 What is its own is the writing side, in `model/activity.edit.ts`, `model/step.edit.ts`,
 `model/material.edit.ts` and `model/workshop.edit.ts`. That covers the blank records written on
 add, the tabs and the state toggle, picking among records, the material suggestions, what
-deleting a material leaves behind, and the file limit. The dependency runs one way — `activities` imports nothing from here.
+removing a material leaves behind, and the file limit. The dependency runs one way — `activities` imports nothing from here.
 
 Translations follow the same rule. `activities.authoring.*`, `activities.state.*` and
 `activities.untitled` live here; `activities.fields.*` and `activities.steps.fields.*` stay
@@ -145,12 +153,14 @@ The specs, in `tests/`.
 - The "all" tab drops the state filter rather than taking a branch of its own.
 - A picker holds the options themselves, matched by id to the activity's own copies.
 
-*`tests/material.edit.spec.ts`* — suggesting a material, and deleting one
+*`tests/material.edit.spec.ts`* — picking a material, and removing one
 
-- The names offered are the distinct ones used anywhere, minus what this activity already has,
-  narrowed by what was typed — all matched case-insensitively, first spelling wins.
-- Creating is offered only for a name that is neither already on the activity nor a suggestion.
-- A deleted material leaves the activity's list and every step and workshop that recalled it.
+- The catalogue materials offered are the ones this activity does not link yet, by catalogue id,
+  sorted by name and narrowed by what was typed, whatever its case.
+- Adding a name is offered only when the catalogue does not have it, whatever its case, and the
+  activity does not list it.
+- A name finds its catalogue material whatever its case and the spaces around it.
+- A removed material leaves the activity's list and every step and workshop that recalled it.
 
 *`tests/step.edit.spec.ts`* — the file limit
 
@@ -167,10 +177,12 @@ The specs, in `tests/`.
 - The skill's `example.json` reads without a problem.
 
 *`tests/useActivityImport.spec.ts`* — the write order: the links are the last write, the visual
-is uploaded only when picked, and a failure part way deletes the activity and links nothing.
+is uploaded only when picked, and a failure part way deletes the activity and links nothing. A
+material the catalogue has, whatever its case, is linked rather than added again.
 
 *`tests/useActivityEdit.spec.ts`* — the one order that matters; see
-[activities](activities.md#rules-that-hold).
+[activities](activities.md#rules-that-hold). And a material's link is deleted again when the
+activity's list could not take it.
 
 *`tests/ActivitiesEdit.page.spec.ts`* — the list's wiring: a delete waits for the confirmation,
 and a tab re-queries.

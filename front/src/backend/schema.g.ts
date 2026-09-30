@@ -14,9 +14,10 @@ export const Collections = {
 	Activities: "activities",
 	ActivitiesMaterials: "activities_materials",
 	ActivitiesSteps: "activities_steps",
-	ActivitiesTags: "activities_tags",
 	ActivitiesWorkshops: "activities_workshops",
+	Materials: "materials",
 	StepsResources: "steps_resources",
+	Tags: "tags",
 	Users: "users",
 } as const
 export type Collections = typeof Collections[keyof typeof Collections]
@@ -209,7 +210,7 @@ export type ActivitiesMaterialsRecord = {
 	activity: RecordIdString
 	created: IsoAutoDateString
 	id: string
-	name: string
+	material: RecordIdString
 	quantity?: string
 	updated: IsoAutoDateString
 }
@@ -250,30 +251,6 @@ export type ActivitiesStepsRecord<Tactions = unknown> = {
 	visual_brief?: string
 }
 
-export const ActivitiesTagsTypeOptions = {
-	"THEME": "THEME",
-	"IMAGINARY": "IMAGINARY",
-	"GOAL": "GOAL",
-	"IDEAL_FOR": "IDEAL_FOR",
-	"SECURITY": "SECURITY",
-	"DEVELOP_PHYSICAL": "DEVELOP_PHYSICAL",
-	"DEVELOP_INTELLECTUAL": "DEVELOP_INTELLECTUAL",
-	"DEVELOP_AFFECT": "DEVELOP_AFFECT",
-	"DEVELOP_SOCIAL": "DEVELOP_SOCIAL",
-	"DEVELOP_MORAL": "DEVELOP_MORAL",
-	"DEVELOP_SPIRITUAL": "DEVELOP_SPIRITUAL",
-} as const
-export type ActivitiesTagsTypeOptions = typeof ActivitiesTagsTypeOptions[keyof typeof ActivitiesTagsTypeOptions]
-export type ActivitiesTagsRecord = {
-	created: IsoAutoDateString
-	description?: HTMLString
-	id: string
-	name: string
-	slug: string
-	type: ActivitiesTagsTypeOptions
-	updated: IsoAutoDateString
-}
-
 export type ActivitiesWorkshopsRecord = {
 	activity: RecordIdString
 	adults_required?: number
@@ -286,12 +263,43 @@ export type ActivitiesWorkshopsRecord = {
 	updated: IsoAutoDateString
 }
 
+export type MaterialsRecord = {
+	created: IsoAutoDateString
+	id: string
+	name: string
+	updated: IsoAutoDateString
+}
+
 export type StepsResourcesRecord = {
 	created: IsoAutoDateString
 	file?: FileNameString
 	id: string
 	name: string
 	step: RecordIdString
+	updated: IsoAutoDateString
+}
+
+export const TagsTypeOptions = {
+	"THEME": "THEME",
+	"IMAGINARY": "IMAGINARY",
+	"GOAL": "GOAL",
+	"IDEAL_FOR": "IDEAL_FOR",
+	"SECURITY": "SECURITY",
+	"DEVELOP_PHYSICAL": "DEVELOP_PHYSICAL",
+	"DEVELOP_INTELLECTUAL": "DEVELOP_INTELLECTUAL",
+	"DEVELOP_AFFECT": "DEVELOP_AFFECT",
+	"DEVELOP_SOCIAL": "DEVELOP_SOCIAL",
+	"DEVELOP_MORAL": "DEVELOP_MORAL",
+	"DEVELOP_SPIRITUAL": "DEVELOP_SPIRITUAL",
+} as const
+export type TagsTypeOptions = typeof TagsTypeOptions[keyof typeof TagsTypeOptions]
+export type TagsRecord = {
+	created: IsoAutoDateString
+	description?: HTMLString
+	id: string
+	name: string
+	slug: string
+	type: TagsTypeOptions
 	updated: IsoAutoDateString
 }
 
@@ -324,9 +332,10 @@ export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> &
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
 export type ActivitiesMaterialsResponse<Texpand = unknown> = Required<ActivitiesMaterialsRecord> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Tactions = unknown, Texpand = unknown> = Required<ActivitiesStepsRecord<Tactions>> & BaseSystemFields<Texpand>
-export type ActivitiesTagsResponse<Texpand = unknown> = Required<ActivitiesTagsRecord> & BaseSystemFields<Texpand>
 export type ActivitiesWorkshopsResponse<Texpand = unknown> = Required<ActivitiesWorkshopsRecord> & BaseSystemFields<Texpand>
+export type MaterialsResponse<Texpand = unknown> = Required<MaterialsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
+export type TagsResponse<Texpand = unknown> = Required<TagsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -340,9 +349,10 @@ export type CollectionRecords = {
 	activities: ActivitiesRecord
 	activities_materials: ActivitiesMaterialsRecord
 	activities_steps: ActivitiesStepsRecord
-	activities_tags: ActivitiesTagsRecord
 	activities_workshops: ActivitiesWorkshopsRecord
+	materials: MaterialsRecord
 	steps_resources: StepsResourcesRecord
+	tags: TagsRecord
 	users: UsersRecord
 }
 
@@ -355,9 +365,10 @@ export type CollectionResponses = {
 	activities: ActivitiesResponse
 	activities_materials: ActivitiesMaterialsResponse
 	activities_steps: ActivitiesStepsResponse
-	activities_tags: ActivitiesTagsResponse
 	activities_workshops: ActivitiesWorkshopsResponse
+	materials: MaterialsResponse
 	steps_resources: StepsResourcesResponse
+	tags: TagsResponse
 	users: UsersResponse
 }
 

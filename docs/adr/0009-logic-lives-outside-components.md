@@ -18,7 +18,7 @@ Three layers, and a component is the last of them.
 
 **`model/` — framework-free.** Rules that hold whatever renders them. Pure functions over
 plain data: `buildAuthoredFilters` turning a tab into a query, `filesWithinLimit` enforcing a
-step's capacity, `materialNameSuggestions` choosing which names to offer. No `vue` import,
+step's capacity, `materialSuggestions` choosing which materials to offer. No `vue` import,
 checked by `lint:arch`.
 
 **`composables/` — Vue, no markup.** Reactive state and orchestration: which tab is

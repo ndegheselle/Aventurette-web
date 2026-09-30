@@ -1,0 +1,14 @@
+{
+    "materials": {
+        "authoring": {
+            "title": "Materials",
+            "name": "Material name",
+            "add": "Add to the catalogue",
+            "remove": "Delete from the catalogue",
+            "created": "Material added.",
+            "removed": "Material deleted.",
+            "renameRefused": "That name is empty or already taken: the previous one is back.",
+            "removeWarning": "Deleting {name} from the catalogue takes it off every activity using it, and off their steps and workshops."
+        }
+    }
+}

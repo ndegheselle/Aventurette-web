@@ -20,14 +20,17 @@ import { describe, expect, it } from 'vitest';
 const files = fakeFileUrls();
 
 describe('activityMapper', () => {
-    it('asks for the nested relations its steps and workshops need, so each arrives whole', () => {
+    it('asks for the nested relations its steps, materials and workshops need, so each arrives whole', () => {
         expect(activityMapper.relations).toEqual([
             'steps',
             'steps.materials',
+            'steps.materials.material',
             'steps.resources',
             'materials',
+            'materials.material',
             'workshops',
             'workshops.materials',
+            'workshops.materials.material',
             'theme_tags',
             'imaginary_tags',
             'safety_tags',

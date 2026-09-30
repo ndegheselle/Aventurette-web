@@ -8,9 +8,9 @@
   --color-base-200: oklch(93.982% 0.007 61.449);
   --color-base-300: oklch(91.586% 0.006 53.44);
   --color-base-content: oklch(23.574% 0.066 313.189);
-  --color-primary: #f88479;
+  --color-primary: #44ebd3;
   --color-primary-content: oklch(43% 0.078 188.216);
-  --color-secondary: #44b2af;
+  --color-secondary: #f9cbe5;
   --color-secondary-content: oklch(45% 0.187 3.815);
   --color-accent: oklch(90% 0.076 70.697);
   --color-accent-content: oklch(47% 0.157 37.304);
@@ -44,9 +44,9 @@
   --color-base-200: oklch(28.036% 0.019 264.182);
   --color-base-300: oklch(26.346% 0.018 262.177);
   --color-base-content: oklch(82.901% 0.031 222.959);
-  --color-primary: #f88479;
+  --color-primary: #44ebd3;
   --color-primary-content: oklch(17.226% 0.028 139.549);
-  --color-secondary: #44b2af;
+  --color-secondary: #f9cbe5;
   --color-secondary-content: oklch(14.675% 0.033 35.353);
   --color-accent: oklch(74.229% 0.133 311.379);
   --color-accent-content: oklch(14.845% 0.026 311.379);

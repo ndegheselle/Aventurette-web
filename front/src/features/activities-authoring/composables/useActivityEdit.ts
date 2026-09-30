@@ -3,14 +3,17 @@ import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { optionsFor, optionsOf, valuesOf, type Option } from '@chapelure/ui/inputs/selection';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { materialsApi as materials } from '@features/activities-authoring/api/materials.api';
+import {
+    activityMaterialsApi as activityMaterials,
+    materialsApi as materials,
+} from '@features/activities-authoring/api/materials.api';
 import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
 import { tagsApi as tags } from '@features/activities-authoring/api/tags.api';
 import { workshopsApi as workshops } from '@features/activities-authoring/api/workshops.api';
 import { createEmptyActivity, stateTransition } from '@features/activities-authoring/model/activity.edit';
 import {
     canCreateMaterial,
-    materialNameSuggestions,
+    materialSuggestions,
     withoutMaterial,
 } from '@features/activities-authoring/model/material.edit';
 import { createEmptyStep } from '@features/activities-authoring/model/step.edit';
@@ -26,7 +29,7 @@ import {
     type ActivityData,
     type RangeEnd,
 } from '@features/activities/model/activity';
-import type { ActivityMaterialData } from '@features/activities/model/material';
+import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
 import type { ActivityStepData } from '@features/activities/model/step';
 import { tagOptions, type ActivityTagData } from '@features/activities/model/tag';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
@@ -130,32 +133,40 @@ export function useActivityEdit() {
         }
     }
 
-    /** Write a material of this activity's own, then list it. */
-    async function addMaterial(name: string) {
+    /**
+     * Link a catalogue material to this activity, then list it. Should the listing fail, the
+     * link is deleted again: a link the activity does not list is one nothing would ever show.
+     */
+    async function addMaterial(material: MaterialData) {
+        let created: ActivityMaterialData;
         try {
-            const created = await materials.create(name, activity.value.id);
-            await relink('materials', [...activity.value.materials, created]);
+            created = await activityMaterials.link(activity.value.id, material);
         } catch {
             alert.error(t('validation.errors.default'));
+            return;
         }
+
+        if (!await relink('materials', [...activity.value.materials, created]))
+            await activityMaterials.unlink(created.id).catch(() => undefined);
     }
 
     /** Write a material's quantity, as it is typed: the activity's save does not reach it. */
     async function updateMaterial(material: ActivityMaterialData) {
         try {
-            await materials.update(material);
+            await activityMaterials.update(material);
         } catch {
             alert.error(t('validation.errors.default'));
         }
     }
 
     /**
-     * Delete a material outright — no unlinking first, unlike a step: nothing linking a material
-     * cascades, so the backend only drops it from the lists that held it.
+     * Take a material off this activity: one delete, of its link. The backend drops the link from
+     * the activity's list and from every step and workshop recalling it, and the catalogue
+     * material stays for the next activity.
      */
     async function removeMaterial(material: ActivityMaterialData) {
         try {
-            await materials.remove(material.id);
+            await activityMaterials.unlink(material.id);
         } catch {
             alert.error(t('validation.errors.default'));
             return;
@@ -332,20 +343,38 @@ export function useTagOptions() {
 }
 
 /**
- * The names to offer while typing a material, drawn from every activity's.
+ * The catalogue materials to offer while typing one, and adding a name it does not have yet.
  *
  * @param selected the activity's materials
  */
-export function useMaterialSuggestions(selected: Ref<ActivityMaterialData[]>) {
-    const known = ref<ActivityMaterialData[]>([]);
+export function useMaterialCatalogue(selected: Ref<ActivityMaterialData[]>) {
+    const alert = useAlert();
+    const { t } = useI18n();
+
+    const known = ref<MaterialData[]>([]);
     const search = ref('');
 
-    const suggestions = computed(() => materialNameSuggestions(known.value, selected.value, search.value));
-    const isNewName = computed(() => canCreateMaterial(search.value, suggestions.value, selected.value));
+    const suggestions = computed(() => materialSuggestions(known.value, selected.value, search.value));
+    const isNewName = computed(() => canCreateMaterial(search.value, known.value, selected.value));
+
+    /**
+     * Add a name to the catalogue, and remember it — so taking it off the activity offers it again
+     * rather than offering to create it twice. Null when the backend refused it.
+     */
+    async function create(name: string): Promise<MaterialData | null> {
+        try {
+            const created = await materials.create(name);
+            known.value = [...known.value, created];
+            return created;
+        } catch {
+            alert.error(t('validation.errors.default'));
+            return null;
+        }
+    }
 
     onMounted(async () => {
         known.value = await materials.getAll();
     });
 
-    return { search, suggestions, isNewName };
+    return { search, suggestions, isNewName, create };
 }

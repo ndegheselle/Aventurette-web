@@ -1,37 +1,50 @@
 import { crud } from "@/backend";
 import { Collections } from "@/backend/schema.g";
-import { materialMapper } from "@features/activities/api/material.mapper";
-import type { ActivityMaterialData } from "@features/activities/model/material";
+import { activityMaterialMapper, materialMapper } from "@features/activities/api/material.mapper";
+import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
 
-const materials = crud(Collections.ActivitiesMaterials, materialMapper);
+const catalogue = crud(Collections.Materials, materialMapper);
+const links = crud(Collections.ActivitiesMaterials, activityMaterialMapper);
 
-// Not a reference collection: a material belongs to one activity, so picking a name writes a new
-// row. Each write is its own — saving the activity stores which materials it lists, not them.
+// The editor picks from the catalogue, and adds to it a name nobody has used yet. Managing the
+// catalogue itself — renaming, deleting — is the `materials-authoring` feature's.
 export const materialsApi = {
-    /** Add a material to an activity. The cast is what a create costs: the collection fills in the id. */
-    async create(name: string, activity: string, quantity: string = ""): Promise<ActivityMaterialData> {
-        return await materials.create({ name: name.trim(), quantity, activity } as ActivityMaterialData);
-    },
-
-    update(material: ActivityMaterialData): Promise<ActivityMaterialData> {
-        return materials.update(material.id, material);
-    },
-
     /**
-     * Delete a material. Nothing linking it cascades, so the activity, its steps and its
-     * workshops only lose the link.
-     */
-    remove(id: string): Promise<void> {
-        return materials.remove(id);
-    },
-
-    /**
-     * Every material row — what the name suggestions are drawn from.
+     * Every catalogue material: what the editor suggests while a name is typed.
      *
-     * XXX : reads the whole collection to offer a handful of names. A view collection exposing
-     * distinct names would be the real fix — see the feature document.
+     * XXX : reads the whole catalogue to offer a handful of names. A search on what is typed
+     * would scale — see the feature document.
      */
-    getAll(): Promise<ActivityMaterialData[]> {
-        return materials.getAll();
+    getAll(): Promise<MaterialData[]> {
+        return catalogue.getAll();
+    },
+
+    /**
+     * Add a name to the catalogue. Refused by the backend if the name is already there, whatever
+     * its case. The cast is what a create costs: the collection fills in the id.
+     */
+    create(name: string): Promise<MaterialData> {
+        return catalogue.create({ name: name.trim() } as MaterialData);
+    },
+};
+
+// What an activity needs of the catalogue. Each write is its own — saving the activity stores
+// which links it lists, not them.
+export const activityMaterialsApi = {
+    /** Link a catalogue material to an activity. What comes back carries the material's name. */
+    link(activity: string, material: MaterialData, quantity: string = ""): Promise<ActivityMaterialData> {
+        return links.create({ activity, material: material.id, quantity } as ActivityMaterialData);
+    },
+
+    update(link: ActivityMaterialData): Promise<ActivityMaterialData> {
+        return links.update(link.id, link);
+    },
+
+    /**
+     * Take a material off an activity. The backend drops the link from the activity's list and
+     * from every step and workshop recalling it; the catalogue material stays.
+     */
+    unlink(id: string): Promise<void> {
+        return links.remove(id);
     },
 };

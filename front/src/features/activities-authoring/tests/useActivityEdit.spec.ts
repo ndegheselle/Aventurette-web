@@ -1,13 +1,14 @@
 import { useActivityEdit } from '@features/activities-authoring/composables/useActivityEdit';
 import type { ActivityData } from '@features/activities/model/activity';
+import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
 import type { ActivityStepData } from '@features/activities/model/step';
-import { anActivity, aStep, createTestRouter, fakeCrud, withSetup } from '@tests';
+import { aCatalogueMaterial, aMaterial, anActivity, aStep, createTestRouter, fakeCrud, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // The one composable here with an order in it: `activities.steps` cascades on delete, so
 // unlinking a step before removing it is the difference between deleting a step and deleting the
-// whole activity. Everything else is a ref and a call.
+// whole activity. A material's link has a rollback to it too. Everything else is a ref and a call.
 
 const activities = fakeCrud<ActivityData>();
 const steps = fakeCrud<ActivityStepData>();
@@ -16,6 +17,16 @@ vi.mock('@features/activities/api/activities.api', () => ({
 }));
 vi.mock('@features/activities-authoring/api/steps.api', () => ({
     get stepsApi() { return steps; },
+}));
+const links = fakeCrud<ActivityMaterialData>();
+const activityMaterials = {
+    link: vi.fn((activity: string, material: MaterialData, quantity = '') =>
+        links.create(aMaterial({ activity, material: material.id, name: material.name, quantity }))),
+    unlink: vi.fn((id: string) => links.remove(id)),
+};
+vi.mock('@features/activities-authoring/api/materials.api', () => ({
+    get activityMaterialsApi() { return activityMaterials; },
+    materialsApi: {},
 }));
 
 const routes = [
@@ -38,6 +49,7 @@ function stored(id = 'act-1') {
 beforeEach(() => {
     vi.restoreAllMocks();
     steps.items = [];
+    links.items = [];
     activities.items = [anActivity({ id: 'act-1', steps: [] })];
 });
 
@@ -110,5 +122,28 @@ describe('detachStep', () => {
 
         expect(subject.activity.value.steps).toEqual([]);
         expect(stored()?.steps).toEqual([]);
+    });
+});
+
+describe('addMaterial', () => {
+    it('links the catalogue material and lists the link', async () => {
+        const subject = await setup();
+
+        await subject.addMaterial(aCatalogueMaterial({ id: 'mat-1', name: 'Rope' }));
+
+        expect(links.items).toHaveLength(1);
+        expect(stored()?.materials.map(link => link.material)).toEqual(['mat-1']);
+        expect(subject.activity.value.materials.map(link => link.name)).toEqual(['Rope']);
+    });
+
+    it('deletes the link again when the activity could not list it', async () => {
+        // A link the activity does not list is one nothing would ever show.
+        const subject = await setup();
+        activities.failNextWith({});
+
+        await subject.addMaterial(aCatalogueMaterial({ id: 'mat-1' }));
+
+        expect(links.items).toEqual([]);
+        expect(subject.activity.value.materials).toEqual([]);
     });
 });

@@ -1,28 +1,34 @@
 <script setup lang="ts">
 import List from '@chapelure/ui/data/List.vue';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import { useMaterialSuggestions } from '@features/activities-authoring/composables/useActivityEdit';
-import { type ActivityMaterialData } from '@features/activities/model/material';
+import { useMaterialCatalogue } from '@features/activities-authoring/composables/useActivityEdit';
+import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
 import { CircleOffIcon, CircleQuestionMarkIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-// The activity's material list. Every change is a write of its own, made by the parent: adding
-// a name creates a row, a quantity is saved as it is typed, and removing deletes the row.
+// The activity's material list, picked from the catalogue. Every change is a write of its own,
+// made by the parent: adding links a catalogue material, a quantity is saved as it is typed, and
+// removing deletes the link. A name the catalogue does not have is added to it first.
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });
 
 const emit = defineEmits<{
-    add: [name: string];
+    add: [material: MaterialData];
     update: [material: ActivityMaterialData];
     remove: [material: ActivityMaterialData];
 }>();
 
-const { search, suggestions, isNewName } = useMaterialSuggestions(selected);
+const { search, suggestions, isNewName, create } = useMaterialCatalogue(selected);
 
 const open = ref<boolean>(false);
 
-function add(name: string) {
-    emit('add', name);
+function add(material: MaterialData) {
+    emit('add', material);
     search.value = '';
+}
+
+async function createAndAdd(name: string) {
+    const created = await create(name);
+    if (created) add(created);
 }
 </script>
 
@@ -34,21 +40,21 @@ function add(name: string) {
                 <div class="flex-1 flex items-center">
                     <SearchIcon class="opacity-50" />
                     <input type="text" class="w-full outline-hidden ps-1" :placeholder="$t('actions.search')"
-                        @focus="open = true" @keyup.enter="isNewName && add(search)" v-model="search" />
+                        @focus="open = true" @keyup.enter="isNewName && createAndAdd(search)" v-model="search" />
                 </div>
             </summary>
         </template>
         <ul class="menu p-2 w-full">
-            <!-- An unused name is still worth offering: the row is this activity's either way. -->
+            <!-- A name nobody has used yet joins the catalogue, for this activity and the next. -->
             <li v-if="isNewName">
-                <a @click="() => add(search)">
+                <a @click="() => createAndAdd(search)">
                     <PlusIcon class="icon-sm" />
                     {{ $t('activities.authoring.materials.create', { name: search.trim() }) }}
                 </a>
             </li>
-            <li v-for="name in suggestions" :key="name">
-                <a @click="() => add(name)"><img class="size-10 rounded-box"
-                        src="https://placeholder.pagebee.io/api/plain/64/64" /> {{ name }}</a>
+            <li v-for="material in suggestions" :key="material.id">
+                <a @click="() => add(material)"><img class="size-10 rounded-box"
+                        src="https://placeholder.pagebee.io/api/plain/64/64" /> {{ material.name }}</a>
             </li>
             <li class="opacity-30" v-if="!suggestions.length && !isNewName">
                 <div class="flex justify-center">

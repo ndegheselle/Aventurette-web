@@ -1,6 +1,6 @@
 import type { ActivitiesWorkshopsResponse } from "@/backend/schema.g";
 import type { EntityMapper } from "@chapelure/core";
-import { materialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
+import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import type { ActivityWorkshopData } from "@features/activities/model/workshop";
 
 /** A workshop as the backend stores it, with what an expanded read carries alongside. */
@@ -9,10 +9,13 @@ export type ActivityWorkshopPayload = ActivitiesWorkshopsResponse<{
 }>;
 
 export const workshopMapper: EntityMapper<ActivityWorkshopPayload, ActivityWorkshopData> = {
-    relations: ["materials"],
+    relations: [
+        "materials",
+        ...activityMaterialMapper.relations.map(relation => `materials.${relation}`),
+    ],
     toEntity: ({ expand, ...workshop }, files) => ({
         ...workshop,
-        materials: (expand?.materials ?? []).map(material => materialMapper.toEntity(material, files)),
+        materials: (expand?.materials ?? []).map(material => activityMaterialMapper.toEntity(material, files)),
     }),
     toPayload: ({ materials, ...workshop }) => ({
         ...workshop,

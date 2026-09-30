@@ -1,52 +1,43 @@
 import {
     canCreateMaterial,
-    materialNameSuggestions,
+    materialNamed,
+    materialSuggestions,
     withoutMaterial,
 } from '@features/activities-authoring/model/material.edit';
-import { aMaterial, aStep, aWorkshop, anActivity } from '@tests';
+import { aCatalogueMaterial, aMaterial, aStep, aWorkshop, anActivity } from '@tests';
 import { describe, expect, it } from 'vitest';
 
-describe('materialNameSuggestions', () => {
-    it('offers the names already used elsewhere', () => {
-        const known = [aMaterial({ name: 'Rope' }), aMaterial({ name: 'Chalk' })];
+const rope = aCatalogueMaterial({ id: 'mat1', name: 'Rope' });
+const chalk = aCatalogueMaterial({ id: 'mat2', name: 'Chalk' });
+const ball = aCatalogueMaterial({ id: 'mat3', name: 'Ball' });
 
-        expect(materialNameSuggestions(known, [])).toEqual(['Rope', 'Chalk']);
+describe('materialSuggestions', () => {
+    it('offers the catalogue by name', () => {
+        expect(materialSuggestions([rope, chalk, ball], []).map(m => m.name)).toEqual(['Ball', 'Chalk', 'Rope']);
     });
 
-    it('leaves out what this activity already has, whatever the spelling', () => {
-        const known = [aMaterial({ name: 'Rope' }), aMaterial({ name: 'Chalk' })];
+    it('leaves out what the activity already links, told by the catalogue id', () => {
+        const linked = aMaterial({ material: 'mat1', name: 'Rope' });
 
-        expect(materialNameSuggestions(known, [aMaterial({ name: ' rope ' })])).toEqual(['Chalk']);
+        expect(materialSuggestions([rope, chalk], [linked])).toEqual([chalk]);
     });
 
-    it('offers one spelling of a name used twice — the first seen', () => {
-        const known = [aMaterial({ name: 'Rope' }), aMaterial({ name: 'ROPE' })];
-
-        expect(materialNameSuggestions(known, [])).toEqual(['Rope']);
-    });
-
-    it('narrows to what the user typed, case-insensitively', () => {
-        const known = [aMaterial({ name: 'Rope' }), aMaterial({ name: 'Chalk' })];
-
-        expect(materialNameSuggestions(known, [], 'RO')).toEqual(['Rope']);
-    });
-
-    it('skips a material with no name to offer', () => {
-        expect(materialNameSuggestions([aMaterial({ name: '  ' })], [])).toEqual([]);
+    it('narrows by what was typed, whatever its case, anywhere in the name', () => {
+        expect(materialSuggestions([rope, chalk, ball], [], 'AL')).toEqual([ball, chalk]);
     });
 });
 
 describe('canCreateMaterial', () => {
-    it('offers to create a name nobody has used', () => {
-        expect(canCreateMaterial('Rope', [], [])).toBe(true);
+    it('offers to add a name the catalogue does not have', () => {
+        expect(canCreateMaterial('Hoop', [rope], [])).toBe(true);
     });
 
-    it('does not, when picking a suggestion would write the same row', () => {
-        expect(canCreateMaterial('rope', ['Rope'], [])).toBe(false);
+    it('does not for a name the catalogue has, whatever its case — the backend would refuse it', () => {
+        expect(canCreateMaterial(' rope ', [rope], [])).toBe(false);
     });
 
-    it('does not, when the activity already has it', () => {
-        expect(canCreateMaterial('rope', [], [aMaterial({ name: 'Rope' })])).toBe(false);
+    it('does not for a name the activity lists, though the catalogue read missed it', () => {
+        expect(canCreateMaterial('Hoop', [rope], [aMaterial({ name: 'Hoop' })])).toBe(false);
     });
 
     it('does not, for whitespace', () => {
@@ -54,22 +45,32 @@ describe('canCreateMaterial', () => {
     });
 });
 
+describe('materialNamed', () => {
+    it('finds the catalogue material whatever the case and the spaces around it', () => {
+        expect(materialNamed([rope, chalk], '  CHALK ')).toBe(chalk);
+    });
+
+    it('finds none for a name the catalogue does not have', () => {
+        expect(materialNamed([rope], 'Chalk')).toBeUndefined();
+    });
+});
+
 describe('withoutMaterial', () => {
-    it('takes a deleted material off the activity and off every step and workshop recalling it', () => {
+    it('takes a removed material off the activity and off every step and workshop recalling it', () => {
         // The backend drops the links itself; a step still holding the id would send it back on
-        // its next save and be refused.
-        const rope = aMaterial({ id: 'mat1' });
-        const chalk = aMaterial({ id: 'mat2' });
+        // its next save.
+        const needsRope = aMaterial({ id: 'amt1' });
+        const needsChalk = aMaterial({ id: 'amt2' });
         const activity = anActivity({
-            materials: [rope, chalk],
-            steps: [aStep({ materials: [{ ...rope }, { ...chalk }] })],
-            workshops: [aWorkshop({ materials: [{ ...rope }] })],
+            materials: [needsRope, needsChalk],
+            steps: [aStep({ materials: [{ ...needsRope }, { ...needsChalk }] })],
+            workshops: [aWorkshop({ materials: [{ ...needsRope }] })],
         });
 
-        const after = withoutMaterial(activity, 'mat1');
+        const after = withoutMaterial(activity, 'amt1');
 
-        expect(after.materials).toEqual([chalk]);
-        expect(after.steps[0]!.materials.map(material => material.id)).toEqual(['mat2']);
+        expect(after.materials).toEqual([needsChalk]);
+        expect(after.steps[0]!.materials.map(material => material.id)).toEqual(['amt2']);
         expect(after.workshops[0]!.materials).toEqual([]);
     });
 });

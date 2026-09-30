@@ -4,6 +4,7 @@ import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@feature
 import authoringRoutes from '@features/activities-authoring/routes';
 import authRoutes from '@features/auth/routes';
 import dashboardRoutes from '@features/dashboard/routes';
+import materialsRoutes from '@features/materials-authoring/routes';
 import type { RouteRecordRaw } from 'vue-router';
 
 // Each feature owns its route module; the app only picks the layout they hang under.
@@ -18,6 +19,7 @@ const routes: RouteRecordRaw[] = [
             ...dashboardRoutes,
             ...activitiesRoutes,
             ...authoringRoutes,
+            ...materialsRoutes,
         ]
     },
     {

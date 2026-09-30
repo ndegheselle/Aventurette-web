@@ -1,6 +1,9 @@
 import { useOneFile } from '@chapelure/ui/files/useFiles';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
-import { materialsApi as materials } from '@features/activities-authoring/api/materials.api';
+import {
+    activityMaterialsApi as activityMaterials,
+    materialsApi as materials,
+} from '@features/activities-authoring/api/materials.api';
 import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
 import { tagsApi as tags } from '@features/activities-authoring/api/tags.api';
 import { visualsApi as visuals } from '@features/activities-authoring/api/visuals.api';
@@ -14,6 +17,7 @@ import {
     type ActivitySheet,
     type SheetProblem,
 } from '@features/activities-authoring/model/activity.import';
+import { materialNamed } from '@features/activities-authoring/model/material.edit';
 import { routesNames } from '@features/activities-authoring/routes';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import type { ActivityData } from '@features/activities/model/activity';
@@ -86,17 +90,26 @@ export function useActivityImport() {
     });
 
     /**
-     * The activity first, since everything else points at it; then its materials, which steps and
-     * workshops recall by name; then those; then the links, which is the one write that makes
-     * them the activity's. One at a time, so nothing is still in flight when a failure rolls back.
+     * The activity first, since everything else points at it; then its materials — each taken
+     * from the catalogue by name, added to it when missing, and linked with its quantity — which
+     * steps and workshops recall by name; then those; then the lists, which is the one write that
+     * makes them the activity's. One at a time, so nothing is still in flight when a failure
+     * rolls back.
      */
     async function write(from: ActivitySheet, activity: ActivityData, cover: File | undefined): Promise<ActivityData> {
         const created = await activities.create({ ...activity, user: currentId() });
 
         try {
+            const catalogue = await materials.getAll();
             const writtenMaterials: ActivityMaterialData[] = [];
-            for (const material of materialsOfSheet(from))
-                writtenMaterials.push(await materials.create(material.name, created.id, material.quantity));
+            for (const material of materialsOfSheet(from)) {
+                let known = materialNamed(catalogue, material.name);
+                if (!known) {
+                    known = await materials.create(material.name);
+                    catalogue.push(known);
+                }
+                writtenMaterials.push(await activityMaterials.link(created.id, known, material.quantity));
+            }
 
             const writtenSteps: ActivityStepData[] = [];
             for (const step of from.steps)
@@ -117,8 +130,9 @@ export function useActivityImport() {
 
             return created;
         } catch (error) {
-            // The steps, materials and workshops cascade with it. Should this fail too, what the
-            // author sees is the first error, which is the one that explains the rest.
+            // The steps, workshops and material links cascade with it; a name the import added to
+            // the catalogue stays there. Should this fail too, what the author sees is the first
+            // error, which is the one that explains the rest.
             await activities.remove(created.id).catch(() => undefined);
             throw error;
         }

@@ -1,10 +1,10 @@
 import { useActivityImport } from '@features/activities-authoring/composables/useActivityImport';
 import type { ActivityData } from '@features/activities/model/activity';
-import type { ActivityMaterialData } from '@features/activities/model/material';
+import type { MaterialData } from '@features/activities/model/material';
 import type { ActivityStepData } from '@features/activities/model/step';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import { useAuth } from '@features/auth/composables/useAuth';
-import { aMaterial, aPickedFile, aUser, createTestRouter, fakeAuthProvider, fakeCrud, withSetup } from '@tests';
+import { aCatalogueMaterial, aMaterial, aPickedFile, aUser, createTestRouter, fakeAuthProvider, fakeCrud, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -14,9 +14,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const activities = fakeCrud<ActivityData>();
 const steps = fakeCrud<ActivityStepData>();
 const workshops = fakeCrud<ActivityWorkshopData>();
+let catalogue: MaterialData[] = [];
 const materials = {
-    create: vi.fn(async (name: string, activity: string, quantity: string = '') =>
-        aMaterial({ name, activity, quantity }) as ActivityMaterialData),
+    getAll: vi.fn(async () => [...catalogue]),
+    create: vi.fn(async (name: string) => aCatalogueMaterial({ name })),
+};
+const activityMaterials = {
+    link: vi.fn(async (activity: string, material: MaterialData, quantity: string = '') =>
+        aMaterial({ activity, material: material.id, name: material.name, quantity })),
 };
 const visuals = { upload: vi.fn(async (_activity: string, _file: File) => ({}) as ActivityData) };
 const author = aUser();
@@ -32,6 +37,7 @@ vi.mock('@features/activities-authoring/api/workshops.api', () => ({
 }));
 vi.mock('@features/activities-authoring/api/materials.api', () => ({
     get materialsApi() { return materials; },
+    get activityMaterialsApi() { return activityMaterials; },
 }));
 vi.mock('@features/activities-authoring/api/visuals.api', () => ({
     get visualsApi() { return visuals; },
@@ -75,6 +81,7 @@ beforeEach(async () => {
     activities.items = [];
     steps.items = [];
     workshops.items = [];
+    catalogue = [];
 
     await useAuth().login(author.email, 'password');
 });
@@ -90,7 +97,8 @@ describe('importSheet', () => {
         const [activity] = activities.items;
         expect(activity?.name).toBe('Bug hunt');
         expect(activity?.user).toBe(author.id);
-        expect(materials.create).toHaveBeenCalledWith('Loupe', activity!.id, '1 par enfant');
+        expect(materials.create).toHaveBeenCalledWith('Loupe');
+        expect(activityMaterials.link).toHaveBeenCalledWith(activity!.id, expect.objectContaining({ name: 'Loupe' }), '1 par enfant');
         expect(steps.items.map(step => step.title)).toEqual(['Hide the bugs', 'Count them']);
         expect(steps.items[0]!.materials.map(material => material.name)).toEqual(['Loupe']);
         expect(workshops.items[0]!.materials.map(material => material.name)).toEqual(['Loupe']);
@@ -102,6 +110,17 @@ describe('importSheet', () => {
 
         expect(router.currentRoute.value.name).toBe('activities.authoring.page');
         expect(router.currentRoute.value.params.id).toBe(activity!.id);
+    });
+
+    it('links the catalogue material going by that name, whatever its case, rather than adding it again', async () => {
+        const loupe = aCatalogueMaterial({ id: 'mat-loupe', name: 'LOUPE' });
+        catalogue = [loupe];
+        const { subject } = await setup();
+
+        await subject.importSheet();
+
+        expect(materials.create).not.toHaveBeenCalled();
+        expect(activityMaterials.link).toHaveBeenCalledWith(activities.items[0]!.id, loupe, '1 par enfant');
     });
 
     it('uploads the visual only when one was picked', async () => {

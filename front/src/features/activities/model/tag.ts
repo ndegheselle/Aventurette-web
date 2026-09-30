@@ -1,4 +1,4 @@
-import { ActivitiesTagsTypeOptions, type ActivitiesTagsResponse } from "@/backend/schema.g";
+import { TagsTypeOptions, type TagsResponse } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
 
 /**
@@ -6,9 +6,9 @@ import type { Entity } from "@chapelure/core";
  * ideal for, a safety note or a developmental keyword, told apart by `type` (ADR 0014). Tags are
  * reference data — an activity links them, it never writes them.
  */
-export type ActivityTagData = Entity<ActivitiesTagsResponse>;
+export type ActivityTagData = Entity<TagsResponse>;
 
-export const ActivityTagType = ActivitiesTagsTypeOptions;
+export const ActivityTagType = TagsTypeOptions;
 export type ActivityTagType = ActivityTagData['type'];
 
 /**

@@ -1,6 +1,6 @@
 import type { ActivitiesStepsResponse, StepsResourcesResponse } from "@/backend/schema.g";
 import type { EntityMapper } from "@chapelure/core";
-import { materialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
+import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import type { ActivityResourceData, ActivityStepData } from "@features/activities/model/step";
 
 /**
@@ -29,11 +29,15 @@ export type ActivityStepPayload = ActivitiesStepsResponse<string[], {
  * action left blank in the editor is not written.
  */
 export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
-    relations: ["materials", "resources"],
+    relations: [
+        "materials",
+        ...activityMaterialMapper.relations.map(relation => `materials.${relation}`),
+        "resources",
+    ],
     toEntity: ({ expand, actions, ...step }, files) => ({
         ...step,
         actions: actions ?? [],
-        materials: (expand?.materials ?? []).map(material => materialMapper.toEntity(material, files)),
+        materials: (expand?.materials ?? []).map(material => activityMaterialMapper.toEntity(material, files)),
         resources: (expand?.resources ?? []).map(resource => resourceMapper.toEntity(resource, files)),
     }),
     toPayload: ({ materials, resources, actions, ...step }) => ({
