@@ -76,7 +76,8 @@ The form is **one panel per family**, in the template's order: information (name
 visual brief), description, classification, imaginary, audience, supervision, place and
 conditions, safety, pedagogy, then materials, workshops and steps. The optional selects offer an
 empty choice, which is how PocketBase stores none. Multi-valued choices (practices, seasons,
-locations, a step's end criteria) are checkboxes bound to the list.
+locations) are a `MultiSelect` over translated options, which `useActivityEdit` maps back to
+the stored values; a step's end criteria are checkboxes.
 
 **Age and participants are two-thumb sliders**, `RangeInput` from @chapelure/ui, over
 `AGE_BOUNDS` (0–18) and `PARTICIPANTS_BOUNDS` (1–30). The slider's unset end is `null`. The

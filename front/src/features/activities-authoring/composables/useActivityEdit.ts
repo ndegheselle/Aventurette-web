@@ -1,6 +1,7 @@
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { rangeLabel } from '@chapelure/ui/inputs/range';
+import { optionsFor, optionsOf, valuesOf, type Option } from '@chapelure/ui/inputs/selection';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import { materialsApi as materials } from '@features/activities-authoring/api/materials.api';
 import { stepsApi as steps } from '@features/activities-authoring/api/steps.api';
@@ -15,6 +16,9 @@ import {
 import { createEmptyStep } from '@features/activities-authoring/model/step.edit';
 import { createEmptyWorkshop } from '@features/activities-authoring/model/workshop.edit';
 import {
+    ActivityLocation,
+    ActivityPractice,
+    ActivitySeason,
     columnOf,
     rangeEndOf,
     timingOf,
@@ -215,6 +219,35 @@ export function useActivityEdit() {
     const participantsMax = rangeEnd('participantsMax');
     const participantsLabel = computed(() => rangeLabel(participantsMin.value, participantsMax.value));
 
+    /**
+     * A multi-valued field, as a `MultiSelect` binds it: every value as a translated option, and
+     * the picked options over the values the field stores.
+     */
+    function choice<V extends string>(values: V[], labelKey: string, read: () => V[], write: (values: V[]) => void) {
+        const options = computed(() => optionsOf(values, value => t(`${labelKey}.${value}`)));
+        const picked = computed<Option<V>[]>({
+            get: () => optionsFor(options.value, read()),
+            set: picked => write(valuesOf(picked)),
+        });
+        return { options, picked };
+    }
+
+    const { options: practiceOptions, picked: practices } = choice(
+        Object.values(ActivityPractice), 'activities.practice',
+        () => activity.value.classification.practices,
+        values => { activity.value.classification.practices = values; },
+    );
+    const { options: seasonOptions, picked: seasons } = choice(
+        Object.values(ActivitySeason), 'activities.season',
+        () => activity.value.place.seasons,
+        values => { activity.value.place.seasons = values; },
+    );
+    const { options: locationOptions, picked: locations } = choice(
+        Object.values(ActivityLocation), 'activities.location',
+        () => activity.value.place.locations,
+        values => { activity.value.place.locations = values; },
+    );
+
     const timing = computed(() => timingOf(activity.value));
 
     /** Where the state button takes this activity, and what the button reads. */
@@ -262,6 +295,12 @@ export function useActivityEdit() {
         participantsMin,
         participantsMax,
         participantsLabel,
+        practiceOptions,
+        practices,
+        seasonOptions,
+        seasons,
+        locationOptions,
+        locations,
         timing,
         errors,
         save: submit,
