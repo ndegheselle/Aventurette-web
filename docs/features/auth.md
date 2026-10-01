@@ -39,6 +39,34 @@ Everyone else is sent to `auth.login`.
 It is a whitelist of two named routes, so **a new public route has to be added to it
 explicitly**. That is the intended default: new screens are private.
 
+Past the session it reads the route's `meta.roles`: a user holding none of them is sent to `/`.
+`to.meta` merges every matched record's, so a parent route's `roles` covers its children.
+
+## Roles
+
+A user's `role` is `USER` or `ADMIN`, in `model/user.ts` as `Role`. The backend stores no role as
+an empty string, and `roleOf` reads that as `USER` — every account that existed before roles is
+a plain user.
+
+`hasRole(user, roles)` is the one rule: no roles asked for lets anyone through, signed out
+included; otherwise the user must hold one of them. `useAuth().hasRole(...roles)` applies it to
+the session, which is what a template binds to hide an element:
+
+```vue
+<template v-if="hasRole(Role.ADMIN)">…</template>
+```
+
+and a route asks for one in its meta, which the guard checks:
+
+```ts
+{ path: '/materials/authoring', component: MaterialsEditPage, meta: { roles: [Role.ADMIN] } }
+```
+
+`meta.roles` is typed by the `RouteMeta` augmentation in `guard.ts`.
+
+A role is **granted by a superuser**, from the PocketBase Dashboard. The `users` create and update
+rules refuse a body that sets `role`, or anyone could sign up as an admin or promote themselves.
+
 ## Errors
 
 Nothing in this feature validates credentials. The backend does, and answers with per-field
@@ -59,6 +87,13 @@ One rule, in one place.
 - `currentId()` throws `NotAuthentifiedError` rather than returning an empty id when signed out.
 - The guard lets login and register through, sends an anonymous visitor to login, admits a
   visitor whose stored session is valid, and does not ask the backend again once signed in.
+- On a route with `meta.roles`, the guard sends a user without the role home, admits one with
+  it, and still sends an anonymous visitor to login.
+
+*`tests/user.spec.ts`*
+
+- An empty role is a plain user.
+- No roles asked for lets anyone through; otherwise the user must hold one of them.
 
 *`tests/Login.page.spec.ts`, `tests/Register.page.spec.ts`*
 
@@ -76,3 +111,7 @@ One rule, in one place.
 - **"Stay logged in" is not wired to anything.** The checkbox binds to `rememberMe`, which is
   never sent; the session's lifetime is whatever the adapter decides.
 - The OAuth2 provider buttons render and throw `NotImplementedError` when clicked.
+- **Roles are enforced by the client only.** Beyond `users` refusing a self-assigned role, no
+  collection's API rule reads `@request.auth.role`, so hiding a screen does not stop its writes.
+- A denied route redirects to `/` silently, with no message. A route that redirects `/` to an
+  admin-only screen would loop.

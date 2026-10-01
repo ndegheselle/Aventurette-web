@@ -1,5 +1,6 @@
 import { NotAuthentifiedError, type BaseEntity } from '@chapelure/core';
 import { sessionProvider } from '@features/auth/api/session';
+import { hasRole as userHasRole, type Role, type UserData } from '@features/auth/model/user';
 import { routesNames } from '@features/auth/routes';
 import { computed, getCurrentInstance, readonly, ref, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -40,6 +41,11 @@ export function useAuth<TUser extends BaseEntity>() {
         return isLoggedIn.value;
     }
 
+    /** Whether the signed-in user holds one of `roles`. Reactive in a template, as it reads the session. */
+    function hasRole(...roles: Role[]): boolean {
+        return userHasRole(current.value as UserData | null, roles);
+    }
+
     function currentId(): string {
         if (!current.value) throw new NotAuthentifiedError();
         return current.value.id;
@@ -54,5 +60,6 @@ export function useAuth<TUser extends BaseEntity>() {
         refresh,
         update,
         currentId,
+        hasRole,
     };
 }

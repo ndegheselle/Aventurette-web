@@ -1,7 +1,9 @@
 import { aUser, fakeAuthProvider } from '@tests';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
+import { useAuth } from '@features/auth/composables/useAuth';
 import { authGuard } from '@features/auth/guard';
+import { Role } from '@features/auth/model/user';
 import { routesNames } from '@features/auth/routes';
 
 const provider = fakeAuthProvider(aUser());
@@ -9,9 +11,11 @@ const provider = fakeAuthProvider(aUser());
 vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => provider }));
 
 /** Only the fields the guard reads; the rest of a route location does not matter. */
-const going = (name: string) => ({ name } as RouteLocationNormalized);
+const going = (name: string, roles?: Role[]) => ({ name, meta: { roles } } as RouteLocationNormalized);
 
-beforeEach(() => {
+beforeEach(async () => {
+    // The session is module state, so a user signed in by one test is still there in the next.
+    await useAuth().logout();
     provider.session = null;
 });
 
@@ -44,5 +48,23 @@ describe('authGuard', () => {
 
         expect(refresh).not.toHaveBeenCalled();
         refresh.mockRestore();
+    });
+
+    describe('a route restricted to some roles', () => {
+        it('sends a user without the role home', async () => {
+            provider.session = aUser({ role: Role.USER });
+
+            await expect(authGuard(going('admin', [Role.ADMIN]))).resolves.toEqual({ path: '/' });
+        });
+
+        it('admits a user holding the role', async () => {
+            provider.session = aUser({ role: Role.ADMIN });
+
+            await expect(authGuard(going('admin', [Role.ADMIN]))).resolves.toBeUndefined();
+        });
+
+        it('still sends an anonymous visitor to login, not home', async () => {
+            await expect(authGuard(going('admin', [Role.ADMIN]))).resolves.toEqual({ name: routesNames.login });
+        });
     });
 });

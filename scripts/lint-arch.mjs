@@ -45,6 +45,14 @@ function isTestFile(path) {
     return /\.spec\.ts$/.test(path) || path.startsWith('tests/');
 }
 
+/**
+ * Whether a file sits in one of a feature's layer folders. A feature may be nested in a group
+ * folder — `features/auth/` and `features/admin/materials-authoring/` are both features.
+ */
+function inFeatureLayer(path, layers) {
+    return new RegExp(`^front/src/features/(?:[^/]+/)+(?:${layers})/`).test(path);
+}
+
 /** Each rule reports the files that violate it. */
 const RULES = [
     {
@@ -65,7 +73,7 @@ const RULES = [
         name: 'backend wiring is consumed through a feature api layer',
         why: "Components must not import @/backend; go through features/<name>/api/.",
         check: f => f.path.startsWith('front/src/')
-            && !/^front\/src\/features\/[^/]+\/api\//.test(f.path)
+            && !inFeatureLayer(f.path, 'api')
             && f.path !== 'front/src/backend/index.ts'
             && /from ['"]@\/backend['"]/.test(f.text),
     },
@@ -85,7 +93,7 @@ const RULES = [
     {
         name: 'feature model/ and api/ are framework-free',
         why: 'Domain types and repositories should outlive the view layer.',
-        check: f => /^front\/src\/features\/[^/]+\/(model|api)\//.test(f.path)
+        check: f => inFeatureLayer(f.path, 'model|api')
             && /from ['"](vue|vue-i18n|vue-router|@chapelure\/ui)/.test(f.text),
     },
     {
@@ -113,13 +121,13 @@ const RULES = [
         name: "a feature's specs live in its tests/ folder",
         why: 'A spec next to what it covers doubles the length of every folder listing, and '
             + 'source folders should hold production code. See ADR 0013.',
-        check: f => /^front\/src\/features\/[^/]+\/.*\.spec\.ts$/.test(f.path)
-            && !/^front\/src\/features\/[^/]+\/tests\//.test(f.path),
+        check: f => /^front\/src\/features\/.*\.spec\.ts$/.test(f.path)
+            && !inFeatureLayer(f.path, 'tests'),
     },
     {
         name: 'feature composables/ go through their own api layer',
         why: 'A composable is Vue, but it is still not where a backend client belongs.',
-        check: f => /^front\/src\/features\/[^/]+\/composables\//.test(f.path)
+        check: f => inFeatureLayer(f.path, 'composables')
             && /from ['"]@\/backend['"]/.test(f.text),
     },
     // No rule confines daisyUI classes to packages/ui: it only bred one-line wrapper
