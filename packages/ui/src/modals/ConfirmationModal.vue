@@ -16,7 +16,7 @@ onMounted(() => {
         <template #title>
             <span class="flex">
                 <component :is="confirmation.icon.value" v-if="confirmation.icon.value"
-                    class="mr-2 my-auto icon-lg inline" />
+                    class="mr-2 my-auto icon-lg inline opacity-50" />
                 {{ confirmation.title }}
             </span>
         </template>

@@ -15,11 +15,30 @@ dependency runs one way: nothing here imports `activities-authoring`.
 |---|---|---|
 | `activities` | `/activities` | The list |
 | `activities.page` | `/activities/:id` | One activity in full |
+| `activities.play` | `/activities/:id/play` | Running the activity, one step at a time |
 
 `/` redirects to `activities`.
 
 One composable to a screen: `useActivitiesList` holds the results and the search,
-`useActivity` the detail screen.
+`useActivity` the detail screen, and `useActivityPlay` the run.
+
+## Running an activity
+
+The detail screen's *Start* opens the run: the steps one at a time, a progress bar, the step
+list to jump around in, and the actions to tick as they are done. A step shows its description,
+its actions, the end criteria when it announces the end, its tip, and the materials and
+resources it uses.
+
+`playStepsOf` in `model/play.ts` turns the activity into the run's steps, as `PlayStep` — one
+shape for a step the author wrote and one the app generates. The template has the app produce
+two steps that are never stored:
+
+- **Gathering the material** comes first, before anything is set up, with each material and its
+  quantity as an action to tick. An activity needing no material has none.
+- **Gathering the children** comes once the game is ready: before the first step that is not
+  preparing it. An activity whose every step prepares it has none.
+
+A run lives in memory: ticks and position are lost on leaving the screen or reloading it.
 
 ## Data
 
@@ -136,7 +155,7 @@ list holding it — steps, workshops or materials.
 
 ## Rules that hold
 
-Four specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Five specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
 [ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md).
 
@@ -175,6 +194,14 @@ or an api wrapper does not earn one — see
 - Actions never set read as none, and a blank action is not written.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 
+*`tests/play.spec.ts`* — the steps of a run
+
+- Gathering the material comes first, and only when the activity needs some; each material is an
+  action to tick, with its quantity when it has one.
+- Gathering the children comes before the first step not preparing the game — first when nothing
+  is prepared, not at all when everything is. A preparation step written later stays where it is.
+- Only the step announcing the end shows end criteria.
+
 *`activities-authoring/tests/activity.edit.spec.ts`* — the save's order, in the feature that
 owns the editor
 
@@ -199,9 +226,11 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
   are ready for increment 1's filters, but a filter key is a column name, not a family path.
 - **The number of leaders needed is typed in.** The template computes it from age, group size
   and the supervision referential, which does not exist yet.
-- **The template's generated steps do not exist yet.** Gathering the material, gathering the
-  children and the safety checklist are for the run screen to produce, and there is no run
-  screen. Nothing in the data stands for them, on purpose.
+- **The safety checklist is not generated.** The run produces gathering the material and the
+  children, but not the template's safety checklist. Nothing in the data stands for any of the
+  generated steps, on purpose.
+- **A run is not kept.** Reloading the run screen starts it over, and nothing records that an
+  activity was run.
 - **Resources still hang off the steps.** The template has one list for the activity, recalled
   by the steps, the way materials now work.
 - **A step's visual is only a brief.** There is no file field for it yet, and the activity's

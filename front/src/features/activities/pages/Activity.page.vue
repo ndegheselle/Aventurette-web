@@ -11,7 +11,7 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
 </script>
 <template>
     <Container>
-        <div class="sticky top-0 flex gap-2 py-1 bg-base-100">
+        <div class="sticky top-0 flex gap-2 py-1 bg-base-100 z-10">
             <RouterLink class="btn btn-ghost"
                         :to="{ name: activitiesRoutesNames.all }">
                 <ArrowLeftIcon /> {{ $t('actions.back') }}
@@ -27,7 +27,14 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                 <CalendarIcon />
                 {{ $t('activities.actions.addToPlanning') }}
             </button>
-            <button class="btn btn-primary"
+            <RouterLink v-if="activity"
+                        class="btn btn-primary"
+                        :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
+                <MonitorPlayIcon />
+                {{ $t('activities.actions.start') }}
+            </RouterLink>
+            <button v-else
+                    class="btn btn-primary"
                     disabled>
                 <MonitorPlayIcon />
                 {{ $t('activities.actions.start') }}

@@ -25,10 +25,10 @@ watchEffect(() => {
                     'alert-error alert-soft border border-error': alert.type === EnumAlertType.Error,
                     'alert-success alert-soft border border-success': alert.type === EnumAlertType.Success
                 }">
-                <CircleAlertIcon v-if="alert.type === EnumAlertType.Info" />
-                <TriangleAlertIcon v-else-if="alert.type === EnumAlertType.Warning || alert.type === EnumAlertType.Error" />
-                <CircleCheckIcon v-else-if="alert.type === EnumAlertType.Success" />
-                <BrushCleaningIcon v-else-if="alert.type === EnumAlertType.Debug" />
+                <CircleAlertIcon class="opacity-50" v-if="alert.type === EnumAlertType.Info" />
+                <TriangleAlertIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Warning || alert.type === EnumAlertType.Error" />
+                <CircleCheckIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Success" />
+                <BrushCleaningIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Debug" />
                 <span>{{ alert.message }}</span>
                 <button @click="close(alert.id)" class="btn btn-sm btn-ghost btn-circle" aria-label="close">
                     <XIcon class="icon-sm" />

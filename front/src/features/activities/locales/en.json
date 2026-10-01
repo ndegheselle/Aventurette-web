@@ -23,7 +23,9 @@
                 "LAUNCH": "Start the game",
                 "CUSTOM": "Free step",
                 "ANNOUNCE_END": "Announce the end",
-                "CONCLUSION": "Wrap up"
+                "CONCLUSION": "Wrap up",
+                "GATHER_MATERIAL": "Gather the material",
+                "GATHER_CHILDREN": "Gather the children"
             },
             "endCriterion": {
                 "TIME_UP": "Time is up",
@@ -168,6 +170,17 @@
             "DEVELOP_SOCIAL": "Social development",
             "DEVELOP_MORAL": "Moral development / character",
             "DEVELOP_SPIRITUAL": "Spiritual development"
+        },
+        "play": {
+            "progress": "Step {current} of {total}",
+            "previous": "Previous",
+            "next": "Next",
+            "finish": "Finish",
+            "empty": "This activity has no steps yet.",
+            "generated": {
+                "GATHER_MATERIAL": "Bring together everything the activity needs before setting it up. Tick each item once it is gathered.",
+                "GATHER_CHILDREN": "The game is ready: gather the children before introducing the activity."
+            }
         }
     }
 }

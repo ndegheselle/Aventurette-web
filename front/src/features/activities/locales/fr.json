@@ -23,7 +23,9 @@
                 "LAUNCH": "Lancer le jeu",
                 "CUSTOM": "Étape libre",
                 "ANNOUNCE_END": "Annoncer la fin",
-                "CONCLUSION": "Conclusion"
+                "CONCLUSION": "Conclusion",
+                "GATHER_MATERIAL": "Rassembler le matériel",
+                "GATHER_CHILDREN": "Regrouper les enfants"
             },
             "endCriterion": {
                 "TIME_UP": "Temps alloué écoulé",
@@ -168,6 +170,17 @@
             "DEVELOP_SOCIAL": "Développement social",
             "DEVELOP_MORAL": "Développement moral / caractère",
             "DEVELOP_SPIRITUAL": "Développement spirituel"
+        },
+        "play": {
+            "progress": "Étape {current} sur {total}",
+            "previous": "Précédente",
+            "next": "Suivante",
+            "finish": "Terminer",
+            "empty": "Cette activité n'a pas encore d'étape.",
+            "generated": {
+                "GATHER_MATERIAL": "Réunissez tout ce dont l'activité a besoin avant de l'installer. Cochez chaque élément une fois rassemblé.",
+                "GATHER_CHILDREN": "Le jeu est prêt : regroupez les enfants avant de leur présenter l'activité."
+            }
         }
     }
 }
