@@ -1,22 +1,36 @@
 import { Role } from '@features/auth/model/user';
 import type { RouteRecordRaw } from 'vue-router';
 
-import MaterialsEditPage from '@features/admin/materials-authoring/pages/MaterialsEdit.page.vue';
+import CataloguePage from '@features/admin/catalogue-authoring/pages/Catalogue.page.vue';
+import MaterialsCataloguePage from '@features/admin/catalogue-authoring/pages/MaterialsCatalogue.page.vue';
+import SafetyCataloguePage from '@features/admin/catalogue-authoring/pages/SafetyCatalogue.page.vue';
+import TagsCataloguePage from '@features/admin/catalogue-authoring/pages/TagsCatalogue.page.vue';
+import TipsCataloguePage from '@features/admin/catalogue-authoring/pages/TipsCatalogue.page.vue';
 
 /**
- * The catalogue has one screen, beside the activities' authoring: the materials every activity
- * picks from, named and renamed here.
+ * The catalogues every activity picks from, one tab each under one screen, beside the
+ * activities' authoring.
  */
 export const routesNames = {
-    all: 'materials.authoring',
+    materials: 'catalogue.materials',
+    tags: 'catalogue.tags',
+    safety: 'catalogue.safety',
+    tips: 'catalogue.tips',
 } as const;
 
 const routes: RouteRecordRaw[] = [
     {
-        path: '/materials/authoring',
-        name: routesNames.all,
-        component: MaterialsEditPage,
+        path: '/catalogue',
+        component: CataloguePage,
+        // The children inherit it: vue-router merges `meta` down the matched routes.
         meta: { roles: [Role.ADMIN] },
+        redirect: { name: routesNames.materials },
+        children: [
+            { path: 'materials', name: routesNames.materials, component: MaterialsCataloguePage },
+            { path: 'tags', name: routesNames.tags, component: TagsCataloguePage },
+            { path: 'safety', name: routesNames.safety, component: SafetyCataloguePage },
+            { path: 'tips', name: routesNames.tips, component: TipsCataloguePage },
+        ],
     },
 ];
 

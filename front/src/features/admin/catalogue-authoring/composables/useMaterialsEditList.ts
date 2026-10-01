@@ -2,8 +2,8 @@ import { createSearchFilter, SortDirection, type Paginated } from '@chapelure/co
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import type { MaterialData } from '@features/activities/model/material';
-import { materialsApi as materials } from '@features/admin/materials-authoring/api/materials.api';
-import { renamedTo } from '@features/admin/materials-authoring/model/material.edit';
+import { materialsApi as materials } from '@features/admin/catalogue-authoring/api/materials.api';
+import { renamedTo } from '@features/admin/catalogue-authoring/model/catalogue.edit';
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -41,13 +41,13 @@ export function useMaterialsEditList(perPage: number = DEFAULT_PER_PAGE) {
     const { submit } = useSubmit(async () => {
         await materials.create({ name: search.value.trim() } as MaterialData);
         search.value = '';
-        alert.success(t('materials.authoring.created'));
+        alert.success(t('catalogue.materials.created'));
         await refresh();
     });
 
     async function createMaterial() {
         if (await submit() == false)
-            alert.error(t('materials.authoring.renameRefused'));
+            alert.error(t('catalogue.materials.renameRefused'));
     }
 
     /**
@@ -69,7 +69,7 @@ export function useMaterialsEditList(perPage: number = DEFAULT_PER_PAGE) {
             saved.set(material.id, next);
         } catch {
             material.name = previous;
-            alert.error(t('materials.authoring.renameRefused'));
+            alert.error(t('catalogue.materials.renameRefused'));
         }
     }
 
@@ -85,7 +85,7 @@ export function useMaterialsEditList(perPage: number = DEFAULT_PER_PAGE) {
             return;
         }
 
-        alert.success(t('materials.authoring.removed'));
+        alert.success(t('catalogue.materials.removed'));
         await refresh();
     }
 

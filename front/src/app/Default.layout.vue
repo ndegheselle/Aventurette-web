@@ -5,12 +5,12 @@ import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as authoringRoutesNames } from '@features/admin/activities-authoring/routes';
-import { routesNames as materialsRoutesNames } from '@features/admin/materials-authoring/routes';
+import { routesNames as catalogueRoutesNames } from '@features/admin/catalogue-authoring/routes';
 import AuthMenu from '@features/auth/components/AuthMenu.vue';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { Role } from '@features/auth/model/user';
 import { routesNames as dashboardRoutesNames } from '@features/dashboard/routes';
-import { PackageOpenIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
+import { LibraryBigIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const isDrawerOpen = ref(false);
@@ -76,9 +76,9 @@ const { hasRole } = useAuth();
                         </li>
                         <li>
                             <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                                :to="{ name: materialsRoutesNames.all }" :data-tip="$t('materials.authoring.title')">
-                                <PackageOpenIcon />
-                                <span class="is-drawer-close:hidden">{{ $t('materials.authoring.title') }}</span>
+                                :to="{ name: catalogueRoutesNames.materials }" :data-tip="$t('catalogue.title')">
+                                <LibraryBigIcon />
+                                <span class="is-drawer-close:hidden">{{ $t('catalogue.title') }}</span>
                             </RouterLink>
                         </li>
                     </template>

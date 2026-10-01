@@ -2,7 +2,7 @@ import Auth from '@/app/Auth.layout.vue';
 import Default from '@/app/Default.layout.vue';
 import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import authoringRoutes from '@features/admin/activities-authoring/routes';
-import materialsRoutes from '@features/admin/materials-authoring/routes';
+import catalogueRoutes from '@features/admin/catalogue-authoring/routes';
 import authRoutes from '@features/auth/routes';
 import dashboardRoutes from '@features/dashboard/routes';
 import type { RouteRecordRaw } from 'vue-router';
@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
             ...dashboardRoutes,
             ...activitiesRoutes,
             ...authoringRoutes,
-            ...materialsRoutes,
+            ...catalogueRoutes,
         ]
     },
     {

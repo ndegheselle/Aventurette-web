@@ -2,11 +2,9 @@
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
-import Container from '@chapelure/ui/layout/Container.vue';
-import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import type { MaterialData } from '@features/activities/model/material';
-import { useMaterialsEditList } from '@features/admin/materials-authoring/composables/useMaterialsEditList';
+import { useMaterialsEditList } from '@features/admin/catalogue-authoring/composables/useMaterialsEditList';
 import { PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 
@@ -26,19 +24,17 @@ const confirm = useConfirmation();
 async function remove(material: MaterialData) {
     if (await confirm.show(
         t('confirmation.remove.title'),
-        t('materials.authoring.removeWarning', { name: material.name }),
+        t('catalogue.materials.removeWarning', { name: material.name }),
         TriangleAlertIcon,
     ) !== true)
         return;
 
     await removeMaterial(material);
 }
-
-useNavbar(t('materials.authoring.title'));
 </script>
 
 <template>
-    <Container>
+    <div class="flex flex-col gap-2">
         <div class="flex flex-wrap gap-2">
             <div class="flex-1 min-w-64 flex gap-2">
                 <SearchInput @search="() => refresh()"
@@ -46,7 +42,7 @@ useNavbar(t('materials.authoring.title'));
                 <button v-on:click="createMaterial"
                         class="btn btn-primary btn-square"
                         :disabled="!search.trim()"
-                        :title="$t('materials.authoring.add')">
+                        :title="$t('catalogue.materials.add')">
                     <PlusIcon />
                 </button>
             </div>
@@ -59,11 +55,11 @@ useNavbar(t('materials.authoring.title'));
                      src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
             <input type="text"
                    class="input input-ghost w-full my-auto"
-                   :aria-label="$t('materials.authoring.name')"
+                   :aria-label="$t('catalogue.materials.name')"
                    v-model="item.name"
                    @change="() => renameMaterial(item)" />
             <button class="btn btn-soft btn-square btn-error my-auto"
-                    :title="$t('materials.authoring.remove')"
+                    :title="$t('catalogue.materials.remove')"
                     @click="() => remove(item)">
                 <TrashIcon class="icon-sm" />
             </button>
@@ -74,5 +70,5 @@ useNavbar(t('materials.authoring.title'));
                     v-model:perPage="paginated.options.perPage"
                     :total="paginated.total"
                     @change="refresh" />
-    </Container>
+    </div>
 </template>

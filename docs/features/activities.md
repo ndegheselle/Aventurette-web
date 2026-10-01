@@ -93,7 +93,8 @@ showing. `tagOptions` in `model/tag.ts` groups every tag by kind for the editor'
 holds a slug, a name and the precautions as rich text; an activity links them through
 `safety_instructions`, read into `safety.instructions`. `catalog_tips` holds a name and the advice; an
 activity links them through `tips`, read into `activity.tips`. Both are reference data, like
-the tags: an activity links them, and nothing in the app writes them. The detail screen shows
+the tags: an activity links them, and an admin writes them from
+[catalogue-authoring](catalogue-authoring.md). The detail screen shows
 each instruction with its precautions, and each tip.
 
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire

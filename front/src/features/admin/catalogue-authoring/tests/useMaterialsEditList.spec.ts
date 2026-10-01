@@ -1,5 +1,5 @@
 import type { MaterialData } from '@features/activities/model/material';
-import { useMaterialsEditList } from '@features/admin/materials-authoring/composables/useMaterialsEditList';
+import { useMaterialsEditList } from '@features/admin/catalogue-authoring/composables/useMaterialsEditList';
 import { aCatalogueMaterial, fakeCrud, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -8,7 +8,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // else would, and the list would go on showing a name the catalogue does not hold.
 
 const materials = fakeCrud<MaterialData>();
-vi.mock('@features/admin/materials-authoring/api/materials.api', () => ({
+vi.mock('@features/admin/catalogue-authoring/api/materials.api', () => ({
     get materialsApi() { return materials; },
 }));
 

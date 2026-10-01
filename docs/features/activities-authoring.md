@@ -115,7 +115,7 @@ materials the activity does not list yet (`useMaterialCatalogue`), and offers to
 catalogue does not have. It emits, and `useActivityEdit` links the material, or creates the new
 name and links it, or takes the link off; the author types a quantity straight into the link.
 The save writes all of it — a new name only if a link still uses it. Renaming and deleting a catalogue
-material is [materials-authoring](materials-authoring.md)'s. The step and workshop modals take
+material is [catalogue-authoring](catalogue-authoring.md)'s. The step and workshop modals take
 the activity's links as a prop and pick among them with the same `TagSelect`. They never create
 one.
 
