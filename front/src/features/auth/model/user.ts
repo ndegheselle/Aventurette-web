@@ -9,12 +9,12 @@ export const Role = UsersRoleOptions;
 export type Role = UsersRoleOptions;
 
 /** The backend stores no role as an empty string: that is a plain user. */
-export function roleOf(user: Pick<UserData, 'role'>): Role {
+export function roleOf(user: UserData): Role {
     return user.role || Role.USER;
 }
 
 /** No roles asked for means anyone, signed in or not; otherwise the user must hold one of them. */
-export function hasRole(user: Pick<UserData, 'role'> | null, roles: readonly Role[] = []): boolean {
+export function hasRole(user: UserData | null, roles: readonly Role[] = []): boolean {
     if (roles.length === 0) return true;
     return user !== null && roles.includes(roleOf(user));
 }
