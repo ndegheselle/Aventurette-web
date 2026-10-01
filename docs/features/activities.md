@@ -63,7 +63,7 @@ way whether it is read on its own or under an activity. A relation the read did 
 to an empty list, never to the ids the record carries.
 
 **Materials come from a catalogue** ([ADR 0016](../adr/0016-materials-are-a-catalogue.md)).
-`materials` holds one row per name, and `activities_materials` holds what an activity needs of
+`catalog_materials` holds one row per name, and `activities_materials` holds what an activity needs of
 one: a link with a free-text `quantity` ("one per team" is a quantity too). `activity.materials`
 is those links, as `ActivityMaterialData`, with the catalogue material's `name` folded in by
 `activityMaterialMapper`. A step or a workshop *recalls* the links it uses and owns none. None
@@ -80,7 +80,7 @@ step. The collection still holds a step's `visual_brief`, and the `end_criteria`
 **A workshop** is one of the stations an activity runs in parallel. It has a name, a theme, its
 challenges, the materials it recalls and the adults it takes to hold it.
 
-Tags all live in `tags`, and an activity links them through one relation per place
+Tags all live in `catalog_tags`, and an activity links them through one relation per place
 ([ADR 0014](../adr/0014-activity-tags-are-one-collection.md)): `theme_tags` into
 `classification.themes`, `imaginary_tags` into `imaginary.universes`, and `goal_tags`,
 `ideal_for_tags` and `development_tags` into `pedagogy`. The six development axes share their
@@ -89,9 +89,9 @@ relation not meant for its kind. `name` is in one language, French, whatever loc
 showing. `tagOptions` in `model/tag.ts` groups every tag by kind for the editor's pickers.
 
 **Safety instructions and tips are catalogues of their own**
-([ADR 0018](../adr/0018-safety-instructions-and-tips-are-catalogues.md)). `safety_instructions`
+([ADR 0018](../adr/0018-safety-instructions-and-tips-are-catalogues.md)). `catalog_safety_instructions`
 holds a slug, a name and the precautions as rich text; an activity links them through
-`safety_instructions`, read into `safety.instructions`. `tips` holds a name and the advice; an
+`safety_instructions`, read into `safety.instructions`. `catalog_tips` holds a name and the advice; an
 activity links them through `tips`, read into `activity.tips`. Both are reference data, like
 the tags: an activity links them, and nothing in the app writes them. The detail screen shows
 each instruction with its precautions, and each tip.

@@ -15,7 +15,7 @@ import {
 /** Each record a save writes, as the collection it is written to. */
 function collectionsOf(pending: IDataBatch): Record<keyof ActivityRecords, IBatchCollection<BaseEntity>> {
     return {
-        catalogue: pending.collection(Collections.Materials, materialMapper),
+        catalogue: pending.collection(Collections.CatalogMaterials, materialMapper),
         activity: pending.collection(Collections.Activities, activityMapper),
         material: pending.collection(Collections.ActivitiesMaterials, activityMaterialMapper),
         step: pending.collection(Collections.ActivitiesSteps, stepMapper),

@@ -27,6 +27,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0016](0016-materials-are-a-catalogue.md) | Materials are a catalogue, and an activity links what it needs | Accepted |
 | [0017](0017-an-activity-is-saved-in-one-batch.md) | An activity is saved in one batch, everything under it included | Accepted |
 | [0018](0018-safety-instructions-and-tips-are-catalogues.md) | Safety instructions and tips are catalogues of their own | Accepted |
+| [0019](0019-catalogues-are-prefixed.md) | Catalogues are prefixed `catalog_` | Accepted |
 
 ## Writing a new one
 
