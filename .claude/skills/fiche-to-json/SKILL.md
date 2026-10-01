@@ -24,9 +24,10 @@ file disagree, the file wins. Read it when in doubt.
 4. **Check it**: it must parse as JSON, `name` must be set, and every enum value must come from
    the lists below, spelled exactly.
 5. **Report back** in a few lines: the file written, the fields left empty because the fiche
-   only held template placeholders, anything dropped (resources, unmapped locations, a value
-   that fits no enum), and the tag names used. Tag names only link if a tag of that kind
-   already exists in the app. The import modal lists the ones that do not match.
+   only held template placeholders, anything dropped (resources, step tips, step visuals, end
+   criteria, unmapped locations, a value that fits no enum), and the tag and safety instruction
+   names used. A name only links if one of that kind already exists in the app. The import
+   modal lists the ones that do not match.
 
 ## Rules
 
@@ -34,14 +35,14 @@ file disagree, the file wins. Read it when in doubt.
   `…`, `*…*`, "Ex. …" lists copied from the template, "—" for a visual brief. Leave the field
   unset (`""`, `0`, `false`, `[]` or `null`) and say so in the report.
 - **Rich text fields are HTML** (`description`, `audience.ageVariants`, `supervision.notes`,
-  `place.conditions`, a step's `description` and `tip`, a workshop's `challenges`). Turn Markdown
+  `place.conditions`, a step's `description`, a workshop's `challenges`). Turn Markdown
   into `<p>`, `<strong>`, `<em>`, `<ul><li>`, `<a href>`. Drop Confluence noise such as `\-` or
   `****`.
 - **Plain text fields stay plain**: `name`, `visualBrief`, titles, actions, material names.
 - **Enums are the codes below**, never the French label. A value that fits none is dropped and
   reported. It is not approximated.
-- **Tags are names**, as the fiche writes them: one entry per tag, trimmed, no leading `#`.
-  Split a comma or "et" list into several entries.
+- **Tags, safety instructions and tips are names**, as the fiche writes them: one entry per
+  name, trimmed, no leading `#`. Split a comma or "et" list into several entries.
 - **Numbers are plain non-negative numbers.** `0` means "not set". Take `3` from "3 ans".
   For a range such as "6 à 12 enfants", use the two bounds. For free text that is not a number,
   leave the number at `0` and keep the text in the matching notes field if one exists.
@@ -59,7 +60,8 @@ file disagree, the file wins. Read it when in doubt.
 |---|---|
 | `# <Nom de l'activité>` (the h1 after the template title) | `name` (required) |
 | `## Description` | `description` (HTML) |
-| Always | `"version": 1` |
+| Always | `"version": 2` |
+| Always | `"tips": []`. Tips are a catalogue the activity links by name, and a fiche has no names for them: see `#### Conseil` below. Fill it only with names the user gives |
 
 ### `## Informations` table
 
@@ -81,7 +83,7 @@ file disagree, the file wins. Read it when in doubt.
 | Localisation détaillée | `place.locations` (list) | Parc `PARK`, Maison `HOUSE`, Balcon `BALCONY`, Voiture `CAR`, Ville `CITY`, Campagne `CAMPAIGN`, Forêt `FOREST`, Montagne `MOUNTAIN`, Piscine `POOL`, Lac `LAKE`, Rivière `RIVER`, Bain `BATH`, Repas `MEAL` |
 | Conditions de réalisation | `place.conditions` | HTML |
 | Saison | `place.seasons` (list) | Automne `AUTUMN`, Hiver `WINTER`, Printemps `SPRING`, Été `SUMMER` |
-| Sécurité | `safety.tags` | tag names |
+| Sécurité | `safety.instructions` | safety instruction names, or their slugs (`feu`, `eau`…) |
 | Tags pédagogiques | `pedagogy.goals` | tag names |
 | Idéal pour… | `pedagogy.idealFor` | tag names |
 | Développement physique | `pedagogy.development.DEVELOP_PHYSICAL` | tag names |
@@ -126,15 +128,14 @@ Each `### N. <title>` is one entry of `steps`, in the fiche's order.
 | Fiche | JSON |
 |---|---|
 | The h3 title, without its number and without an italic *(…)* note | `title` (required. The app uses it as the description when a step has none) |
-| The h3 title | `kind`: Préparer le jeu `PREPARE`, Expliquer l'activité `EXPLAIN`, Constituer les équipes `TEAMS`, Lancer le jeu / l'activité `LAUNCH`, Annoncer la fin de l'activité `ANNOUNCE_END`, Conclusion `CONCLUSION`. Any other title is `CUSTOM` |
+| The h3 title | `kind`: Préparer le jeu `PREPARE`, Conclusion `CONCLUSION`. Any other title is `CUSTOM` |
 | *Durée estimée (minutes)* | `duration` (number) |
 | Free text under the title, such as "Ce que l'animateur installe…" | `description` (HTML) |
-| **Visuel de l'étape** | `visualBrief` (plain text, `""` for "—") |
+| **Visuel de l'étape** | not imported: a step's visual is not handled yet. Report a brief that is not a placeholder |
 | The actions table, column "Action à cocher", in order | `actions` (list of plain strings, without the 1.1 numbering) |
-| `#### Conseil` | `tip` (HTML) |
+| `#### Conseil` | not imported: tips are a catalogue, and this is free text. Report it, so it can be added to the catalogue and linked |
 | `#### Matériel` | `materials`, names. A name missing from `## Matériel` is added to the activity by the app |
-| `#### Critère(s) de fin` (only on ANNOUNCE_END) | `endCriteria`: Temps alloué écoulé `TIME_UP`, Nombre de défis ou d'étapes suffisant réalisé `ENOUGH_DONE`, Attention du groupe qui retombe / dispersion `ATTENTION_DROPS`, Une équipe a remporté la partie `TEAM_WON` |
-| "Autre : …" in the end criteria | `endCriteriaOther` (plain text) |
+| `#### Critère(s) de fin` | not imported. Report the criteria that are not placeholders |
 | `#### Ressources` | not imported, see above |
 
 The automatic steps ("Rassembler le matériel", "Regrouper les enfants") are generated by the app

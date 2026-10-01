@@ -18,35 +18,19 @@
             "title": "Étapes",
             "kind": {
                 "PREPARE": "Préparer le jeu",
-                "EXPLAIN": "Expliquer l'activité",
-                "TEAMS": "Constituer les équipes",
-                "LAUNCH": "Lancer le jeu",
                 "CUSTOM": "Étape libre",
-                "ANNOUNCE_END": "Annoncer la fin",
                 "CONCLUSION": "Conclusion",
                 "GATHER_MATERIAL": "Rassembler le matériel",
                 "GATHER_CHILDREN": "Regrouper les enfants"
-            },
-            "endCriterion": {
-                "TIME_UP": "Temps alloué écoulé",
-                "ENOUGH_DONE": "Nombre de défis ou d'étapes suffisant réalisé",
-                "ATTENTION_DROPS": "Attention du groupe qui retombe",
-                "TEAM_WON": "Une équipe a remporté la partie"
             },
             "fields": {
                 "title": "Titre",
                 "kind": "Type d'étape",
                 "duration": "Durée estimée",
-                "visualBrief": "Brief du visuel",
                 "description": "Description",
                 "actions": {
                     "title": "Actions à cocher",
                     "count": "{count} actions"
-                },
-                "tip": "Conseil",
-                "endCriteria": {
-                    "title": "Critères de fin",
-                    "other": "Autre critère"
                 },
                 "resources": {
                     "title": "Ressources",
@@ -77,6 +61,9 @@
                 "adultsRequired": "Adultes requis au poste"
             }
         },
+        "tips": {
+            "title": "Conseils"
+        },
         "actions": {
             "favorite": "Favoris",
             "addToPlanning": "Ajouter au planning",
@@ -102,6 +89,7 @@
             "locations": "Localisation détaillée",
             "conditions": "Conditions de réalisation",
             "seasons": "Saisons",
+            "safetyInstructions": "Consignes de sécurité",
             "preparationTime": "Temps de préparation",
             "playTime": "Temps de jeu",
             "totalTime": "Durée totale",
@@ -163,7 +151,6 @@
             "IMAGINARY": "Imaginaire",
             "GOAL": "Tags pédagogiques",
             "IDEAL_FOR": "Idéal pour…",
-            "SECURITY": "Sécurité",
             "DEVELOP_PHYSICAL": "Développement physique",
             "DEVELOP_INTELLECTUAL": "Développement intellectuel",
             "DEVELOP_AFFECT": "Développement affectif",

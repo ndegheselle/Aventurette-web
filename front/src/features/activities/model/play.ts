@@ -1,7 +1,7 @@
 import type { HTMLString } from "@/backend/schema.g";
 import type { ActivityData } from "@features/activities/model/activity";
 import type { ActivityMaterialData } from "@features/activities/model/material";
-import { hasEndCriteria, StepKind, type ActivityResourceData, type ActivityStepData, type EndCriterion } from "@features/activities/model/step";
+import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/model/step";
 
 // ── The steps of a run ──────────────────────────────────────────────────────────────────────
 
@@ -28,11 +28,8 @@ export interface PlayStep {
     /** Estimated, in minutes. 0 is not estimated. */
     duration: number;
     actions: string[];
-    tip: HTMLString;
     materials: ActivityMaterialData[];
     resources: ActivityResourceData[];
-    endCriteria: EndCriterion[];
-    endCriteriaOther: string;
 }
 
 /** Whether the app produced the step, rather than the author writing it. */
@@ -53,11 +50,8 @@ function generatedStep(kind: GeneratedStepKind, actions: string[] = []): PlaySte
         description: '',
         duration: 0,
         actions,
-        tip: '',
         materials: [],
         resources: [],
-        endCriteria: [],
-        endCriteriaOther: '',
     };
 }
 
@@ -69,12 +63,8 @@ function authoredStep(step: ActivityStepData): PlayStep {
         description: step.description,
         duration: step.duration || 0,
         actions: step.actions,
-        tip: step.tip,
         materials: step.materials,
         resources: step.resources,
-        // What a step held before its kind changed is not what ends the activity.
-        endCriteria: hasEndCriteria(step) ? step.end_criteria ?? [] : [],
-        endCriteriaOther: hasEndCriteria(step) ? step.end_criteria_other : '',
     };
 }
 

@@ -4,8 +4,9 @@ Browsing the public activity catalogue.
 
 Read-only. Writing an activity is [activities-authoring](activities-authoring.md), which owns the
 editor, the step and workshop modals, the author's own list and the rules for writing. What
-stays here is the **shape**: `model/activity.ts`, `model/step.ts`, `model/material.ts`,
-`model/workshop.ts` and `model/tag.ts`, their mappers in `api/`, and `api/activities.api.ts`
+stays here is the **shape**: `model/activity.ts` (safety instructions and tips included),
+`model/step.ts`, `model/material.ts`, `model/workshop.ts` and `model/tag.ts`, their mappers in
+`api/`, and `api/activities.api.ts`
 describe what an activity is — which both halves need — and the
 dependency runs one way: nothing here imports `activities-authoring`.
 
@@ -26,8 +27,7 @@ One composable to a screen: `useActivitiesList` holds the results and the search
 
 The detail screen's *Start* opens the run: the steps one at a time, a progress bar, the step
 list to jump around in, and the actions to tick as they are done. A step shows its description,
-its actions, the end criteria when it announces the end, its tip, and the materials and
-resources it uses.
+its actions, and the materials and resources it uses.
 
 `playStepsOf` in `model/play.ts` turns the activity into the run's steps, as `PlayStep` — one
 shape for a step the author wrote and one the app generates. The template has the app produce
@@ -55,7 +55,8 @@ template reads. What identifies it sits at the top: `name`, `description`, `stat
 families on read and flattens them on write. An unset single choice is `null`; the mapper
 reads and writes it as the empty string PocketBase stores.
 
-`activity.steps`, `activity.materials` and `activity.workshops` hold the records themselves.
+`activity.steps`, `activity.materials`, `activity.workshops` and `activity.tips` hold the
+records themselves.
 `activityMapper.relations` lists what is fetched alongside an activity. The nested halves are
 derived from `stepMapper.relations` and `workshopMapper.relations`, so a step arrives the same
 way whether it is read on its own or under an activity. A relation the read did not expand maps
@@ -69,23 +70,31 @@ is those links, as `ActivityMaterialData`, with the catalogue material's `name` 
 of those lists cascades, so deleting a link only drops it from the lists holding it. Both the
 link's relations do cascade: deleting an activity, or a catalogue material, deletes its links.
 
-**A step** has a `kind`: preparing the game, explaining, forming teams, starting, a free step,
-announcing the end or concluding. It also has a `title`, an estimated `duration` in minutes, the
-brief of its one visual, the `actions` to tick (a JSON list of strings) and a `tip`. The step
-announcing the end also has `end_criteria` and `end_criteria_other`. `timingOf` sums the
-durations: preparation is the steps preparing the game, play is every other step.
+**A step** has a `kind`: preparing the game, a free step or the conclusion. It also has a
+`title`, an estimated `duration` in minutes and the `actions` to tick (a JSON list of strings).
+`timingOf` sums the durations: preparation is the steps preparing the game, play is every other
+step. The collection still holds a step's `visual_brief`, and the `end_criteria` and
+`end_criteria_other` of a kind that is gone. `stepMapper` drops them on read, so nothing above
+`api/` sees them and no save writes them back (`StepColumnSetAside`).
 
 **A workshop** is one of the stations an activity runs in parallel. It has a name, a theme, its
 challenges, the materials it recalls and the adults it takes to hold it.
 
 Tags all live in `tags`, and an activity links them through one relation per place
 ([ADR 0014](../adr/0014-activity-tags-are-one-collection.md)): `theme_tags` into
-`classification.themes`, `imaginary_tags` into `imaginary.universes`, `safety_tags` into
-`safety.tags`, and `goal_tags`, `ideal_for_tags` and `development_tags` into `pedagogy`. The six
-development axes share their relation, and the mapper sorts them apart by kind. A backend hook
-refuses a tag linked in a relation not meant for its kind. `name` and `description` are in one
-language, French, whatever locale the app is showing. `tagOptions` in `model/tag.ts` groups
-every tag by kind for the editor's pickers.
+`classification.themes`, `imaginary_tags` into `imaginary.universes`, and `goal_tags`,
+`ideal_for_tags` and `development_tags` into `pedagogy`. The six development axes share their
+relation, and the mapper sorts them apart by kind. A backend hook refuses a tag linked in a
+relation not meant for its kind. `name` is in one language, French, whatever locale the app is
+showing. `tagOptions` in `model/tag.ts` groups every tag by kind for the editor's pickers.
+
+**Safety instructions and tips are catalogues of their own**
+([ADR 0018](../adr/0018-safety-instructions-and-tips-are-catalogues.md)). `safety_instructions`
+holds a slug, a name and the precautions as rich text; an activity links them through
+`safety_instructions`, read into `safety.instructions`. `tips` holds a name and the advice; an
+activity links them through `tips`, read into `activity.tips`. Both are reference data, like
+the tags: an activity links them, and nothing in the app writes them. The detail screen shows
+each instruction with its precautions, and each tip.
 
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
 `file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
@@ -161,15 +170,16 @@ or an api wrapper does not earn one — see
 
 *`tests/activity.spec.ts`* — the mapper, the durations and the range bounds
 
-- `activityMapper` asks for the nested relations steps, material links and workshops need, and
-  every tag relation. It
+- `activityMapper` asks for the nested relations steps, material links and workshops need,
+  every tag relation, the safety instructions and the tips. It
   inlines them down to the file urls, and reads a relation the request did not expand as empty
   rather than as ids.
 - Columns are grouped by family on read and flattened back on write. Each tag relation is read
   into its family; the development axes are sorted apart by kind, and every one written back.
-- Relations are written back as ids: saving an activity links its steps and tags, it does not
-  save them. An update leaves out what it does not mention, and a family's tags are written
-  with that family alone.
+  The safety instructions go into the safety family, and the tips beside the steps.
+- Relations are written back as ids: saving an activity links its steps, tags, safety
+  instructions and tips, it does not save them. An update leaves out what it does not mention,
+  and a family's links are written with that family alone.
 - Resources shown for an activity are gathered from the steps that own them, deduplicated by id.
 - Preparation time is the steps preparing the game, and play is every other step. A step with no
   duration counts as 0.
@@ -192,6 +202,8 @@ or an api wrapper does not earn one — see
 - A step reads its relations out of `expand` and leaves no trace of it; an unexpanded relation
   reads as empty. Relations are written back as ids.
 - Actions never set read as none, and a blank action is not written.
+- The columns the app sets aside — the visual brief and the end criteria — are dropped on read,
+  so a save never writes them back.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 
 *`tests/play.spec.ts`* — the steps of a run
@@ -200,7 +212,6 @@ or an api wrapper does not earn one — see
   action to tick, with its quantity when it has one.
 - Gathering the children comes before the first step not preparing the game — first when nothing
   is prepared, not at all when everything is. A preparation step written later stays where it is.
-- Only the step announcing the end shows end criteria.
 
 *`activities-authoring/tests/activity.edit.spec.ts`* — the save's order, in the feature that
 owns the editor
@@ -233,8 +244,13 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
   activity was run.
 - **Resources still hang off the steps.** The template has one list for the activity, recalled
   by the steps, the way materials now work.
-- **A step's visual is only a brief.** There is no file field for it yet, and the activity's
-  own picture input goes nowhere (below).
+- **A step has no visual.** Its brief is still in the collection, set aside by the mapper, and
+  comes back once visuals are handled properly. The activity's own picture input goes nowhere
+  either (below).
+- **The run screen shows no tip.** Tips moved from the steps to the activity, and only the
+  detail screen shows them.
+- **End criteria are no longer read.** The kind that showed them is gone; the columns keep what
+  they held.
 - **The picture input goes nowhere.** The `activities` collection has a `visual` file field,
   but the form is not wired to it, so what the user picks is shown and then dropped. There is an
   `XXX` on it in the page.

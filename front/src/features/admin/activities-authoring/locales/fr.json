@@ -43,7 +43,7 @@
                 "visual": {
                     "optional": "Facultatif : l'activité peut être importée sans visuel et en recevoir un plus tard."
                 },
-                "unknownTags": "Ces tags n'existent pas et ne seront pas liés :",
+                "unknown": "Ces éléments n'existent pas encore et ne seront pas liés :",
                 "problems": {
                     "title": "{file} ne peut pas être importé :",
                     "json": "Le fichier n'est pas un JSON valide.",

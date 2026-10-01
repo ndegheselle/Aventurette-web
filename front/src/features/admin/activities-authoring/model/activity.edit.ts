@@ -43,7 +43,7 @@ export function createEmptyActivity(): ActivityData {
         },
         supervision: { hostEffort: null, hostsRequired: 0, crossSupervision: false, notes: "" },
         place: { indoor: false, outdoor: false, locations: [], conditions: "", seasons: [] },
-        safety: { tags: [] },
+        safety: { instructions: [] },
         pedagogy: {
             goals: [],
             idealFor: [],
@@ -52,6 +52,7 @@ export function createEmptyActivity(): ActivityData {
         steps: [],
         materials: [],
         workshops: [],
+        tips: [],
     };
 
     return blank as ActivityData;

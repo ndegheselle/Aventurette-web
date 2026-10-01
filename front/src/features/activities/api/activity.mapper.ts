@@ -1,8 +1,10 @@
 import type { ActivitiesResponse } from "@/backend/schema.g";
-import { convert, toIds, type EntityMapper } from "@chapelure/core";
+import { convert, toEntities, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
+import { safetyInstructionMapper, type SafetyInstructionPayload } from "@features/activities/api/safety.mapper";
 import { stepMapper, type ActivityStepPayload } from "@features/activities/api/step.mapper";
 import { tagMapper, type ActivityTagPayload } from "@features/activities/api/tag.mapper";
+import { tipMapper, type ActivityTipPayload } from "@features/activities/api/tip.mapper";
 import { workshopMapper, type ActivityWorkshopPayload } from "@features/activities/api/workshop.mapper";
 import { DEVELOPMENT_AXES, type ActivityData, type DevelopmentAxis } from "@features/activities/model/activity";
 import type { ActivityTagData } from "@features/activities/model/tag";
@@ -14,15 +16,16 @@ export type ActivityPayload = ActivitiesResponse<{
     workshops?: ActivityWorkshopPayload[];
     theme_tags?: ActivityTagPayload[];
     imaginary_tags?: ActivityTagPayload[];
-    safety_tags?: ActivityTagPayload[];
     goal_tags?: ActivityTagPayload[];
     ideal_for_tags?: ActivityTagPayload[];
     development_tags?: ActivityTagPayload[];
+    safety_instructions?: SafetyInstructionPayload[];
+    tips?: ActivityTipPayload[];
 }>;
 
 /** The tag relations, one per place a tag goes in the families. */
 const TAG_RELATIONS = [
-    'theme_tags', 'imaginary_tags', 'safety_tags', 'goal_tags', 'ideal_for_tags', 'development_tags',
+    'theme_tags', 'imaginary_tags', 'goal_tags', 'ideal_for_tags', 'development_tags',
 ] as const;
 type TagRelation = typeof TAG_RELATIONS[number];
 
@@ -38,6 +41,8 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
         "workshops",
         ...workshopMapper.relations.map(relation => `workshops.${relation}`),
         ...TAG_RELATIONS,
+        "safety_instructions",
+        "tips",
     ],
     toEntity: (activity, files) => {
         const { expand } = activity;
@@ -91,7 +96,7 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
                 seasons: activity.seasons ?? [],
             },
             safety: {
-                tags: tags('safety_tags'),
+                instructions: toEntities(expand?.safety_instructions, safetyInstructionMapper, files),
             },
             pedagogy: {
                 goals: tags('goal_tags'),
@@ -102,12 +107,13 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             steps: (expand?.steps ?? []).map(step => stepMapper.toEntity(step, files)),
             materials: (expand?.materials ?? []).map(material => activityMaterialMapper.toEntity(material, files)),
             workshops: (expand?.workshops ?? []).map(workshop => workshopMapper.toEntity(workshop, files)),
+            tips: toEntities(expand?.tips, tipMapper, files),
         };
     },
     toPayload: (activity) => {
         const {
             visualBrief, classification, imaginary, audience, supervision, place, safety, pedagogy,
-            steps, materials, workshops,
+            steps, materials, workshops, tips,
             ...columns
         } = activity;
 
@@ -144,7 +150,7 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
                 conditions: place.conditions,
                 seasons: place.seasons,
             }),
-            ...(safety && { safety_tags: toIds(safety.tags) }),
+            ...(safety && { safety_instructions: toIds(safety.instructions) }),
             ...(pedagogy && {
                 goal_tags: toIds(pedagogy.goals),
                 ideal_for_tags: toIds(pedagogy.idealFor),
@@ -153,6 +159,7 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             ...(steps && { steps: toIds(steps) }),
             ...(materials && { materials: toIds(materials) }),
             ...(workshops && { workshops: toIds(workshops) }),
+            ...(tips && { tips: toIds(tips) }),
         };
     },
 };

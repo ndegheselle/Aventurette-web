@@ -9,13 +9,15 @@ import {
     stepFromSheet,
     type ActivitySheet,
 } from '@features/admin/activities-authoring/model/activity.import';
-import { aCatalogueMaterial, aMaterial, anActivity, aTag } from '@tests';
+import { aCatalogueMaterial, aMaterial, anActivity, aSafetyInstruction, aTag, aTip } from '@tests';
 import { describe, expect, it } from 'vitest';
 // Relative: no alias reaches the skills folder, and this is the one file that needs to.
 import example from '../../../../../../.claude/skills/fiche-to-json/example.json?raw';
 
 // A sheet is written by hand or by the skill, outside the app: reading it is the one place that
 // says what an imported activity may hold. Then the names in it become links.
+
+const nothingKnown = { tags: [], safetyInstructions: [], tips: [] };
 
 function sheetOf(json: object): ActivitySheet {
     const reading = readActivitySheet(JSON.stringify(json));
@@ -55,9 +57,10 @@ describe('readActivitySheet', () => {
     });
 
     it('refuses a format version it does not know', () => {
-        const reading = readActivitySheet(JSON.stringify({ version: 2, name: 'Tag' }));
+        // Version 1 named safety tags and gave each step a tip: read as 2, they would be lost.
+        const reading = readActivitySheet(JSON.stringify({ version: 1, name: 'Tag' }));
 
-        expect(reading.problems).toEqual([{ path: 'version', code: 'version', value: '2' }]);
+        expect(reading.problems).toEqual([{ path: 'version', code: 'version', value: '1' }]);
     });
 
     it('reads anything missing or null as unset, the way a blank activity holds it', () => {
@@ -98,28 +101,48 @@ describe('activityFromSheet', () => {
             imaginary: { universes: ['Pirates'] },
         });
 
-        const { activity, unknownTags } = activityFromSheet(sheet, [insects, pirates]);
+        const { activity, unknown } = activityFromSheet(sheet, { ...nothingKnown, tags: [insects, pirates] });
 
         expect(activity.classification.themes).toEqual([insects]);
         expect(activity.imaginary.universes).toEqual([pirates]);
         // A pirate universe is not a theme: the name matched a tag of the wrong kind.
-        expect(unknownTags).toEqual([{ type: ActivityTagType.THEME, name: 'pirates' }]);
+        expect(unknown).toEqual([{ label: 'activities.tagType.THEME', name: 'pirates' }]);
     });
 
     it('reports a tag that does not exist and leaves it off, rather than creating it', () => {
         const sheet = sheetOf({ name: 'Tag', pedagogy: { development: { DEVELOP_SOCIAL: ['Écoute'] } } });
 
-        const { activity, unknownTags } = activityFromSheet(sheet, []);
+        const { activity, unknown } = activityFromSheet(sheet, nothingKnown);
 
         expect(activity.pedagogy.development.DEVELOP_SOCIAL).toEqual([]);
-        expect(unknownTags).toEqual([{ type: ActivityTagType.DEVELOP_SOCIAL, name: 'Écoute' }]);
+        expect(unknown).toEqual([{ label: 'activities.tagType.DEVELOP_SOCIAL', name: 'Écoute' }]);
     });
 
-    it('links a tag named twice once', () => {
-        const chalk = aTag({ type: ActivityTagType.SECURITY, name: 'Craie', slug: 'craie' });
-        const sheet = sheetOf({ name: 'Tag', safety: { tags: ['Craie', 'craie'] } });
+    it('links a name given twice once', () => {
+        const chalk = aTag({ type: ActivityTagType.THEME, name: 'Craie', slug: 'craie' });
+        const sheet = sheetOf({ name: 'Tag', classification: { themes: ['Craie', 'craie'] } });
 
-        expect(activityFromSheet(sheet, [chalk]).activity.safety.tags).toEqual([chalk]);
+        expect(activityFromSheet(sheet, { ...nothingKnown, tags: [chalk] }).activity.classification.themes).toEqual([chalk]);
+    });
+
+    it('links safety instructions by name or slug, and tips by name, reporting the rest', () => {
+        const fire = aSafetyInstruction({ name: 'Feu', slug: 'feu' });
+        const water = aSafetyInstruction({ name: 'Eau (baignade)', slug: 'eau' });
+        const pace = aTip({ name: 'Garder le rythme' });
+        const sheet = sheetOf({
+            name: 'Tag',
+            safety: { instructions: ['FEU', 'eau', 'Froid'] },
+            tips: ['garder le rythme', 'Chanter'],
+        });
+
+        const { activity, unknown } = activityFromSheet(sheet, { tags: [], safetyInstructions: [fire, water], tips: [pace] });
+
+        expect(activity.safety.instructions).toEqual([fire, water]);
+        expect(activity.tips).toEqual([pace]);
+        expect(unknown).toEqual([
+            { label: 'activities.fields.safetyInstructions', name: 'Froid' },
+            { label: 'activities.tips.title', name: 'Chanter' },
+        ]);
     });
 });
 

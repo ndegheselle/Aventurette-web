@@ -26,6 +26,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0015](0015-activity-attributes-grouped-by-family.md) | An activity's attributes are grouped by family in the model, flat in the database | Accepted |
 | [0016](0016-materials-are-a-catalogue.md) | Materials are a catalogue, and an activity links what it needs | Accepted |
 | [0017](0017-an-activity-is-saved-in-one-batch.md) | An activity is saved in one batch, everything under it included | Accepted |
+| [0018](0018-safety-instructions-and-tips-are-catalogues.md) | Safety instructions and tips are catalogues of their own | Accepted |
 
 ## Writing a new one
 

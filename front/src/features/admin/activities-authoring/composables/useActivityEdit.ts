@@ -12,7 +12,9 @@ import {
     timingOf,
     type ActivityAudience,
     type ActivityData,
+    type ActivityTipData,
     type RangeEnd,
+    type SafetyInstructionData,
 } from '@features/activities/model/activity';
 import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
 import type { ActivityStepData } from '@features/activities/model/step';
@@ -20,8 +22,10 @@ import { tagOptions, type ActivityTagData } from '@features/activities/model/tag
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { materialsApi as materials } from '@features/admin/activities-authoring/api/materials.api';
+import { safetyInstructionsApi } from '@features/admin/activities-authoring/api/safety.api';
 import { saveApi } from '@features/admin/activities-authoring/api/save.api';
 import { tagsApi as tags } from '@features/admin/activities-authoring/api/tags.api';
+import { tipsApi } from '@features/admin/activities-authoring/api/tips.api';
 import {
     activityWrites,
     createEmptyActivity,
@@ -255,17 +259,24 @@ export function useActivityEdit() {
 }
 
 /**
- * Every tag, as each kind's picker offers them. Picking only changes the activity: the links are
- * written with the rest of the form, on save.
+ * The reference data the form links: every tag, as each kind's picker offers them, every safety
+ * instruction and every tip. Picking only changes the activity: the links are written with the
+ * rest of the form, on save.
  */
-export function useTagOptions() {
+export function useReferenceOptions() {
     const known = ref<ActivityTagData[]>([]);
+    const safetyInstructions = ref<SafetyInstructionData[]>([]);
+    const tips = ref<ActivityTipData[]>([]);
 
     onMounted(async () => {
-        known.value = await tags.getAll();
+        [known.value, safetyInstructions.value, tips.value] = await Promise.all([
+            tags.getAll(),
+            safetyInstructionsApi.getAll(),
+            tipsApi.getAll(),
+        ]);
     });
 
-    return { tagOptions: computed(() => tagOptions(known.value)) };
+    return { tagOptions: computed(() => tagOptions(known.value)), safetyInstructions, tips };
 }
 
 /**

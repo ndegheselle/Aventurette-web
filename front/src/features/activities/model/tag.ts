@@ -3,8 +3,8 @@ import type { Entity } from "@chapelure/core";
 
 /**
  * A tag an activity can carry: a theme, an imaginary universe, a pedagogical goal, a use it is
- * ideal for, a safety note or a developmental keyword, told apart by `type` (ADR 0014). Tags are
- * reference data — an activity links them, it never writes them.
+ * ideal for or a developmental keyword, told apart by `type` (ADR 0014). Tags are reference
+ * data — an activity links them, it never writes them.
  */
 export type ActivityTagData = Entity<TagsResponse>;
 

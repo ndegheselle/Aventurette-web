@@ -13,10 +13,12 @@ import {
     type ActivityData,
     type ActivityPlace,
     type ActivitySupervision,
+    type ActivityTipData,
     type DevelopmentAxis,
+    type SafetyInstructionData,
 } from "@features/activities/model/activity";
 import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
-import { EndCriterion, StepKind, type ActivityStepData } from "@features/activities/model/step";
+import { StepKind, type ActivityStepData } from "@features/activities/model/step";
 import { ActivityTagType, type ActivityTagData } from "@features/activities/model/tag";
 import type { ActivityWorkshopData } from "@features/activities/model/workshop";
 import { createEmptyActivity } from "@features/admin/activities-authoring/model/activity.edit";
@@ -30,14 +32,18 @@ import { createEmptyWorkshop } from "@features/admin/activities-authoring/model/
 
 /**
  * An activity sheet brought in as JSON — what the `fiche-to-json` skill writes from the Confluence
- * template. It reads as `ActivityData` does, family by family, except that tags and materials are
- * names: the file is written before anything exists to point at.
+ * template. It reads as `ActivityData` does, family by family, except that tags, safety
+ * instructions, tips and materials are names: the file is written before anything exists to point
+ * at.
  */
 
 // ── The sheet ───────────────────────────────────────────────────────────────────────────────
 
-/** The one format read so far. The skill writes it into `version`. */
-export const SHEET_VERSION = 1;
+/**
+ * The one format read. The skill writes it into `version`. Version 1 named safety tags, and gave
+ * each step a tip, a visual brief and end criteria.
+ */
+export const SHEET_VERSION = 2;
 
 export interface ActivitySheet {
     name: string;
@@ -55,12 +61,13 @@ export interface ActivitySheet {
     audience: ActivityAudience;
     supervision: ActivitySupervision;
     place: ActivityPlace;
-    safety: { tags: string[] };
+    safety: { instructions: string[] };
     pedagogy: {
         goals: string[];
         idealFor: string[];
         development: Record<DevelopmentAxis, string[]>;
     };
+    tips: string[];
     materials: SheetMaterial[];
     workshops: SheetWorkshop[];
     steps: SheetStep[];
@@ -85,13 +92,9 @@ export interface SheetStep {
     title: string;
     duration: number;
     description: HTMLString;
-    visualBrief: string;
     actions: string[];
-    tip: HTMLString;
     /** Names from the sheet's materials. */
     materials: string[];
-    endCriteria: EndCriterion[];
-    endCriteriaOther: string;
 }
 
 // ── Reading one ─────────────────────────────────────────────────────────────────────────────
@@ -179,7 +182,7 @@ export function readActivitySheet(text: string): SheetReading {
             seasons: read.choices(place.seasons, "place.seasons", ActivitySeason),
         },
         safety: {
-            tags: read.texts(safety.tags, "safety.tags"),
+            instructions: read.texts(safety.instructions, "safety.instructions"),
         },
         pedagogy: {
             goals: read.texts(pedagogy.goals, "pedagogy.goals"),
@@ -188,6 +191,7 @@ export function readActivitySheet(text: string): SheetReading {
                 [axis, read.texts(development[axis], `pedagogy.development.${axis}`)],
             )) as Record<DevelopmentAxis, string[]>,
         },
+        tips: read.texts(root.tips, "tips"),
         materials: read.list(root.materials, "materials", (value, path) => {
             const material = read.object(value, path);
             return {
@@ -223,12 +227,8 @@ export function readActivitySheet(text: string): SheetReading {
                 title,
                 duration: read.number(step.duration, `${path}.duration`),
                 description,
-                visualBrief: read.text(step.visualBrief, `${path}.visualBrief`),
                 actions: read.texts(step.actions, `${path}.actions`),
-                tip: read.text(step.tip, `${path}.tip`),
                 materials: read.texts(step.materials, `${path}.materials`),
-                endCriteria: read.choices(step.endCriteria, `${path}.endCriteria`, EndCriterion),
-                endCriteriaOther: read.text(step.endCriteriaOther, `${path}.endCriteriaOther`),
             };
         }),
     };
@@ -313,38 +313,49 @@ function createReader() {
 
 // ── Turning it into records ─────────────────────────────────────────────────────────────────
 
-/** A tag the sheet names that no tag of its kind answers to. */
-export interface UnknownTag {
-    type: ActivityTagType;
+/** The reference data a sheet's names are matched against. */
+export interface SheetReferences {
+    tags: ActivityTagData[];
+    safetyInstructions: SafetyInstructionData[];
+    tips: ActivityTipData[];
+}
+
+/** A name the sheet gives that nothing of its kind answers to. */
+export interface UnknownReference {
+    /** What kind of thing it should have been, as a translation key. */
+    label: string;
     name: string;
 }
 
 export interface SheetActivity {
-    /** The activity, its tags resolved. Its materials, steps and workshops are `draftFromSheet`'s. */
+    /** The activity, its references resolved. Its materials, steps and workshops are `draftFromSheet`'s. */
     activity: ActivityData;
-    /** What the sheet named that is not a tag yet — left off, since tags are never written here. */
-    unknownTags: UnknownTag[];
+    /** What the sheet named that does not exist yet — left off, since none of it is written here. */
+    unknown: UnknownReference[];
 }
 
 /**
- * The activity a sheet describes. Tags are reference data, so a name matches an existing tag of
- * the same kind by name or slug, whatever the case, and one that matches nothing is reported and
- * left off rather than created.
+ * The activity a sheet describes. Tags, safety instructions and tips are reference data, so a name
+ * matches an existing one of the same kind by name or slug, whatever the case, and one that
+ * matches nothing is reported and left off rather than created.
  */
-export function activityFromSheet(sheet: ActivitySheet, known: ActivityTagData[]): SheetActivity {
-    const unknownTags: UnknownTag[] = [];
+export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences): SheetActivity {
+    const unknown: UnknownReference[] = [];
 
-    function tags(type: ActivityTagType, names: string[]): ActivityTagData[] {
-        const ofType = known.filter(tag => tag.type === type);
-        const found: ActivityTagData[] = [];
+    function matching<T extends { id: string; name: string; slug?: string }>(label: string, candidates: T[], names: string[]): T[] {
+        const found: T[] = [];
 
         for (const name of names) {
-            const tag = ofType.find(candidate => key(candidate.name) === key(name) || key(candidate.slug) === key(name));
-            if (tag) found.push(tag);
-            else unknownTags.push({ type, name });
+            const match = candidates.find(candidate => key(candidate.name) === key(name) || key(candidate.slug) === key(name));
+            if (match) found.push(match);
+            else unknown.push({ label, name });
         }
 
         return distinctById(found);
+    }
+
+    function tags(type: ActivityTagType, names: string[]): ActivityTagData[] {
+        return matching(`activities.tagType.${type}`, known.tags.filter(tag => tag.type === type), names);
     }
 
     const development = Object.fromEntries(DEVELOPMENT_AXES.map(axis =>
@@ -368,15 +379,18 @@ export function activityFromSheet(sheet: ActivitySheet, known: ActivityTagData[]
         audience: { ...sheet.audience },
         supervision: { ...sheet.supervision },
         place: { ...sheet.place },
-        safety: { tags: tags(ActivityTagType.SECURITY, sheet.safety.tags) },
+        safety: {
+            instructions: matching('activities.fields.safetyInstructions', known.safetyInstructions, sheet.safety.instructions),
+        },
         pedagogy: {
             goals: tags(ActivityTagType.GOAL, sheet.pedagogy.goals),
             idealFor: tags(ActivityTagType.IDEAL_FOR, sheet.pedagogy.idealFor),
             development,
         },
+        tips: matching('activities.tips.title', known.tips, sheet.tips),
     };
 
-    return { activity, unknownTags };
+    return { activity, unknown };
 }
 
 /**
@@ -462,11 +476,7 @@ export function stepFromSheet(
         title: step.title,
         duration: step.duration,
         description,
-        visual_brief: step.visualBrief,
         actions: step.actions,
-        tip: step.tip,
-        end_criteria: step.endCriteria,
-        end_criteria_other: step.endCriteriaOther,
         materials: materialsNamed(materials, step.materials),
     };
 }

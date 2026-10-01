@@ -26,7 +26,8 @@ export type ActivityStepPayload = ActivitiesStepsResponse<string[], {
 
 /**
  * Reads and writes a step. `actions` is a JSON column: never set reads as no action, and an
- * action left blank in the editor is not written.
+ * action left blank in the editor is not written. The columns the app sets aside are dropped on
+ * read, so nothing above `api/` holds them and no write sends them back.
  */
 export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
     relations: [
@@ -34,7 +35,11 @@ export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
         ...activityMaterialMapper.relations.map(relation => `materials.${relation}`),
         "resources",
     ],
-    toEntity: ({ expand, actions, ...step }, files) => ({
+    toEntity: ({
+        expand, actions,
+        visual_brief: _visualBrief, end_criteria: _endCriteria, end_criteria_other: _endCriteriaOther,
+        ...step
+    }, files) => ({
         ...step,
         actions: actions ?? [],
         materials: toEntities(expand?.materials, activityMaterialMapper, files),

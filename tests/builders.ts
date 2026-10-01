@@ -5,7 +5,13 @@
  *     anActivity({ name: 'Treasure hunt', state: ActivityState.PUBLISHED })
  */
 import { UsersRoleOptions, UsersTypeOptions } from '@/backend/schema.g';
-import { ActivityState, emptyDevelopment, type ActivityData } from '@features/activities/model/activity';
+import {
+    ActivityState,
+    emptyDevelopment,
+    type ActivityData,
+    type ActivityTipData,
+    type SafetyInstructionData,
+} from '@features/activities/model/activity';
 import type { ActivityPayload } from '@features/activities/api/activity.mapper';
 import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
 import {
@@ -19,7 +25,9 @@ import type {
     ActivityResourcePayload,
     ActivityStepPayload,
 } from '@features/activities/api/step.mapper';
+import type { SafetyInstructionPayload } from '@features/activities/api/safety.mapper';
 import type { ActivityTagPayload } from '@features/activities/api/tag.mapper';
+import type { ActivityTipPayload } from '@features/activities/api/tip.mapper';
 import type { ActivityWorkshopPayload } from '@features/activities/api/workshop.mapper';
 import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
 import type { UserData } from '@features/auth/model/user';
@@ -72,11 +80,7 @@ export function aStep(overrides: Partial<ActivityStepData> = {}): ActivityStepDa
         title: '',
         kind: StepKind.CUSTOM,
         duration: 0,
-        visual_brief: '',
         actions: [],
-        tip: '',
-        end_criteria: [],
-        end_criteria_other: '',
         materials: [],
         resources: [],
         ...overrides,
@@ -90,9 +94,29 @@ export function aTag(overrides: Partial<ActivityTagData> = {}): ActivityTagData 
         type: ActivityTagType.THEME,
         slug: 'art',
         name: 'art',
-        description: '',
         ...overrides,
     } as ActivityTagData;
+}
+
+export function aSafetyInstruction(overrides: Partial<SafetyInstructionData> = {}): SafetyInstructionData {
+    return {
+        ...SYSTEM,
+        id: nextId('sfi'),
+        slug: 'feu',
+        name: 'Feu',
+        description: '<p>Keep the children two metres away.</p>',
+        ...overrides,
+    } as SafetyInstructionData;
+}
+
+export function aTip(overrides: Partial<ActivityTipData> = {}): ActivityTipData {
+    return {
+        ...SYSTEM,
+        id: nextId('tip'),
+        name: 'Keep it moving',
+        description: '<p>Start the next round before the last one is over.</p>',
+        ...overrides,
+    } as ActivityTipData;
 }
 
 export function aWorkshop(overrides: Partial<ActivityWorkshopData> = {}): ActivityWorkshopData {
@@ -125,7 +149,7 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
         audience: { ageMin: 0, ageMax: 0, participantsMin: 0, participantsMax: 0, childrenPace: null, ageVariants: '' },
         supervision: { hostEffort: null, hostsRequired: 0, crossSupervision: false, notes: '' },
         place: { indoor: false, outdoor: false, locations: [], conditions: '', seasons: [] },
-        safety: { tags: [] },
+        safety: { instructions: [] },
         pedagogy: {
             goals: [],
             idealFor: [],
@@ -134,6 +158,7 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
         steps: [],
         materials: [],
         workshops: [],
+        tips: [],
         ...overrides,
     } as ActivityData;
 }
@@ -204,7 +229,6 @@ export function aStepPayload(overrides: Partial<ActivityStepPayload> = {}): Acti
         duration: 0,
         visual_brief: '',
         actions: [],
-        tip: '',
         end_criteria: [],
         end_criteria_other: '',
         materials: [],
@@ -220,9 +244,29 @@ export function aTagPayload(overrides: Partial<ActivityTagPayload> = {}): Activi
         type: ActivityTagType.THEME,
         slug: 'art',
         name: 'art',
-        description: '',
         ...overrides,
     } as ActivityTagPayload;
+}
+
+export function aSafetyInstructionPayload(overrides: Partial<SafetyInstructionPayload> = {}): SafetyInstructionPayload {
+    return {
+        ...SYSTEM,
+        id: nextId('sfi'),
+        slug: 'feu',
+        name: 'Feu',
+        description: '<p>Keep the children two metres away.</p>',
+        ...overrides,
+    } as SafetyInstructionPayload;
+}
+
+export function aTipPayload(overrides: Partial<ActivityTipPayload> = {}): ActivityTipPayload {
+    return {
+        ...SYSTEM,
+        id: nextId('tip'),
+        name: 'Keep it moving',
+        description: '<p>Start the next round before the last one is over.</p>',
+        ...overrides,
+    } as ActivityTipPayload;
 }
 
 export function aWorkshopPayload(overrides: Partial<ActivityWorkshopPayload> = {}): ActivityWorkshopPayload {
@@ -272,10 +316,11 @@ export function anActivityPayload(overrides: Partial<ActivityPayload> = {}): Act
         workshops: [],
         theme_tags: [],
         imaginary_tags: [],
-        safety_tags: [],
         goal_tags: [],
         ideal_for_tags: [],
         development_tags: [],
+        safety_instructions: [],
+        tips: [],
         ...overrides,
     } as ActivityPayload;
 }

@@ -15,10 +15,10 @@ const (
 
 // The tag kinds each of an activity's tag relations accepts. Every relation points at the same
 // collection, and PocketBase cannot restrict one to the records of a `type`, so it is checked here.
+// Safety instructions and tips have collections of their own, which the relation itself restricts.
 var tagKindsByField = map[string][]string{
 	"theme_tags":       {"THEME"},
 	"imaginary_tags":   {"IMAGINARY"},
-	"safety_tags":      {"SECURITY"},
 	"goal_tags":        {"GOAL"},
 	"ideal_for_tags":   {"IDEAL_FOR"},
 	"development_tags": {"DEVELOP_PHYSICAL", "DEVELOP_INTELLECTUAL", "DEVELOP_AFFECT", "DEVELOP_SOCIAL", "DEVELOP_MORAL", "DEVELOP_SPIRITUAL"},

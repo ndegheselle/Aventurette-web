@@ -54,11 +54,14 @@ format, and a spec reads the skill's `example.json` through it so the two cannot
 `readActivitySheet` reads the file's text. It collects **every** problem with where it is
 (`steps[2].kind`) rather than stopping at the first, and the modal lists them. Anything missing
 or `null` reads as unset. `name` is required, and so is a title or a description on each step.
-The sheet reads as `ActivityData` does, family by family, except that **tags and materials are
-names**: the file is written before anything exists to point at.
+The sheet reads as `ActivityData` does, family by family, except that **tags, safety
+instructions, tips and materials are names**: the file is written before anything exists to
+point at. The format is version 2; version 1 named safety tags and gave each step a tip, a visual
+brief and end criteria, and is refused.
 
-- **Tags are matched, never created.** A name links the tag of the same kind whose name or slug
-  it is, whatever the case. One that matches nothing is listed in the modal and left off.
+- **Tags, safety instructions and tips are matched, never created.** A name links the one of the
+  same kind whose name or slug it is, whatever the case — a tip has no slug, so by name. One that
+  matches nothing is listed in the modal and left off.
 - **Materials are the sheet's list plus whatever a step or workshop recalls** that the list
   forgot, each name once. Each is the catalogue material of that name, whatever the case, or a
   new one when the catalogue has none. The activity links each with its quantity, and steps and
@@ -84,10 +87,10 @@ the activity and keeps a copy, which is what the save compares against.
 
 The form is **one panel per family**, in the template's order: information (name, picture,
 visual brief), description, classification, imaginary, audience, supervision, place and
-conditions, safety, pedagogy, then materials, workshops and steps. The optional selects offer an
-empty choice, which is how PocketBase stores none. Multi-valued choices (practices, seasons,
-locations) are a `MultiSelect` over translated options, which `useActivityEdit` maps back to
-the stored values; a step's end criteria are checkboxes.
+conditions, safety, pedagogy, then materials, workshops, tips and steps. The optional selects
+offer an empty choice, which is how PocketBase stores none. Multi-valued choices (practices,
+seasons, locations) are a `MultiSelect` over translated options, which `useActivityEdit` maps
+back to the stored values.
 
 **Age and participants are two-thumb sliders**, `RangeInput` from @chapelure/ui, over
 `AGE_BOUNDS` (0–18) and `PARTICIPANTS_BOUNDS` (1–30). The slider's unset end is `null`. The
@@ -97,13 +100,15 @@ between the two. Without them a new activity's `ageMax: 0` would pin the upper t
 floor. `useActivityEdit` binds each end through a writable `computed`. `rangeLabel`, from the
 same package, says what the range reads as beside its label ("3 to 10", "up to 10", "any").
 
-**Tags are one picker per kind, placed in their family's panel.** `useTagOptions` reads every
-tag once, through the read-only `tags.api.ts`, and `tagOptions` groups them by kind.
-Each is a `TagSelect` bound straight to the family's list, for example `activity.safety.tags`,
-in a `Field` showing the error the backend keys by that relation (the development axes share
-one, shown under all six). The activity's tags are its own copies, not the options, so every
-picker passes `keyBy="id"`. Nothing is written until save, which sends the ids with the rest of
-the form.
+**Tags are one picker per kind, placed in their family's panel.** `useReferenceOptions` reads
+every tag, safety instruction and tip once, through the read-only `tags.api.ts`, `safety.api.ts`
+and `tips.api.ts`, and `tagOptions` groups the tags by kind. Each is a `TagSelect` bound straight
+to the family's list, for example `activity.pedagogy.goals`, in a `Field` showing the error the
+backend keys by that relation (the development axes share one, shown under all six). The
+safety panel picks `activity.safety.instructions` the same way, and the tips panel
+`activity.tips`. The activity's links are its own copies, not the options, so every picker
+passes `keyBy="id"`. Nothing is written until save, which sends the ids with the rest of the
+form.
 
 **Materials are picked from the catalogue.** `MaterialsSelection` suggests the catalogue
 materials the activity does not list yet (`useMaterialCatalogue`), and offers to add a name the
@@ -115,12 +120,10 @@ the activity's links as a prop and pick among them with the same `TagSelect`. Th
 one.
 
 **The step modal** edits a copy of a step — title, duration, kind, description, actions to
-tick, visual brief, tip, materials and resources — and hands it back on confirm
-(`useDraftModal`); **Add** opens it on a blank step, which joins the list only then. It writes
-nothing, and refuses to close on a step with no description. A picked file stays in the
-browser until the save uploads it. The end criteria show only on the step announcing the end
-(`hasEndCriteria`). The steps panel heading shows the preparation and playing time `timingOf`
-sums from the steps.
+tick, materials and resources — and hands it back on confirm (`useDraftModal`); **Add** opens it
+on a blank step, which joins the list only then. It writes nothing, and refuses to close on a
+step with no description. A picked file stays in the browser until the save uploads it. The
+steps panel heading shows the preparation and playing time `timingOf` sums from the steps.
 
 **Workshops** work the way steps do. **Add** opens `WorkshopEdit.modal` on a blank one, named
 from the locales, which joins the list once confirmed. Removing asks for confirmation, then
@@ -183,10 +186,10 @@ The specs, in `tests/`.
 
 *`tests/activity.import.spec.ts`* — reading a sheet and turning it into records
 
-- Every problem is reported at once, each with its path; a version other than 1 is refused.
+- Every problem is reported at once, each with its path; a version other than 2 is refused.
 - Missing and `null` read as unset; a step that does not say its kind is a free one.
 - A tag links by name or slug, whatever the case, within its own kind, and one that matches
-  nothing is reported rather than created.
+  nothing is reported rather than created. So does a safety instruction, and a tip by name.
 - The materials are the list plus what steps and workshops recall, each name once.
 - The skill's `example.json` reads without a problem.
 - A material the catalogue has, whatever its case, is linked rather than added again; a name it
@@ -216,8 +219,12 @@ composable ends in one call to `saveApi.send`.
 - **Admin-only on the client alone.** The collections' API rules do not check the role, so
   any signed-in user can still write through the API.
 - **No per-kind limit on tags.** Each relation could now carry its own `maxSelect` and
-  `required` (ADR 0014), but none is set. A safety tag's description is not shown anywhere on
-  the form.
+  `required` (ADR 0014), but none is set.
+- **The form shows safety instructions and tips by name only.** Their text is on the detail
+  screen.
+- **A tip cannot be added from the editor.** The catalogue is the Dashboard's, as the tags are.
+  The migration filled it with one tip per step that had one, named after the step, so it holds
+  near-duplicates to merge by hand.
 - **A range has no "exactly 0" and no open top above the ceiling.** 0 is unset, and an end at
   the slider's edge is unset too, so "18 and up" is as high as age can say.
 - **Nothing checks that a range's minimum is below its maximum**, for age or participants.

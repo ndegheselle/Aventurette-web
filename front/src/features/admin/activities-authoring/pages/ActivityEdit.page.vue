@@ -29,7 +29,7 @@ import SectionsMenuModal from '@features/admin/activities-authoring/components/S
 import SectionsMenu, { type SectionEntry } from '@features/admin/activities-authoring/components/SectionsMenu.vue';
 import StepEditModal from '@features/admin/activities-authoring/components/StepEdit.modal.vue';
 import WorkshopEditModal from '@features/admin/activities-authoring/components/WorkshopEdit.modal.vue';
-import { useActivityEdit, useTagOptions } from '@features/admin/activities-authoring/composables/useActivityEdit';
+import { useActivityEdit, useReferenceOptions } from '@features/admin/activities-authoring/composables/useActivityEdit';
 import { AGE_BOUNDS, PARTICIPANTS_BOUNDS } from '@features/admin/activities-authoring/model/activity.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';
 import {
@@ -39,6 +39,7 @@ import {
     ClipboardListIcon,
     GraduationCapIcon,
     LibraryIcon,
+    LightbulbIcon,
     ListOrderedIcon,
     MapPinIcon,
     PackageOpenIcon,
@@ -92,7 +93,7 @@ const {
     removeWorkshop,
 } = useActivityEdit();
 
-const { tagOptions } = useTagOptions();
+const { tagOptions, safetyInstructions, tips } = useReferenceOptions();
 
 const { t } = useI18n();
 const confirm = useConfirmation();
@@ -128,6 +129,7 @@ const sections: SectionEntry[] = [
     },
     { key: 'materials', label: 'activities.materials.title', icon: PackageOpenIcon, anchor: 'section-materials' },
     { key: 'workshops', label: 'activities.workshops.title', icon: BookOpenIcon, anchor: 'section-workshops' },
+    { key: 'tips', label: 'activities.tips.title', icon: LightbulbIcon, anchor: 'section-tips' },
     { key: 'steps', label: 'activities.authoring.steps.title', icon: ListOrderedIcon, anchor: 'section-steps' },
 ];
 
@@ -486,12 +488,12 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.safety') }}</span>
                         </label>
                         <div class="tab-content p-3">
-                            <Field label="activities.tagType.SECURITY"
-                                   :error="errors.get('safety_tags')">
-                                <TagSelect :items="tagOptions.SECURITY"
+                            <Field label="activities.fields.safetyInstructions"
+                                   :error="errors.get('safety_instructions')">
+                                <TagSelect :items="safetyInstructions"
                                            displayKey="name"
                                            keyBy="id"
-                                           v-model="activity.safety.tags" />
+                                           v-model="activity.safety.instructions" />
                             </Field>
                         </div>
 
@@ -586,6 +588,18 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                             </button>
                         </div>
                     </List>
+                </Panel>
+
+                <Panel id="section-tips"
+                       class="scroll-mt-16">
+                    <h2 class="text-2xl flex items-center gap-2">
+                        <LightbulbIcon class="opacity-50" /> {{ $t('activities.tips.title') }}
+                    </h2>
+                    <TagSelect :items="tips"
+                               displayKey="name"
+                               keyBy="id"
+                               v-model="activity.tips" />
+                    <FieldError :error="errors.get('tips')" />
                 </Panel>
 
                 <Panel id="section-steps"

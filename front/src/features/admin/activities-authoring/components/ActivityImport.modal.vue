@@ -86,13 +86,13 @@ defineExpose({ show });
                 </div>
             </div>
 
-            <div v-if="preview?.unknownTags.length" role="alert" class="alert alert-warning alert-soft items-start">
+            <div v-if="preview?.unknown.length" role="alert" class="alert alert-warning alert-soft items-start">
                 <TagIcon />
                 <div>
-                    <b>{{ $t('activities.authoring.import.unknownTags') }}</b>
+                    <b>{{ $t('activities.authoring.import.unknown') }}</b>
                     <ul class="list-disc ms-4 text-sm">
-                        <li v-for="(tag, index) in preview.unknownTags" :key="index">
-                            {{ $t(`activities.tagType.${tag.type}`) }} : {{ tag.name }}
+                        <li v-for="(reference, index) in preview.unknown" :key="index">
+                            {{ $t(reference.label) }} : {{ reference.name }}
                         </li>
                     </ul>
                 </div>

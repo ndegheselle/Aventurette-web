@@ -1,9 +1,10 @@
 import { useOneFile } from '@chapelure/ui/files/useFiles';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
-import type { ActivityTagData } from '@features/activities/model/tag';
 import { materialsApi as materials } from '@features/admin/activities-authoring/api/materials.api';
+import { safetyInstructionsApi } from '@features/admin/activities-authoring/api/safety.api';
 import { saveApi } from '@features/admin/activities-authoring/api/save.api';
 import { tagsApi as tags } from '@features/admin/activities-authoring/api/tags.api';
+import { tipsApi } from '@features/admin/activities-authoring/api/tips.api';
 import { activityWrites } from '@features/admin/activities-authoring/model/activity.edit';
 import {
     activityFromSheet,
@@ -11,6 +12,7 @@ import {
     readActivitySheet,
     type ActivitySheet,
     type SheetProblem,
+    type SheetReferences,
 } from '@features/admin/activities-authoring/model/activity.import';
 import { routesNames } from '@features/admin/activities-authoring/routes';
 import { useAuth } from '@features/auth/composables/useAuth';
@@ -35,20 +37,25 @@ export function useActivityImport() {
     const fileName = ref('');
     const sheet = ref<ActivitySheet | null>(null);
     const problems = ref<SheetProblem[]>([]);
-    const known = ref<ActivityTagData[]>([]);
+    const known = ref<SheetReferences>({ tags: [], safetyInstructions: [], tips: [] });
     const { files: visual, update: pickVisual } = useOneFile();
 
-    /** What the sheet will become, and the tags it names that do not exist. */
+    /** What the sheet will become, and the names in it that match nothing. */
     const preview = computed(() => sheet.value ? activityFromSheet(sheet.value, known.value) : null);
 
-    /** Start over, and read the tags the sheet's names are matched against. */
+    /** Start over, and read what the sheet's names are matched against. */
     async function start() {
         stage.value = 'sheet';
         fileName.value = '';
         sheet.value = null;
         problems.value = [];
         visual.value = [];
-        known.value = await tags.getAll();
+        const [knownTags, safetyInstructions, tips] = await Promise.all([
+            tags.getAll(),
+            safetyInstructionsApi.getAll(),
+            tipsApi.getAll(),
+        ]);
+        known.value = { tags: knownTags, safetyInstructions, tips };
     }
 
     async function readSheet(files: File[]) {

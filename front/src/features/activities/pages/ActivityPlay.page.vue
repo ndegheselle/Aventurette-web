@@ -5,7 +5,7 @@ import { useActivityPlay } from '@features/activities/composables/useActivityPla
 import { isGenerated } from '@features/activities/model/play';
 import { stepNumber } from '@features/activities/model/step';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, ArrowRightIcon, CircleQuestionMarkIcon, ClockIcon, FileTextIcon, FlagIcon, LightbulbIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ArrowRightIcon, CircleQuestionMarkIcon, ClockIcon, FileTextIcon, FlagIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
 
 const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, isTicked, toggle } = useActivityPlay();
 </script>
@@ -94,27 +94,6 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
                                 </label>
                             </li>
                         </ul>
-                    </div>
-
-                    <div v-if="current.endCriteria.length || current.endCriteriaOther">
-                        <h3 class="text-sm opacity-60 flex items-center gap-1">
-                            <FlagIcon class="size-4" /> {{ $t('activities.steps.fields.endCriteria.title') }}
-                        </h3>
-                        <ul class="list-disc ms-6">
-                            <li v-for="criterion in current.endCriteria"
-                                :key="criterion">{{ $t(`activities.steps.endCriterion.${criterion}`) }}</li>
-                            <li v-if="current.endCriteriaOther">{{ current.endCriteriaOther }}</li>
-                        </ul>
-                    </div>
-
-                    <div v-if="current.tip"
-                         role="alert"
-                         class="alert alert-info alert-soft">
-                        <LightbulbIcon />
-                        <div>
-                            <b>{{ $t('activities.steps.fields.tip') }}</b>
-                            <div v-html="current.tip"></div>
-                        </div>
                     </div>
 
                     <div v-if="current.materials.length">
