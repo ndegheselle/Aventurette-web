@@ -309,6 +309,12 @@ export const UsersTypeOptions = {
 	"SCHOOL": "SCHOOL",
 } as const
 export type UsersTypeOptions = typeof UsersTypeOptions[keyof typeof UsersTypeOptions]
+
+export const UsersRoleOptions = {
+	"USER": "USER",
+	"ADMIN": "ADMIN",
+} as const
+export type UsersRoleOptions = typeof UsersRoleOptions[keyof typeof UsersRoleOptions]
 export type UsersRecord = {
 	avatar?: FileNameString
 	created: IsoAutoDateString
@@ -317,6 +323,7 @@ export type UsersRecord = {
 	id: string
 	name?: string
 	password: string
+	role?: UsersRoleOptions
 	tokenKey: string
 	type?: UsersTypeOptions
 	updated: IsoAutoDateString

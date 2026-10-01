@@ -12,8 +12,9 @@ it, written from the activity's editor in [activities-authoring](activities-auth
 |---|---|---|
 | `materials.authoring` | `/materials/authoring` | The catalogue |
 
-Behind the auth guard like everything but login and register, and open to any signed-in user
-for now. The collection's API rules are open to everyone, as the step collections' are.
+Admin-only: `meta.roles` is `[Role.ADMIN]`, so the auth guard sends anyone else home, and the
+sidebar hides the link ([auth](auth.md#roles)). The collection's API rules are still open to
+everyone, as the step collections' are.
 
 ## The screen
 
@@ -53,5 +54,6 @@ imports them, and `api/materials.api.ts` is the catalogue's `crud`.
   the ones no activity uses.
 - **No merge.** Two materials that are the same thing under different names are fixed by
   renaming one and deleting the other, which loses the deleted one's links.
-- **Roles.** Any signed-in user may rename or delete any material.
+- **Roles stop at the client.** The API rules do not check the role, so any signed-in user can
+  still rename or delete a material through the API.
 - The rows reuse the placeholder images the rest of the app does.

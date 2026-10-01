@@ -14,7 +14,8 @@ a mode.
 | `activities.authoring` | `/activities/authoring` | The author's list, by state |
 | `activities.authoring.page` | `/activities/authoring/:id` | Authoring, one form |
 
-Both are behind the auth guard, like everything but login and register.
+Both are admin-only: `meta.roles` is `[Role.ADMIN]`, so the auth guard sends anyone else home,
+and the sidebar hides their links ([auth](auth.md#roles)).
 
 ## The list
 
@@ -197,8 +198,8 @@ between them.
   it was on, and a page past the end comes back with nothing rather than stepping back one.
 - **The state button does not save the form.** Deliberate — see above — but a user who edits
   and then publishes has to press save as well, and nothing on screen says so.
-- **The authoring link in the navbar shows when signed out**, and clicking it bounces to login.
-  The public activity list already behaves that way, so this is consistent rather than special.
+- **Admin-only on the client alone.** The collections' API rules do not check the role, so
+  any signed-in user can still write through the API.
 - **No per-kind limit on tags.** Each relation could now carry its own `maxSelect` and
   `required` (ADR 0014), but none is set. A safety tag's description is not shown anywhere on
   the form.

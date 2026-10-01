@@ -1,3 +1,4 @@
+import { Role } from '@features/auth/model/user';
 import type { RouteRecordRaw } from 'vue-router';
 
 import ActivitiesEditPage from '@features/admin/activities-authoring/pages/ActivitiesEdit.page.vue';
@@ -17,11 +18,13 @@ const routes: RouteRecordRaw[] = [
         path: '/activities/authoring',
         name: routesNames.all,
         component: ActivitiesEditPage,
+        meta: { roles: [Role.ADMIN] },
     },
     {
         path: '/activities/authoring/:id',
         name: routesNames.page,
         component: ActivityEditPage,
+        meta: { roles: [Role.ADMIN] },
     },
 ];
 

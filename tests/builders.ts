@@ -4,7 +4,7 @@
  *
  *     anActivity({ name: 'Treasure hunt', state: ActivityState.PUBLISHED })
  */
-import { UsersTypeOptions } from '@/backend/schema.g';
+import { UsersRoleOptions, UsersTypeOptions } from '@/backend/schema.g';
 import { ActivityState, emptyDevelopment, type ActivityData } from '@features/activities/model/activity';
 import type { ActivityPayload } from '@features/activities/api/activity.mapper';
 import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
@@ -146,6 +146,7 @@ export function aUser(overrides: Partial<UserData> = {}): UserData {
         emailVisibility: false,
         verified: true,
         type: UsersTypeOptions.PERSONNAL,
+        role: UsersRoleOptions.USER,
         ...overrides,
     } as UserData;
 }
