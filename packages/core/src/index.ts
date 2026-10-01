@@ -6,6 +6,7 @@ export { distinctById } from './data/entity';
 export { SortDirection } from './data/crud';
 export type { CrudFactory, IDataCrud, Paginated, PaginationOptions } from './data/crud';
 export type { EntityMapper } from './data/mapper';
+export type { BatchFactory, IBatchCollection, IDataBatch, IdFactory } from './data/batch';
 
 export {
     createFilter,
@@ -22,6 +23,7 @@ export type { IAuthProvider } from './auth/provider';
 export type { IFileUrlResolver } from './files/resolver';
 
 export {
+    BatchError,
     NotAuthentifiedError,
     NotImplementedError,
     ValidationError,

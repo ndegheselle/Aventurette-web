@@ -4,19 +4,19 @@ import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
-import { useEditModal } from '@chapelure/ui/modals/useEditModal';
+import { useDraftModal } from '@chapelure/ui/modals/useDraftModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import type { ActivityMaterialData } from '@features/activities/model/material';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
-import { workshopsApi } from '@features/admin/activities-authoring/api/workshops.api';
-import { SaveIcon, XIcon } from 'lucide-vue-next';
+import { workshopProblems } from '@features/admin/activities-authoring/model/workshop.edit';
+import { CheckIcon, XIcon } from 'lucide-vue-next';
 
 /** The activity's materials: a workshop recalls the ones it uses. */
 const { materials = [] } = defineProps<{ materials?: ActivityMaterialData[] }>();
 
-// Only ever updates: a workshop is written blank when it is added, as a step is.
+// Writes nothing, as the step modal: the activity's save writes the workshop.
 const controller = useModal<ActivityWorkshopData>();
-const { show, confirm, cancel, data: workshop, errors, isLoading } = useEditModal(controller, workshopsApi);
+const { show, confirm, cancel, data: workshop, errors } = useDraftModal(controller, workshopProblems);
 
 defineExpose<IEditModal<ActivityWorkshopData>>({ show });
 </script>
@@ -52,10 +52,9 @@ defineExpose<IEditModal<ActivityWorkshopData>>({ show });
                 <XIcon />
                 {{ $t('actions.cancel') }}
             </button>
-            <button class="btn btn-primary" :disabled="isLoading" @click="confirm">
-                <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
-                <SaveIcon />
-                {{ $t('actions.save') }}
+            <button class="btn btn-primary" @click="confirm">
+                <CheckIcon />
+                {{ $t('actions.confirm') }}
             </button>
         </template>
     </Modal>

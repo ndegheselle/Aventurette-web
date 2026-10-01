@@ -1,5 +1,5 @@
 import type { HTMLString } from "@/backend/schema.g";
-import { distinctById } from "@chapelure/core";
+import { distinctById, type IdFactory } from "@chapelure/core";
 import {
     ActivityFormat,
     ActivityLocation,
@@ -15,11 +15,16 @@ import {
     type ActivitySupervision,
     type DevelopmentAxis,
 } from "@features/activities/model/activity";
-import type { ActivityMaterialData } from "@features/activities/model/material";
+import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
 import { EndCriterion, StepKind, type ActivityStepData } from "@features/activities/model/step";
 import { ActivityTagType, type ActivityTagData } from "@features/activities/model/tag";
 import type { ActivityWorkshopData } from "@features/activities/model/workshop";
 import { createEmptyActivity } from "@features/admin/activities-authoring/model/activity.edit";
+import {
+    createCatalogueMaterial,
+    createMaterialLink,
+    materialNamed,
+} from "@features/admin/activities-authoring/model/material.edit";
 import { createEmptyStep } from "@features/admin/activities-authoring/model/step.edit";
 import { createEmptyWorkshop } from "@features/admin/activities-authoring/model/workshop.edit";
 
@@ -315,7 +320,7 @@ export interface UnknownTag {
 }
 
 export interface SheetActivity {
-    /** The activity to write, its tags resolved. Steps, materials and workshops come after it. */
+    /** The activity, its tags resolved. Its materials, steps and workshops are `draftFromSheet`'s. */
     activity: ActivityData;
     /** What the sheet named that is not a tag yet — left off, since tags are never written here. */
     unknownTags: UnknownTag[];
@@ -400,16 +405,59 @@ export function materialsNamed(materials: ActivityMaterialData[], names: string[
     return distinctById(named);
 }
 
+/** The activity a sheet describes, with everything under it, ready for one save. */
+export interface SheetDraft {
+    /** The activity with its material links, steps and workshops, each under the id to create it with. */
+    activity: ActivityData;
+    /** The names the sheet needs that the catalogue does not have. */
+    newMaterials: MaterialData[];
+}
+
 /**
- * A sheet's step, ready to write under an activity whose materials already exist. Most steps of
- * the template are a title over actions, but the collection refuses a blank description: the
- * title stands in for one.
+ * Hang the sheet's materials, steps and workshops off its activity. Each material is the
+ * catalogue's of that name, whatever the case, or a new one when the catalogue has none; steps and
+ * workshops recall the links by name.
+ *
+ * @param activity the sheet's activity, with its id and author
+ * @param catalogue every catalogue material
  */
-export function stepFromSheet(step: SheetStep, activity: string, materials: ActivityMaterialData[]): ActivityStepData {
+export function draftFromSheet(
+    sheet: ActivitySheet,
+    activity: ActivityData,
+    catalogue: MaterialData[],
+    newId: IdFactory,
+): SheetDraft {
+    const newMaterials: MaterialData[] = [];
+
+    const materials = materialsOfSheet(sheet).map(({ name, quantity }) => {
+        let material = materialNamed(catalogue, name) ?? materialNamed(newMaterials, name);
+        if (!material) {
+            material = createCatalogueMaterial(newId(), name);
+            newMaterials.push(material);
+        }
+        return createMaterialLink(newId(), activity.id, material, quantity);
+    });
+
+    const steps = sheet.steps.map(step => stepFromSheet(step, newId(), activity.id, materials));
+    const workshops = sheet.workshops.map(workshop => workshopFromSheet(workshop, newId(), activity.id, materials));
+
+    return { activity: { ...activity, materials, steps, workshops }, newMaterials };
+}
+
+/**
+ * A sheet's step, under an activity whose materials it recalls. Most steps of the template are a
+ * title over actions, but the collection refuses a blank description: the title stands in for one.
+ */
+export function stepFromSheet(
+    step: SheetStep,
+    id: string,
+    activity: string,
+    materials: ActivityMaterialData[],
+): ActivityStepData {
     const description = step.description.trim() ? step.description : `<p>${escapeHtml(step.title)}</p>`;
 
     return {
-        ...createEmptyStep(activity),
+        ...createEmptyStep(id, activity),
         kind: step.kind,
         title: step.title,
         duration: step.duration,
@@ -423,14 +471,15 @@ export function stepFromSheet(step: SheetStep, activity: string, materials: Acti
     };
 }
 
-/** A sheet's workshop, ready to write the same way. */
+/** A sheet's workshop, the same way. */
 export function workshopFromSheet(
     workshop: SheetWorkshop,
+    id: string,
     activity: string,
     materials: ActivityMaterialData[],
 ): ActivityWorkshopData {
     return {
-        ...createEmptyWorkshop(activity, workshop.name),
+        ...createEmptyWorkshop(id, activity, workshop.name),
         theme: workshop.theme,
         challenges: workshop.challenges,
         adults_required: workshop.adultsRequired,

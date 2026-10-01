@@ -1,29 +1,17 @@
 import { useOneFile } from '@chapelure/ui/files/useFiles';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
-import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import type { ActivityData } from '@features/activities/model/activity';
-import type { ActivityMaterialData } from '@features/activities/model/material';
-import type { ActivityStepData } from '@features/activities/model/step';
 import type { ActivityTagData } from '@features/activities/model/tag';
-import type { ActivityWorkshopData } from '@features/activities/model/workshop';
-import {
-    activityMaterialsApi as activityMaterials,
-    materialsApi as materials,
-} from '@features/admin/activities-authoring/api/materials.api';
-import { stepsApi as steps } from '@features/admin/activities-authoring/api/steps.api';
+import { materialsApi as materials } from '@features/admin/activities-authoring/api/materials.api';
+import { saveApi } from '@features/admin/activities-authoring/api/save.api';
 import { tagsApi as tags } from '@features/admin/activities-authoring/api/tags.api';
-import { visualsApi as visuals } from '@features/admin/activities-authoring/api/visuals.api';
-import { workshopsApi as workshops } from '@features/admin/activities-authoring/api/workshops.api';
+import { activityWrites } from '@features/admin/activities-authoring/model/activity.edit';
 import {
     activityFromSheet,
-    materialsOfSheet,
+    draftFromSheet,
     readActivitySheet,
-    stepFromSheet,
-    workshopFromSheet,
     type ActivitySheet,
     type SheetProblem,
 } from '@features/admin/activities-authoring/model/activity.import';
-import { materialNamed } from '@features/admin/activities-authoring/model/material.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { computed, ref } from 'vue';
@@ -36,9 +24,8 @@ export type ImportStage = 'sheet' | 'visual';
  * The import modal: read a sheet, pick its visual, then write it all as a new draft and open the
  * editor on it.
  *
- * An activity is several records, written one after the other. Either all of them land or none
- * do: a failure part way deletes the activity, and the cascades take what was already written
- * under it.
+ * The activity, its materials, steps and workshops, the names the catalogue lacked and the visual
+ * go up as one save, as the editor's does: all of it lands, or none of it.
  */
 export function useActivityImport() {
     const router = useRouter();
@@ -85,58 +72,14 @@ export function useActivityImport() {
     const { isLoading: isImporting, errors, submit: importSheet } = useSubmit(async () => {
         if (!sheet.value || !preview.value) return;
 
-        const created = await write(sheet.value, preview.value.activity, visual.value[0]);
-        router.push({ name: routesNames.page, params: { id: created.id } });
+        const activity = { ...preview.value.activity, id: saveApi.newId(), user: currentId() };
+        const catalogue = await materials.getAll();
+        const draft = draftFromSheet(sheet.value, activity, catalogue, saveApi.newId);
+        const writes = activityWrites(null, draft.activity, draft.newMaterials, visual.value[0]);
+        await saveApi.send(writes);
+
+        router.push({ name: routesNames.page, params: { id: activity.id } });
     });
-
-    /**
-     * The activity first, since everything else points at it; then its materials — each taken
-     * from the catalogue by name, added to it when missing, and linked with its quantity — which
-     * steps and workshops recall by name; then those; then the lists, which is the one write that
-     * makes them the activity's. One at a time, so nothing is still in flight when a failure
-     * rolls back.
-     */
-    async function write(from: ActivitySheet, activity: ActivityData, cover: File | undefined): Promise<ActivityData> {
-        const created = await activities.create({ ...activity, user: currentId() });
-
-        try {
-            const catalogue = await materials.getAll();
-            const writtenMaterials: ActivityMaterialData[] = [];
-            for (const material of materialsOfSheet(from)) {
-                let known = materialNamed(catalogue, material.name);
-                if (!known) {
-                    known = await materials.create(material.name);
-                    catalogue.push(known);
-                }
-                writtenMaterials.push(await activityMaterials.link(created.id, known, material.quantity));
-            }
-
-            const writtenSteps: ActivityStepData[] = [];
-            for (const step of from.steps)
-                writtenSteps.push(await steps.create(stepFromSheet(step, created.id, writtenMaterials)));
-
-            const writtenWorkshops: ActivityWorkshopData[] = [];
-            for (const workshop of from.workshops)
-                writtenWorkshops.push(await workshops.create(workshopFromSheet(workshop, created.id, writtenMaterials)));
-
-            await activities.update(created.id, {
-                materials: writtenMaterials,
-                steps: writtenSteps,
-                workshops: writtenWorkshops,
-            });
-
-            if (cover)
-                await visuals.upload(created.id, cover);
-
-            return created;
-        } catch (error) {
-            // The steps, workshops and material links cascade with it; a name the import added to
-            // the catalogue stays there. Should this fail too, what the author sees is the first
-            // error, which is the one that explains the rest.
-            await activities.remove(created.id).catch(() => undefined);
-            throw error;
-        }
-    }
 
     return {
         stage,

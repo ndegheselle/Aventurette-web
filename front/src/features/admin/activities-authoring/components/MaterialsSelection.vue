@@ -6,18 +6,18 @@ import { useMaterialCatalogue } from '@features/admin/activities-authoring/compo
 import { CircleOffIcon, CircleQuestionMarkIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-// The activity's material list, picked from the catalogue. Every change is a write of its own,
-// made by the parent: adding links a catalogue material, a quantity is saved as it is typed, and
-// removing deletes the link. A name the catalogue does not have is added to it first.
+// The activity's material list, picked from the catalogue. The parent changes the list — linking a
+// catalogue material, a name the catalogue does not have, or taking one off — and a quantity is
+// typed straight into its link. All of it is written with the activity.
 const selected = defineModel<ActivityMaterialData[]>({ default: () => [] });
 
 const emit = defineEmits<{
     add: [material: MaterialData];
-    update: [material: ActivityMaterialData];
+    create: [name: string];
     remove: [material: ActivityMaterialData];
 }>();
 
-const { search, suggestions, isNewName, create } = useMaterialCatalogue(selected);
+const { search, suggestions, isNewName } = useMaterialCatalogue(selected);
 
 const open = ref<boolean>(false);
 
@@ -26,9 +26,9 @@ function add(material: MaterialData) {
     search.value = '';
 }
 
-async function createAndAdd(name: string) {
-    const created = await create(name);
-    if (created) add(created);
+function createAndAdd(name: string) {
+    emit('create', name);
+    search.value = '';
 }
 </script>
 
@@ -68,7 +68,7 @@ async function createAndAdd(name: string) {
         <img class="size-10 rounded-box" src="https://placeholder.pagebee.io/api/plain/64/64" />
         <span class="my-auto">{{ item.name }}</span>
         <input type="text" class="input input-sm w-40" :placeholder="$t('activities.materials.quantity')"
-            v-model="item.quantity" @change="() => emit('update', item)" />
+            v-model="item.quantity" />
         <button class="btn btn-ghost btn-square btn-sm" @click="() => emit('remove', item)">
             <TrashIcon class="icon-sm" />
         </button>

@@ -59,7 +59,7 @@ it('narrows to one state when a tab is picked', () => {
 instance, which composables using `onMounted` or `inject` need.
 
 ```ts
-const [subject] = withSetup(() => useActivityEdit(), router);
+const [subject] = withSetup(() => useMaterialsEditList());
 ```
 
 **Component** — the wiring, and rarely. Mount it, click and type, assert on what is rendered

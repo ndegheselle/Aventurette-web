@@ -1,19 +1,21 @@
+import type { FieldErrors } from "@chapelure/core";
 import type { ActivityMaterialData } from "@features/activities/model/material";
 import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/model/step";
 
 /**
- * The step seen from its author's side: the blank one written on add, and how many files it
- * takes. Its shape stays in `activities/model`.
+ * The step seen from its author's side: the blank one offered on add, what the collection would
+ * refuse in it, and its files. Its shape stays in `activities/model`.
  */
 
 // ── The blank step ──────────────────────────────────────────────────────────────────────────
 
 /**
- * A blank step, written the moment one is added. `description`, `kind` and `activity` are seeded
- * because the collection requires them, and the step exists before it is filled in.
+ * A blank step, for the modal to fill in. Nothing is written until the activity is saved, so the
+ * id is chosen here: the activity lists the step, and its files point at it, in that same save.
  */
-export function createEmptyStep(activity: string): ActivityStepData {
+export function createEmptyStep(id: string, activity: string): ActivityStepData {
     return {
+        id,
         activity,
         kind: StepKind.CUSTOM,
         description: "",
@@ -21,6 +23,19 @@ export function createEmptyStep(activity: string): ActivityStepData {
         materials: [] as ActivityMaterialData[],
         resources: [] as ActivityResourceData[],
     } as ActivityStepData;
+}
+
+/**
+ * What the collection would refuse in a step, keyed as its errors are. Checked as the modal
+ * closes: a refusal at save time would point at the whole save rather than at the field.
+ */
+export function stepProblems(step: Pick<ActivityStepData, 'description'>): FieldErrors {
+    return isBlankHtml(step.description) ? { description: { code: 'validation_required' } } : {};
+}
+
+/** Whether rich text holds no text: an editor emptied by hand leaves `<p></p>` behind. */
+function isBlankHtml(html: string | undefined): boolean {
+    return !(html ?? "").replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
 }
 
 // ── Its duration ────────────────────────────────────────────────────────────────────────────
@@ -49,6 +64,14 @@ export function joinDuration(hours: number | string, minutes: number | string): 
 
 /** How many files one step may carry. The constraints line in the locales repeats it. */
 export const MAX_STEP_RESOURCES = 10;
+
+/**
+ * A picked file, as the resource the activity's save will create for it. `url` previews it until
+ * then; the stored file's own url replaces it on the next read.
+ */
+export function createResource(id: string, step: string, file: File, url: string): ActivityResourceData {
+    return { id, step, name: file.name, file, url } as ActivityResourceData;
+}
 
 /** File types accepted for a step resource, in `<input accept>` syntax. */
 export const ACCEPTED_RESOURCE_TYPES = '.png,.jpeg,.jpg,.pdf';

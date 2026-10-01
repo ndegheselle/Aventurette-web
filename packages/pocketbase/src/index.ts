@@ -4,3 +4,4 @@
 export { initPocketBase } from './client';
 export { createPocketBaseAuth } from './auth';
 export { createPocketBaseCrud } from './crud';
+export { createPocketBaseBatch, pocketBaseId } from './batch';

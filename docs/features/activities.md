@@ -80,52 +80,59 @@ Nothing on these two screens writes. What follows describes how the editor in
 [activities-authoring](activities-authoring.md) persists what this feature then reads back, because it is
 the reason `ActivityData` has the shape it does.
 
-An activity is several collections and relations are stored as ids, so nothing can be saved
-before its parent exists. Rather than sequencing that at the end, **every record is written as
-soon as it is added**:
+An activity is several collections and relations are stored as ids, so a record can only be
+written once what it points at exists. **Nothing is written before the save**, and the save is
+**one batch**: every write, in order, inside one PocketBase transaction — all of them land or
+none does ([ADR 0017](../adr/0017-an-activity-is-saved-in-one-batch.md)).
 
-| Added | Written | By |
+Until then the editor holds everything:
+
+| Added | Held as | By |
 |---|---|---|
-| the activity | on **Add** on the authoring list, before the editor opens | `useActivitiesEditList` |
-| a step, blank, and its link to the activity | on **Add** in the steps panel, before the modal opens | `useActivityEdit.addStep` |
-| a file | as it is picked | `useStepEdit` |
-| the step's own content | as the modal is confirmed | `StepEdit.modal` (`useEditModal`) |
-| a material's link to the activity, and a new catalogue name first if one was typed | as it is chosen | `useActivityEdit.addMaterial`, `useMaterialCatalogue.create` |
-| a material's quantity | as it is typed | `useActivityEdit.updateMaterial` |
-| a workshop, blank, and its link | on **Add** in the workshops panel, before the modal opens | `useActivityEdit.addWorkshop` |
-| the workshop's own content | as the modal is confirmed | `WorkshopEdit.modal` (`useEditModal`) |
+| the activity | a blank one, on the `new` route | `useActivityEdit` |
+| a step, a workshop | a blank one, joining the list when its modal is confirmed | `useActivityEdit.newStep`, `newWorkshop` |
+| a file | a resource carrying the picked `File`, previewed from a `blob:` url | `useStepResources` |
+| a material | a link to the catalogue material | `useActivityEdit.addMaterial` |
+| a name the catalogue does not have | a catalogue material, and a link to it | `useActivityEdit.createMaterial` |
+| a quantity, a tag, any field | typed into the record it belongs to | the form |
 
-Nothing is ever created from a modal: what it opens on already exists, so it only updates, and
-the files chosen in it have a record to belong to.
+**A new record's id is chosen when it is added** (`saveApi.newId`, in PocketBase's format).
+That is what lets one batch create a step and then the activity listing it, and lets a step
+recall a material link created in the same save.
 
-What is left for the save button is the activity's own fields: every family, its description
-and which tags it carries. That is a single update, and then the detail screen. A tag is
-reference data: picking one links a row that already exists, so nothing is written until save.
-An update carries a family whole, tag relations included, or leaves it out.
+`activityWrites(original, edited)` turns the two versions into the batch. A record `original`
+lacks is created, one `edited` lacks is deleted, one that changed is updated — compared as JSON,
+since the edited record is a copy of the read one. A file is new when it carries its `file`,
+which a read never does. The order is the one every write needs:
 
-A blank record is still a valid one: `createEmptyActivity` fills in every family, and the
-`description` and `state` the collection requires — a new activity starts as `DRAFT` — and
-`useActivitiesEditList` adds the placeholder name and the owner from the session.
-`createEmptyStep` does the same for the two fields a step must have, `description` and `kind`,
-and `createEmptyWorkshop` for a workshop's name. They are the authoring feature's.
+1. names added to the catalogue that a link still uses, then the activity itself if it is new,
+   with empty lists;
+2. material links; new steps, without their files; the files, pointing at their step; the new
+   steps listing their files; the changed steps;
+3. workshops;
+4. the activity's own update: every family, its tags, and its lists;
+5. the deletes — steps, workshops, then material links — once nothing lists them.
 
-A material **is** picked from a reference collection, the catalogue, but unlike a tag the
-pick is written at once: it is a link of the activity's own, carrying the quantity. Should the
-activity's list fail to take the link, the link is deleted again. **Taking a material off is one
-call**, the link's delete: the backend drops it from the activity's list and from every step and
-workshop recalling it. `withoutMaterial` then takes it off the steps and workshops held in
-memory too, or their next save would send the dead id back and be refused. A workshop is
-deleted in one call for the same reason.
+**Deleting a step comes after the update that unlinks it.** `activities.steps` has
+`cascadeDelete` on, which in PocketBase deletes the record *holding* the relation once the
+deleted id leaves it with no references left — so deleting an activity's last step while it is
+still listed would take the activity with it. Inside one batch the order still holds, and the
+one-step case is not a special case.
 
-**Deleting a step means unlinking it first.** `activities.steps` has `cascadeDelete` on, which
-in PocketBase deletes the record *holding* the relation once the deleted id leaves it with no
-references left — so deleting an activity's last step takes the activity with it. `detachStep`
-writes the shortened list, and only then removes the record, which also keeps the one-step case
-from being a special case.
+**Taking a material off** is `withoutMaterial`: off the activity's list and off every step and
+workshop recalling it, so their updates drop it before the link is deleted. A file taken off a
+step is only unlinked; `back/hooks` reclaims a resource no step lists once the step is updated.
 
-A rejected write comes back as `ValidationError` and is shown against the field that caused it
-— see `useSubmit` in @chapelure/ui. A failed relation write is reported as an alert and the
-list is put back to what the record still holds, because no field on the form stands for it.
+A blank record is a valid one once filled in: `createEmptyActivity` fills in every family and
+the `state` the collection requires — a new activity starts as `DRAFT` — and `useActivityEdit`
+adds the id and the owner from the session. `createEmptyStep` seeds a step's `kind`, and
+`createEmptyWorkshop` a workshop's placeholder name. They are the authoring feature's. A modal
+refuses to close on what the collection would refuse — a step with no description
+(`stepProblems`), a workshop with no name (`workshopProblems`) — so the save does not fail on it.
+
+A rejected save comes back as `ValidationError`. The batch says which write failed, and
+`saveErrors` puts an activity write's errors against its fields and any other record's under the
+list holding it — steps, workshops or materials.
 
 ## Rules that hold
 
@@ -168,16 +175,18 @@ or an api wrapper does not earn one — see
 - Actions never set read as none, and a blank action is not written.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 
-*`activities-authoring/tests/useActivityEdit.spec.ts`* — the one order that matters, in the
-feature that owns the composable
+*`activities-authoring/tests/activity.edit.spec.ts`* — the save's order, in the feature that
+owns the editor
 
-- Adding a step writes a blank one and links it before the modal opens; if the link fails there
-  is nothing to open.
-- A removed step is unlinked **before** it is deleted, never the other way round.
-- A material's link the activity's list could not take is deleted again.
-- A link that cannot be written puts the list back and deletes nothing, rather than leaving the
-  screen claiming a step the record does not have.
-- A delete that fails after the unlink landed leaves the step off the activity anyway.
+- A new activity is created bare before anything points at it, and lists them in a last update.
+- A new step is created without its files, and lists them once they are created; a file picked
+  for an existing step is created before the step's update.
+- Only what changed is updated; an unchanged activity writes itself and nothing else.
+- A removed step is deleted only **after** the update that unlinks it, never before; a material
+  link only after every step and workshop has let go of it.
+- A name added to the catalogue is created before the link to it, and not at all once nothing
+  links it.
+- A refused write's errors go to the activity's fields, or under the list holding the record.
 
 ## Not finished
 
@@ -200,12 +209,4 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
 - **The picture input goes nowhere.** The `activities` collection has a `visual` file field,
   but the form is not wired to it, so what the user picks is shown and then dropped. There is an
   `XXX` on it in the page.
-- **Cancelling leaves what was already written.** A step is a record before the modal opens, so
-  cancelling keeps an empty one on the activity; a file uploaded inside the modal is stored
-  before the step points at it. `back/hooks` reclaims a resource no step references any more,
-  but only on a step *update* — a cancel never gets that far, and neither does deleting a step,
-  which leaves its resources behind the same way.
-- **A step whose link could not be written stays in `activities_steps`.** It is deliberate:
-  deleting it would be the safe move only if the failed update definitely did not land, and
-  `cascadeDelete` makes guessing wrong expensive.
 - Images throughout are placeholders from `placeholder.pagebee.io`.

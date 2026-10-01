@@ -19,32 +19,33 @@ import type { ActivityStepData } from '@features/activities/model/step';
 import { tagOptions, type ActivityTagData } from '@features/activities/model/tag';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import {
-    activityMaterialsApi as activityMaterials,
-    materialsApi as materials,
-} from '@features/admin/activities-authoring/api/materials.api';
-import { stepsApi as steps } from '@features/admin/activities-authoring/api/steps.api';
+import { materialsApi as materials } from '@features/admin/activities-authoring/api/materials.api';
+import { saveApi } from '@features/admin/activities-authoring/api/save.api';
 import { tagsApi as tags } from '@features/admin/activities-authoring/api/tags.api';
-import { workshopsApi as workshops } from '@features/admin/activities-authoring/api/workshops.api';
-import { createEmptyActivity, stateTransition } from '@features/admin/activities-authoring/model/activity.edit';
+import {
+    activityWrites,
+    createEmptyActivity,
+    putById,
+    stateTransition,
+} from '@features/admin/activities-authoring/model/activity.edit';
 import {
     canCreateMaterial,
+    createCatalogueMaterial,
+    createMaterialLink,
     materialSuggestions,
     withoutMaterial,
 } from '@features/admin/activities-authoring/model/material.edit';
 import { createEmptyStep } from '@features/admin/activities-authoring/model/step.edit';
 import { createEmptyWorkshop } from '@features/admin/activities-authoring/model/workshop.edit';
-import { computed, onMounted, ref, toRaw, watch, type Ref } from 'vue';
+import { useAuth } from '@features/auth/composables/useAuth';
+import { computed, onMounted, ref, shallowRef, toRaw, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
-/** The lists of records an activity links, each written on its own as it changes. */
-type LinkedRecords = 'steps' | 'materials' | 'workshops';
-
 /**
- * The activity the edit form is bound to, and what saving it does. Saving writes the activity's
- * own fields only — it already exists by the time this screen opens, and so does every step,
- * material and workshop.
+ * The activity the edit form is bound to, and what saving it does. Nothing is written before the
+ * save — not the activity when it is new, not a step, a file, a material or a workshop: the form
+ * holds them all, and the save sends them as one batch that lands whole or not at all.
  *
  * `activity` is never null, so the form can `v-model` straight onto it: an empty activity stands
  * in until the real one arrives.
@@ -54,160 +55,83 @@ export function useActivityEdit() {
     const router = useRouter();
     const alert = useAlert();
     const { t } = useI18n();
+    const { currentId } = useAuth();
 
     const activity = ref<ActivityData>(createEmptyActivity());
-    const isAddingStep = ref(false);
-    const isAddingWorkshop = ref(false);
+
+    /** The activity as it was read, which the save compares against. Null for one never saved. */
+    const original = shallowRef<ActivityData | null>(null);
+    const isNew = computed(() => original.value === null);
+
+    /** Names added to the catalogue here. The save creates the ones a link still uses. */
+    let newMaterials: MaterialData[] = [];
+
     const isChangingState = ref(false);
 
     watch(
         () => route.params.id,
         async (id) => {
-            if (typeof id !== 'string') return;
+            newMaterials = [];
 
-            activity.value = await activities.getById(id) ?? createEmptyActivity();
+            if (typeof id !== 'string') {
+                original.value = null;
+                activity.value = { ...createEmptyActivity(), id: saveApi.newId(), user: currentId() };
+                return;
+            }
+
+            const read = await activities.getById(id) ?? createEmptyActivity();
+            original.value = structuredClone(read);
+            activity.value = read;
         },
         { immediate: true },
     );
 
-    /**
-     * Write one of the activity's lists of links. A save of its own — nothing on the form is
-     * involved — so a failure alerts and rolls the list back to what the record still holds.
-     */
-    async function relink<K extends LinkedRecords>(field: K, next: ActivityData[K]): Promise<boolean> {
-        const previous = activity.value[field];
-        activity.value[field] = next;
+    /** A blank step for the modal to fill in. It joins the activity when the modal is confirmed. */
+    function newStep(): ActivityStepData {
+        return createEmptyStep(saveApi.newId(), activity.value.id);
+    }
 
-        try {
-            await activities.update(activity.value.id, { [field]: next } as Partial<ActivityData>);
-            return true;
-        } catch {
-            activity.value[field] = previous;
-            alert.error(t('validation.errors.default'));
-            return false;
-        }
+    /** Take in a step the modal confirmed — a new one at the end, an edited one in its place. */
+    function putStep(step: ActivityStepData) {
+        activity.value.steps = putById(activity.value.steps, step);
+    }
+
+    /** Take a step off. The save deletes it, once the activity no longer lists it. */
+    function removeStep(step: ActivityStepData) {
+        activity.value.steps = activity.value.steps.filter(current => current.id !== step.id);
+    }
+
+    /** List a catalogue material, with no quantity yet. */
+    function addMaterial(material: MaterialData) {
+        const link = createMaterialLink(saveApi.newId(), activity.value.id, material);
+        activity.value.materials = [...activity.value.materials, link];
+    }
+
+    /** Add a name the catalogue does not have, and list it. The save creates both. */
+    function createMaterial(name: string) {
+        const material = createCatalogueMaterial(saveApi.newId(), name);
+        newMaterials = [...newMaterials, material];
+        addMaterial(material);
     }
 
     /**
-     * Write a blank step, link it to the activity, and hand it back for the modal to fill in.
-     * Null when the write failed — the caller's cue not to open the modal on nothing.
+     * Take a material off this activity, and off every step and workshop that recalled it. The
+     * save deletes the link; the catalogue material stays for the next activity.
      */
-    async function addStep(): Promise<ActivityStepData | null> {
-        if (isAddingStep.value) return null;
-
-        isAddingStep.value = true;
-        try {
-            const created = await steps.create(createEmptyStep(activity.value.id));
-            return await relink('steps', [...activity.value.steps, created]) ? created : null;
-        } catch {
-            alert.error(t('validation.errors.default'));
-            return null;
-        } finally {
-            isAddingStep.value = false;
-        }
-    }
-
-    /** Take in a step the modal has just updated. Nothing to write: the modal already did. */
-    function replaceStep(step: ActivityStepData) {
-        activity.value.steps = activity.value.steps.map(
-            current => current.id === step.id ? step : current,
-        );
-    }
-
-    /**
-     * Unlink a step, then delete it — in that order, never the other way round.
-     *
-     * `activities.steps` cascades: PocketBase deletes the record *holding* the relation once the
-     * deleted id leaves it with none, so removing a still-linked last step takes the activity too.
-     */
-    async function detachStep(step: ActivityStepData) {
-        if (!await relink('steps', activity.value.steps.filter(current => current.id !== step.id)))
-            return;
-
-        try {
-            await steps.remove(step.id);
-        } catch {
-            // The step is already unlinked; an unreferenced record is worth reporting, not
-            // worth putting the step back for.
-            alert.error(t('validation.errors.default'));
-        }
-    }
-
-    /**
-     * Link a catalogue material to this activity, then list it. Should the listing fail, the
-     * link is deleted again: a link the activity does not list is one nothing would ever show.
-     */
-    async function addMaterial(material: MaterialData) {
-        let created: ActivityMaterialData;
-        try {
-            created = await activityMaterials.link(activity.value.id, material);
-        } catch {
-            alert.error(t('validation.errors.default'));
-            return;
-        }
-
-        if (!await relink('materials', [...activity.value.materials, created]))
-            await activityMaterials.unlink(created.id).catch(() => undefined);
-    }
-
-    /** Write a material's quantity, as it is typed: the activity's save does not reach it. */
-    async function updateMaterial(material: ActivityMaterialData) {
-        try {
-            await activityMaterials.update(material);
-        } catch {
-            alert.error(t('validation.errors.default'));
-        }
-    }
-
-    /**
-     * Take a material off this activity: one delete, of its link. The backend drops the link from
-     * the activity's list and from every step and workshop recalling it, and the catalogue
-     * material stays for the next activity.
-     */
-    async function removeMaterial(material: ActivityMaterialData) {
-        try {
-            await activityMaterials.unlink(material.id);
-        } catch {
-            alert.error(t('validation.errors.default'));
-            return;
-        }
-
+    function removeMaterial(material: ActivityMaterialData) {
         activity.value = withoutMaterial(activity.value, material.id);
     }
 
-    /** Write a blank workshop and link it, as `addStep` does. */
-    async function addWorkshop(): Promise<ActivityWorkshopData | null> {
-        if (isAddingWorkshop.value) return null;
-
-        isAddingWorkshop.value = true;
-        try {
-            const created = await workshops.create(
-                createEmptyWorkshop(activity.value.id, t('activities.workshops.untitled')),
-            );
-            return await relink('workshops', [...activity.value.workshops, created]) ? created : null;
-        } catch {
-            alert.error(t('validation.errors.default'));
-            return null;
-        } finally {
-            isAddingWorkshop.value = false;
-        }
+    /** A blank workshop for the modal to fill in, as `newStep`. */
+    function newWorkshop(): ActivityWorkshopData {
+        return createEmptyWorkshop(saveApi.newId(), activity.value.id, t('activities.workshops.untitled'));
     }
 
-    function replaceWorkshop(workshop: ActivityWorkshopData) {
-        activity.value.workshops = activity.value.workshops.map(
-            current => current.id === workshop.id ? workshop : current,
-        );
+    function putWorkshop(workshop: ActivityWorkshopData) {
+        activity.value.workshops = putById(activity.value.workshops, workshop);
     }
 
-    /** Delete a workshop outright: `activities.workshops` does not cascade, so no unlink first. */
-    async function removeWorkshop(workshop: ActivityWorkshopData) {
-        try {
-            await workshops.remove(workshop.id);
-        } catch {
-            alert.error(t('validation.errors.default'));
-            return;
-        }
-
+    function removeWorkshop(workshop: ActivityWorkshopData) {
         activity.value.workshops = activity.value.workshops.filter(current => current.id !== workshop.id);
     }
 
@@ -268,9 +192,11 @@ export function useActivityEdit() {
      * Publish the activity, or put it back to draft. Writes the state and nothing else, so what
      * is typed into the form stays unsaved and still on screen. Failures alert rather than going
      * through `errors`: no field on the form stands for the state.
+     *
+     * Not for a new activity: there is no record yet to write the state to.
      */
     async function changeState() {
-        if (isChangingState.value) return;
+        if (isChangingState.value || isNew.value) return;
 
         const { to } = transition.value;
 
@@ -287,17 +213,17 @@ export function useActivityEdit() {
     }
 
     const { isLoading, errors, submit } = useSubmit(async () => {
-        await activities.update(activity.value.id, toRaw(activity.value));
+        const writes = activityWrites(original.value, toRaw(activity.value), newMaterials);
+        await saveApi.send(writes);
 
-        alert.success(t('data.updated'));
+        alert.success(t(isNew.value ? 'data.created' : 'data.updated'));
         router.push({ name: activitiesRoutesNames.page, params: { id: activity.value.id } });
     });
 
     return {
         activity,
+        isNew,
         isLoading,
-        isAddingStep,
-        isAddingWorkshop,
         isChangingState,
         transition,
         ageMin,
@@ -316,14 +242,14 @@ export function useActivityEdit() {
         errors,
         save: submit,
         changeState,
-        addStep,
-        replaceStep,
-        detachStep,
+        newStep,
+        putStep,
+        removeStep,
         addMaterial,
-        updateMaterial,
+        createMaterial,
         removeMaterial,
-        addWorkshop,
-        replaceWorkshop,
+        newWorkshop,
+        putWorkshop,
         removeWorkshop,
     };
 }
@@ -343,38 +269,20 @@ export function useTagOptions() {
 }
 
 /**
- * The catalogue materials to offer while typing one, and adding a name it does not have yet.
+ * The catalogue materials to offer while typing one, and whether what is typed is a new name.
  *
  * @param selected the activity's materials
  */
 export function useMaterialCatalogue(selected: Ref<ActivityMaterialData[]>) {
-    const alert = useAlert();
-    const { t } = useI18n();
-
     const known = ref<MaterialData[]>([]);
     const search = ref('');
 
     const suggestions = computed(() => materialSuggestions(known.value, selected.value, search.value));
     const isNewName = computed(() => canCreateMaterial(search.value, known.value, selected.value));
 
-    /**
-     * Add a name to the catalogue, and remember it — so taking it off the activity offers it again
-     * rather than offering to create it twice. Null when the backend refused it.
-     */
-    async function create(name: string): Promise<MaterialData | null> {
-        try {
-            const created = await materials.create(name);
-            known.value = [...known.value, created];
-            return created;
-        } catch {
-            alert.error(t('validation.errors.default'));
-            return null;
-        }
-    }
-
     onMounted(async () => {
         known.value = await materials.getAll();
     });
 
-    return { search, suggestions, isNewName, create };
+    return { search, suggestions, isNewName };
 }

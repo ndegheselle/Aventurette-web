@@ -3,15 +3,16 @@ import { StepKind } from '@features/activities/model/step';
 import { ActivityTagType } from '@features/activities/model/tag';
 import {
     activityFromSheet,
+    draftFromSheet,
     materialsOfSheet,
     readActivitySheet,
     stepFromSheet,
     type ActivitySheet,
 } from '@features/admin/activities-authoring/model/activity.import';
-import { aMaterial, aTag } from '@tests';
+import { aCatalogueMaterial, aMaterial, anActivity, aTag } from '@tests';
 import { describe, expect, it } from 'vitest';
 // Relative: no alias reaches the skills folder, and this is the one file that needs to.
-import example from '../../../../../.claude/skills/fiche-to-json/example.json?raw';
+import example from '../../../../../../.claude/skills/fiche-to-json/example.json?raw';
 
 // A sheet is written by hand or by the skill, outside the app: reading it is the one place that
 // says what an imported activity may hold. Then the names in it become links.
@@ -145,7 +146,7 @@ describe('stepFromSheet', () => {
         const chalk = aMaterial({ name: 'Craie' });
         const sheet = sheetOf({ name: 'Tag', steps: [{ title: 'Install', materials: ['CRAIE', 'Unknown'] }] });
 
-        const step = stepFromSheet(sheet.steps[0]!, 'act-1', [ball, chalk]);
+        const step = stepFromSheet(sheet.steps[0]!, 'stp-1', 'act-1', [ball, chalk]);
 
         expect(step.activity).toBe('act-1');
         expect(step.materials).toEqual([chalk]);
@@ -154,7 +155,49 @@ describe('stepFromSheet', () => {
     it('puts the title in a step that has no description, since the collection requires one', () => {
         const sheet = sheetOf({ name: 'Tag', steps: [{ title: 'Cache & <cherche>' }, { title: 'Go', description: '<p>Run</p>' }] });
 
-        expect(stepFromSheet(sheet.steps[0]!, 'act-1', []).description).toBe('<p>Cache &amp; &lt;cherche&gt;</p>');
-        expect(stepFromSheet(sheet.steps[1]!, 'act-1', []).description).toBe('<p>Run</p>');
+        expect(stepFromSheet(sheet.steps[0]!, 'stp-1', 'act-1', []).description).toBe('<p>Cache &amp; &lt;cherche&gt;</p>');
+        expect(stepFromSheet(sheet.steps[1]!, 'stp-1', 'act-1', []).description).toBe('<p>Run</p>');
+    });
+});
+
+describe('draftFromSheet', () => {
+    /** Ids in the order they were asked for, so a spec can tell which record got which. */
+    function counter() {
+        let next = 0;
+        return () => `id-${++next}`;
+    }
+
+    const sheet = () => sheetOf({
+        name: 'Bug hunt',
+        materials: [{ name: 'Loupe', quantity: '1 par enfant' }],
+        steps: [{ title: 'Hide the bugs', materials: ['loupe'] }],
+        workshops: [{ name: 'Leaves', materials: ['Bocal'] }],
+    });
+
+    it('links the catalogue material going by that name, whatever its case, rather than adding it again', () => {
+        const loupe = aCatalogueMaterial({ id: 'mat-loupe', name: 'LOUPE' });
+
+        const draft = draftFromSheet(sheet(), anActivity({ id: 'act-1' }), [loupe], counter());
+
+        const links = draft.activity.materials;
+        expect(links.map(link => link.material)).toContain('mat-loupe');
+        expect(links.find(link => link.material === 'mat-loupe')?.quantity).toBe('1 par enfant');
+        expect(draft.newMaterials.map(material => material.name)).toEqual(['Bocal']);
+    });
+
+    it('hangs every record off the activity, and has steps and workshops recall the links', () => {
+        const draft = draftFromSheet(sheet(), anActivity({ id: 'act-1' }), [], counter());
+        const { materials, steps, workshops } = draft.activity;
+
+        expect([...materials, ...steps, ...workshops].every(record => record.activity === 'act-1')).toBe(true);
+        expect(steps[0]!.materials).toEqual([materials[0]]);
+        expect(workshops[0]!.materials).toEqual([materials[1]]);
+    });
+
+    it('links a name the catalogue lacked to the new catalogue material created for it', () => {
+        const draft = draftFromSheet(sheet(), anActivity({ id: 'act-1' }), [], counter());
+
+        expect(draft.activity.materials.map(link => link.material))
+            .toEqual(draft.newMaterials.map(material => material.id));
     });
 });

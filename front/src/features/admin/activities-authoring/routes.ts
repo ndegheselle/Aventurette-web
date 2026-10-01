@@ -10,6 +10,7 @@ import ActivityEditPage from '@features/admin/activities-authoring/pages/Activit
  */
 export const routesNames = {
     all: 'activities.authoring',
+    new: 'activities.authoring.new',
     page: 'activities.authoring.page',
 } as const;
 
@@ -18,6 +19,14 @@ const routes: RouteRecordRaw[] = [
         path: '/activities/authoring',
         name: routesNames.all,
         component: ActivitiesEditPage,
+        meta: { roles: [Role.ADMIN] },
+    },
+    // The editor on an activity that does not exist yet: its first save creates it. A static
+    // segment outranks `:id`, so `new` is never read as an id.
+    {
+        path: '/activities/authoring/new',
+        name: routesNames.new,
+        component: ActivityEditPage,
         meta: { roles: [Role.ADMIN] },
     },
     {

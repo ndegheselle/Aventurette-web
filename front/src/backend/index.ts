@@ -3,11 +3,13 @@
  * not be imported anywhere else in front/src — everything downstream uses the ports built here.
  */
 import { Collections } from '@/backend/schema.g';
-import type { BaseEntity, CrudFactory, EntityMapper, IAuthProvider } from '@chapelure/core';
+import type { BaseEntity, BatchFactory, CrudFactory, EntityMapper, IAuthProvider, IdFactory } from '@chapelure/core';
 import {
     createPocketBaseAuth,
+    createPocketBaseBatch,
     createPocketBaseCrud,
     initPocketBase,
+    pocketBaseId,
 } from '@chapelure/pocketbase';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -21,6 +23,12 @@ export const crud: CrudFactory = <TPayload extends BaseEntity, TEntity extends B
     collection: string,
     mapper: EntityMapper<TPayload, TEntity>,
 ) => createPocketBaseCrud<TPayload, TEntity>(client, collection, mapper);
+
+/** Writes over several collections, sent as one transaction. A fresh batch on every call. */
+export const batch: BatchFactory = () => createPocketBaseBatch(client);
+
+/** An id for a record that a batch creates, so the rest of the batch can point at it. */
+export const newId: IdFactory = pocketBaseId;
 
 const auth = createPocketBaseAuth<BaseEntity>(client, Collections.Users);
 

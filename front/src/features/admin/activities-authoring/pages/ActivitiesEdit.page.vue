@@ -18,8 +18,6 @@ const {
     state,
     refresh,
     selectState,
-    isCreating,
-    createActivity,
     removeActivity,
 } = useActivitiesEditList();
 
@@ -62,11 +60,11 @@ useNavbar(t('activities.authoring.title'));
                         @click="() => importModal?.show()">
                     <ImportIcon />
                 </button>
-                <button class="btn btn-primary btn-square"
-                        :disabled="isCreating"
-                        @click="createActivity">
+                <RouterLink class="btn btn-primary btn-square"
+                            :title="$t('actions.add')"
+                            :to="{ name: routesNames.new }">
                     <PlusIcon />
-                </button>
+                </RouterLink>
             </div>
         </div>
 

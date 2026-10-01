@@ -61,9 +61,8 @@ import { useI18n } from 'vue-i18n';
 
 const {
     activity,
+    isNew,
     isLoading,
-    isAddingStep,
-    isAddingWorkshop,
     isChangingState,
     transition,
     ageMin,
@@ -82,14 +81,14 @@ const {
     errors,
     save,
     changeState,
-    addStep,
-    replaceStep,
-    detachStep,
+    newStep,
+    putStep,
+    removeStep,
     addMaterial,
-    updateMaterial,
+    createMaterial,
     removeMaterial,
-    addWorkshop,
-    replaceWorkshop,
+    newWorkshop,
+    putWorkshop,
     removeWorkshop,
 } = useActivityEdit();
 
@@ -150,25 +149,16 @@ const hostEfforts = Object.values(HostEffort);
 // XXX : the picture goes nowhere — the collection's `visual` field is not wired to the form yet.
 const { files, update: updateImage } = useOneFile();
 
-// Adding writes the record first, so a modal only ever has one to update.
-async function addAndEditStep() {
-    const created = await addStep();
-    if (created) await editStep(created);
-}
-
+// A modal edits a copy, so a new record joins the activity only once confirmed. Either way,
+// nothing is written until the activity is saved.
 async function editStep(step: ActivityStepData) {
-    const updated = await stepModal.value?.show(step);
-    if (updated) replaceStep(updated);
-}
-
-async function addAndEditWorkshop() {
-    const created = await addWorkshop();
-    if (created) await editWorkshop(created);
+    const edited = await stepModal.value?.show(step);
+    if (edited) putStep(edited);
 }
 
 async function editWorkshop(workshop: ActivityWorkshopData) {
-    const updated = await workshopModal.value?.show(workshop);
-    if (updated) replaceWorkshop(updated);
+    const edited = await workshopModal.value?.show(workshop);
+    if (edited) putWorkshop(edited);
 }
 
 async function confirmed(): Promise<boolean> {
@@ -176,11 +166,11 @@ async function confirmed(): Promise<boolean> {
 }
 
 async function confirmRemoveStep(step: ActivityStepData) {
-    if (await confirmed()) await detachStep(step);
+    if (await confirmed()) removeStep(step);
 }
 
 async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
-    if (await confirmed()) await removeWorkshop(workshop);
+    if (await confirmed()) removeWorkshop(workshop);
 }
 </script>
 
@@ -197,11 +187,12 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                 <TableOfContentsIcon class="opacity-50" />
             </button>
 
-            <!-- Its own write: stores the state and leaves the form as it is. -->
+            <!-- Its own write: stores the state and leaves the form as it is. A new activity has
+                 no record to write it to until its first save. -->
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden ms-auto"
                  :data-tip="$t(transition.label)">
                 <button class="btn"
-                        :disabled="isChangingState"
+                        :disabled="isChangingState || isNew"
                         @click="changeState">
                     <span v-if="isChangingState"
                           class="loading loading-spinner loading-sm"></span>
@@ -551,8 +542,9 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     </h2>
                     <MaterialsSelection v-model="activity.materials"
                                         @add="addMaterial"
-                                        @update="updateMaterial"
+                                        @create="createMaterial"
                                         @remove="removeMaterial" />
+                    <FieldError :error="errors.get('materials')" />
                 </Panel>
 
                 <Panel id="section-workshops"
@@ -561,13 +553,11 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         <BookOpenIcon class="opacity-50" /> {{ $t('activities.workshops.title') }}
                     </h2>
                     <button class="btn btn-primary"
-                            :disabled="isAddingWorkshop"
-                            @click="addAndEditWorkshop">
-                        <span v-if="isAddingWorkshop"
-                              class="loading loading-spinner loading-sm"></span>
+                            @click="() => editWorkshop(newWorkshop())">
                         <PlusIcon class="opacity-50" />
                         {{ $t('actions.add') }}
                     </button>
+                    <FieldError :error="errors.get('workshops')" />
                     <List :items="activity.workshops"
                           v-slot="{ item }">
                         <div class="my-auto">
@@ -612,13 +602,11 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </span>
                     </h2>
                     <button class="btn btn-primary"
-                            :disabled="isAddingStep"
-                            @click="addAndEditStep">
-                        <span v-if="isAddingStep"
-                              class="loading loading-spinner loading-sm"></span>
+                            @click="() => editStep(newStep())">
                         <PlusIcon class="opacity-50" />
                         {{ $t('actions.add') }}
                     </button>
+                    <FieldError :error="errors.get('steps')" />
                     <List :items="activity.steps"
                           v-slot="{ item, index }">
                         <StepSummary :index="index"
