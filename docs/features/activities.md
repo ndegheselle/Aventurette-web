@@ -33,8 +33,8 @@ beside it is the only thing that holds both — see
 template reads. What identifies it sits at the top: `name`, `description`, `state`, `user`,
 `visual`, `visualBrief`. The rest sits under `classification`, `imaginary`, `audience`,
 `supervision`, `place`, `safety` and `pedagogy`. The columns stay flat. The mapper builds the
-families on read and flattens them on write. An unset single choice is the empty string
-PocketBase stores, and is typed that way.
+families on read and flattens them on write. An unset single choice is `null`; the mapper
+reads and writes it as the empty string PocketBase stores.
 
 `activity.steps`, `activity.materials` and `activity.workshops` hold the records themselves.
 `activityMapper.relations` lists what is fetched alongside an activity. The nested halves are

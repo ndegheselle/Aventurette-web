@@ -81,5 +81,6 @@ list folds back into its first value, and the last one carries no tag links eith
 - The mapper is longer, and nothing checks it against the payload type except the specs. That
   was already true (ADR 0007). A round-trip spec over every development kind guards the one
   relation the mapper splits.
-- An unset single choice is the empty string PocketBase stores. The model types it as `T | ''`
-  instead of pretending it is always set.
+- An unset single choice is the empty string PocketBase stores. The model types it as `T | null`
+  instead of pretending it is always set, and the mapper translates between the two — writing
+  `''` back, never `undefined`, which would leave a cleared choice in place.

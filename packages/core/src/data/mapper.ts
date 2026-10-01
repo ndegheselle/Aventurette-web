@@ -1,6 +1,32 @@
 import type { IFileUrlResolver } from "../files/resolver";
 import type { BaseEntity } from "./entity";
 
+/** A relation goes back as the ids of its records. */
+export function toIds(records: BaseEntity[]): string[] {
+    return records.map(record => record.id);
+}
+
+export function toEntities<TPayload extends BaseEntity, TEntity extends BaseEntity>(
+    payloads: TPayload[] | undefined, 
+    mapper: EntityMapper<TPayload, TEntity>,
+    files: IFileUrlResolver) : TEntity[]
+{
+    return (payloads ?? []).map(payload => mapper.toEntity(payload, files))
+}
+
+/** Convert a [choice] to the default '' if the [choice] is null. */
+export function convert<T extends string>(choice: T | null): T {
+    return (choice ?? '') as T;
+}
+
+export function omit<T extends object, K extends keyof T>(
+    obj: T,
+    key: K
+): Omit<T, K> {
+    const { [key]: _, ...rest } = obj;
+    return rest;
+}
+
 /**
  * Translates one collection between the backend's payload and the app's entity. Every model
  * declares one, and it is the only place the two shapes meet: relations inlined and files

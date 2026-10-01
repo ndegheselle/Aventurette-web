@@ -1,5 +1,5 @@
 import type { ActivitiesWorkshopsResponse } from "@/backend/schema.g";
-import type { EntityMapper } from "@chapelure/core";
+import { toEntities, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import type { ActivityWorkshopData } from "@features/activities/model/workshop";
 
@@ -15,10 +15,10 @@ export const workshopMapper: EntityMapper<ActivityWorkshopPayload, ActivityWorks
     ],
     toEntity: ({ expand, ...workshop }, files) => ({
         ...workshop,
-        materials: (expand?.materials ?? []).map(material => activityMaterialMapper.toEntity(material, files)),
+        materials: toEntities(expand?.materials, activityMaterialMapper, files),
     }),
     toPayload: ({ materials, ...workshop }) => ({
         ...workshop,
-        ...(materials && { materials: materials.map(material => material.id) }),
+        ...(materials && { materials: toIds(materials)}),
     }),
 };

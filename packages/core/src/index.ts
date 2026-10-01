@@ -1,12 +1,12 @@
 // @chapelure/core — the contracts. Never import vue, a backend SDK or the app from here.
 
-export type { BaseEntity, Entity } from './data/entity';
 export { distinctById } from './data/entity';
+export type { BaseEntity, Entity } from './data/entity';
 
+export type { BatchFactory, IBatchCollection, IDataBatch, IdFactory } from './data/batch';
 export { SortDirection } from './data/crud';
 export type { CrudFactory, IDataCrud, Paginated, PaginationOptions } from './data/crud';
-export type { EntityMapper } from './data/mapper';
-export type { BatchFactory, IBatchCollection, IDataBatch, IdFactory } from './data/batch';
+export { convert, omit, toEntities, toIds, type EntityMapper } from './data/mapper';
 
 export {
     createFilter,
@@ -15,7 +15,7 @@ export {
     FilterLogical,
     FilterOperator,
     isFilterGroup,
-    removeEmptyFilters,
+    removeEmptyFilters
 } from './data/filters';
 export type { Filter, FilterGroup } from './data/filters';
 
@@ -26,9 +26,10 @@ export {
     BatchError,
     NotAuthentifiedError,
     NotImplementedError,
-    ValidationError,
+    ValidationError
 } from './errors';
 export type { FieldErrors } from './errors';
 
 export { debounce } from './utils/debounce';
 export { Deferred } from './utils/deferred';
+

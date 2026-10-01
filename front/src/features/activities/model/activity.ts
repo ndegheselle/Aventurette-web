@@ -16,9 +16,6 @@ import { StepKind, type ActivityResourceData, type ActivityStepData } from "@fea
 import { ActivityTagType, type ActivityTagData } from "@features/activities/model/tag";
 import type { ActivityWorkshopData } from "@features/activities/model/workshop";
 
-/** An unset single choice reads as an empty string, which is how the backend stores one. */
-type Choice<T> = T | '';
-
 // ── The activity ────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -55,7 +52,7 @@ export type ActivityState = ActivitiesStateOptions;
 
 /** What sorts an activity: its format, the practices of a workshop, and its stable subject. */
 export interface ActivityClassification {
-    format: Choice<ActivityFormat>;
+    format: ActivityFormat | null;
     practices: ActivityPractice[];
     themes: ActivityTagData[];
 }
@@ -70,7 +67,7 @@ export type ActivityPractice = ActivitiesPracticesOptions;
 
 /** The narrative universe an activity is dressed in, if any, and whether it may change. */
 export interface ActivityImaginary {
-    rule: Choice<ImaginaryRule>;
+    rule: ImaginaryRule | null;
     universes: ActivityTagData[];
 }
 
@@ -85,7 +82,7 @@ export interface ActivityAudience {
     ageMax: number;
     participantsMin: number;
     participantsMax: number;
-    childrenPace: Choice<ChildrenPace>;
+    childrenPace: ChildrenPace | null;
     /** How durations and rules adapt to each age range. */
     ageVariants: HTMLString;
 }
@@ -114,7 +111,7 @@ export function columnOf(value: RangeEnd | undefined): number {
 
 /** What running the activity asks of the adults. */
 export interface ActivitySupervision {
-    hostEffort: Choice<HostEffort>;
+    hostEffort: HostEffort | null;
     /** Entered by the author until the supervision referential can compute it. */
     hostsRequired: number;
     /** Whether an adult has to watch over every workshop, beyond those holding one. */

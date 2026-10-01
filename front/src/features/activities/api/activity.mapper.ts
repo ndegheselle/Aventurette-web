@@ -1,5 +1,5 @@
 import type { ActivitiesResponse } from "@/backend/schema.g";
-import type { BaseEntity, EntityMapper } from "@chapelure/core";
+import { convert, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import { stepMapper, type ActivityStepPayload } from "@features/activities/api/step.mapper";
 import { tagMapper, type ActivityTagPayload } from "@features/activities/api/tag.mapper";
@@ -26,23 +26,8 @@ const TAG_RELATIONS = [
 ] as const;
 type TagRelation = typeof TAG_RELATIONS[number];
 
-/** A relation goes back as the ids of its records. */
-function ids(records: BaseEntity[]): string[] {
-    return records.map(record => record.id);
-}
-
-/** An unset choice is the empty string the backend stores for one, which its type leaves out. */
-function choice<T extends string>(value: T | ''): T {
-    return value as T;
-}
-
 /**
- * Reads and writes an activity. The columns are flat; the entity groups them by family, and this
- * is the one place that knows which column belongs to which (ADR 0015). Each place a tag goes has
- * a relation of its own; the six development axes share one, and are sorted apart by kind.
- *
- * Steps, materials, workshops and tags arrive as records — their own mappers' work — and go back
- * as ids, because saving an activity persists its links and nothing under them.
+ * Mapping between the domain object and the flat database object.
  */
 export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
     relations: [
@@ -76,12 +61,12 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             visualBrief: activity.visual_brief,
 
             classification: {
-                format: activity.format,
+                format: activity.format || null,
                 practices: activity.practices ?? [],
                 themes: tags('theme_tags'),
             },
             imaginary: {
-                rule: activity.imaginary_rule,
+                rule: activity.imaginary_rule || null,
                 universes: tags('imaginary_tags'),
             },
             audience: {
@@ -89,11 +74,11 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
                 ageMax: activity.age_max,
                 participantsMin: activity.participants_min,
                 participantsMax: activity.participants_max,
-                childrenPace: activity.children_pace,
+                childrenPace: activity.children_pace || null,
                 ageVariants: activity.age_variants,
             },
             supervision: {
-                hostEffort: activity.host_effort,
+                hostEffort: activity.host_effort || null,
                 hostsRequired: activity.recommended_hosts_numbers,
                 crossSupervision: activity.cross_supervision,
                 notes: activity.supervision_notes,
@@ -130,24 +115,24 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             ...columns,
             ...(visualBrief !== undefined && { visual_brief: visualBrief }),
             ...(classification && {
-                format: choice(classification.format),
+                format: convert(classification.format),
                 practices: classification.practices,
-                theme_tags: ids(classification.themes),
+                theme_tags: toIds(classification.themes),
             }),
             ...(imaginary && {
-                imaginary_rule: choice(imaginary.rule),
-                imaginary_tags: ids(imaginary.universes),
+                imaginary_rule: convert(imaginary.rule),
+                imaginary_tags: toIds(imaginary.universes),
             }),
             ...(audience && {
                 age_min: audience.ageMin,
                 age_max: audience.ageMax,
                 participants_min: audience.participantsMin,
                 participants_max: audience.participantsMax,
-                children_pace: choice(audience.childrenPace),
+                children_pace: convert(audience.childrenPace),
                 age_variants: audience.ageVariants,
             }),
             ...(supervision && {
-                host_effort: choice(supervision.hostEffort),
+                host_effort: convert(supervision.hostEffort),
                 recommended_hosts_numbers: supervision.hostsRequired,
                 cross_supervision: supervision.crossSupervision,
                 supervision_notes: supervision.notes,
@@ -159,15 +144,15 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
                 conditions: place.conditions,
                 seasons: place.seasons,
             }),
-            ...(safety && { safety_tags: ids(safety.tags) }),
+            ...(safety && { safety_tags: toIds(safety.tags) }),
             ...(pedagogy && {
-                goal_tags: ids(pedagogy.goals),
-                ideal_for_tags: ids(pedagogy.idealFor),
-                development_tags: ids(Object.values(pedagogy.development).flat()),
+                goal_tags: toIds(pedagogy.goals),
+                ideal_for_tags: toIds(pedagogy.idealFor),
+                development_tags: toIds(Object.values(pedagogy.development).flat()),
             }),
-            ...(steps && { steps: ids(steps) }),
-            ...(materials && { materials: ids(materials) }),
-            ...(workshops && { workshops: ids(workshops) }),
+            ...(steps && { steps: toIds(steps) }),
+            ...(materials && { materials: toIds(materials) }),
+            ...(workshops && { workshops: toIds(workshops) }),
         };
     },
 };

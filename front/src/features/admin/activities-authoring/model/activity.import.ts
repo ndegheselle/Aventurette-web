@@ -219,7 +219,7 @@ export function readActivitySheet(text: string): SheetReading {
 
             return {
                 // A step the file does not type is one the author wrote freely.
-                kind: read.choice(step.kind, `${path}.kind`, StepKind) || StepKind.CUSTOM,
+                kind: read.choice(step.kind, `${path}.kind`, StepKind) ?? StepKind.CUSTOM,
                 title,
                 duration: read.number(step.duration, `${path}.duration`),
                 description,
@@ -288,18 +288,18 @@ function createReader() {
         return [];
     }
 
-    /** One of an enum's values, or `''` — what the backend stores for none. */
-    function choice<T extends string>(value: unknown, path: string, options: Record<string, T>): T | "" {
-        if (isUnset(value) || value === "") return "";
+    /** One of an enum's values, or `null` for none — which a file may also write as `""`. */
+    function choice<T extends string>(value: unknown, path: string, options: Record<string, T>): T | null {
+        if (isUnset(value) || value === "") return null;
         if (Object.values<string>(options).includes(value as string)) return value as T;
 
         problems.push({ path, code: "choice", value: String(value) });
-        return "";
+        return null;
     }
 
     function choices<T extends string>(value: unknown, path: string, options: Record<string, T>): T[] {
         const picked = list(value, path, (entry, entryPath) => choice(entry, entryPath, options));
-        return [...new Set(picked.filter((entry): entry is T => entry !== ""))];
+        return [...new Set(picked.filter((entry): entry is T => entry !== null))];
     }
 
     /** Names, trimmed; a blank one is dropped rather than refused. */

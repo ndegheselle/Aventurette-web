@@ -63,7 +63,7 @@ describe('readActivitySheet', () => {
     it('reads anything missing or null as unset, the way a blank activity holds it', () => {
         const sheet = sheetOf({ name: 'Tag', classification: { format: null }, audience: { ageMin: null } });
 
-        expect(sheet.classification.format).toBe('');
+        expect(sheet.classification.format).toBeNull();
         expect(sheet.audience.ageMin).toBe(0);
         expect(sheet.place.indoor).toBe(false);
         expect(sheet.steps).toEqual([]);

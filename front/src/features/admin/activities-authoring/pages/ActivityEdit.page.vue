@@ -275,7 +275,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                        :error="errors.get('format')">
                                     <select class="select w-full"
                                             v-model="activity.classification.format">
-                                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
                                         <option v-for="value in formats"
                                                 :key="value"
                                                 :value="value">
@@ -315,7 +315,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                        :error="errors.get('imaginary_rule')">
                                     <select class="select w-full"
                                             v-model="activity.imaginary.rule">
-                                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
                                         <option v-for="value in imaginaryRules"
                                                 :key="value"
                                                 :value="value">
@@ -370,7 +370,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                        :error="errors.get('children_pace')">
                                     <select class="select w-full"
                                             v-model="activity.audience.childrenPace">
-                                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
                                         <option v-for="value in childrenPaces"
                                                 :key="value"
                                                 :value="value">
@@ -401,7 +401,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                        :error="errors.get('host_effort')">
                                     <select class="select w-full"
                                             v-model="activity.supervision.hostEffort">
-                                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
                                         <option v-for="value in hostEfforts"
                                                 :key="value"
                                                 :value="value">

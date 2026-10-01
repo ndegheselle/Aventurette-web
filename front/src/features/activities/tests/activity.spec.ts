@@ -164,6 +164,17 @@ describe('activityMapper', () => {
         expect(payload).not.toHaveProperty('place');
     });
 
+    it('reads an unset choice as null, and writes it back as the empty string that clears it', () => {
+        const activity = activityMapper.toEntity(anActivityPayload({ host_effort: 'HIGH' }), files);
+
+        expect(activity.classification.format).toBeNull();
+        expect(activity.supervision.hostEffort).toBe('HIGH');
+
+        // Not undefined: a key left out of an update leaves the stored choice in place.
+        activity.supervision.hostEffort = null;
+        expect(activityMapper.toPayload(activity)).toMatchObject({ format: '', host_effort: '' });
+    });
+
     it('writes relations as ids — saving an activity links its steps and tags, it does not save them', () => {
         const payload = activityMapper.toPayload(anActivity({
             steps: [aStep({ id: 'stp1' })],

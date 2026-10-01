@@ -1,5 +1,5 @@
 import type { ActivitiesStepsResponse, StepsResourcesResponse } from "@/backend/schema.g";
-import type { EntityMapper } from "@chapelure/core";
+import { toEntities, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import type { ActivityResourceData, ActivityStepData } from "@features/activities/model/step";
 
@@ -37,13 +37,13 @@ export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
     toEntity: ({ expand, actions, ...step }, files) => ({
         ...step,
         actions: actions ?? [],
-        materials: (expand?.materials ?? []).map(material => activityMaterialMapper.toEntity(material, files)),
-        resources: (expand?.resources ?? []).map(resource => resourceMapper.toEntity(resource, files)),
+        materials: toEntities(expand?.materials, activityMaterialMapper, files),
+        resources: toEntities(expand?.resources, resourceMapper, files),
     }),
     toPayload: ({ materials, resources, actions, ...step }) => ({
         ...step,
         ...(actions && { actions: actions.map(action => action.trim()).filter(Boolean) }),
-        ...(materials && { materials: materials.map(material => material.id) }),
-        ...(resources && { resources: resources.map(resource => resource.id) }),
+        ...(materials && { materials: toIds(materials) }),
+        ...(resources && { resources: toIds(resources) }),
     }),
 };
