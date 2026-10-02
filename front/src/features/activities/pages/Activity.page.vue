@@ -11,7 +11,7 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
 </script>
 <template>
     <Container>
-        <div class="sticky top-0 flex gap-2 py-1 bg-base-100">
+        <div class="sticky top-0 flex gap-2 py-1 bg-base-100 z-10">
             <RouterLink class="btn btn-ghost"
                         :to="{ name: activitiesRoutesNames.all }">
                 <ArrowLeftIcon /> {{ $t('actions.back') }}
