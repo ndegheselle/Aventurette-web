@@ -39,7 +39,8 @@ schema's codes are the app's. If the schema and that file still disagree, the fi
 5. **Report back** in a few lines: the file written, the fields left empty because the fiche
    only held template placeholders, everything dropped (see *Not imported*, and any value that
    fits no enum), and the tag and safety instruction names used. A name only links if one of that
-   kind already exists in the app. The import modal lists the ones that do not match.
+   kind already exists in the app. The import modal lists the ones that do not match, and lets
+   the author link an existing one instead, then recaps the fields left empty.
 
 ## Rules
 
@@ -66,8 +67,8 @@ schema's codes are the app's. If the schema and that file still disagree, the fi
 ## Not imported
 
 The schema has no key for these: the database does not store them, or stores files rather than
-text. List the ones that are not placeholders in the report, so the author adds them from the
-editor.
+text. List the ones that are not placeholders in the report, so the author adds them: resources
+in the import modal's last stage, the rest from the editor once it exists there.
 
 | Fiche | Why |
 |---|---|

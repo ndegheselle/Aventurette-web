@@ -46,8 +46,9 @@ first save there creates the activity.
 
 ## Importing a sheet
 
-The **import** button beside add opens `ActivityImport.modal`, in two stages: a JSON sheet, then
-an optional cover visual. The JSON is what the `fiche-to-json` skill (`.claude/skills/`) writes
+The **import** button beside add opens `ActivityImport.modal`, in three stages: a JSON sheet;
+what it lacks; then its files — an optional cover visual and each step's resources, which a JSON
+file cannot carry. The JSON is what the `fiche-to-json` skill (`.claude/skills/`) writes
 from the Confluence activity sheet template, against the skill's `fiche-activite.schema.json`.
 `model/activity.import.ts` is what defines the format; a spec reads the skill's `example.json`
 through it and checks the schema's enum codes against the app's, so the three cannot drift.
@@ -62,7 +63,12 @@ brief and end criteria, and is refused.
 
 - **Tags, safety instructions and tips are matched, never created.** A name links the one of the
   same kind whose name or slug it is, whatever the case — a tip has no slug, so by name. One that
-  matches nothing is listed in the modal and left off.
+  matches nothing is listed in the modal, each name once, with a pick of the existing ones of
+  its kind: it links the one picked, or is left off.
+- **What the draft still lacks is recapped** (`unsetFields`), for the author to fill in the
+  editor. A field that only applies to some activities is listed only for those: practices and
+  supervision notes for a workshop, universes when the imaginary is imposed. Steps with no
+  duration are named.
 - **Materials are the sheet's list plus whatever a step or workshop recalls** that the list
   forgot, each name once. Each is the catalogue material of that name, whatever the case, or a
   new one when the catalogue has none. The activity links each with its quantity, and steps and
@@ -72,7 +78,8 @@ brief and end criteria, and is refused.
 
 `draftFromSheet` builds the whole activity in memory — a draft, by the signed-in user — with
 its material links, steps and workshops, each under the id it will be created with, and the
-catalogue names it needs that do not exist yet. `useActivityImport` then saves it the way the
+catalogue names it needs that do not exist yet. A step's id is chosen when the sheet is read, so
+the files picked for it can point at it. `useActivityImport` then saves it the way the
 editor saves ([activities](activities.md#saving)): one batch, the visual included, **all or
 nothing** by transaction. A refused import writes nothing, catalogue names included. On success
 the editor opens on the new draft.
@@ -193,6 +200,11 @@ The specs, in `tests/`.
   nothing is reported rather than created. So does a safety instruction, and a tip by name.
 - The materials are the list plus what steps and workshops recall, each name once.
 - The skill's `example.json` reads without a problem.
+- A name that matched nothing links what the author picked among its own kind, and is still
+  reported, once.
+- The recap lists a workshop's practices and notes, and imposed universes, only then; one bound,
+  one place flag or one axis counts as set; steps with no duration are named.
+- A step gets the files picked for it, under the id they point at.
 - The skill's schema lists exactly the app's enum codes, its development axes and version 2.
 - A material the catalogue has, whatever its case, is linked rather than added again; a name it
   lacks is added once, and linked to what is added.
@@ -235,8 +247,8 @@ composable ends in one call to `saveApi.send`.
 - **Removing a material asks for no confirmation**, unlike a step or a workshop. It is one row
   and cheap to add back, but the steps that recalled it lose the link for good.
 - The rows reuse the placeholder images the rest of the app does.
-- **An import leaves resources behind.** A fiche links its files, and a step resource is an
-  upload, so the skill lists them for the author to upload from the editor.
+- **An import cannot fetch a fiche's resources.** A fiche links its files, and a step resource is
+  an upload: the skill lists them, and the author uploads them in the modal's last stage.
 - **An imported visual shows nowhere yet.** It is stored, but the mapper hands `visual` back as
   the file's name, and the list and the editor do not read it.
 - **Picking the same JSON file again after fixing it does nothing** in some browsers: the file
