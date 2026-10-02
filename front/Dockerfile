@@ -1,7 +1,7 @@
 # The build context is the REPOSITORY ROOT, not front/, because the app depends on the
 # workspace packages under packages/ which live outside front/.
 #
-#   docker build -f front/Dockerfile --build-arg VITE_API_URL=https://api.lubriciel.ovh -t lubriciel-front .
+#   docker build -f front/Dockerfile --build-arg VITE_API_URL=https://api.lubriciel.ovh -t aventurette-front .
 
 # -----------------------
 # 1. Build stage
@@ -26,11 +26,14 @@ COPY packages/ui/package.json packages/ui/
 COPY front/package.json front/
 RUN npm ci
 
-# Source
+# Source. vue-tsc typechecks the specs too, so tests/ is needed, and vite.config.ts reads
+# its aliases from scripts/aliases.mjs.
+COPY scripts/aliases.mjs scripts/
+COPY tests/ tests/
 COPY packages/ packages/
 COPY front/ front/
 
-RUN npm run build --workspace @sagace/front
+RUN npm run build --workspace @aventurette/front
 
 
 # -----------------------

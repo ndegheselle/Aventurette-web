@@ -8,9 +8,9 @@
         "front"
     ],
     "scripts": {
-        "dev": "npm run dev --workspace @sagace/front",
-        "build": "npm run build --workspace @sagace/front",
-        "preview": "npm run preview --workspace @sagace/front",
+        "dev": "npm run dev --workspace @aventurette/front",
+        "build": "npm run build --workspace @aventurette/front",
+        "preview": "npm run preview --workspace @aventurette/front",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",

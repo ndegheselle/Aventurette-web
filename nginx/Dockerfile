@@ -1,7 +1,7 @@
 # The edge: TLS termination, the ACME challenge, and routing by hostname to the front and
 # api containers. The build context is the REPOSITORY ROOT (see compose.yml).
 #
-#   docker build -f nginx/Dockerfile -t lubriciel-nginx .
+#   docker build -f nginx/Dockerfile -t aventurette-nginx .
 FROM nginx:alpine
 
 # The image ships a catch-all vhost on port 80 that would shadow ours.

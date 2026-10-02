@@ -5,7 +5,7 @@
 #
 # Everything site-specific comes from the .env file next to this one — the domain is set
 # there once and reaches nginx, the certificate and the front bundle from that single place.
-name: lubriciel
+name: aventurette
 
 services:
     # The edge: TLS termination, the ACME challenge, and routing by hostname.
@@ -13,7 +13,7 @@ services:
         build:
             context: .
             dockerfile: nginx/Dockerfile
-        container_name: lubriciel-nginx
+        container_name: aventurette-nginx
         ports:
             - '80:80'
             - '443:443'
@@ -46,7 +46,7 @@ services:
                 # Vite inlines this into the JS bundle, so it is a build input, not a runtime
                 # one: changing the domain needs `docker compose up -d --build front`.
                 VITE_API_URL: https://${API_DOMAIN}
-        container_name: lubriciel-front
+        container_name: aventurette-front
         expose:
             - '80'
         restart: unless-stopped
@@ -56,7 +56,7 @@ services:
     api:
         build:
             context: ./back
-        container_name: lubriciel-api
+        container_name: aventurette-api
         expose:
             - '8090'
         volumes:
@@ -72,7 +72,7 @@ services:
     # Renewal only, every 12h. The first certificate is issued by scripts/init-certificate.sh.
     certbot:
         image: certbot/certbot
-        container_name: lubriciel-certbot
+        container_name: aventurette-certbot
         volumes:
             - ./nginx/certbot/www:/var/www/certbot
             - ./nginx/certbot/conf:/etc/letsencrypt
