@@ -1,0 +1,414 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fiche d'activité — import",
+  "description": "The JSON file the authoring screen imports, written from a fiche d'activité made from the Confluence template. Version 2. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the file is written before anything exists to point at. `readActivitySheet` in front/src/features/admin/activities-authoring/model/activity.import.ts is what the app actually reads; it only requires `name` and ignores unknown keys. This schema is stricter on purpose: every key is written, its empty value when unset, so the file stays readable for the next person who edits it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "name",
+    "description",
+    "visualBrief",
+    "classification",
+    "imaginary",
+    "audience",
+    "supervision",
+    "place",
+    "safety",
+    "pedagogy",
+    "tips",
+    "materials",
+    "workshops",
+    "steps"
+  ],
+  "properties": {
+    "version": {
+      "const": 2,
+      "description": "Format version. Always 2."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Name of the activity: the fiche's h1, the one after the template title. Plain text."
+    },
+    "description": {
+      "$ref": "#/$defs/html",
+      "description": "`## Description`: what children do, why the activity is interesting, and what should be known before starting. HTML."
+    },
+    "visualBrief": {
+      "type": "string",
+      "description": "Informations row « Visuel principal »: brief of the cover image, plain text. The image itself is picked in the import modal."
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "practices", "themes"],
+      "properties": {
+        "format": {
+          "anyOf": [{ "$ref": "#/$defs/format" }, { "$ref": "#/$defs/unset" }],
+          "description": "Row « Format »."
+        },
+        "practices": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/practice" },
+          "description": "Row « Pratique »: for an atelier, its practical category or categories."
+        },
+        "themes": {
+          "$ref": "#/$defs/names",
+          "description": "Row « Thème »: stable subject(s) of the activity, distinct from the imaginary and from pedagogical goals. THEME tag names."
+        }
+      }
+    },
+    "imaginary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule", "universes"],
+      "properties": {
+        "rule": {
+          "anyOf": [{ "$ref": "#/$defs/imaginaryRule" }, { "$ref": "#/$defs/unset" }],
+          "description": "Row « Règle d'imaginaire »: whether a narrative universe is unnecessary, adaptable or required."
+        },
+        "universes": {
+          "$ref": "#/$defs/names",
+          "description": "Row « Imaginaire »: narrative dressing such as pirates, space or dragons. Empty when there is none. IMAGINARY tag names."
+        }
+      }
+    },
+    "audience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ageMin", "ageMax", "participantsMin", "participantsMax", "childrenPace", "ageVariants"],
+      "properties": {
+        "ageMin": {
+          "$ref": "#/$defs/count",
+          "description": "Row « Âge minimum », in years: 3 from « 3 ans »."
+        },
+        "ageMax": {
+          "$ref": "#/$defs/count",
+          "description": "Row « Âge maximum », in years."
+        },
+        "participantsMin": {
+          "$ref": "#/$defs/count",
+          "description": "Row « Effectif recommandé », lower bound: what the mechanics and safety allow, not the legal maximum. 6 from « 6 à 12 enfants »."
+        },
+        "participantsMax": {
+          "$ref": "#/$defs/count",
+          "description": "Row « Effectif recommandé », upper bound."
+        },
+        "childrenPace": {
+          "anyOf": [{ "$ref": "#/$defs/childrenPace" }, { "$ref": "#/$defs/unset" }],
+          "description": "Row « Rythme des enfants »."
+        },
+        "ageVariants": {
+          "$ref": "#/$defs/html",
+          "description": "Row « Durées selon âge / variantes »: the documented adaptations per age range, with their durations. HTML. Never invent a variant."
+        }
+      }
+    },
+    "supervision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostEffort", "hostsRequired", "crossSupervision", "notes"],
+      "properties": {
+        "hostEffort": {
+          "anyOf": [{ "$ref": "#/$defs/hostEffort" }, { "$ref": "#/$defs/unset" }],
+          "description": "Row « Mobilisation de l'animateur »: explanations, attention, vigilance and interventions expected from the animator."
+        },
+        "hostsRequired": {
+          "$ref": "#/$defs/count",
+          "description": "Row « Nombre d'animateurs requis ». When the fiche gives a rule or a calculation rather than a number, 0 here and the rule goes in `notes`, as written."
+        },
+        "crossSupervision": {
+          "type": "boolean",
+          "description": "true when the workshop configuration asks for a surveillance transversale."
+        },
+        "notes": {
+          "$ref": "#/$defs/html",
+          "description": "Row « Configuration des ateliers et contraintes d'encadrement »: simultaneous stations, adults per station, cross-station supervision. Also holds a staffing rule that is not a number. HTML."
+        }
+      }
+    },
+    "place": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["indoor", "outdoor", "locations", "conditions", "seasons"],
+      "properties": {
+        "indoor": {
+          "type": "boolean",
+          "description": "Row « Lieu de pratique » lists Intérieur. Independent of `outdoor`: both can be true."
+        },
+        "outdoor": {
+          "type": "boolean",
+          "description": "Row « Lieu de pratique » lists Extérieur."
+        },
+        "locations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/location" },
+          "description": "Row « Localisation détaillée ». Does not replace `indoor` / `outdoor`. A setting that fits no code is dropped and reported."
+        },
+        "conditions": {
+          "$ref": "#/$defs/html",
+          "description": "Row « Conditions de réalisation »: indispensable space, terrain, weather, water, supervision or accessibility constraints. HTML."
+        },
+        "seasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/season" },
+          "description": "Row « Saison »."
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instructions"],
+      "properties": {
+        "instructions": {
+          "$ref": "#/$defs/names",
+          "description": "Row « Sécurité »: safety instruction names or slugs from the catalogue, e.g. feu, eau, tranchant, alimentaire, meteo-extreme, premiers-secours. Do not copy the safety checklist."
+        }
+      }
+    },
+    "pedagogy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goals", "idealFor", "development"],
+      "properties": {
+        "goals": {
+          "$ref": "#/$defs/names",
+          "description": "Row « Tags pédagogiques »: concrete objectives such as écoute, coopération or motricité fine. GOAL tag names."
+        },
+        "idealFor": {
+          "$ref": "#/$defs/names",
+          "description": "Row « Idéal pour… »: situations where the activity helps an animator, such as faire connaissance or occuper une transition. IDEAL_FOR tag names."
+        },
+        "development": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Rows « Développement … ». Fill an axis only when the activity actually exercises it. Tag names of the axis' own type.",
+          "required": [
+            "DEVELOP_PHYSICAL",
+            "DEVELOP_INTELLECTUAL",
+            "DEVELOP_AFFECT",
+            "DEVELOP_SOCIAL",
+            "DEVELOP_MORAL",
+            "DEVELOP_SPIRITUAL"
+          ],
+          "properties": {
+            "DEVELOP_PHYSICAL": {
+              "$ref": "#/$defs/names",
+              "description": "« Développement physique »: motricité fine, motricité globale, équilibre, coordination…"
+            },
+            "DEVELOP_INTELLECTUAL": {
+              "$ref": "#/$defs/names",
+              "description": "« Développement intellectuel »: logique, mémoire, observation, stratégie…"
+            },
+            "DEVELOP_AFFECT": {
+              "$ref": "#/$defs/names",
+              "description": "« Développement affectif »: reconnaître ses émotions, réguler la frustration, confiance en soi…"
+            },
+            "DEVELOP_SOCIAL": {
+              "$ref": "#/$defs/names",
+              "description": "« Développement social »: écoute, coopération, communication, inclusion…"
+            },
+            "DEVELOP_MORAL": {
+              "$ref": "#/$defs/names",
+              "description": "« Développement moral / caractère »: autonomie, persévérance, respect, créativité…"
+            },
+            "DEVELOP_SPIRITUAL": {
+              "$ref": "#/$defs/names",
+              "description": "« Développement spirituel »: only when the activity genuinely includes meaning, contemplation or inner experience."
+            }
+          }
+        }
+      }
+    },
+    "tips": {
+      "$ref": "#/$defs/names",
+      "description": "Names from the tips catalogue (conseils d'animation). A fiche's `#### Conseil` is free text, not a name: leave this empty unless the user gives names."
+    },
+    "materials": {
+      "type": "array",
+      "description": "`## Matériel`, one entry per bullet. Whether the activity needs material is derived from this list.",
+      "items": { "$ref": "#/$defs/material" }
+    },
+    "workshops": {
+      "type": "array",
+      "description": "`## Ateliers`, one entry per table row. Only when the activity has parallel stations; skip a row that is only the template's « … ».",
+      "items": { "$ref": "#/$defs/workshop" }
+    },
+    "steps": {
+      "type": "array",
+      "description": "`## Étapes`, one entry per `### N. <title>`, in the fiche's order. The automatic steps « Rassembler le matériel » and « Regrouper les enfants » are generated by the app and never written. The totals « Temps de jeu » and « Temps de préparation » are computed from the step durations and stored nowhere.",
+      "items": { "$ref": "#/$defs/step" }
+    }
+  },
+  "$defs": {
+    "html": {
+      "type": "string",
+      "description": "Rich text as HTML: <p>, <strong>, <em>, <ul><li>, <a href>. \"\" when unset."
+    },
+    "names": {
+      "type": "array",
+      "description": "Names as the fiche writes them, one per entry, trimmed, without a leading #. A comma or « et » list is split. A name only links if one of that kind exists in the app; the import modal lists the others.",
+      "items": { "type": "string", "pattern": "\\S" }
+    },
+    "count": {
+      "type": "number",
+      "minimum": 0,
+      "description": "A plain non-negative number. 0 means not set."
+    },
+    "unset": {
+      "enum": [null, ""],
+      "description": "No value for a single choice."
+    },
+    "format": {
+      "oneOf": [
+        { "const": "SMALL_GAME", "title": "Petit jeu" },
+        { "const": "BIG_GAME", "title": "Grand jeu" },
+        { "const": "WORKSHOP", "title": "Atelier" }
+      ]
+    },
+    "practice": {
+      "oneOf": [
+        { "const": "MANUAL_CREATION", "title": "Création manuelle" },
+        { "const": "EXPRESSION", "title": "Expression" },
+        { "const": "COOKING", "title": "Cuisine" },
+        { "const": "OBSERVATION", "title": "Observation" },
+        { "const": "MUSIC", "title": "Musique" },
+        { "const": "EXPERIMENTATION", "title": "Expérimentation" }
+      ]
+    },
+    "imaginaryRule": {
+      "oneOf": [
+        { "const": "NONE", "title": "Aucun imaginaire nécessaire" },
+        { "const": "ADAPTABLE", "title": "Habillage adaptable" },
+        { "const": "REQUIRED", "title": "Imaginaire imposé" }
+      ]
+    },
+    "childrenPace": {
+      "oneOf": [
+        { "const": "CALM", "title": "Calme" },
+        { "const": "DYNAMIC", "title": "Dynamique" }
+      ]
+    },
+    "hostEffort": {
+      "oneOf": [
+        { "const": "LOW", "title": "Faible" },
+        { "const": "MEDIUM", "title": "Moyenne" },
+        { "const": "HIGH", "title": "Importante" }
+      ]
+    },
+    "location": {
+      "oneOf": [
+        { "const": "PARK", "title": "Parc" },
+        { "const": "HOUSE", "title": "Maison" },
+        { "const": "BALCONY", "title": "Balcon" },
+        { "const": "CAR", "title": "Voiture" },
+        { "const": "CITY", "title": "Ville" },
+        { "const": "CAMPAIGN", "title": "Campagne" },
+        { "const": "FOREST", "title": "Forêt" },
+        { "const": "MOUNTAIN", "title": "Montagne" },
+        { "const": "POOL", "title": "Piscine" },
+        { "const": "LAKE", "title": "Lac" },
+        { "const": "RIVER", "title": "Rivière" },
+        { "const": "BATH", "title": "Bain" },
+        { "const": "MEAL", "title": "Repas" }
+      ]
+    },
+    "season": {
+      "oneOf": [
+        { "const": "AUTUMN", "title": "Automne" },
+        { "const": "WINTER", "title": "Hiver" },
+        { "const": "SPRING", "title": "Printemps" },
+        { "const": "SUMMER", "title": "Été" }
+      ]
+    },
+    "stepKind": {
+      "oneOf": [
+        { "const": "PREPARE", "title": "Préparer le jeu" },
+        { "const": "CUSTOM", "title": "Any other step" },
+        { "const": "CONCLUSION", "title": "Conclusion" }
+      ]
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "quantity"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "\\S",
+          "description": "Material name, preferably the catalogue's wording. A name the catalogue lacks is added to it on import."
+        },
+        "quantity": {
+          "type": "string",
+          "description": "Quantity, when the bullet clearly states one: \"2\" from « 2 ballons en mousse », \"1 boîte\" from « Craie (1 boîte) ». \"\" otherwise."
+        }
+      }
+    },
+    "workshop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "theme", "challenges", "adultsRequired", "materials"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "\\S",
+          "description": "Column « Atelier »."
+        },
+        "theme": {
+          "type": "string",
+          "description": "Column « Thématique », plain text."
+        },
+        "challenges": {
+          "$ref": "#/$defs/html",
+          "description": "Column « Défi(s) proposé(s) ». HTML."
+        },
+        "adultsRequired": {
+          "$ref": "#/$defs/count",
+          "description": "Column « Adultes requis au poste »."
+        },
+        "materials": {
+          "$ref": "#/$defs/names",
+          "description": "Column « Matériel »: names from `materials`. A name missing there is added to the activity."
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "title", "duration", "description", "actions", "materials"],
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/stepKind",
+          "description": "From the h3 title: « Préparer le jeu » is PREPARE, « Conclusion » is CONCLUSION, any other title is CUSTOM."
+        },
+        "title": {
+          "type": "string",
+          "pattern": "\\S",
+          "description": "The h3 title without its number and without an italic *(…)* note. Plain text. Stands in for the description when there is none."
+        },
+        "duration": {
+          "$ref": "#/$defs/count",
+          "description": "« Durée estimée (minutes) » of the whole step."
+        },
+        "description": {
+          "$ref": "#/$defs/html",
+          "description": "Free text under the title, such as « Ce que l'animateur installe… ». HTML."
+        },
+        "actions": {
+          "type": "array",
+          "description": "The actions table, column « Action à cocher », in order, without the 1.1 numbering. One short, concrete action per entry; the app renders each as a checkbox.",
+          "items": { "type": "string", "pattern": "\\S" }
+        },
+        "materials": {
+          "$ref": "#/$defs/names",
+          "description": "`#### Matériel` of the step: names from `materials`. A name missing there is added to the activity."
+        }
+      }
+    }
+  }
+}

@@ -48,8 +48,9 @@ first save there creates the activity.
 
 The **import** button beside add opens `ActivityImport.modal`, in two stages: a JSON sheet, then
 an optional cover visual. The JSON is what the `fiche-to-json` skill (`.claude/skills/`) writes
-from the Confluence activity sheet template. `model/activity.import.ts` is what defines the
-format, and a spec reads the skill's `example.json` through it so the two cannot drift.
+from the Confluence activity sheet template, against the skill's `fiche-activite.schema.json`.
+`model/activity.import.ts` is what defines the format; a spec reads the skill's `example.json`
+through it and checks the schema's enum codes against the app's, so the three cannot drift.
 
 `readActivitySheet` reads the file's text. It collects **every** problem with where it is
 (`steps[2].kind`) rather than stopping at the first, and the modal lists them. Anything missing
@@ -192,6 +193,7 @@ The specs, in `tests/`.
   nothing is reported rather than created. So does a safety instruction, and a tip by name.
 - The materials are the list plus what steps and workshops recall, each name once.
 - The skill's `example.json` reads without a problem.
+- The skill's schema lists exactly the app's enum codes, its development axes and version 2.
 - A material the catalogue has, whatever its case, is linked rather than added again; a name it
   lacks is added once, and linked to what is added.
 - Every record hangs off the activity, and steps and workshops recall the links.

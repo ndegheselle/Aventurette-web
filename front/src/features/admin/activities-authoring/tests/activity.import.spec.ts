@@ -1,4 +1,13 @@
-import { ActivityFormat } from '@features/activities/model/activity';
+import {
+    ActivityFormat,
+    ActivityLocation,
+    ActivityPractice,
+    ActivitySeason,
+    ChildrenPace,
+    DEVELOPMENT_AXES,
+    HostEffort,
+    ImaginaryRule,
+} from '@features/activities/model/activity';
 import { StepKind } from '@features/activities/model/step';
 import { ActivityTagType } from '@features/activities/model/tag';
 import {
@@ -6,6 +15,7 @@ import {
     draftFromSheet,
     materialsOfSheet,
     readActivitySheet,
+    SHEET_VERSION,
     stepFromSheet,
     type ActivitySheet,
 } from '@features/admin/activities-authoring/model/activity.import';
@@ -13,6 +23,7 @@ import { aCatalogueMaterial, aMaterial, anActivity, aSafetyInstruction, aTag, aT
 import { describe, expect, it } from 'vitest';
 // Relative: no alias reaches the skills folder, and this is the one file that needs to.
 import example from '../../../../../../.claude/skills/fiche-to-json/example.json?raw';
+import schema from '../../../../../../.claude/skills/fiche-to-json/fiche-activite.schema.json?raw';
 
 // A sheet is written by hand or by the skill, outside the app: reading it is the one place that
 // says what an imported activity may hold. Then the names in it become links.
@@ -29,6 +40,23 @@ describe('readActivitySheet', () => {
     it('reads the example the fiche-to-json skill writes from', () => {
         // The skill documents the format; this is what keeps the two from drifting apart.
         expect(readActivitySheet(example).problems).toEqual([]);
+    });
+
+    it('accepts the codes the fiche-to-json schema lists, and only those', () => {
+        // The skill writes against the schema; the enums come from the database.
+        const { properties, $defs } = JSON.parse(schema);
+        const codes = (name: string) => $defs[name].oneOf.map((option: { const: string }) => option.const);
+
+        expect(properties.version.const).toBe(SHEET_VERSION);
+        expect(codes('format')).toEqual(Object.values(ActivityFormat));
+        expect(codes('practice')).toEqual(Object.values(ActivityPractice));
+        expect(codes('imaginaryRule')).toEqual(Object.values(ImaginaryRule));
+        expect(codes('childrenPace')).toEqual(Object.values(ChildrenPace));
+        expect(codes('hostEffort')).toEqual(Object.values(HostEffort));
+        expect(codes('location')).toEqual(Object.values(ActivityLocation));
+        expect(codes('season')).toEqual(Object.values(ActivitySeason));
+        expect(codes('stepKind')).toEqual(Object.values(StepKind));
+        expect(properties.pedagogy.properties.development.required).toEqual([...DEVELOPMENT_AXES]);
     });
 
     it('refuses what is not JSON', () => {
