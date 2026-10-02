@@ -29,7 +29,7 @@ import SectionsMenuModal from '@features/admin/activities-authoring/components/S
 import SectionsMenu, { type SectionEntry } from '@features/admin/activities-authoring/components/SectionsMenu.vue';
 import StepEditModal from '@features/admin/activities-authoring/components/StepEdit.modal.vue';
 import WorkshopEditModal from '@features/admin/activities-authoring/components/WorkshopEdit.modal.vue';
-import { useActivityEdit, useTagOptions } from '@features/admin/activities-authoring/composables/useActivityEdit';
+import { useActivityEdit, useReferenceOptions } from '@features/admin/activities-authoring/composables/useActivityEdit';
 import { AGE_BOUNDS, PARTICIPANTS_BOUNDS } from '@features/admin/activities-authoring/model/activity.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';
 import {
@@ -39,6 +39,7 @@ import {
     ClipboardListIcon,
     GraduationCapIcon,
     LibraryIcon,
+    LightbulbIcon,
     ListOrderedIcon,
     MapPinIcon,
     PackageOpenIcon,
@@ -61,9 +62,8 @@ import { useI18n } from 'vue-i18n';
 
 const {
     activity,
+    isNew,
     isLoading,
-    isAddingStep,
-    isAddingWorkshop,
     isChangingState,
     transition,
     ageMin,
@@ -82,18 +82,18 @@ const {
     errors,
     save,
     changeState,
-    addStep,
-    replaceStep,
-    detachStep,
+    newStep,
+    putStep,
+    removeStep,
     addMaterial,
-    updateMaterial,
+    createMaterial,
     removeMaterial,
-    addWorkshop,
-    replaceWorkshop,
+    newWorkshop,
+    putWorkshop,
     removeWorkshop,
 } = useActivityEdit();
 
-const { tagOptions } = useTagOptions();
+const { tagOptions, safetyInstructions, tips } = useReferenceOptions();
 
 const { t } = useI18n();
 const confirm = useConfirmation();
@@ -129,6 +129,7 @@ const sections: SectionEntry[] = [
     },
     { key: 'materials', label: 'activities.materials.title', icon: PackageOpenIcon, anchor: 'section-materials' },
     { key: 'workshops', label: 'activities.workshops.title', icon: BookOpenIcon, anchor: 'section-workshops' },
+    { key: 'tips', label: 'activities.tips.title', icon: LightbulbIcon, anchor: 'section-tips' },
     { key: 'steps', label: 'activities.authoring.steps.title', icon: ListOrderedIcon, anchor: 'section-steps' },
 ];
 
@@ -150,25 +151,16 @@ const hostEfforts = Object.values(HostEffort);
 // XXX : the picture goes nowhere — the collection's `visual` field is not wired to the form yet.
 const { files, update: updateImage } = useOneFile();
 
-// Adding writes the record first, so a modal only ever has one to update.
-async function addAndEditStep() {
-    const created = await addStep();
-    if (created) await editStep(created);
-}
-
+// A modal edits a copy, so a new record joins the activity only once confirmed. Either way,
+// nothing is written until the activity is saved.
 async function editStep(step: ActivityStepData) {
-    const updated = await stepModal.value?.show(step);
-    if (updated) replaceStep(updated);
-}
-
-async function addAndEditWorkshop() {
-    const created = await addWorkshop();
-    if (created) await editWorkshop(created);
+    const edited = await stepModal.value?.show(step);
+    if (edited) putStep(edited);
 }
 
 async function editWorkshop(workshop: ActivityWorkshopData) {
-    const updated = await workshopModal.value?.show(workshop);
-    if (updated) replaceWorkshop(updated);
+    const edited = await workshopModal.value?.show(workshop);
+    if (edited) putWorkshop(edited);
 }
 
 async function confirmed(): Promise<boolean> {
@@ -176,11 +168,11 @@ async function confirmed(): Promise<boolean> {
 }
 
 async function confirmRemoveStep(step: ActivityStepData) {
-    if (await confirmed()) await detachStep(step);
+    if (await confirmed()) removeStep(step);
 }
 
 async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
-    if (await confirmed()) await removeWorkshop(workshop);
+    if (await confirmed()) removeWorkshop(workshop);
 }
 </script>
 
@@ -197,11 +189,12 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                 <TableOfContentsIcon class="opacity-50" />
             </button>
 
-            <!-- Its own write: stores the state and leaves the form as it is. -->
+            <!-- Its own write: stores the state and leaves the form as it is. A new activity has
+                 no record to write it to until its first save. -->
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden ms-auto"
                  :data-tip="$t(transition.label)">
                 <button class="btn"
-                        :disabled="isChangingState"
+                        :disabled="isChangingState || isNew"
                         @click="changeState">
                     <span v-if="isChangingState"
                           class="loading loading-spinner loading-sm"></span>
@@ -284,7 +277,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                        :error="errors.get('format')">
                                     <select class="select w-full"
                                             v-model="activity.classification.format">
-                                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
                                         <option v-for="value in formats"
                                                 :key="value"
                                                 :value="value">
@@ -324,7 +317,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                        :error="errors.get('imaginary_rule')">
                                     <select class="select w-full"
                                             v-model="activity.imaginary.rule">
-                                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
                                         <option v-for="value in imaginaryRules"
                                                 :key="value"
                                                 :value="value">
@@ -379,7 +372,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                        :error="errors.get('children_pace')">
                                     <select class="select w-full"
                                             v-model="activity.audience.childrenPace">
-                                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
                                         <option v-for="value in childrenPaces"
                                                 :key="value"
                                                 :value="value">
@@ -410,7 +403,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                        :error="errors.get('host_effort')">
                                     <select class="select w-full"
                                             v-model="activity.supervision.hostEffort">
-                                        <option value="">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
                                         <option v-for="value in hostEfforts"
                                                 :key="value"
                                                 :value="value">
@@ -495,12 +488,12 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.safety') }}</span>
                         </label>
                         <div class="tab-content p-3">
-                            <Field label="activities.tagType.SECURITY"
-                                   :error="errors.get('safety_tags')">
-                                <TagSelect :items="tagOptions.SECURITY"
+                            <Field label="activities.fields.safetyInstructions"
+                                   :error="errors.get('safety_instructions')">
+                                <TagSelect :items="safetyInstructions"
                                            displayKey="name"
                                            keyBy="id"
-                                           v-model="activity.safety.tags" />
+                                           v-model="activity.safety.instructions" />
                             </Field>
                         </div>
 
@@ -551,8 +544,9 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     </h2>
                     <MaterialsSelection v-model="activity.materials"
                                         @add="addMaterial"
-                                        @update="updateMaterial"
+                                        @create="createMaterial"
                                         @remove="removeMaterial" />
+                    <FieldError :error="errors.get('materials')" />
                 </Panel>
 
                 <Panel id="section-workshops"
@@ -561,13 +555,11 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         <BookOpenIcon class="opacity-50" /> {{ $t('activities.workshops.title') }}
                     </h2>
                     <button class="btn btn-primary"
-                            :disabled="isAddingWorkshop"
-                            @click="addAndEditWorkshop">
-                        <span v-if="isAddingWorkshop"
-                              class="loading loading-spinner loading-sm"></span>
+                            @click="() => editWorkshop(newWorkshop())">
                         <PlusIcon class="opacity-50" />
                         {{ $t('actions.add') }}
                     </button>
+                    <FieldError :error="errors.get('workshops')" />
                     <List :items="activity.workshops"
                           v-slot="{ item }">
                         <div class="my-auto">
@@ -598,6 +590,18 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     </List>
                 </Panel>
 
+                <Panel id="section-tips"
+                       class="scroll-mt-16">
+                    <h2 class="text-2xl flex items-center gap-2">
+                        <LightbulbIcon class="opacity-50" /> {{ $t('activities.tips.title') }}
+                    </h2>
+                    <TagSelect :items="tips"
+                               displayKey="name"
+                               keyBy="id"
+                               v-model="activity.tips" />
+                    <FieldError :error="errors.get('tips')" />
+                </Panel>
+
                 <Panel id="section-steps"
                        class="scroll-mt-16">
                     <h2 class="text-2xl flex items-center gap-2">
@@ -612,13 +616,11 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </span>
                     </h2>
                     <button class="btn btn-primary"
-                            :disabled="isAddingStep"
-                            @click="addAndEditStep">
-                        <span v-if="isAddingStep"
-                              class="loading loading-spinner loading-sm"></span>
+                            @click="() => editStep(newStep())">
                         <PlusIcon class="opacity-50" />
                         {{ $t('actions.add') }}
                     </button>
+                    <FieldError :error="errors.get('steps')" />
                     <List :items="activity.steps"
                           v-slot="{ item, index }">
                         <StepSummary :index="index"

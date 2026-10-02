@@ -1,14 +1,14 @@
-import { TagsTypeOptions, type TagsResponse } from "@/backend/schema.g";
+import { CatalogTagsTypeOptions, type CatalogTagsResponse } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
 
 /**
  * A tag an activity can carry: a theme, an imaginary universe, a pedagogical goal, a use it is
- * ideal for, a safety note or a developmental keyword, told apart by `type` (ADR 0014). Tags are
- * reference data — an activity links them, it never writes them.
+ * ideal for or a developmental keyword, told apart by `type` (ADR 0014). Tags are reference
+ * data — an activity links them, it never writes them.
  */
-export type ActivityTagData = Entity<TagsResponse>;
+export type ActivityTagData = Entity<CatalogTagsResponse>;
 
-export const ActivityTagType = TagsTypeOptions;
+export const ActivityTagType = CatalogTagsTypeOptions;
 export type ActivityTagType = ActivityTagData['type'];
 
 /**

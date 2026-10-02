@@ -1,4 +1,4 @@
-import { filesWithinLimit, joinDuration, splitDuration } from '@features/admin/activities-authoring/model/step.edit';
+import { filesWithinLimit, joinDuration, splitDuration, stepProblems } from '@features/admin/activities-authoring/model/step.edit';
 import { aPickedFile } from '@tests';
 import { describe, expect, it } from 'vitest';
 
@@ -46,5 +46,14 @@ describe('filesWithinLimit', () => {
 
         expect(accepted).toEqual([]);
         expect(rejected).toBe(1);
+    });
+});
+
+describe('stepProblems', () => {
+    it('refuses a description with no text in it, as the collection would', () => {
+        // An editor emptied by hand leaves its paragraph behind.
+        expect(stepProblems({ description: '<p></p>' })).toEqual({ description: { code: 'validation_required' } });
+        expect(stepProblems({ description: '<p>&nbsp;</p>' })).toEqual({ description: { code: 'validation_required' } });
+        expect(stepProblems({ description: '<p>Line up.</p>' })).toEqual({});
     });
 });

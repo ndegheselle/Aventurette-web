@@ -18,33 +18,19 @@
             "title": "Steps",
             "kind": {
                 "PREPARE": "Set up the game",
-                "EXPLAIN": "Explain the activity",
-                "TEAMS": "Form teams",
-                "LAUNCH": "Start the game",
                 "CUSTOM": "Free step",
-                "ANNOUNCE_END": "Announce the end",
-                "CONCLUSION": "Wrap up"
-            },
-            "endCriterion": {
-                "TIME_UP": "Time is up",
-                "ENOUGH_DONE": "Enough challenges or steps completed",
-                "ATTENTION_DROPS": "The group's attention drops",
-                "TEAM_WON": "A team has won"
+                "CONCLUSION": "Wrap up",
+                "GATHER_MATERIAL": "Gather the material",
+                "GATHER_CHILDREN": "Gather the children"
             },
             "fields": {
                 "title": "Title",
                 "kind": "Kind of step",
                 "duration": "Estimated duration",
-                "visualBrief": "Visual brief",
                 "description": "Description",
                 "actions": {
                     "title": "Actions to tick",
                     "count": "{count} actions"
-                },
-                "tip": "Tip",
-                "endCriteria": {
-                    "title": "What ends it",
-                    "other": "Other criterion"
                 },
                 "resources": {
                     "title": "Resources",
@@ -75,6 +61,9 @@
                 "adultsRequired": "Adults needed at the station"
             }
         },
+        "tips": {
+            "title": "Tips"
+        },
         "actions": {
             "favorite": "Favourites",
             "addToPlanning": "Add to planner",
@@ -100,6 +89,7 @@
             "locations": "Detailed location",
             "conditions": "Requirements",
             "seasons": "Seasons",
+            "safetyInstructions": "Safety instructions",
             "preparationTime": "Preparation time",
             "playTime": "Playing time",
             "totalTime": "Total time",
@@ -161,13 +151,23 @@
             "IMAGINARY": "Imaginary world",
             "GOAL": "Pedagogical goals",
             "IDEAL_FOR": "Ideal for…",
-            "SECURITY": "Safety",
             "DEVELOP_PHYSICAL": "Physical development",
             "DEVELOP_INTELLECTUAL": "Intellectual development",
             "DEVELOP_AFFECT": "Emotional development",
             "DEVELOP_SOCIAL": "Social development",
             "DEVELOP_MORAL": "Moral development / character",
             "DEVELOP_SPIRITUAL": "Spiritual development"
+        },
+        "play": {
+            "progress": "Step {current} of {total}",
+            "previous": "Previous",
+            "next": "Next",
+            "finish": "Finish",
+            "empty": "This activity has no steps yet.",
+            "generated": {
+                "GATHER_MATERIAL": "Bring together everything the activity needs before setting it up. Tick each item once it is gathered.",
+                "GATHER_CHILDREN": "The game is ready: gather the children before introducing the activity."
+            }
         }
     }
 }

@@ -55,7 +55,7 @@ the composable driving them together, the way `settings/` holds `SettingsMenu` n
 
 | Folder | |
 |---|---|
-| `modals/` | Modal, ConfirmationModal, `useModal`, `useConfirmation`, `useEditModal` |
+| `modals/` | Modal, ConfirmationModal, `useModal`, `useConfirmation`, `useEditModal`, `useDraftModal` |
 | `alerts/` | AlertsContainer, `useAlert` |
 | `dropdown/` | Dropdown, DropdownTrigger, `vClickOutside` |
 | `data/` | List, Pagination, SearchInput |
@@ -90,7 +90,14 @@ const result = await controller.show();   // Step | null
 **Edit modal over a repository** — handles create vs update, loading, and field errors:
 
 ```ts
-const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, stepsApi);
+const { show, confirm, cancel, isNew, data, errors, isLoading } = useEditModal(controller, materialsApi);
+```
+
+**Draft modal** — edits a copy and hands it back, writing nothing, for a record saved later with
+its parent. `check` keeps it open on what the backend would refuse:
+
+```ts
+const { show, confirm, cancel, data, errors } = useDraftModal(controller, stepProblems);
 ```
 
 **Paged list.** `page` and `perPage` are two-way; `total` is a plain prop because only the

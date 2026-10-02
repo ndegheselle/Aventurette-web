@@ -9,15 +9,14 @@ import {
     ActivitiesStateOptions,
     type ActivitiesResponse,
     type HTMLString,
+    type CatalogSafetyInstructionsResponse,
+    type CatalogTipsResponse,
 } from "@/backend/schema.g";
-import { distinctById } from "@chapelure/core";
+import { distinctById, type Entity } from "@chapelure/core";
 import type { ActivityMaterialData } from "@features/activities/model/material";
 import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/model/step";
 import { ActivityTagType, type ActivityTagData } from "@features/activities/model/tag";
 import type { ActivityWorkshopData } from "@features/activities/model/workshop";
-
-/** An unset single choice reads as an empty string, which is how the backend stores one. */
-type Choice<T> = T | '';
 
 // ── The activity ────────────────────────────────────────────────────────────────────────────
 
@@ -27,7 +26,7 @@ type Choice<T> = T | '';
  * sheet template reads. `api/activity.mapper.ts` is what flattens the families back into
  * columns (ADR 0015).
  *
- * `steps`, `materials` and `workshops` are the records themselves, not their ids.
+ * `steps`, `materials`, `workshops` and `tips` are the records themselves, not their ids.
  */
 export type ActivityData = Pick<ActivitiesResponse,
     'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'
@@ -46,6 +45,7 @@ export type ActivityData = Pick<ActivitiesResponse,
     steps: ActivityStepData[];
     materials: ActivityMaterialData[];
     workshops: ActivityWorkshopData[];
+    tips: ActivityTipData[];
 };
 
 export const ActivityState = ActivitiesStateOptions;
@@ -55,7 +55,7 @@ export type ActivityState = ActivitiesStateOptions;
 
 /** What sorts an activity: its format, the practices of a workshop, and its stable subject. */
 export interface ActivityClassification {
-    format: Choice<ActivityFormat>;
+    format: ActivityFormat | null;
     practices: ActivityPractice[];
     themes: ActivityTagData[];
 }
@@ -70,7 +70,7 @@ export type ActivityPractice = ActivitiesPracticesOptions;
 
 /** The narrative universe an activity is dressed in, if any, and whether it may change. */
 export interface ActivityImaginary {
-    rule: Choice<ImaginaryRule>;
+    rule: ImaginaryRule | null;
     universes: ActivityTagData[];
 }
 
@@ -85,7 +85,7 @@ export interface ActivityAudience {
     ageMax: number;
     participantsMin: number;
     participantsMax: number;
-    childrenPace: Choice<ChildrenPace>;
+    childrenPace: ChildrenPace | null;
     /** How durations and rules adapt to each age range. */
     ageVariants: HTMLString;
 }
@@ -114,7 +114,7 @@ export function columnOf(value: RangeEnd | undefined): number {
 
 /** What running the activity asks of the adults. */
 export interface ActivitySupervision {
-    hostEffort: Choice<HostEffort>;
+    hostEffort: HostEffort | null;
     /** Entered by the author until the supervision referential can compute it. */
     hostsRequired: number;
     /** Whether an adult has to watch over every workshop, beyond those holding one. */
@@ -147,8 +147,14 @@ export type ActivitySeason = ActivitiesSeasonsOptions;
 // ── Safety ──────────────────────────────────────────────────────────────────────────────────
 
 export interface ActivitySafety {
-    tags: ActivityTagData[];
+    instructions: SafetyInstructionData[];
 }
+
+/**
+ * The precautions one risk calls for: fire, water, food allergies… Reference data, as tags are:
+ * an activity links them, it never writes them.
+ */
+export type SafetyInstructionData = Entity<CatalogSafetyInstructionsResponse>;
 
 // ── Pedagogy ────────────────────────────────────────────────────────────────────────────────
 
@@ -176,6 +182,14 @@ export function emptyDevelopment(): Record<DevelopmentAxis, ActivityTagData[]> {
         DEVELOPMENT_AXES.map(axis => [axis, [] as ActivityTagData[]]),
     ) as Record<DevelopmentAxis, ActivityTagData[]>;
 }
+
+// ── Tips ────────────────────────────────────────────────────────────────────────────────────
+
+/**
+ * A piece of advice for running an activity. Tips are a catalogue every activity draws from, as
+ * safety instructions are: an activity links the ones it gives, it never writes them.
+ */
+export type ActivityTipData = Entity<CatalogTipsResponse>;
 
 // ── What the steps add up to ────────────────────────────────────────────────────────────────
 

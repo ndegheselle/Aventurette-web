@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "La chasse aux couleurs",
   "description": "<p>Les enfants partent à la recherche d'objets de la couleur annoncée par l'animateur et les rapportent au camp de base. Un jeu <strong>simple et rapide</strong>, idéal pour faire bouger un petit groupe.</p>",
   "visualBrief": "Un groupe d'enfants courant vers un cerceau rempli d'objets colorés.",
@@ -34,7 +34,7 @@
     "seasons": ["SPRING", "SUMMER"]
   },
   "safety": {
-    "tags": ["Espace délimité"]
+    "instructions": ["Premiers secours"]
   },
   "pedagogy": {
     "goals": ["Écoute"],
@@ -48,6 +48,7 @@
       "DEVELOP_SPIRITUAL": []
     }
   },
+  "tips": [],
   "materials": [
     { "name": "Cerceau", "quantity": "1" },
     { "name": "Craie", "quantity": "" }
@@ -59,73 +60,51 @@
       "title": "Préparer le jeu",
       "duration": 5,
       "description": "<p>Ce que l'animateur installe avant que les enfants ne commencent.</p>",
-      "visualBrief": "",
       "actions": [
         "Délimiter l'espace de jeu à la craie.",
         "Poser le cerceau au centre : c'est le camp de base."
       ],
-      "tip": "",
-      "materials": ["Craie", "Cerceau"],
-      "endCriteria": [],
-      "endCriteriaOther": ""
+      "materials": ["Craie", "Cerceau"]
     },
     {
-      "kind": "EXPLAIN",
+      "kind": "CUSTOM",
       "title": "Expliquer l'activité",
       "duration": 3,
       "description": "",
-      "visualBrief": "L'animateur montre un objet rouge aux enfants assis en cercle.",
       "actions": [
         "Annoncer une couleur.",
         "Montrer un exemple d'objet de cette couleur."
       ],
-      "tip": "",
-      "materials": [],
-      "endCriteria": [],
-      "endCriteriaOther": ""
+      "materials": []
     },
     {
-      "kind": "LAUNCH",
+      "kind": "CUSTOM",
       "title": "Lancer le jeu",
       "duration": 15,
       "description": "",
-      "visualBrief": "",
       "actions": [
         "Annoncer la couleur et donner le départ.",
         "Vérifier les objets rapportés au camp de base."
       ],
-      "tip": "",
-      "materials": [],
-      "endCriteria": [],
-      "endCriteriaOther": ""
+      "materials": []
     },
     {
-      "kind": "ANNOUNCE_END",
+      "kind": "CUSTOM",
       "title": "Annoncer la fin de l'activité",
       "duration": 2,
       "description": "",
-      "visualBrief": "",
       "actions": [
         "Prévenir les enfants avant l'arrêt effectif plutôt que de couper l'activité net."
       ],
-      "tip": "",
-      "materials": [],
-      "endCriteria": ["TIME_UP", "ATTENTION_DROPS"],
-      "endCriteriaOther": ""
+      "materials": []
     },
     {
       "kind": "CONCLUSION",
       "title": "Conclusion",
       "duration": 2,
       "description": "",
-      "visualBrief": "",
-      "actions": [
-        "Féliciter l'ensemble des participants."
-      ],
-      "tip": "",
-      "materials": [],
-      "endCriteria": [],
-      "endCriteriaOther": ""
+      "actions": ["Féliciter l'ensemble des participants."],
+      "materials": []
     }
   ]
 }

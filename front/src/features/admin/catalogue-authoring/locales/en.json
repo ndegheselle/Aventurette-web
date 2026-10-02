@@ -1,0 +1,49 @@
+{
+    "catalogue": {
+        "title": "Catalogue",
+        "remove": "Delete from the catalogue",
+        "removed": "Deleted from the catalogue.",
+        "fields": {
+            "name": "Name",
+            "slug": "Identifier"
+        },
+        "materials": {
+            "title": "Materials",
+            "name": "Material name",
+            "add": "Add to the catalogue",
+            "remove": "Delete from the catalogue",
+            "created": "Material added.",
+            "removed": "Material deleted.",
+            "renameRefused": "That name is empty or already taken: the previous one is back.",
+            "removeWarning": "Deleting {name} from the catalogue takes it off every activity using it, and off their steps and workshops."
+        },
+        "tags": {
+            "title": "Tags",
+            "new": "New tag",
+            "edit": "Edit tag",
+            "allTypes": "Every kind",
+            "fields": {
+                "type": "Kind"
+            },
+            "removeWarning": "Deleting {name} from the catalogue takes it off every activity carrying it."
+        },
+        "safety": {
+            "title": "Safety instructions",
+            "new": "New safety instruction",
+            "edit": "Edit safety instruction",
+            "fields": {
+                "description": "Precautions"
+            },
+            "removeWarning": "Deleting {name} from the catalogue takes it off every activity listing it."
+        },
+        "tips": {
+            "title": "Tips",
+            "new": "New tip",
+            "edit": "Edit tip",
+            "fields": {
+                "description": "Advice"
+            },
+            "removeWarning": "Deleting {name} from the catalogue takes it off every activity giving it."
+        }
+    }
+}

@@ -29,7 +29,7 @@ identifies the activity at the top — `id`, `name`, `description`, `state`, `us
 | `audience` | ages, group size, children's pace, age variants | `age_min`, `age_max`, `participants_min`, `participants_max`, `children_pace`, `age_variants` |
 | `supervision` | leader effort, leaders needed, cross supervision, notes | `host_effort`, `recommended_hosts_numbers`, `cross_supervision`, `supervision_notes` |
 | `place` | indoor, outdoor, locations, requirements, seasons | `indoor`, `outdoor`, `locations`, `conditions`, `seasons` |
-| `safety` | safety tags | `safety_tags` |
+| `safety` | safety instructions | `safety_instructions` |
 | `pedagogy` | goals, ideal for, six development axes | `goal_tags`, `ideal_for_tags`, `development_tags` |
 
 `api/activity.mapper.ts` is the only place that knows which column belongs to which family. It
@@ -37,7 +37,9 @@ builds the families on read and flattens them on write, as ADR 0007 has every ma
 
 Tags stay one collection, and each place a tag goes has a relation of its own (ADR 0014), so a
 family reads and writes its tags like any other column. The six development axes share
-`development_tags`, and the mapper sorts them apart by kind.
+`development_tags`, and the mapper sorts them apart by kind. Safety instructions have a
+collection of their own, and so do tips, which sit beside the steps rather than in a family
+(ADR 0018).
 
 The identity fields stay at the top because the list filters on them. A filter key is a column
 name, and `name`, `state` and `description` are both at once.
@@ -81,5 +83,6 @@ list folds back into its first value, and the last one carries no tag links eith
 - The mapper is longer, and nothing checks it against the payload type except the specs. That
   was already true (ADR 0007). A round-trip spec over every development kind guards the one
   relation the mapper splits.
-- An unset single choice is the empty string PocketBase stores. The model types it as `T | ''`
-  instead of pretending it is always set.
+- An unset single choice is the empty string PocketBase stores. The model types it as `T | null`
+  instead of pretending it is always set, and the mapper translates between the two — writing
+  `''` back, never `undefined`, which would leave a cleared choice in place.

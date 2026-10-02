@@ -112,6 +112,21 @@ export function fakePocketBase(records: Record<string, unknown>[] = []): FakePoc
         },
     };
 
-    fake.client = { collection: () => collection, authStore, files } as unknown as PocketBase;
+    // Records each queued write as `batch.<method>`, with the collection first.
+    function createBatch() {
+        return {
+            collection: (name: string) => ({
+                create(data: Record<string, unknown>) { fake.calls.push({ method: 'batch.create', args: [name, data] }); },
+                update(id: string, data: Record<string, unknown>) { fake.calls.push({ method: 'batch.update', args: [name, id, data] }); },
+                delete(id: string) { fake.calls.push({ method: 'batch.delete', args: [name, id] }); },
+            }),
+            async send() {
+                record('batch.send', []);
+                return [];
+            },
+        };
+    }
+
+    fake.client = { collection: () => collection, authStore, files, createBatch } as unknown as PocketBase;
     return fake;
 }

@@ -1,0 +1,49 @@
+{
+    "catalogue": {
+        "title": "Catalogue",
+        "remove": "Supprimer du catalogue",
+        "removed": "Supprimé du catalogue.",
+        "fields": {
+            "name": "Nom",
+            "slug": "Identifiant"
+        },
+        "materials": {
+            "title": "Matériel",
+            "name": "Nom du matériel",
+            "add": "Ajouter au catalogue",
+            "remove": "Supprimer du catalogue",
+            "created": "Matériel ajouté.",
+            "removed": "Matériel supprimé.",
+            "renameRefused": "Ce nom est vide ou déjà utilisé : l'ancien est rétabli.",
+            "removeWarning": "Supprimer {name} du catalogue le retire de toutes les activités qui l'utilisent, de leurs étapes et de leurs ateliers."
+        },
+        "tags": {
+            "title": "Tags",
+            "new": "Nouveau tag",
+            "edit": "Modifier le tag",
+            "allTypes": "Tous les types",
+            "fields": {
+                "type": "Type"
+            },
+            "removeWarning": "Supprimer {name} du catalogue le retire de toutes les activités qui le portent."
+        },
+        "safety": {
+            "title": "Consignes de sécurité",
+            "new": "Nouvelle consigne de sécurité",
+            "edit": "Modifier la consigne de sécurité",
+            "fields": {
+                "description": "Précautions"
+            },
+            "removeWarning": "Supprimer {name} du catalogue la retire de toutes les activités qui la mentionnent."
+        },
+        "tips": {
+            "title": "Conseils",
+            "new": "Nouveau conseil",
+            "edit": "Modifier le conseil",
+            "fields": {
+                "description": "Le conseil"
+            },
+            "removeWarning": "Supprimer {name} du catalogue le retire de toutes les activités qui le donnent."
+        }
+    }
+}

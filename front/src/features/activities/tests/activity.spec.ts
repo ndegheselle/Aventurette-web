@@ -6,10 +6,14 @@ import {
     aMaterialPayload,
     aResource,
     aResourcePayload,
+    aSafetyInstruction,
+    aSafetyInstructionPayload,
     aStep,
     aStepPayload,
     aTag,
     aTagPayload,
+    aTip,
+    aTipPayload,
     aWorkshopPayload,
     anActivity,
     anActivityPayload,
@@ -33,10 +37,11 @@ describe('activityMapper', () => {
             'workshops.materials.material',
             'theme_tags',
             'imaginary_tags',
-            'safety_tags',
             'goal_tags',
             'ideal_for_tags',
             'development_tags',
+            'safety_instructions',
+            'tips',
         ]);
     });
 
@@ -99,7 +104,6 @@ describe('activityMapper', () => {
         const activity = activityMapper.toEntity(anActivityPayload({
             expand: {
                 theme_tags: [aTagPayload({ id: 'theme', type: ActivityTagType.THEME })],
-                safety_tags: [aTagPayload({ id: 'safety', type: ActivityTagType.SECURITY })],
                 development_tags: [
                     aTagPayload({ id: 'social', type: ActivityTagType.DEVELOP_SOCIAL }),
                     aTagPayload({ id: 'moral', type: ActivityTagType.DEVELOP_MORAL }),
@@ -108,11 +112,24 @@ describe('activityMapper', () => {
         }), files);
 
         expect(activity.classification.themes.map(tag => tag.id)).toEqual(['theme']);
-        expect(activity.safety.tags.map(tag => tag.id)).toEqual(['safety']);
         expect(activity.pedagogy.development.DEVELOP_SOCIAL.map(tag => tag.id)).toEqual(['social']);
         expect(activity.pedagogy.development.DEVELOP_MORAL.map(tag => tag.id)).toEqual(['moral']);
         expect(activity.pedagogy.development.DEVELOP_PHYSICAL).toEqual([]);
-        expect(activity.safety.tags[0]).not.toHaveProperty('expand');
+        expect(activity.classification.themes[0]).not.toHaveProperty('expand');
+    });
+
+    it('reads the safety instructions into the safety family, and the tips beside the steps', () => {
+        const activity = activityMapper.toEntity(anActivityPayload({
+            expand: {
+                safety_instructions: [aSafetyInstructionPayload({ id: 'fire' })],
+                tips: [aTipPayload({ id: 'pace' })],
+            },
+        }), files);
+
+        expect(activity.safety.instructions.map(instruction => instruction.id)).toEqual(['fire']);
+        expect(activity.tips.map(tip => tip.id)).toEqual(['pace']);
+        expect(activity.safety.instructions[0]).not.toHaveProperty('expand');
+        expect(activity.tips[0]).not.toHaveProperty('expand');
     });
 
     it('writes back every development tag it read, whatever its axis', () => {
@@ -134,7 +151,10 @@ describe('activityMapper', () => {
 
     it('reads a relation the request did not expand as empty', () => {
         const activity = activityMapper.toEntity(
-            anActivityPayload({ steps: ['stp1'], theme_tags: ['tag1'], materials: ['mat1'], workshops: ['wks1'] }),
+            anActivityPayload({
+                steps: ['stp1'], theme_tags: ['tag1'], materials: ['mat1'], workshops: ['wks1'],
+                safety_instructions: ['sfi1'], tips: ['tip1'],
+            }),
             files,
         );
 
@@ -142,6 +162,8 @@ describe('activityMapper', () => {
         expect(activity.materials).toEqual([]);
         expect(activity.workshops).toEqual([]);
         expect(activity.classification.themes).toEqual([]);
+        expect(activity.safety.instructions).toEqual([]);
+        expect(activity.tips).toEqual([]);
         expect(activity).not.toHaveProperty('expand');
     });
 
@@ -164,26 +186,41 @@ describe('activityMapper', () => {
         expect(payload).not.toHaveProperty('place');
     });
 
-    it('writes relations as ids — saving an activity links its steps and tags, it does not save them', () => {
+    it('reads an unset choice as null, and writes it back as the empty string that clears it', () => {
+        const activity = activityMapper.toEntity(anActivityPayload({ host_effort: 'HIGH' }), files);
+
+        expect(activity.classification.format).toBeNull();
+        expect(activity.supervision.hostEffort).toBe('HIGH');
+
+        // Not undefined: a key left out of an update leaves the stored choice in place.
+        activity.supervision.hostEffort = null;
+        expect(activityMapper.toPayload(activity)).toMatchObject({ format: '', host_effort: '' });
+    });
+
+    it('writes relations as ids — saving an activity links its steps, tags and tips, it does not save them', () => {
         const payload = activityMapper.toPayload(anActivity({
             steps: [aStep({ id: 'stp1' })],
-            safety: { tags: [aTag({ id: 'tag1', type: ActivityTagType.SECURITY })] },
+            classification: { format: null, practices: [], themes: [aTag({ id: 'tag1' })] },
+            safety: { instructions: [aSafetyInstruction({ id: 'sfi1' })] },
+            tips: [aTip({ id: 'tip1' })],
         }));
 
         expect(payload.steps).toEqual(['stp1']);
-        expect(payload.safety_tags).toEqual(['tag1']);
+        expect(payload.theme_tags).toEqual(['tag1']);
+        expect(payload.safety_instructions).toEqual(['sfi1']);
+        expect(payload.tips).toEqual(['tip1']);
     });
 
     it('leaves out what the caller did not mention, so an update stays partial', () => {
         expect(activityMapper.toPayload({ state: 'PUBLISHED' })).toEqual({ state: 'PUBLISHED' });
     });
 
-    it("writes a family's tags with the family, and leaves the other families' alone", () => {
+    it("writes a family's links with the family, and leaves the other families' alone", () => {
         const payload = activityMapper.toPayload({
-            safety: { tags: [aTag({ id: 'tag1', type: ActivityTagType.SECURITY })] },
+            safety: { instructions: [aSafetyInstruction({ id: 'sfi1' })] },
         });
 
-        expect(payload).toEqual({ safety_tags: ['tag1'] });
+        expect(payload).toEqual({ safety_instructions: ['sfi1'] });
     });
 });
 
@@ -207,8 +244,8 @@ describe('timingOf', () => {
         const activity = anActivity({
             steps: [
                 aStep({ kind: StepKind.PREPARE, duration: 10 }),
-                aStep({ kind: StepKind.EXPLAIN, duration: 5 }),
-                aStep({ kind: StepKind.LAUNCH, duration: 20 }),
+                aStep({ kind: StepKind.CUSTOM, duration: 5 }),
+                aStep({ kind: StepKind.CUSTOM, duration: 20 }),
                 aStep({ kind: StepKind.CONCLUSION, duration: 5 }),
             ],
         });

@@ -7,8 +7,8 @@ it owns, the shape of its data, the rules that hold, and what is not finished.
 |---|---|
 | [activities](activities.md) | Browsing and searching the public activity catalogue |
 | [activities-authoring](activities-authoring.md) | Authoring: the author's own activities, and the form behind them |
-| [materials-authoring](materials-authoring.md) | The material catalogue every activity picks from |
-| [auth](auth.md) | Signing in, signing up, and guarding the rest of the app |
+| [catalogue-authoring](catalogue-authoring.md) | The catalogues every activity picks from: materials, tags, safety instructions, tips |
+| [auth](auth.md) | Signing in, signing up, roles, and guarding the rest of the app |
 | [dashboard](dashboard.md) | The signed-in user's landing page — empty for now |
 
 A feature's own layout, and the rules every feature follows, are in

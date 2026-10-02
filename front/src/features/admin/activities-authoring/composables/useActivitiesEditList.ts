@@ -1,22 +1,20 @@
 import type { Paginated } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
 import type { ActivityData } from '@features/activities/model/activity';
 import {
     buildAuthoredFilters,
-    createEmptyActivity,
     type ActivityStateFilter,
 } from '@features/admin/activities-authoring/model/activity.edit';
-import { routesNames } from '@features/admin/activities-authoring/routes';
-import { useAuth } from '@features/auth/composables/useAuth';
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 const DEFAULT_PER_PAGE = 10;
 
-/** The author's list: its state tabs, its page, and the add and delete buttons. */
+/**
+ * The author's list: its state tabs, its page, and the delete button. Adding is a link to the
+ * editor, which writes nothing until its first save.
+ */
 export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     const paginated = ref<Paginated<ActivityData>>(
         { items: [], total: 0, options: { page: 1, perPage } },
@@ -25,10 +23,8 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
     /** `null` is the "all" tab. See `authoredStateTabs`. */
     const state = ref<ActivityStateFilter>(null);
 
-    const router = useRouter();
     const alert = useAlert();
     const { t } = useI18n();
-    const { currentId } = useAuth();
 
     /** Re-query for the current tab and page. */
     async function refresh() {
@@ -44,21 +40,6 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
         paginated.value.options.page = 1;
         await refresh();
     }
-
-    /**
-     * Start a new activity: write the record, then open the editor on it. Everything after this
-     * is an update — which is what lets a step, and the files under it, be saved as they are
-     * added, each needing a parent that already exists.
-     */
-    const { isLoading: isCreating, submit: createActivity } = useSubmit(async () => {
-        const created = await activities.create({
-            ...createEmptyActivity(),
-            name: t('activities.untitled'),
-            user: currentId(),
-        });
-
-        router.push({ name: routesNames.page, params: { id: created.id } });
-    });
 
     /**
      * Delete an activity outright — no unlinking first, unlike a step. `activities_steps.activity`
@@ -85,8 +66,6 @@ export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
         state,
         refresh,
         selectState,
-        isCreating,
-        createActivity,
         removeActivity,
     };
 }

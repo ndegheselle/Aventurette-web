@@ -41,7 +41,7 @@ row of its own again.
 
 ## Consequences
 
-- A material is named once. The `materials-authoring` screen renames it or deletes it
+- A material is named once. The `catalogue-authoring` screen renames it or deletes it
   everywhere, and the editor offers the catalogue itself rather than names rebuilt from rows.
 - Removing a material from an activity is one delete, and the steps and workshops follow on the
   backend. Deleting a catalogue material reaches every activity using it, which is why that

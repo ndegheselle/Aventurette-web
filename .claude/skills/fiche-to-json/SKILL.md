@@ -9,140 +9,72 @@ The authoring list (`/activities/authoring`) has an **import** button. It takes 
 per activity, then an optional cover visual, and writes the whole thing as a draft. This skill
 writes that JSON from a fiche made from the template *Template - Fiche d'activité*.
 
-What the app accepts is defined by `readActivitySheet` in
-`front/src/features/activities-authoring/model/activity.import.ts`. If this document and that
-file disagree, the file wins. Read it when in doubt.
+The format is [fiche-activite.schema.json](fiche-activite.schema.json): every key, its type, the
+database codes of each enum with their French label as `title`, and, in each `description`,
+which part of the fiche fills it. Read it before writing anything.
+[example.json](example.json) is a complete fiche converted against it.
+
+What the app actually reads is `readActivitySheet` in
+`front/src/features/admin/activities-authoring/model/activity.import.ts`. A spec checks that the
+schema's codes are the app's. If the schema and that file still disagree, the file wins.
 
 ## Procedure
 
 1. **Get the fiche.** A Markdown file path, or pasted Markdown. If the user gives a Confluence
    link without its content, ask them to export the page as Markdown or paste it.
-2. **Read the whole fiche** before writing anything. Map it section by section with the table
-   below.
+2. **Read the whole fiche** before writing anything. Map it section by section with the schema's
+   descriptions and the notes below.
 3. **Write the JSON** to `<slug-of-the-name>.json` next to the source file, or where the user
-   asks. Use UTF-8, 2-space indent.
-4. **Check it**: it must parse as JSON, `name` must be set, and every enum value must come from
-   the lists below, spelled exactly.
+   asks. UTF-8, 2-space indent. Start from `example.json` and remove no key: an unset field is
+   written as its empty value.
+4. **Validate it** against the schema:
+
+   ```bash
+   python3 -c "import json,sys,jsonschema; jsonschema.validate(json.load(open(sys.argv[1])), json.load(open(sys.argv[2])))" \
+     <file>.json .claude/skills/fiche-to-json/fiche-activite.schema.json
+   ```
+
+   No `jsonschema` at hand: check by reading that it parses, `name` is set, no key is missing or
+   unknown, and every enum value is a `const` of the schema.
 5. **Report back** in a few lines: the file written, the fields left empty because the fiche
-   only held template placeholders, anything dropped (resources, unmapped locations, a value
-   that fits no enum), and the tag names used. Tag names only link if a tag of that kind
-   already exists in the app. The import modal lists the ones that do not match.
+   only held template placeholders, everything dropped (see *Not imported*, and any value that
+   fits no enum), and the tag and safety instruction names used. A name only links if one of that
+   kind already exists in the app. The import modal lists the ones that do not match, and lets
+   the author link an existing one instead, then recaps the fields left empty.
 
 ## Rules
 
 - **Never invent content.** A template placeholder is not content: italic guidance text,
   `…`, `*…*`, "Ex. …" lists copied from the template, "—" for a visual brief. Leave the field
-  unset (`""`, `0`, `false`, `[]` or `null`) and say so in the report.
-- **Rich text fields are HTML** (`description`, `audience.ageVariants`, `supervision.notes`,
-  `place.conditions`, a step's `description` and `tip`, a workshop's `challenges`). Turn Markdown
-  into `<p>`, `<strong>`, `<em>`, `<ul><li>`, `<a href>`. Drop Confluence noise such as `\-` or
-  `****`.
-- **Plain text fields stay plain**: `name`, `visualBrief`, titles, actions, material names.
-- **Enums are the codes below**, never the French label. A value that fits none is dropped and
+  at its empty value (`""`, `0`, `false`, `[]`, `null` for a single choice) and say so in the
+  report.
+- **Rich text fields are HTML** (the schema's `html`). Turn Markdown into `<p>`, `<strong>`,
+  `<em>`, `<ul><li>`, `<a href>`. Drop Confluence noise such as `\-` or `****`. Every other
+  string stays plain text.
+- **Enums are the schema's codes**, never the French label. A value that fits none is dropped and
   reported. It is not approximated.
-- **Tags are names**, as the fiche writes them: one entry per tag, trimmed, no leading `#`.
-  Split a comma or "et" list into several entries.
-- **Numbers are plain non-negative numbers.** `0` means "not set". Take `3` from "3 ans".
-  For a range such as "6 à 12 enfants", use the two bounds. For free text that is not a number,
-  leave the number at `0` and keep the text in the matching notes field if one exists.
-- **Durations are per step.** The two totals in the Informations table ("Temps de jeu",
-  "Temps de préparation") are computed by the app from the steps. Do not store them anywhere.
+- **Tags, safety instructions and tips are names**, as the fiche writes them: one entry per
+  name, trimmed, no leading `#`. Split a comma or "et" list into several entries.
+- **Numbers are plain non-negative numbers.** `0` means "not set". For free text that is not a
+  number, leave `0` and keep the text in the matching notes field if one exists.
+- **Durations are per step.** "Temps de jeu" and "Temps de préparation" are computed by the app.
   If the steps have no durations but the table has totals, leave the steps at `0` and report it.
-- The keys are camelCase exactly as shown. Unknown keys are ignored by the app, so a typo is
-  silently lost. Copy the key names from the example.
+- "Matériel (sans / avec)" is derived from `materials`, and is not written.
+- `tips` stays `[]` unless the user gives names from the tips catalogue.
+- The automatic steps ("Rassembler le matériel", "Regrouper les enfants") are never written. A
+  step the fiche marks "à supprimer" and that holds only placeholders is left out.
 
-## Mapping
+## Not imported
 
-### Top of the fiche
+The schema has no key for these: the database does not store them, or stores files rather than
+text. List the ones that are not placeholders in the report, so the author adds them: resources
+in the import modal's last stage, the rest from the editor once it exists there.
 
-| Fiche | JSON |
+| Fiche | Why |
 |---|---|
-| `# <Nom de l'activité>` (the h1 after the template title) | `name` (required) |
-| `## Description` | `description` (HTML) |
-| Always | `"version": 1` |
-
-### `## Informations` table
-
-| Row | JSON | Values |
-|---|---|---|
-| Format | `classification.format` | Petit jeu `SMALL_GAME`, Grand jeu `BIG_GAME`, Atelier `WORKSHOP` |
-| Pratique | `classification.practices` (list) | Création manuelle `MANUAL_CREATION`, Expression `EXPRESSION`, Cuisine `COOKING`, Observation `OBSERVATION`, Musique `MUSIC`, Expérimentation `EXPERIMENTATION` |
-| Thème | `classification.themes` | tag names |
-| Imaginaire | `imaginary.universes` | tag names |
-| Règle d'imaginaire | `imaginary.rule` | Aucun imaginaire nécessaire `NONE`, Habillage adaptable `ADAPTABLE`, Imaginaire imposé `REQUIRED` |
-| Âge minimum / maximum | `audience.ageMin` / `audience.ageMax` | numbers |
-| Effectif recommandé | `audience.participantsMin` / `audience.participantsMax` | numbers |
-| Rythme des enfants | `audience.childrenPace` | Calme `CALM`, Dynamique `DYNAMIC` |
-| Durées selon âge / variantes | `audience.ageVariants` | HTML |
-| Mobilisation de l'animateur | `supervision.hostEffort` | Faible `LOW`, Moyenne `MEDIUM`, Importante `HIGH` |
-| Nombre d'animateurs requis | `supervision.hostsRequired` | number. If the fiche gives a rule rather than a number, `0` and the rule goes in `supervision.notes` |
-| Configuration des ateliers et contraintes d'encadrement | `supervision.notes` (HTML) | `supervision.crossSupervision: true` when it asks for a surveillance transversale |
-| Lieu de pratique | `place.indoor`, `place.outdoor` | booleans, independent |
-| Localisation détaillée | `place.locations` (list) | Parc `PARK`, Maison `HOUSE`, Balcon `BALCONY`, Voiture `CAR`, Ville `CITY`, Campagne `CAMPAIGN`, Forêt `FOREST`, Montagne `MOUNTAIN`, Piscine `POOL`, Lac `LAKE`, Rivière `RIVER`, Bain `BATH`, Repas `MEAL` |
-| Conditions de réalisation | `place.conditions` | HTML |
-| Saison | `place.seasons` (list) | Automne `AUTUMN`, Hiver `WINTER`, Printemps `SPRING`, Été `SUMMER` |
-| Sécurité | `safety.tags` | tag names |
-| Tags pédagogiques | `pedagogy.goals` | tag names |
-| Idéal pour… | `pedagogy.idealFor` | tag names |
-| Développement physique | `pedagogy.development.DEVELOP_PHYSICAL` | tag names |
-| Développement intellectuel | `pedagogy.development.DEVELOP_INTELLECTUAL` | tag names |
-| Développement affectif | `pedagogy.development.DEVELOP_AFFECT` | tag names |
-| Développement social | `pedagogy.development.DEVELOP_SOCIAL` | tag names |
-| Développement moral / caractère | `pedagogy.development.DEVELOP_MORAL` | tag names |
-| Développement spirituel | `pedagogy.development.DEVELOP_SPIRITUAL` | tag names |
-| Visuel principal | `visualBrief` | plain text brief. The image itself is picked in the import modal |
-| Matériel (sans / avec) | — | derived from the list below |
-| Temps de jeu, Temps de préparation | — | computed from the steps |
-
-### `## Matériel`
-
-Each bullet is one entry of `materials`: `{ "name": "Ballon en mousse", "quantity": "2" }`.
-Split a quantity written in the bullet ("2 ballons en mousse", "Craie (1 boîte)") into
-`quantity` when it is clearly one. Otherwise leave `quantity` empty.
-
-### `## Ressources`
-
-**Not imported.** Resources are files uploaded against a step, and a link in a fiche is not a
-file. List them in the report so the author uploads them from the editor.
-
-### `## Ateliers`
-
-One row of the table is one entry of `workshops`:
-
-| Column | JSON |
-|---|---|
-| Atelier | `name` (required for a workshop) |
-| Thématique | `theme` (plain text) |
-| Défi(s) proposé(s) | `challenges` (HTML) |
-| Matériel | `materials`, names from the materials list |
-| Adultes requis au poste | `adultsRequired` (number) |
-
-Skip a row that is only the template's `…`.
-
-### `## Étapes`
-
-Each `### N. <title>` is one entry of `steps`, in the fiche's order.
-
-| Fiche | JSON |
-|---|---|
-| The h3 title, without its number and without an italic *(…)* note | `title` (required. The app uses it as the description when a step has none) |
-| The h3 title | `kind`: Préparer le jeu `PREPARE`, Expliquer l'activité `EXPLAIN`, Constituer les équipes `TEAMS`, Lancer le jeu / l'activité `LAUNCH`, Annoncer la fin de l'activité `ANNOUNCE_END`, Conclusion `CONCLUSION`. Any other title is `CUSTOM` |
-| *Durée estimée (minutes)* | `duration` (number) |
-| Free text under the title, such as "Ce que l'animateur installe…" | `description` (HTML) |
-| **Visuel de l'étape** | `visualBrief` (plain text, `""` for "—") |
-| The actions table, column "Action à cocher", in order | `actions` (list of plain strings, without the 1.1 numbering) |
-| `#### Conseil` | `tip` (HTML) |
-| `#### Matériel` | `materials`, names. A name missing from `## Matériel` is added to the activity by the app |
-| `#### Critère(s) de fin` (only on ANNOUNCE_END) | `endCriteria`: Temps alloué écoulé `TIME_UP`, Nombre de défis ou d'étapes suffisant réalisé `ENOUGH_DONE`, Attention du groupe qui retombe / dispersion `ATTENTION_DROPS`, Une équipe a remporté la partie `TEAM_WON` |
-| "Autre : …" in the end criteria | `endCriteriaOther` (plain text) |
-| `#### Ressources` | not imported, see above |
-
-The automatic steps ("Rassembler le matériel", "Regrouper les enfants") are generated by the app
-and are never written. A step the fiche marks as "à supprimer" and that holds only placeholders
-is left out.
-
-## Example
-
-[example.json](example.json) is a complete fiche converted. It shows every key the format reads.
-Start from it and remove nothing: an unset field is written as its empty value, which keeps the
-file readable for the next person who edits it.
+| `## Ressources`, a step's `#### Ressources` | resources are files uploaded against a step, and a link is not a file |
+| A step's **Visuel de l'étape** | a step's visual is not handled yet |
+| A step's `#### Conseil` | tips are a catalogue linked by name, and this is free text: it can be added to the catalogue, then linked |
+| A step's `#### Critère(s) de fin` | not handled yet |
+| A timer on an action, an action's own material or resource | an action is plain text; give the material to the step instead |
+| `Source : …` | no field for it |

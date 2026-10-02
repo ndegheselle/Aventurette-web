@@ -34,16 +34,24 @@
                 "title": "Importer une fiche",
                 "stages": {
                     "sheet": "Fiche JSON",
-                    "visual": "Visuel"
+                    "complete": "Compléments",
+                    "files": "Fichiers"
                 },
                 "sheet": {
                     "constraints": "Un fichier JSON produit à partir du template de fiche d'activité.",
                     "summary": "{steps} étape(s), {materials} matériel(s), {workshops} atelier(s)"
                 },
-                "visual": {
-                    "optional": "Facultatif : l'activité peut être importée sans visuel et en recevoir un plus tard."
+                "files": {
+                    "optional": "Facultatif : le visuel et les ressources peuvent aussi être ajoutés plus tard depuis l'éditeur."
                 },
-                "unknownTags": "Ces tags n'existent pas et ne seront pas liés :",
+                "unknown": "Ces éléments n'existent pas encore : liez-en un existant à la place, ou laissez-les de côté.",
+                "leaveOff": "Laisser de côté",
+                "unset": {
+                    "title": "Restera à compléter dans l'éditeur :",
+                    "indoorOutdoor": "Intérieur / extérieur"
+                },
+                "complete": "Rien ne manque à cette fiche.",
+                "stepResources": "Ressources — {title}",
                 "problems": {
                     "title": "{file} ne peut pas être importé :",
                     "json": "Le fichier n'est pas un JSON valide.",

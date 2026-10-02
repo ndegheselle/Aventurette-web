@@ -4,8 +4,9 @@ Browsing the public activity catalogue.
 
 Read-only. Writing an activity is [activities-authoring](activities-authoring.md), which owns the
 editor, the step and workshop modals, the author's own list and the rules for writing. What
-stays here is the **shape**: `model/activity.ts`, `model/step.ts`, `model/material.ts`,
-`model/workshop.ts` and `model/tag.ts`, their mappers in `api/`, and `api/activities.api.ts`
+stays here is the **shape**: `model/activity.ts` (safety instructions and tips included),
+`model/step.ts`, `model/material.ts`, `model/workshop.ts` and `model/tag.ts`, their mappers in
+`api/`, and `api/activities.api.ts`
 describe what an activity is — which both halves need — and the
 dependency runs one way: nothing here imports `activities-authoring`.
 
@@ -15,11 +16,29 @@ dependency runs one way: nothing here imports `activities-authoring`.
 |---|---|---|
 | `activities` | `/activities` | The list |
 | `activities.page` | `/activities/:id` | One activity in full |
+| `activities.play` | `/activities/:id/play` | Running the activity, one step at a time |
 
 `/` redirects to `activities`.
 
 One composable to a screen: `useActivitiesList` holds the results and the search,
-`useActivity` the detail screen.
+`useActivity` the detail screen, and `useActivityPlay` the run.
+
+## Running an activity
+
+The detail screen's *Start* opens the run: the steps one at a time, a progress bar, the step
+list to jump around in, and the actions to tick as they are done. A step shows its description,
+its actions, and the materials and resources it uses.
+
+`playStepsOf` in `model/play.ts` turns the activity into the run's steps, as `PlayStep` — one
+shape for a step the author wrote and one the app generates. The template has the app produce
+two steps that are never stored:
+
+- **Gathering the material** comes first, before anything is set up, with each material and its
+  quantity as an action to tick. An activity needing no material has none.
+- **Gathering the children** comes once the game is ready: before the first step that is not
+  preparing it. An activity whose every step prepares it has none.
+
+A run lives in memory: ticks and position are lost on leaving the screen or reloading it.
 
 ## Data
 
@@ -33,40 +52,52 @@ beside it is the only thing that holds both — see
 template reads. What identifies it sits at the top: `name`, `description`, `state`, `user`,
 `visual`, `visualBrief`. The rest sits under `classification`, `imaginary`, `audience`,
 `supervision`, `place`, `safety` and `pedagogy`. The columns stay flat. The mapper builds the
-families on read and flattens them on write. An unset single choice is the empty string
-PocketBase stores, and is typed that way.
+families on read and flattens them on write. An unset single choice is `null`; the mapper
+reads and writes it as the empty string PocketBase stores.
 
-`activity.steps`, `activity.materials` and `activity.workshops` hold the records themselves.
+`activity.steps`, `activity.materials`, `activity.workshops` and `activity.tips` hold the
+records themselves.
 `activityMapper.relations` lists what is fetched alongside an activity. The nested halves are
 derived from `stepMapper.relations` and `workshopMapper.relations`, so a step arrives the same
 way whether it is read on its own or under an activity. A relation the read did not expand maps
 to an empty list, never to the ids the record carries.
 
 **Materials come from a catalogue** ([ADR 0016](../adr/0016-materials-are-a-catalogue.md)).
-`materials` holds one row per name, and `activities_materials` holds what an activity needs of
+`catalog_materials` holds one row per name, and `activities_materials` holds what an activity needs of
 one: a link with a free-text `quantity` ("one per team" is a quantity too). `activity.materials`
 is those links, as `ActivityMaterialData`, with the catalogue material's `name` folded in by
 `activityMaterialMapper`. A step or a workshop *recalls* the links it uses and owns none. None
 of those lists cascades, so deleting a link only drops it from the lists holding it. Both the
 link's relations do cascade: deleting an activity, or a catalogue material, deletes its links.
 
-**A step** has a `kind`: preparing the game, explaining, forming teams, starting, a free step,
-announcing the end or concluding. It also has a `title`, an estimated `duration` in minutes, the
-brief of its one visual, the `actions` to tick (a JSON list of strings) and a `tip`. The step
-announcing the end also has `end_criteria` and `end_criteria_other`. `timingOf` sums the
-durations: preparation is the steps preparing the game, play is every other step.
+**A step** has a `kind`: preparing the game, a free step or the conclusion. It also has a
+`title`, an estimated `duration` in minutes and the `actions` to tick (a JSON list of strings).
+`timingOf` sums the durations: preparation is the steps preparing the game, play is every other
+step. The collection still holds a step's `visual_brief`, and the `end_criteria` and
+`end_criteria_other` of a kind that is gone. `stepMapper` drops them on read, so nothing above
+`api/` sees them and no save writes them back (`StepColumnSetAside`).
 
 **A workshop** is one of the stations an activity runs in parallel. It has a name, a theme, its
 challenges, the materials it recalls and the adults it takes to hold it.
 
-Tags all live in `tags`, and an activity links them through one relation per place
+Tags all live in `catalog_tags`, and an activity links them through one relation per place
 ([ADR 0014](../adr/0014-activity-tags-are-one-collection.md)): `theme_tags` into
-`classification.themes`, `imaginary_tags` into `imaginary.universes`, `safety_tags` into
-`safety.tags`, and `goal_tags`, `ideal_for_tags` and `development_tags` into `pedagogy`. The six
-development axes share their relation, and the mapper sorts them apart by kind. A backend hook
-refuses a tag linked in a relation not meant for its kind. `name` and `description` are in one
-language, French, whatever locale the app is showing. `tagOptions` in `model/tag.ts` groups
-every tag by kind for the editor's pickers.
+`classification.themes`, `imaginary_tags` into `imaginary.universes`, and `goal_tags`,
+`ideal_for_tags` and `development_tags` into `pedagogy`. The six development axes share their
+relation, and the mapper sorts them apart by kind. A backend hook refuses a tag linked in a
+relation not meant for its kind. `name` is in one language, French, whatever locale the app is
+showing. `tagOptions` in `model/tag.ts` groups every tag by kind for the editor's pickers.
+
+**Safety instructions and tips are catalogues of their own**
+([ADR 0018](../adr/0018-safety-instructions-and-tips-are-catalogues.md)). `catalog_safety_instructions`
+holds a slug, a name and the precautions as rich text; an activity links them through
+`safety_instructions`, read into `safety.instructions`. `catalog_tips` holds a name and the advice; an
+activity links them through `tips`, read into `activity.tips`. Both are reference data, like
+the tags: an activity links them, and an admin writes them from
+[catalogue-authoring](catalogue-authoring.md). The detail and run screens show them as two
+icon buttons beside the back button, a warning for the safety instructions and an info for the
+tips, each with its count and only when there is one (`ActivityNotices`). Each opens a modal
+with every entry, its name and its text in full.
 
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
 `file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
@@ -80,70 +111,78 @@ Nothing on these two screens writes. What follows describes how the editor in
 [activities-authoring](activities-authoring.md) persists what this feature then reads back, because it is
 the reason `ActivityData` has the shape it does.
 
-An activity is several collections and relations are stored as ids, so nothing can be saved
-before its parent exists. Rather than sequencing that at the end, **every record is written as
-soon as it is added**:
+An activity is several collections and relations are stored as ids, so a record can only be
+written once what it points at exists. **Nothing is written before the save**, and the save is
+**one batch**: every write, in order, inside one PocketBase transaction — all of them land or
+none does ([ADR 0017](../adr/0017-an-activity-is-saved-in-one-batch.md)).
 
-| Added | Written | By |
+Until then the editor holds everything:
+
+| Added | Held as | By |
 |---|---|---|
-| the activity | on **Add** on the authoring list, before the editor opens | `useActivitiesEditList` |
-| a step, blank, and its link to the activity | on **Add** in the steps panel, before the modal opens | `useActivityEdit.addStep` |
-| a file | as it is picked | `useStepEdit` |
-| the step's own content | as the modal is confirmed | `StepEdit.modal` (`useEditModal`) |
-| a material's link to the activity, and a new catalogue name first if one was typed | as it is chosen | `useActivityEdit.addMaterial`, `useMaterialCatalogue.create` |
-| a material's quantity | as it is typed | `useActivityEdit.updateMaterial` |
-| a workshop, blank, and its link | on **Add** in the workshops panel, before the modal opens | `useActivityEdit.addWorkshop` |
-| the workshop's own content | as the modal is confirmed | `WorkshopEdit.modal` (`useEditModal`) |
+| the activity | a blank one, on the `new` route | `useActivityEdit` |
+| a step, a workshop | a blank one, joining the list when its modal is confirmed | `useActivityEdit.newStep`, `newWorkshop` |
+| a file | a resource carrying the picked `File`, previewed from a `blob:` url | `useStepResources` |
+| a material | a link to the catalogue material | `useActivityEdit.addMaterial` |
+| a name the catalogue does not have | a catalogue material, and a link to it | `useActivityEdit.createMaterial` |
+| a quantity, a tag, any field | typed into the record it belongs to | the form |
 
-Nothing is ever created from a modal: what it opens on already exists, so it only updates, and
-the files chosen in it have a record to belong to.
+**A new record's id is chosen when it is added** (`saveApi.newId`, in PocketBase's format).
+That is what lets one batch create a step and then the activity listing it, and lets a step
+recall a material link created in the same save.
 
-What is left for the save button is the activity's own fields: every family, its description
-and which tags it carries. That is a single update, and then the detail screen. A tag is
-reference data: picking one links a row that already exists, so nothing is written until save.
-An update carries a family whole, tag relations included, or leaves it out.
+`activityWrites(original, edited)` turns the two versions into the batch. A record `original`
+lacks is created, one `edited` lacks is deleted, one that changed is updated — compared as JSON,
+since the edited record is a copy of the read one. A file is new when it carries its `file`,
+which a read never does. The order is the one every write needs:
 
-A blank record is still a valid one: `createEmptyActivity` fills in every family, and the
-`description` and `state` the collection requires — a new activity starts as `DRAFT` — and
-`useActivitiesEditList` adds the placeholder name and the owner from the session.
-`createEmptyStep` does the same for the two fields a step must have, `description` and `kind`,
-and `createEmptyWorkshop` for a workshop's name. They are the authoring feature's.
+1. names added to the catalogue that a link still uses, then the activity itself if it is new,
+   with empty lists;
+2. material links; new steps, without their files; the files, pointing at their step; the new
+   steps listing their files; the changed steps;
+3. workshops;
+4. the activity's own update: every family, its tags, and its lists;
+5. the deletes — steps, workshops, then material links — once nothing lists them.
 
-A material **is** picked from a reference collection, the catalogue, but unlike a tag the
-pick is written at once: it is a link of the activity's own, carrying the quantity. Should the
-activity's list fail to take the link, the link is deleted again. **Taking a material off is one
-call**, the link's delete: the backend drops it from the activity's list and from every step and
-workshop recalling it. `withoutMaterial` then takes it off the steps and workshops held in
-memory too, or their next save would send the dead id back and be refused. A workshop is
-deleted in one call for the same reason.
+**Deleting a step comes after the update that unlinks it.** `activities.steps` has
+`cascadeDelete` on, which in PocketBase deletes the record *holding* the relation once the
+deleted id leaves it with no references left — so deleting an activity's last step while it is
+still listed would take the activity with it. Inside one batch the order still holds, and the
+one-step case is not a special case.
 
-**Deleting a step means unlinking it first.** `activities.steps` has `cascadeDelete` on, which
-in PocketBase deletes the record *holding* the relation once the deleted id leaves it with no
-references left — so deleting an activity's last step takes the activity with it. `detachStep`
-writes the shortened list, and only then removes the record, which also keeps the one-step case
-from being a special case.
+**Taking a material off** is `withoutMaterial`: off the activity's list and off every step and
+workshop recalling it, so their updates drop it before the link is deleted. A file taken off a
+step is only unlinked; `back/hooks` reclaims a resource no step lists once the step is updated.
 
-A rejected write comes back as `ValidationError` and is shown against the field that caused it
-— see `useSubmit` in @chapelure/ui. A failed relation write is reported as an alert and the
-list is put back to what the record still holds, because no field on the form stands for it.
+A blank record is a valid one once filled in: `createEmptyActivity` fills in every family and
+the `state` the collection requires — a new activity starts as `DRAFT` — and `useActivityEdit`
+adds the id and the owner from the session. `createEmptyStep` seeds a step's `kind`, and
+`createEmptyWorkshop` a workshop's placeholder name. They are the authoring feature's. A modal
+refuses to close on what the collection would refuse — a step with no description
+(`stepProblems`), a workshop with no name (`workshopProblems`) — so the save does not fail on it.
+
+A rejected save comes back as `ValidationError`. The batch says which write failed, and
+`saveErrors` puts an activity write's errors against its fields and any other record's under the
+list holding it — steps, workshops or materials.
 
 ## Rules that hold
 
-Four specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Five specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
 [ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md).
 
 *`tests/activity.spec.ts`* — the mapper, the durations and the range bounds
 
-- `activityMapper` asks for the nested relations steps, material links and workshops need, and
-  every tag relation. It
+- `activityMapper` asks for the nested relations steps, material links and workshops need,
+  every tag relation, the safety instructions and the tips. It
   inlines them down to the file urls, and reads a relation the request did not expand as empty
   rather than as ids.
 - Columns are grouped by family on read and flattened back on write. Each tag relation is read
   into its family; the development axes are sorted apart by kind, and every one written back.
-- Relations are written back as ids: saving an activity links its steps and tags, it does not
-  save them. An update leaves out what it does not mention, and a family's tags are written
-  with that family alone.
+  The safety instructions go into the safety family, and the tips beside the steps.
+- Relations are written back as ids: saving an activity links its steps, tags, safety
+  instructions and tips, it does not save them. An update leaves out what it does not mention,
+  and a family's links are written with that family alone.
 - Resources shown for an activity are gathered from the steps that own them, deduplicated by id.
 - Preparation time is the steps preparing the game, and play is every other step. A step with no
   duration counts as 0.
@@ -166,18 +205,29 @@ or an api wrapper does not earn one — see
 - A step reads its relations out of `expand` and leaves no trace of it; an unexpanded relation
   reads as empty. Relations are written back as ids.
 - Actions never set read as none, and a blank action is not written.
+- The columns the app sets aside — the visual brief and the end criteria — are dropped on read,
+  so a save never writes them back.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 
-*`activities-authoring/tests/useActivityEdit.spec.ts`* — the one order that matters, in the
-feature that owns the composable
+*`tests/play.spec.ts`* — the steps of a run
 
-- Adding a step writes a blank one and links it before the modal opens; if the link fails there
-  is nothing to open.
-- A removed step is unlinked **before** it is deleted, never the other way round.
-- A material's link the activity's list could not take is deleted again.
-- A link that cannot be written puts the list back and deletes nothing, rather than leaving the
-  screen claiming a step the record does not have.
-- A delete that fails after the unlink landed leaves the step off the activity anyway.
+- Gathering the material comes first, and only when the activity needs some; each material is an
+  action to tick, with its quantity when it has one.
+- Gathering the children comes before the first step not preparing the game — first when nothing
+  is prepared, not at all when everything is. A preparation step written later stays where it is.
+
+*`activities-authoring/tests/activity.edit.spec.ts`* — the save's order, in the feature that
+owns the editor
+
+- A new activity is created bare before anything points at it, and lists them in a last update.
+- A new step is created without its files, and lists them once they are created; a file picked
+  for an existing step is created before the step's update.
+- Only what changed is updated; an unchanged activity writes itself and nothing else.
+- A removed step is deleted only **after** the update that unlinks it, never before; a material
+  link only after every step and workshop has let go of it.
+- A name added to the catalogue is created before the link to it, and not at all once nothing
+  links it.
+- A refused write's errors go to the activity's fields, or under the list holding the record.
 
 ## Not finished
 
@@ -190,22 +240,21 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
   are ready for increment 1's filters, but a filter key is a column name, not a family path.
 - **The number of leaders needed is typed in.** The template computes it from age, group size
   and the supervision referential, which does not exist yet.
-- **The template's generated steps do not exist yet.** Gathering the material, gathering the
-  children and the safety checklist are for the run screen to produce, and there is no run
-  screen. Nothing in the data stands for them, on purpose.
+- **The safety checklist is not generated.** The run produces gathering the material and the
+  children, but not the template's safety checklist. Nothing in the data stands for any of the
+  generated steps, on purpose.
+- **A run is not kept.** Reloading the run screen starts it over, and nothing records that an
+  activity was run.
 - **Resources still hang off the steps.** The template has one list for the activity, recalled
   by the steps, the way materials now work.
-- **A step's visual is only a brief.** There is no file field for it yet, and the activity's
-  own picture input goes nowhere (below).
+- **A step has no visual.** Its brief is still in the collection, set aside by the mapper, and
+  comes back once visuals are handled properly. The activity's own picture input goes nowhere
+  either (below).
+- **A tip is not tied to a step.** Tips moved from the steps to the activity, so the run screen
+  offers all of them at every step rather than the one written for it.
+- **End criteria are no longer read.** The kind that showed them is gone; the columns keep what
+  they held.
 - **The picture input goes nowhere.** The `activities` collection has a `visual` file field,
   but the form is not wired to it, so what the user picks is shown and then dropped. There is an
   `XXX` on it in the page.
-- **Cancelling leaves what was already written.** A step is a record before the modal opens, so
-  cancelling keeps an empty one on the activity; a file uploaded inside the modal is stored
-  before the step points at it. `back/hooks` reclaims a resource no step references any more,
-  but only on a step *update* — a cancel never gets that far, and neither does deleting a step,
-  which leaves its resources behind the same way.
-- **A step whose link could not be written stays in `activities_steps`.** It is deliberate:
-  deleting it would be the safe move only if the failed update definitely did not land, and
-  `cascadeDelete` makes guessing wrong expensive.
 - Images throughout are placeholders from `placeholder.pagebee.io`.

@@ -6,6 +6,26 @@ import type { ActivityMaterialData, MaterialData } from "@features/activities/mo
  * when a typed name is a new one, and what removing one leaves behind.
  */
 
+// ── The records ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * The activity's link to a catalogue material, the name folded in as a read would. Written with
+ * the activity, so its id is chosen here for the activity to list it.
+ */
+export function createMaterialLink(
+    id: string,
+    activity: string,
+    material: MaterialData,
+    quantity: string = "",
+): ActivityMaterialData {
+    return { id, activity, material: material.id, name: material.name, quantity } as ActivityMaterialData;
+}
+
+/** A name the catalogue does not have yet, created with the activity that first links it. */
+export function createCatalogueMaterial(id: string, name: string): MaterialData {
+    return { id, name: name.trim() } as MaterialData;
+}
+
 // ── Picking one ─────────────────────────────────────────────────────────────────────────────
 
 /**
