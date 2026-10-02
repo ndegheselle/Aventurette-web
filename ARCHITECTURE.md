@@ -14,7 +14,7 @@ Aventurette-web/
 │   ├── core/          @chapelure/core        contracts. no framework, no backend, no deps
 │   ├── pocketbase/    @chapelure/pocketbase  the backend adapter
 │   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, forms
-├── front/             @sagace/front          the app
+├── front/             @aventurette/front     the app
 ├── tests/                                    the test toolkit: builders, fakes, mount helpers
 ├── docs/                                     ADRs, feature docs, testing guide
 ├── back/                                     PocketBase data and migrations

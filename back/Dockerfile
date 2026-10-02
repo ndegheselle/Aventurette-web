@@ -1,7 +1,7 @@
 # PocketBase, compiled from back/. The build context is back/ (see compose.yml), so every
 # path below is relative to that folder.
 #
-#   docker build -t lubriciel-api ./back
+#   docker build -t aventurette-api ./back
 
 # -----------------------
 # 1. Build stage
