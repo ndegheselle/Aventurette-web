@@ -12,37 +12,50 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
 </script>
 <template>
     <Container>
-        <div class="sticky top-0 flex gap-2 py-1 bg-base-100 z-10">
-            <RouterLink class="btn btn-ghost"
-                        :to="{ name: activitiesRoutesNames.all }">
-                <ArrowLeftIcon /> {{ $t('actions.back') }}
-            </RouterLink>
+        <div class="sticky top-0 flex gap-1 sm:gap-2 py-1 bg-base-100 z-10">
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
+                 :data-tip="$t('actions.back')">
+                <RouterLink class="btn btn-ghost"
+                            :to="{ name: activitiesRoutesNames.all }">
+                    <ArrowLeftIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('actions.back') }}</span>
+                </RouterLink>
+            </div>
             <ActivityNotices v-if="activity"
                              :safety="activity.safety.instructions"
                              :tips="activity.tips" />
 
-            <button class="btn ms-auto"
-                    disabled>
-                <HeartIcon />
-                {{ $t('activities.actions.favorite') }}
-            </button>
-            <button class="btn"
-                    disabled>
-                <CalendarIcon />
-                {{ $t('activities.actions.addToPlanning') }}
-            </button>
-            <RouterLink v-if="activity"
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden ms-auto"
+                 :data-tip="$t('activities.actions.favorite')">
+                <button class="btn"
+                        disabled>
+                    <HeartIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.favorite') }}</span>
+                </button>
+            </div>
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
+                 :data-tip="$t('activities.actions.addToPlanning')">
+                <button class="btn"
+                        disabled>
+                    <CalendarIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.addToPlanning') }}</span>
+                </button>
+            </div>
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
+                 :data-tip="$t('activities.actions.start')">
+                <RouterLink v-if="activity"
+                            class="btn btn-primary"
+                            :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
+                    <MonitorPlayIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.start') }}</span>
+                </RouterLink>
+                <button v-else
                         class="btn btn-primary"
-                        :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
-                <MonitorPlayIcon />
-                {{ $t('activities.actions.start') }}
-            </RouterLink>
-            <button v-else
-                    class="btn btn-primary"
-                    disabled>
-                <MonitorPlayIcon />
-                {{ $t('activities.actions.start') }}
-            </button>
+                        disabled>
+                    <MonitorPlayIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.start') }}</span>
+                </button>
+            </div>
         </div>
         <template v-if="activity">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
