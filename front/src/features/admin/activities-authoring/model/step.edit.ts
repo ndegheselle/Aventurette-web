@@ -34,7 +34,7 @@ export function stepProblems(step: Pick<ActivityStepData, 'description'>): Field
 }
 
 /** Whether rich text holds no text: an editor emptied by hand leaves `<p></p>` behind. */
-function isBlankHtml(html: string | undefined): boolean {
+export function isBlankHtml(html: string | undefined): boolean {
     return !(html ?? "").replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
 }
 

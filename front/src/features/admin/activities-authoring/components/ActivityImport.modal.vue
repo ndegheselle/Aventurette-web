@@ -4,8 +4,19 @@ import FilesList from '@chapelure/ui/files/FilesList.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
-import { useActivityImport } from '@features/admin/activities-authoring/composables/useActivityImport';
-import { ArrowLeftIcon, ArrowRightIcon, CircleCheckIcon, ImportIcon, TagIcon, TriangleAlertIcon, XIcon } from 'lucide-vue-next';
+import ResourcesSelection from '@features/admin/activities-authoring/components/ResourcesSelection.vue';
+import { IMPORT_STAGES, useActivityImport } from '@features/admin/activities-authoring/composables/useActivityImport';
+import { referenceKey } from '@features/admin/activities-authoring/model/activity.import';
+import {
+    ArrowLeftIcon,
+    ArrowRightIcon,
+    CircleCheckIcon,
+    ImportIcon,
+    ListTodoIcon,
+    TagIcon,
+    TriangleAlertIcon,
+    XIcon,
+} from 'lucide-vue-next';
 
 // Opened from the authoring list; on success the composable has already left for the editor.
 const controller = useModal();
@@ -15,11 +26,15 @@ const {
     sheet,
     problems,
     preview,
+    picks,
+    unset,
+    stepFiles,
     visual,
     isImporting,
     errors,
     start,
     readSheet,
+    candidates,
     pickVisual,
     next,
     back,
@@ -46,9 +61,9 @@ defineExpose({ show });
         </template>
 
         <ul class="steps w-full my-4">
-            <li class="step step-primary">{{ $t('activities.authoring.import.stages.sheet') }}</li>
-            <li class="step" :class="{ 'step-primary': stage === 'visual' }">
-                {{ $t('activities.authoring.import.stages.visual') }}
+            <li v-for="(name, index) in IMPORT_STAGES" :key="name" class="step"
+                :class="{ 'step-primary': index <= IMPORT_STAGES.indexOf(stage) }">
+                {{ $t(`activities.authoring.import.stages.${name}`) }}
             </li>
         </ul>
 
@@ -86,27 +101,63 @@ defineExpose({ show });
                 </div>
             </div>
 
-            <div v-if="preview?.unknown.length" role="alert" class="alert alert-warning alert-soft items-start">
-                <TagIcon />
+        </div>
+
+        <div v-else-if="stage === 'complete'" class="flex flex-col gap-4">
+            <div v-if="preview?.unknown.length" class="flex flex-col gap-2">
+                <div role="alert" class="alert alert-warning alert-soft">
+                    <TagIcon />
+                    <span>{{ $t('activities.authoring.import.unknown') }}</span>
+                </div>
+                <label v-for="reference in preview.unknown" :key="referenceKey(reference)"
+                       class="flex flex-wrap items-center gap-2">
+                    <span class="grow text-sm">
+                        <span class="opacity-60">{{ $t(reference.label) }} :</span> {{ reference.name }}
+                    </span>
+                    <select v-model="picks[referenceKey(reference)]" class="select select-sm w-64">
+                        <option :value="undefined">{{ $t('activities.authoring.import.leaveOff') }}</option>
+                        <option v-for="candidate in candidates(reference.kind)" :key="candidate.id" :value="candidate.id">
+                            {{ candidate.name }}
+                        </option>
+                    </select>
+                </label>
+            </div>
+
+            <div v-if="unset.length" role="status" class="alert alert-info alert-soft items-start">
+                <ListTodoIcon />
                 <div>
-                    <b>{{ $t('activities.authoring.import.unknown') }}</b>
+                    <b>{{ $t('activities.authoring.import.unset.title') }}</b>
                     <ul class="list-disc ms-4 text-sm">
-                        <li v-for="(reference, index) in preview.unknown" :key="index">
-                            {{ $t(reference.label) }} : {{ reference.name }}
+                        <li v-for="field in unset" :key="field.label">
+                            {{ $t(field.label) }}<template v-if="field.steps"> : {{ field.steps.join(', ') }}</template>
                         </li>
                     </ul>
                 </div>
             </div>
+
+            <div v-if="!preview?.unknown.length && !unset.length" role="status" class="alert alert-success alert-soft">
+                <CircleCheckIcon />
+                <span>{{ $t('activities.authoring.import.complete') }}</span>
+            </div>
         </div>
 
-        <div v-else class="flex flex-col gap-2">
-            <FilesInput accept="image/*" @change="pickVisual">
-                <template #constraints>
-                    {{ $t('activities.constraints.picture') }}
-                </template>
-            </FilesInput>
-            <FilesList :files="visual" />
-            <p class="text-sm opacity-60">{{ $t('activities.authoring.import.visual.optional') }}</p>
+        <div v-else class="flex flex-col gap-4">
+            <div class="flex flex-col gap-2">
+                <b>{{ $t('activities.fields.picture') }}</b>
+                <FilesInput accept="image/*" @change="pickVisual">
+                    <template #constraints>
+                        {{ $t('activities.constraints.picture') }}
+                    </template>
+                </FilesInput>
+                <FilesList :files="visual" />
+            </div>
+
+            <div v-for="(files, index) in stepFiles" :key="files.id" class="flex flex-col gap-1">
+                <b>{{ $t('activities.authoring.import.stepResources', { title: sheet?.steps[index]?.title }) }}</b>
+                <ResourcesSelection v-model="files.resources" :step="files.id" />
+            </div>
+
+            <p class="text-sm opacity-60">{{ $t('activities.authoring.import.files.optional') }}</p>
         </div>
 
         <FieldError :error="errors.global.value" />
@@ -116,7 +167,11 @@ defineExpose({ show });
                 <XIcon />
                 {{ $t('actions.cancel') }}
             </button>
-            <template v-if="stage === 'sheet'">
+            <template v-if="stage !== 'files'">
+                <button v-if="stage !== 'sheet'" class="btn" @click="back">
+                    <ArrowLeftIcon />
+                    {{ $t('activities.authoring.import.back') }}
+                </button>
                 <button class="btn btn-primary" :disabled="!sheet" @click="next">
                     {{ $t('activities.authoring.import.next') }}
                     <ArrowRightIcon />

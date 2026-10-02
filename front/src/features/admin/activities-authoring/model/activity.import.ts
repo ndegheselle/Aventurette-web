@@ -18,7 +18,7 @@ import {
     type SafetyInstructionData,
 } from "@features/activities/model/activity";
 import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
-import { StepKind, type ActivityStepData } from "@features/activities/model/step";
+import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/model/step";
 import { ActivityTagType, type ActivityTagData } from "@features/activities/model/tag";
 import type { ActivityWorkshopData } from "@features/activities/model/workshop";
 import { createEmptyActivity } from "@features/admin/activities-authoring/model/activity.edit";
@@ -27,7 +27,7 @@ import {
     createMaterialLink,
     materialNamed,
 } from "@features/admin/activities-authoring/model/material.edit";
-import { createEmptyStep } from "@features/admin/activities-authoring/model/step.edit";
+import { createEmptyStep, isBlankHtml } from "@features/admin/activities-authoring/model/step.edit";
 import { createEmptyWorkshop } from "@features/admin/activities-authoring/model/workshop.edit";
 
 /**
@@ -320,42 +320,75 @@ export interface SheetReferences {
     tips: ActivityTipData[];
 }
 
+/** Which catalogue a name is looked up in: a kind of tag, the safety instructions or the tips. */
+export type ReferenceKind = ActivityTagType | 'SAFETY' | 'TIP';
+
 /** A name the sheet gives that nothing of its kind answers to. */
 export interface UnknownReference {
+    kind: ReferenceKind;
     /** What kind of thing it should have been, as a translation key. */
     label: string;
     name: string;
 }
 
+/**
+ * What the author linked in place of names that matched nothing: the id of one of the same kind,
+ * by `referenceKey`. A name with no pick is left off.
+ */
+export type ReferencePicks = Record<string, string>;
+
+/** The key a pick is held under. Two spellings of one name, in one kind, share it. */
+export function referenceKey(reference: Pick<UnknownReference, 'kind' | 'name'>): string {
+    return `${reference.kind}:${key(reference.name)}`;
+}
+
+/** What a name of that kind may be linked to instead, by name. */
+export function referenceCandidates(known: SheetReferences, kind: ReferenceKind): { id: string; name: string }[] {
+    const candidates = kind === 'SAFETY' ? known.safetyInstructions
+        : kind === 'TIP' ? known.tips
+        : known.tags.filter(tag => tag.type === kind);
+
+    return [...candidates].sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export interface SheetActivity {
     /** The activity, its references resolved. Its materials, steps and workshops are `draftFromSheet`'s. */
     activity: ActivityData;
-    /** What the sheet named that does not exist yet — left off, since none of it is written here. */
+    /** What the sheet named that does not exist, each once — picked or not, so a pick can change. */
     unknown: UnknownReference[];
 }
 
 /**
  * The activity a sheet describes. Tags, safety instructions and tips are reference data, so a name
- * matches an existing one of the same kind by name or slug, whatever the case, and one that
- * matches nothing is reported and left off rather than created.
+ * matches an existing one of the same kind by name or slug, whatever the case. One that matches
+ * nothing is reported, and links what the author picked for it, or nothing: it is never created.
  */
-export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences): SheetActivity {
+export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences, picks: ReferencePicks = {}): SheetActivity {
     const unknown: UnknownReference[] = [];
 
-    function matching<T extends { id: string; name: string; slug?: string }>(label: string, candidates: T[], names: string[]): T[] {
+    function matching<T extends { id: string; name: string; slug?: string }>(kind: ReferenceKind, label: string, candidates: T[], names: string[]): T[] {
         const found: T[] = [];
 
         for (const name of names) {
             const match = candidates.find(candidate => key(candidate.name) === key(name) || key(candidate.slug) === key(name));
-            if (match) found.push(match);
-            else unknown.push({ label, name });
+            if (match) {
+                found.push(match);
+                continue;
+            }
+
+            const reference = { kind, label, name };
+            if (!unknown.some(other => referenceKey(other) === referenceKey(reference)))
+                unknown.push(reference);
+
+            const picked = candidates.find(candidate => candidate.id === picks[referenceKey(reference)]);
+            if (picked) found.push(picked);
         }
 
         return distinctById(found);
     }
 
     function tags(type: ActivityTagType, names: string[]): ActivityTagData[] {
-        return matching(`activities.tagType.${type}`, known.tags.filter(tag => tag.type === type), names);
+        return matching(type, `activities.tagType.${type}`, known.tags.filter(tag => tag.type === type), names);
     }
 
     const development = Object.fromEntries(DEVELOPMENT_AXES.map(axis =>
@@ -380,17 +413,68 @@ export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences):
         supervision: { ...sheet.supervision },
         place: { ...sheet.place },
         safety: {
-            instructions: matching('activities.fields.safetyInstructions', known.safetyInstructions, sheet.safety.instructions),
+            instructions: matching('SAFETY', 'activities.fields.safetyInstructions', known.safetyInstructions, sheet.safety.instructions),
         },
         pedagogy: {
             goals: tags(ActivityTagType.GOAL, sheet.pedagogy.goals),
             idealFor: tags(ActivityTagType.IDEAL_FOR, sheet.pedagogy.idealFor),
             development,
         },
-        tips: matching('activities.tips.title', known.tips, sheet.tips),
+        tips: matching('TIP', 'activities.tips.title', known.tips, sheet.tips),
     };
 
     return { activity, unknown };
+}
+
+/** A field the import leaves empty, for the author to fill in the editor. */
+export interface UnsetField {
+    /** The field's label, as a translation key. */
+    label: string;
+    /** For a step field: the titles of the steps missing it. */
+    steps?: string[];
+}
+
+/**
+ * What the activity still lacks, in the editor's order. A field that only applies to some
+ * activities is listed only for those: practices and supervision notes for a workshop, universes
+ * when the imaginary is imposed.
+ */
+export function unsetFields(activity: ActivityData, steps: Pick<SheetStep, 'title' | 'duration'>[]): UnsetField[] {
+    const { classification, imaginary, audience, supervision, place, safety, pedagogy } = activity;
+    const isWorkshop = classification.format === ActivityFormat.WORKSHOP;
+    const untimed = steps.filter(step => !step.duration).map(step => step.title);
+
+    const checks: [boolean, string][] = [
+        [!activity.visualBrief.trim(), 'activities.fields.visualBrief'],
+        [isBlankHtml(activity.description), 'activities.authoring.description'],
+        [!classification.format, 'activities.fields.format'],
+        [!classification.themes.length, 'activities.tagType.THEME'],
+        [isWorkshop && !classification.practices.length, 'activities.fields.practices'],
+        [!imaginary.rule, 'activities.fields.imaginaryRule'],
+        [imaginary.rule === ImaginaryRule.REQUIRED && !imaginary.universes.length, 'activities.tagType.IMAGINARY'],
+        [!audience.ageMin && !audience.ageMax, 'activities.fields.age'],
+        [!audience.participantsMin && !audience.participantsMax, 'activities.fields.participants'],
+        [!audience.childrenPace, 'activities.fields.childrenPace'],
+        [isBlankHtml(audience.ageVariants), 'activities.fields.ageVariants'],
+        [!supervision.hostEffort, 'activities.fields.hostEffort'],
+        [!supervision.hostsRequired, 'activities.fields.hosts'],
+        [isWorkshop && isBlankHtml(supervision.notes), 'activities.fields.supervisionNotes'],
+        [!place.indoor && !place.outdoor, 'activities.authoring.import.unset.indoorOutdoor'],
+        [!place.seasons.length, 'activities.fields.seasons'],
+        [!place.locations.length, 'activities.fields.locations'],
+        [isBlankHtml(place.conditions), 'activities.fields.conditions'],
+        [!safety.instructions.length, 'activities.fields.safetyInstructions'],
+        [!pedagogy.goals.length, 'activities.tagType.GOAL'],
+        [!pedagogy.idealFor.length, 'activities.tagType.IDEAL_FOR'],
+        [DEVELOPMENT_AXES.every(axis => !pedagogy.development[axis].length), 'activities.families.development'],
+        [!activity.tips.length, 'activities.tips.title'],
+        [!steps.length, 'activities.steps.title'],
+    ];
+
+    return [
+        ...checks.filter(([unset]) => unset).map(([, label]) => ({ label })),
+        ...(untimed.length ? [{ label: 'activities.steps.fields.duration', steps: untimed }] : []),
+    ];
 }
 
 /**
@@ -428,18 +512,29 @@ export interface SheetDraft {
 }
 
 /**
+ * The files picked for a sheet's step, which a file cannot carry. They point at the step, so the
+ * step's id is chosen with them.
+ */
+export interface SheetStepFiles {
+    id: string;
+    resources: ActivityResourceData[];
+}
+
+/**
  * Hang the sheet's materials, steps and workshops off its activity. Each material is the
  * catalogue's of that name, whatever the case, or a new one when the catalogue has none; steps and
  * workshops recall the links by name.
  *
  * @param activity the sheet's activity, with its id and author
  * @param catalogue every catalogue material
+ * @param stepFiles the files picked for each step, by the step's position in the sheet
  */
 export function draftFromSheet(
     sheet: ActivitySheet,
     activity: ActivityData,
     catalogue: MaterialData[],
     newId: IdFactory,
+    stepFiles: SheetStepFiles[] = [],
 ): SheetDraft {
     const newMaterials: MaterialData[] = [];
 
@@ -452,7 +547,11 @@ export function draftFromSheet(
         return createMaterialLink(newId(), activity.id, material, quantity);
     });
 
-    const steps = sheet.steps.map(step => stepFromSheet(step, newId(), activity.id, materials));
+    const steps = sheet.steps.map((step, index) => {
+        const files = stepFiles[index];
+        const created = stepFromSheet(step, files?.id ?? newId(), activity.id, materials);
+        return { ...created, resources: files?.resources ?? [] };
+    });
     const workshops = sheet.workshops.map(workshop => workshopFromSheet(workshop, newId(), activity.id, materials));
 
     return { activity: { ...activity, materials, steps, workshops }, newMaterials };

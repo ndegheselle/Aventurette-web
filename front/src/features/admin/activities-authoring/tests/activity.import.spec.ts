@@ -1,4 +1,13 @@
-import { ActivityFormat } from '@features/activities/model/activity';
+import {
+    ActivityFormat,
+    ActivityLocation,
+    ActivityPractice,
+    ActivitySeason,
+    ChildrenPace,
+    DEVELOPMENT_AXES,
+    HostEffort,
+    ImaginaryRule,
+} from '@features/activities/model/activity';
 import { StepKind } from '@features/activities/model/step';
 import { ActivityTagType } from '@features/activities/model/tag';
 import {
@@ -6,13 +15,17 @@ import {
     draftFromSheet,
     materialsOfSheet,
     readActivitySheet,
+    referenceKey,
+    SHEET_VERSION,
     stepFromSheet,
+    unsetFields,
     type ActivitySheet,
 } from '@features/admin/activities-authoring/model/activity.import';
-import { aCatalogueMaterial, aMaterial, anActivity, aSafetyInstruction, aTag, aTip } from '@tests';
+import { aCatalogueMaterial, aMaterial, anActivity, aResource, aSafetyInstruction, aTag, aTip } from '@tests';
 import { describe, expect, it } from 'vitest';
 // Relative: no alias reaches the skills folder, and this is the one file that needs to.
 import example from '../../../../../../.claude/skills/fiche-to-json/example.json?raw';
+import schema from '../../../../../../.claude/skills/fiche-to-json/fiche-activite.schema.json?raw';
 
 // A sheet is written by hand or by the skill, outside the app: reading it is the one place that
 // says what an imported activity may hold. Then the names in it become links.
@@ -29,6 +42,23 @@ describe('readActivitySheet', () => {
     it('reads the example the fiche-to-json skill writes from', () => {
         // The skill documents the format; this is what keeps the two from drifting apart.
         expect(readActivitySheet(example).problems).toEqual([]);
+    });
+
+    it('accepts the codes the fiche-to-json schema lists, and only those', () => {
+        // The skill writes against the schema; the enums come from the database.
+        const { properties, $defs } = JSON.parse(schema);
+        const codes = (name: string) => $defs[name].oneOf.map((option: { const: string }) => option.const);
+
+        expect(properties.version.const).toBe(SHEET_VERSION);
+        expect(codes('format')).toEqual(Object.values(ActivityFormat));
+        expect(codes('practice')).toEqual(Object.values(ActivityPractice));
+        expect(codes('imaginaryRule')).toEqual(Object.values(ImaginaryRule));
+        expect(codes('childrenPace')).toEqual(Object.values(ChildrenPace));
+        expect(codes('hostEffort')).toEqual(Object.values(HostEffort));
+        expect(codes('location')).toEqual(Object.values(ActivityLocation));
+        expect(codes('season')).toEqual(Object.values(ActivitySeason));
+        expect(codes('stepKind')).toEqual(Object.values(StepKind));
+        expect(properties.pedagogy.properties.development.required).toEqual([...DEVELOPMENT_AXES]);
     });
 
     it('refuses what is not JSON', () => {
@@ -106,7 +136,7 @@ describe('activityFromSheet', () => {
         expect(activity.classification.themes).toEqual([insects]);
         expect(activity.imaginary.universes).toEqual([pirates]);
         // A pirate universe is not a theme: the name matched a tag of the wrong kind.
-        expect(unknown).toEqual([{ label: 'activities.tagType.THEME', name: 'pirates' }]);
+        expect(unknown).toEqual([{ kind: ActivityTagType.THEME, label: 'activities.tagType.THEME', name: 'pirates' }]);
     });
 
     it('reports a tag that does not exist and leaves it off, rather than creating it', () => {
@@ -115,7 +145,24 @@ describe('activityFromSheet', () => {
         const { activity, unknown } = activityFromSheet(sheet, nothingKnown);
 
         expect(activity.pedagogy.development.DEVELOP_SOCIAL).toEqual([]);
-        expect(unknown).toEqual([{ label: 'activities.tagType.DEVELOP_SOCIAL', name: 'Écoute' }]);
+        expect(unknown).toEqual([{ kind: ActivityTagType.DEVELOP_SOCIAL, label: 'activities.tagType.DEVELOP_SOCIAL', name: 'Écoute' }]);
+    });
+
+    it('links what the author picked for a name that matched nothing, and still reports the name once', () => {
+        // Still reported, so the pick can be changed; picked among its own kind only.
+        const insects = aTag({ type: ActivityTagType.THEME, name: 'Insectes' });
+        const pirates = aTag({ type: ActivityTagType.IMAGINARY, name: 'Pirates' });
+        const sheet = sheetOf({ name: 'Tag', classification: { themes: ['Bugs', 'bugs', 'Birds'] }, imaginary: { universes: ['Corsaires'] } });
+        const picks = {
+            [referenceKey({ kind: ActivityTagType.THEME, name: 'Bugs' })]: insects.id,
+            [referenceKey({ kind: ActivityTagType.IMAGINARY, name: 'Corsaires' })]: insects.id,
+        };
+
+        const { activity, unknown } = activityFromSheet(sheet, { ...nothingKnown, tags: [insects, pirates] }, picks);
+
+        expect(activity.classification.themes).toEqual([insects]);
+        expect(activity.imaginary.universes).toEqual([]);
+        expect(unknown.map(reference => reference.name)).toEqual(['Bugs', 'Birds', 'Corsaires']);
     });
 
     it('links a name given twice once', () => {
@@ -140,9 +187,55 @@ describe('activityFromSheet', () => {
         expect(activity.safety.instructions).toEqual([fire, water]);
         expect(activity.tips).toEqual([pace]);
         expect(unknown).toEqual([
-            { label: 'activities.fields.safetyInstructions', name: 'Froid' },
-            { label: 'activities.tips.title', name: 'Chanter' },
+            { kind: 'SAFETY', label: 'activities.fields.safetyInstructions', name: 'Froid' },
+            { kind: 'TIP', label: 'activities.tips.title', name: 'Chanter' },
         ]);
+    });
+});
+
+describe('unsetFields', () => {
+    const labels = (fields: { label: string }[]) => fields.map(field => field.label);
+
+    it('lists a workshop\'s practices and notes, and universes when imposed, only then', () => {
+        const game = anActivity({ classification: { format: ActivityFormat.SMALL_GAME, practices: [], themes: [] } });
+        const workshop = anActivity({
+            classification: { format: ActivityFormat.WORKSHOP, practices: [], themes: [] },
+            imaginary: { rule: ImaginaryRule.REQUIRED, universes: [] },
+        });
+
+        expect(labels(unsetFields(game, []))).not.toContain('activities.fields.practices');
+        expect(labels(unsetFields(game, []))).not.toContain('activities.fields.supervisionNotes');
+        expect(labels(unsetFields(game, []))).not.toContain('activities.tagType.IMAGINARY');
+        expect(labels(unsetFields(workshop, []))).toEqual(expect.arrayContaining([
+            'activities.fields.practices',
+            'activities.fields.supervisionNotes',
+            'activities.tagType.IMAGINARY',
+        ]));
+    });
+
+    it('takes one bound of a range, one place flag or one development axis as set', () => {
+        const activity = anActivity();
+        activity.audience.ageMax = 8;
+        activity.place.outdoor = true;
+        activity.pedagogy.development.DEVELOP_SOCIAL = [aTag({ type: ActivityTagType.DEVELOP_SOCIAL })];
+
+        const unset = labels(unsetFields(activity, []));
+
+        expect(unset).not.toContain('activities.fields.age');
+        expect(unset).toContain('activities.fields.participants');
+        expect(unset).not.toContain('activities.authoring.import.unset.indoorOutdoor');
+        expect(unset).not.toContain('activities.families.development');
+    });
+
+    it('takes an emptied editor as no description', () => {
+        expect(labels(unsetFields(anActivity({ description: '<p></p>' }), []))).toContain('activities.authoring.description');
+    });
+
+    it('names the steps with no duration', () => {
+        const unset = unsetFields(anActivity(), [{ title: 'Install', duration: 5 }, { title: 'Play', duration: 0 }]);
+
+        expect(unset.at(-1)).toEqual({ label: 'activities.steps.fields.duration', steps: ['Play'] });
+        expect(labels(unset)).not.toContain('activities.steps.title');
     });
 });
 
@@ -215,6 +308,14 @@ describe('draftFromSheet', () => {
         expect([...materials, ...steps, ...workshops].every(record => record.activity === 'act-1')).toBe(true);
         expect(steps[0]!.materials).toEqual([materials[0]]);
         expect(workshops[0]!.materials).toEqual([materials[1]]);
+    });
+
+    it('gives a step the files picked for it, under the id they point at', () => {
+        const file = aResource({ step: 'stp-picked' });
+
+        const draft = draftFromSheet(sheet(), anActivity({ id: 'act-1' }), [], counter(), [{ id: 'stp-picked', resources: [file] }]);
+
+        expect(draft.activity.steps[0]).toMatchObject({ id: 'stp-picked', resources: [file] });
     });
 
     it('links a name the catalogue lacked to the new catalogue material created for it', () => {

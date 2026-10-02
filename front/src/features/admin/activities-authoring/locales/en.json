@@ -34,16 +34,24 @@
                 "title": "Import a sheet",
                 "stages": {
                     "sheet": "JSON sheet",
-                    "visual": "Visual"
+                    "complete": "Missing details",
+                    "files": "Files"
                 },
                 "sheet": {
                     "constraints": "A JSON file produced from the activity sheet template.",
                     "summary": "{steps} step(s), {materials} material(s), {workshops} workshop(s)"
                 },
-                "visual": {
-                    "optional": "Optional: the activity can be imported without a visual and get one later."
+                "files": {
+                    "optional": "Optional: the visual and the resources can also be added later from the editor."
                 },
-                "unknown": "These do not exist yet and will not be linked:",
+                "unknown": "These do not exist yet: link an existing one instead, or leave them off.",
+                "leaveOff": "Leave off",
+                "unset": {
+                    "title": "Still to fill in the editor:",
+                    "indoorOutdoor": "Indoor / outdoor"
+                },
+                "complete": "Nothing is missing from this sheet.",
+                "stepResources": "Resources — {title}",
                 "problems": {
                     "title": "{file} cannot be imported:",
                     "json": "The file is not valid JSON.",
