@@ -15,11 +15,11 @@ export const Collections = {
 	ActivitiesMaterials: "activities_materials",
 	ActivitiesSteps: "activities_steps",
 	ActivitiesWorkshops: "activities_workshops",
-	Materials: "materials",
-	SafetyInstructions: "safety_instructions",
+	CatalogMaterials: "catalog_materials",
+	CatalogSafetyInstructions: "catalog_safety_instructions",
+	CatalogTags: "catalog_tags",
+	CatalogTips: "catalog_tips",
 	StepsResources: "steps_resources",
-	Tags: "tags",
-	Tips: "tips",
 	Users: "users",
 } as const
 export type Collections = typeof Collections[keyof typeof Collections]
@@ -261,14 +261,14 @@ export type ActivitiesWorkshopsRecord = {
 	updated: IsoAutoDateString
 }
 
-export type MaterialsRecord = {
+export type CatalogMaterialsRecord = {
 	created: IsoAutoDateString
 	id: string
 	name: string
 	updated: IsoAutoDateString
 }
 
-export type SafetyInstructionsRecord = {
+export type CatalogSafetyInstructionsRecord = {
 	created: IsoAutoDateString
 	description?: HTMLString
 	id: string
@@ -277,16 +277,7 @@ export type SafetyInstructionsRecord = {
 	updated: IsoAutoDateString
 }
 
-export type StepsResourcesRecord = {
-	created: IsoAutoDateString
-	file?: FileNameString
-	id: string
-	name: string
-	step: RecordIdString
-	updated: IsoAutoDateString
-}
-
-export const TagsTypeOptions = {
+export const CatalogTagsTypeOptions = {
 	"THEME": "THEME",
 	"IMAGINARY": "IMAGINARY",
 	"GOAL": "GOAL",
@@ -298,21 +289,30 @@ export const TagsTypeOptions = {
 	"DEVELOP_MORAL": "DEVELOP_MORAL",
 	"DEVELOP_SPIRITUAL": "DEVELOP_SPIRITUAL",
 } as const
-export type TagsTypeOptions = typeof TagsTypeOptions[keyof typeof TagsTypeOptions]
-export type TagsRecord = {
+export type CatalogTagsTypeOptions = typeof CatalogTagsTypeOptions[keyof typeof CatalogTagsTypeOptions]
+export type CatalogTagsRecord = {
 	created: IsoAutoDateString
 	id: string
 	name: string
 	slug: string
-	type: TagsTypeOptions
+	type: CatalogTagsTypeOptions
 	updated: IsoAutoDateString
 }
 
-export type TipsRecord = {
+export type CatalogTipsRecord = {
 	created: IsoAutoDateString
 	description?: HTMLString
 	id: string
 	name: string
+	updated: IsoAutoDateString
+}
+
+export type StepsResourcesRecord = {
+	created: IsoAutoDateString
+	file?: FileNameString
+	id: string
+	name: string
+	step: RecordIdString
 	updated: IsoAutoDateString
 }
 
@@ -353,11 +353,11 @@ export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> &
 export type ActivitiesMaterialsResponse<Texpand = unknown> = Required<ActivitiesMaterialsRecord> & BaseSystemFields<Texpand>
 export type ActivitiesStepsResponse<Tactions = unknown, Texpand = unknown> = Required<ActivitiesStepsRecord<Tactions>> & BaseSystemFields<Texpand>
 export type ActivitiesWorkshopsResponse<Texpand = unknown> = Required<ActivitiesWorkshopsRecord> & BaseSystemFields<Texpand>
-export type MaterialsResponse<Texpand = unknown> = Required<MaterialsRecord> & BaseSystemFields<Texpand>
-export type SafetyInstructionsResponse<Texpand = unknown> = Required<SafetyInstructionsRecord> & BaseSystemFields<Texpand>
+export type CatalogMaterialsResponse<Texpand = unknown> = Required<CatalogMaterialsRecord> & BaseSystemFields<Texpand>
+export type CatalogSafetyInstructionsResponse<Texpand = unknown> = Required<CatalogSafetyInstructionsRecord> & BaseSystemFields<Texpand>
+export type CatalogTagsResponse<Texpand = unknown> = Required<CatalogTagsRecord> & BaseSystemFields<Texpand>
+export type CatalogTipsResponse<Texpand = unknown> = Required<CatalogTipsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
-export type TagsResponse<Texpand = unknown> = Required<TagsRecord> & BaseSystemFields<Texpand>
-export type TipsResponse<Texpand = unknown> = Required<TipsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -372,11 +372,11 @@ export type CollectionRecords = {
 	activities_materials: ActivitiesMaterialsRecord
 	activities_steps: ActivitiesStepsRecord
 	activities_workshops: ActivitiesWorkshopsRecord
-	materials: MaterialsRecord
-	safety_instructions: SafetyInstructionsRecord
+	catalog_materials: CatalogMaterialsRecord
+	catalog_safety_instructions: CatalogSafetyInstructionsRecord
+	catalog_tags: CatalogTagsRecord
+	catalog_tips: CatalogTipsRecord
 	steps_resources: StepsResourcesRecord
-	tags: TagsRecord
-	tips: TipsRecord
 	users: UsersRecord
 }
 
@@ -390,11 +390,11 @@ export type CollectionResponses = {
 	activities_materials: ActivitiesMaterialsResponse
 	activities_steps: ActivitiesStepsResponse
 	activities_workshops: ActivitiesWorkshopsResponse
-	materials: MaterialsResponse
-	safety_instructions: SafetyInstructionsResponse
+	catalog_materials: CatalogMaterialsResponse
+	catalog_safety_instructions: CatalogSafetyInstructionsResponse
+	catalog_tags: CatalogTagsResponse
+	catalog_tips: CatalogTipsResponse
 	steps_resources: StepsResourcesResponse
-	tags: TagsResponse
-	tips: TipsResponse
 	users: UsersResponse
 }
 

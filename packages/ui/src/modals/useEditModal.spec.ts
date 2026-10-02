@@ -35,6 +35,17 @@ describe('useEditModal', () => {
             expect(edit.isNew.value).toBe(true);
         });
 
+        it('clears the errors a refused save left, so the next record opens clean', async () => {
+            const { edit, crud } = setup();
+            edit.show({ name: '' } as Child);
+            crud.failNextWith({ name: { code: 'validation_required' } });
+            await edit.confirm();
+
+            edit.show({ name: 'Camille' } as Child);
+
+            expect(edit.errors.get('name')).toBeUndefined();
+        });
+
         it('treats a record with an id as an update', () => {
             const { edit } = setup();
 

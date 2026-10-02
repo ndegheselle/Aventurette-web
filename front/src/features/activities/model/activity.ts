@@ -9,8 +9,8 @@ import {
     ActivitiesStateOptions,
     type ActivitiesResponse,
     type HTMLString,
-    type SafetyInstructionsResponse,
-    type TipsResponse,
+    type CatalogSafetyInstructionsResponse,
+    type CatalogTipsResponse,
 } from "@/backend/schema.g";
 import { distinctById, type Entity } from "@chapelure/core";
 import type { ActivityMaterialData } from "@features/activities/model/material";
@@ -154,7 +154,7 @@ export interface ActivitySafety {
  * The precautions one risk calls for: fire, water, food allergies… Reference data, as tags are:
  * an activity links them, it never writes them.
  */
-export type SafetyInstructionData = Entity<SafetyInstructionsResponse>;
+export type SafetyInstructionData = Entity<CatalogSafetyInstructionsResponse>;
 
 // ── Pedagogy ────────────────────────────────────────────────────────────────────────────────
 
@@ -189,7 +189,7 @@ export function emptyDevelopment(): Record<DevelopmentAxis, ActivityTagData[]> {
  * A piece of advice for running an activity. Tips are a catalogue every activity draws from, as
  * safety instructions are: an activity links the ones it gives, it never writes them.
  */
-export type ActivityTipData = Entity<TipsResponse>;
+export type ActivityTipData = Entity<CatalogTipsResponse>;
 
 // ── What the steps add up to ────────────────────────────────────────────────────────────────
 

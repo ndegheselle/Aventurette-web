@@ -3,7 +3,7 @@ import { Collections } from "@/backend/schema.g";
 import { tagMapper } from "@features/activities/api/tag.mapper";
 import type { ActivityTagData } from "@features/activities/model/tag";
 
-const tags = crud(Collections.Tags, tagMapper);
+const tags = crud(Collections.CatalogTags, tagMapper);
 
 // Reference data: the editor offers every tag and writes none, so reading is all it gets.
 export const tagsApi = {

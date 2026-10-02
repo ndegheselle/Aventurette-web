@@ -1,11 +1,11 @@
-import type { ActivitiesMaterialsResponse, MaterialsResponse } from "@/backend/schema.g";
+import type { ActivitiesMaterialsResponse, CatalogMaterialsResponse } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
 
 /**
  * A material of the catalogue every activity picks from. A name, and nothing an activity
  * decides: how much of it one needs is on the activity's own link to it.
  */
-export type MaterialData = Entity<MaterialsResponse>;
+export type MaterialData = Entity<CatalogMaterialsResponse>;
 
 /**
  * Something the activity needs, with how much of it: the activity's link to a catalogue

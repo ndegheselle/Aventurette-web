@@ -1,10 +1,10 @@
-import type { ActivitiesMaterialsResponse, MaterialsResponse } from "@/backend/schema.g";
+import type { ActivitiesMaterialsResponse, CatalogMaterialsResponse } from "@/backend/schema.g";
 import type { EntityMapper } from "@chapelure/core";
 import { omit } from "@chapelure/core";
 import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
 
 /** A catalogue material as the backend stores it. */
-export type MaterialPayload = MaterialsResponse;
+export type MaterialPayload = CatalogMaterialsResponse;
 
 export const materialMapper: EntityMapper<MaterialPayload, MaterialData> = {
     relations: [],

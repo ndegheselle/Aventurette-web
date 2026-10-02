@@ -14,7 +14,8 @@
             "validation_values_mismatch": "Les valeurs ne correspondent pas.",
             "validation_required": "Valeur obligatoire.",
             "validation_invalid_email": "Email invalide ou déjà utilisé.",
-            "validation_not_unique": "Cette valeur est déjà utilisée."
+            "validation_not_unique": "Cette valeur est déjà utilisée.",
+            "validation_invalid_format": "Cette valeur n'est pas au format attendu."
         }
     },
     "actions": {
