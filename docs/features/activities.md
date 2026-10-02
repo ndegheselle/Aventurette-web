@@ -94,8 +94,10 @@ holds a slug, a name and the precautions as rich text; an activity links them th
 `safety_instructions`, read into `safety.instructions`. `catalog_tips` holds a name and the advice; an
 activity links them through `tips`, read into `activity.tips`. Both are reference data, like
 the tags: an activity links them, and an admin writes them from
-[catalogue-authoring](catalogue-authoring.md). The detail screen shows
-each instruction with its precautions, and each tip.
+[catalogue-authoring](catalogue-authoring.md). The detail and run screens show them as two
+icon buttons beside the back button, a warning for the safety instructions and an info for the
+tips, each with its count and only when there is one (`ActivityNotices`). Each opens a modal
+with every entry, its name and its text in full.
 
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
 `file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
@@ -248,8 +250,8 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
 - **A step has no visual.** Its brief is still in the collection, set aside by the mapper, and
   comes back once visuals are handled properly. The activity's own picture input goes nowhere
   either (below).
-- **The run screen shows no tip.** Tips moved from the steps to the activity, and only the
-  detail screen shows them.
+- **A tip is not tied to a step.** Tips moved from the steps to the activity, so the run screen
+  offers all of them at every step rather than the one written for it.
 - **End criteria are no longer read.** The kind that showed them is gone; the columns keep what
   they held.
 - **The picture input goes nowhere.** The `activities` collection has a `visual` file field,

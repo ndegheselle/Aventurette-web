@@ -2,10 +2,11 @@
 import List from '@chapelure/ui/data/List.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
+import ActivityNotices from '@features/activities/components/ActivityNotices.vue';
 import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivity } from '@features/activities/composables/useActivity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, CakeIcon, CalendarIcon, ClockIcon, CloudSunIcon, FileTextIcon, GaugeIcon, HeartIcon, HourglassIcon, LightbulbIcon, ListOrderedIcon, MapPinIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon, ShieldAlertIcon, SparklesIcon, UserCheckIcon, UsersIcon, ZapIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, CakeIcon, CalendarIcon, ClockIcon, CloudSunIcon, FileTextIcon, GaugeIcon, HeartIcon, HourglassIcon, ListOrderedIcon, MapPinIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon, SparklesIcon, UserCheckIcon, UsersIcon, ZapIcon } from 'lucide-vue-next';
 
 const { activity, resources, timing, ageLabel, participantsLabel } = useActivity();
 </script>
@@ -16,6 +17,9 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                         :to="{ name: activitiesRoutesNames.all }">
                 <ArrowLeftIcon /> {{ $t('actions.back') }}
             </RouterLink>
+            <ActivityNotices v-if="activity"
+                             :safety="activity.safety.instructions"
+                             :tips="activity.tips" />
 
             <button class="btn ms-auto"
                     disabled>
@@ -134,33 +138,6 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                 </Panel>
             </div>
 
-            <Panel v-if="activity.safety.instructions.length">
-                <h2 class="text-2xl flex items-center gap-2">
-                    <ShieldAlertIcon /> {{ $t('activities.families.safety') }}
-                </h2>
-                <div v-for="instruction in activity.safety.instructions"
-                     :key="instruction.id"
-                     class="collapse collapse-arrow border border-warning">
-                    <input type="checkbox" />
-                    <div class="collapse-title font-semibold">{{ instruction.name }}</div>
-                    <div class="collapse-content text-sm"
-                         v-html="instruction.description"></div>
-                </div>
-            </Panel>
-            <Panel v-if="activity.tips.length">
-                <h2 class="text-2xl flex items-center gap-2">
-                    <LightbulbIcon /> {{ $t('activities.tips.title') }}
-                </h2>
-                <div v-for="tip in activity.tips"
-                     :key="tip.id"
-                     role="alert"
-                     class="alert alert-info alert-soft">
-                    <div>
-                        <b>{{ tip.name }}</b>
-                        <div v-html="tip.description"></div>
-                    </div>
-                </div>
-            </Panel>
             <Panel v-if="activity.materials.length">
                 <h2 class="text-2xl flex items-center gap-2">
                     <PackageOpenIcon /> {{ $t('activities.materials.title') }}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
+import ActivityNotices from '@features/activities/components/ActivityNotices.vue';
 import { useActivityPlay } from '@features/activities/composables/useActivityPlay';
 import { isGenerated } from '@features/activities/model/play';
 import { stepNumber } from '@features/activities/model/step';
@@ -21,6 +22,8 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
                   class="ms-auto text-sm opacity-60 tabular-nums whitespace-nowrap">
                 {{ $t('activities.play.progress', { current: index + 1, total: steps.length }) }}
             </span>
+            <ActivityNotices :safety="activity.safety.instructions"
+                             :tips="activity.tips" />
         </div>
 
         <div v-if="!current"
