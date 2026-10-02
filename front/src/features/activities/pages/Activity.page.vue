@@ -2,43 +2,60 @@
 import List from '@chapelure/ui/data/List.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
+import ActivityNotices from '@features/activities/components/ActivityNotices.vue';
 import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivity } from '@features/activities/composables/useActivity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, CakeIcon, CalendarIcon, ClockIcon, CloudSunIcon, FileTextIcon, GaugeIcon, HeartIcon, HourglassIcon, LightbulbIcon, ListOrderedIcon, MapPinIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon, ShieldAlertIcon, SparklesIcon, UserCheckIcon, UsersIcon, ZapIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, CakeIcon, CalendarIcon, ClockIcon, CloudSunIcon, FileTextIcon, GaugeIcon, HeartIcon, HourglassIcon, ListOrderedIcon, MapPinIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon, SparklesIcon, UserCheckIcon, UsersIcon, ZapIcon } from 'lucide-vue-next';
 
 const { activity, resources, timing, ageLabel, participantsLabel } = useActivity();
 </script>
 <template>
     <Container>
-        <div class="sticky top-0 flex gap-2 py-1 bg-base-100 z-10">
-            <RouterLink class="btn btn-ghost"
-                        :to="{ name: activitiesRoutesNames.all }">
-                <ArrowLeftIcon /> {{ $t('actions.back') }}
-            </RouterLink>
+        <div class="sticky top-0 flex gap-1 sm:gap-2 py-1 bg-base-100 z-10">
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
+                 :data-tip="$t('actions.back')">
+                <RouterLink class="btn btn-ghost"
+                            :to="{ name: activitiesRoutesNames.all }">
+                    <ArrowLeftIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('actions.back') }}</span>
+                </RouterLink>
+            </div>
+            <ActivityNotices v-if="activity"
+                             :safety="activity.safety.instructions"
+                             :tips="activity.tips" />
 
-            <button class="btn ms-auto"
-                    disabled>
-                <HeartIcon />
-                {{ $t('activities.actions.favorite') }}
-            </button>
-            <button class="btn"
-                    disabled>
-                <CalendarIcon />
-                {{ $t('activities.actions.addToPlanning') }}
-            </button>
-            <RouterLink v-if="activity"
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden ms-auto"
+                 :data-tip="$t('activities.actions.favorite')">
+                <button class="btn"
+                        disabled>
+                    <HeartIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.favorite') }}</span>
+                </button>
+            </div>
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
+                 :data-tip="$t('activities.actions.addToPlanning')">
+                <button class="btn"
+                        disabled>
+                    <CalendarIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.addToPlanning') }}</span>
+                </button>
+            </div>
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
+                 :data-tip="$t('activities.actions.start')">
+                <RouterLink v-if="activity"
+                            class="btn btn-primary"
+                            :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
+                    <MonitorPlayIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.start') }}</span>
+                </RouterLink>
+                <button v-else
                         class="btn btn-primary"
-                        :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
-                <MonitorPlayIcon />
-                {{ $t('activities.actions.start') }}
-            </RouterLink>
-            <button v-else
-                    class="btn btn-primary"
-                    disabled>
-                <MonitorPlayIcon />
-                {{ $t('activities.actions.start') }}
-            </button>
+                        disabled>
+                    <MonitorPlayIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.start') }}</span>
+                </button>
+            </div>
         </div>
         <template v-if="activity">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -134,33 +151,6 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                 </Panel>
             </div>
 
-            <Panel v-if="activity.safety.instructions.length">
-                <h2 class="text-2xl flex items-center gap-2">
-                    <ShieldAlertIcon /> {{ $t('activities.families.safety') }}
-                </h2>
-                <div v-for="instruction in activity.safety.instructions"
-                     :key="instruction.id"
-                     class="collapse collapse-arrow border border-warning">
-                    <input type="checkbox" />
-                    <div class="collapse-title font-semibold">{{ instruction.name }}</div>
-                    <div class="collapse-content text-sm"
-                         v-html="instruction.description"></div>
-                </div>
-            </Panel>
-            <Panel v-if="activity.tips.length">
-                <h2 class="text-2xl flex items-center gap-2">
-                    <LightbulbIcon /> {{ $t('activities.tips.title') }}
-                </h2>
-                <div v-for="tip in activity.tips"
-                     :key="tip.id"
-                     role="alert"
-                     class="alert alert-info alert-soft">
-                    <div>
-                        <b>{{ tip.name }}</b>
-                        <div v-html="tip.description"></div>
-                    </div>
-                </div>
-            </Panel>
             <Panel v-if="activity.materials.length">
                 <h2 class="text-2xl flex items-center gap-2">
                     <PackageOpenIcon /> {{ $t('activities.materials.title') }}

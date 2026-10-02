@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
+import ActivityNotices from '@features/activities/components/ActivityNotices.vue';
 import { useActivityPlay } from '@features/activities/composables/useActivityPlay';
 import { isGenerated } from '@features/activities/model/play';
 import { stepNumber } from '@features/activities/model/step';
@@ -12,15 +13,21 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
 <template>
     <Container v-if="activity">
         <div class="sticky top-0 flex items-center gap-2 py-1 bg-base-100 z-10">
-            <RouterLink class="btn btn-ghost"
-                        :to="{ name: activitiesRoutesNames.page, params: { id: activity.id } }">
-                <ArrowLeftIcon /> {{ $t('actions.back') }}
-            </RouterLink>
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
+                 :data-tip="$t('actions.back')">
+                <RouterLink class="btn btn-ghost"
+                            :to="{ name: activitiesRoutesNames.page, params: { id: activity.id } }">
+                    <ArrowLeftIcon />
+                    <span class="sr-only sm:not-sr-only">{{ $t('actions.back') }}</span>
+                </RouterLink>
+            </div>
             <h1 class="text-lg truncate">{{ activity.name }}</h1>
             <span v-if="steps.length"
                   class="ms-auto text-sm opacity-60 tabular-nums whitespace-nowrap">
                 {{ $t('activities.play.progress', { current: index + 1, total: steps.length }) }}
             </span>
+            <ActivityNotices :safety="activity.safety.instructions"
+                             :tips="activity.tips" />
         </div>
 
         <div v-if="!current"
@@ -130,21 +137,33 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
             </div>
 
             <div class="sticky bottom-0 flex gap-2 py-1 bg-base-100">
-                <button class="btn"
-                        :disabled="isFirst"
-                        @click="previous">
-                    <ArrowLeftIcon /> {{ $t('activities.play.previous') }}
-                </button>
-                <button v-if="!isLast"
-                        class="btn btn-primary ms-auto"
-                        @click="next">
-                    {{ $t('activities.play.next') }} <ArrowRightIcon />
-                </button>
-                <RouterLink v-else
-                            class="btn btn-success ms-auto"
-                            :to="{ name: activitiesRoutesNames.page, params: { id: activity.id } }">
-                    <FlagIcon /> {{ $t('activities.play.finish') }}
-                </RouterLink>
+                <div class="tooltip sm:before:hidden sm:after:hidden"
+                     :data-tip="$t('activities.play.previous')">
+                    <button class="btn"
+                            :disabled="isFirst"
+                            @click="previous">
+                        <ArrowLeftIcon />
+                        <span class="sr-only sm:not-sr-only">{{ $t('activities.play.previous') }}</span>
+                    </button>
+                </div>
+                <div v-if="!isLast"
+                     class="tooltip sm:before:hidden sm:after:hidden ms-auto"
+                     :data-tip="$t('activities.play.next')">
+                    <button class="btn btn-primary"
+                            @click="next">
+                        <span class="sr-only sm:not-sr-only">{{ $t('activities.play.next') }}</span>
+                        <ArrowRightIcon />
+                    </button>
+                </div>
+                <div v-else
+                     class="tooltip sm:before:hidden sm:after:hidden ms-auto"
+                     :data-tip="$t('activities.play.finish')">
+                    <RouterLink class="btn btn-success"
+                                :to="{ name: activitiesRoutesNames.page, params: { id: activity.id } }">
+                        <FlagIcon />
+                        <span class="sr-only sm:not-sr-only">{{ $t('activities.play.finish') }}</span>
+                    </RouterLink>
+                </div>
             </div>
         </template>
     </Container>
