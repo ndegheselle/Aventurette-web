@@ -33,7 +33,7 @@ function createAndAdd(name: string) {
 </script>
 
 <template>
-    <Dropdown v-model="open" :isFullWidth="true">
+    <Dropdown v-model="open" :isFullWidth="true" class="w-full">
         <template #summary>
             <summary
                 class="bg-base-100 rounded-box border border-base-content/20 flex flex-wrap items-center min-h-10 p-0 pe-2">

@@ -95,7 +95,9 @@ the activity and keeps a copy, which is what the save compares against.
 
 The form is **one panel per family**, in the template's order: information (name, picture,
 visual brief), description, classification, imaginary, audience, supervision, place and
-conditions, safety, pedagogy, then materials, workshops, tips and steps. The optional selects
+conditions, pedagogy, then preparation, workshops and steps. Characteristics and preparation
+are tabbed panels — the families in one, safety, materials and tips in the other — and their
+menu entries open the tab before scrolling to the panel. The optional selects
 offer an empty choice, which is how PocketBase stores none. Multi-valued choices (practices,
 seasons, locations) are a `MultiSelect` over translated options, which `useActivityEdit` maps
 back to the stored values.
@@ -113,7 +115,7 @@ every tag, safety instruction and tip once, through the read-only `tags.api.ts`,
 and `tips.api.ts`, and `tagOptions` groups the tags by kind. Each is a `TagSelect` bound straight
 to the family's list, for example `activity.pedagogy.goals`, in a `Field` showing the error the
 backend keys by that relation (the development axes share one, shown under all six). The
-safety panel picks `activity.safety.instructions` the same way, and the tips panel
+safety tab picks `activity.safety.instructions` the same way, and the tips tab
 `activity.tips`. The activity's links are its own copies, not the options, so every picker
 passes `keyBy="id"`. Nothing is written until save, which sends the ids with the rest of the
 form.

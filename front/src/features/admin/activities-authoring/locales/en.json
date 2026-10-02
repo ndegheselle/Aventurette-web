@@ -10,7 +10,8 @@
             "description": "Description",
             "navigation": {
                 "title": "Contents",
-                "families": "Characteristics"
+                "families": "Characteristics",
+                "preparation": "Preparation"
             },
             "steps": {
                 "title": "Steps",
