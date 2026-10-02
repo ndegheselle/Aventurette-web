@@ -26,14 +26,14 @@ COPY packages/ui/package.json packages/ui/
 COPY front/package.json front/
 RUN npm ci
 
-# Source. vue-tsc typechecks the specs too, so tests/ is needed, and vite.config.ts reads
-# its aliases from scripts/aliases.mjs.
+# Source. vite.config.ts reads its aliases from scripts/aliases.mjs.
 COPY scripts/aliases.mjs scripts/
-COPY tests/ tests/
 COPY packages/ packages/
 COPY front/ front/
 
-RUN npm run build --workspace @aventurette/front
+# Bundle only: the typecheck (which covers the specs, hence needs tests/) is CI's job, see
+# .github/workflows/check.yml.
+RUN npm exec --workspace @aventurette/front -- vite build
 
 
 # -----------------------
