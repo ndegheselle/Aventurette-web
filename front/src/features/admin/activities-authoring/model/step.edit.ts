@@ -76,6 +76,24 @@ export function createResource(id: string, step: string, file: File, url: string
 /** File types accepted for a step resource, in `<input accept>` syntax. */
 export const ACCEPTED_RESOURCE_TYPES = '.png,.jpeg,.jpg,.pdf';
 
+/** How a resource's tile shows it: as a thumbnail, as a document icon, or as any file. */
+export type ResourcePreview = 'image' | 'pdf' | 'file';
+
+const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'bmp']);
+
+export function resourcePreviewOf(resource: Pick<ActivityResourceData, 'url' | 'file'>): ResourcePreview {
+    const extension = extensionOf(resource);
+    if (IMAGE_EXTENSIONS.has(extension)) return 'image';
+    if (extension === 'pdf') return 'pdf';
+    return 'file';
+}
+
+// A picked file's preview url is a `blob:` with no extension, so its own name is read instead.
+function extensionOf(resource: Pick<ActivityResourceData, 'url' | 'file'>): string {
+    const [path = ''] = (resource.file?.name ?? resource.url).split('?');
+    return path.split('.').pop()?.toLowerCase() ?? '';
+}
+
 export interface AcceptedFiles {
     /** As many of the picked files as the step had room for. */
     accepted: File[];

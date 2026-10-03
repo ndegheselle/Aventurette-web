@@ -190,11 +190,13 @@ The specs, in `tests/`.
 - A name finds its catalogue material whatever its case and the spaces around it.
 - A removed material leaves the activity's list and every step and workshop that recalled it.
 
-*`tests/step.edit.spec.ts`* — the file limit, and what a step must hold
+*`tests/step.edit.spec.ts`* — the file limit, what a step must hold, and how a file is shown
 
 - A step takes at most `MAX_STEP_RESOURCES` (10) files. Over the limit, the files that fit are
   still taken and the rest reported — a partial pick beats dropping all of it.
 - A description with no text in it — an emptied editor's `<p></p>` included — is refused.
+- A resource's tile reads its type from the url's extension, the query string aside; a picked
+  file, whose `blob:` url has none, from its own name.
 
 *`tests/activity.import.spec.ts`* — reading a sheet and turning it into records
 

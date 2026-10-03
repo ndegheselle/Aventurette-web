@@ -2,7 +2,7 @@
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import type { ActivityResourceData } from '@features/activities/model/step';
 import { useStepResources } from '@features/admin/activities-authoring/composables/useStepEdit';
-import { ACCEPTED_RESOURCE_TYPES } from '@features/admin/activities-authoring/model/step.edit';
+import { ACCEPTED_RESOURCE_TYPES, resourcePreviewOf } from '@features/admin/activities-authoring/model/step.edit';
 import { CircleOffIcon, FileIcon, FileTextIcon, TrashIcon } from 'lucide-vue-next';
 
 /** The step these belong to: a picked file is stored against it when the activity is saved. */
@@ -12,23 +12,6 @@ const props = defineProps<{ step: string }>();
 const selected = defineModel<ActivityResourceData[]>({ default: () => [] });
 
 const { add, remove } = useStepResources(selected, () => props.step);
-
-// A tile shows its file as a thumbnail; anything unpreviewable falls back to an icon.
-const PREVIEWABLE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'bmp']);
-
-function isImage(resource: ActivityResourceData): boolean {
-    return PREVIEWABLE_EXTENSIONS.has(extensionOf(resource));
-}
-
-function isPdf(resource: ActivityResourceData): boolean {
-    return extensionOf(resource) === 'pdf';
-}
-
-// A picked file's preview url is a `blob:` with no extension, so its own name is read instead.
-function extensionOf(resource: ActivityResourceData): string {
-    const [path = ''] = (resource.file?.name ?? resource.url).split('?');
-    return path.split('.').pop()?.toLowerCase() ?? '';
-}
 </script>
 
 <template>
@@ -40,10 +23,10 @@ function extensionOf(resource: ActivityResourceData): string {
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
         <div v-for="(resource, index) in selected" :key="resource.id" class="relative text-center p-1">
             <a :href="resource.url" target="_blank" rel="noopener noreferrer">
-                <img v-if="isImage(resource)" class="size-16 rounded-box object-cover"
+                <img v-if="resourcePreviewOf(resource) === 'image'" class="size-16 rounded-box object-cover"
                     :src="resource.url" :alt="resource.name" />
                 <div v-else class="size-16 flex bg-base-300 rounded-box">
-                    <FileTextIcon v-if="isPdf(resource)" class="m-auto icon-lg opacity-60" />
+                    <FileTextIcon v-if="resourcePreviewOf(resource) === 'pdf'" class="m-auto icon-lg opacity-60" />
                     <FileIcon v-else class="m-auto icon-lg opacity-60" />
                 </div>
             </a>
