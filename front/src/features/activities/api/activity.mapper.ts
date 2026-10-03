@@ -30,7 +30,8 @@ const TAG_RELATIONS = [
 type TagRelation = typeof TAG_RELATIONS[number];
 
 /**
- * Mapping between the domain object and the flat database object.
+ * The columns stay flat and the entity groups them by family (ADR 0015), so this is where the
+ * two meet: each family is read out of its columns, and written back into them.
  */
 export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
     relations: [

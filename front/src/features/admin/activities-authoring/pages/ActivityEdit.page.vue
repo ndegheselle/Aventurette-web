@@ -258,7 +258,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <FieldError :error="errors.get('description')" />
                 </Panel>
 
-                <!-- Optional selects: an empty string is how PocketBase stores "none". -->
+                <!-- An optional select's "none" is null here; the mapper writes it as the empty string PocketBase stores. -->
                 <Panel id="section-families" class="scroll-mt-16">
                     <div class="tabs tabs-box">
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
