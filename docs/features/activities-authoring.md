@@ -113,8 +113,8 @@ floor. `useActivityEdit` binds each end through a writable `computed`. `rangeLab
 same package, says what the range reads as beside its label ("3 to 10", "up to 10", "any").
 
 **Tags are one picker per kind, placed in their family's panel.** `useReferenceOptions` reads
-every tag, safety instruction and tip once, through the read-only `tags.api.ts`, `safety.api.ts`
-and `tips.api.ts`, and `tagOptions` groups the tags by kind. Each is a `TagSelect` bound straight
+every tag, safety instruction and tip once, through the read-only `references.api.ts` the import
+uses too, and `tagOptions` groups the tags by kind. Each is a `TagSelect` bound straight
 to the family's list, for example `activity.pedagogy.goals`, in a `Field` showing the error the
 backend keys by that relation (the development axes share one, shown under all six). The
 safety tab picks `activity.safety.instructions` the same way, and the tips tab

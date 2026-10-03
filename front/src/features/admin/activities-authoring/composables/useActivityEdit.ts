@@ -21,11 +21,9 @@ import type { ActivityStepData } from '@features/activities/model/step';
 import { tagOptions, type ActivityTagData } from '@features/activities/model/tag';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { materialsApi as materials } from '@features/admin/activities-authoring/api/materials.api';
-import { safetyInstructionsApi } from '@features/admin/activities-authoring/api/safety.api';
+import { materialCatalogueApi } from '@features/admin/activities-authoring/api/materials.api';
+import { referencesApi } from '@features/admin/activities-authoring/api/references.api';
 import { saveApi } from '@features/admin/activities-authoring/api/save.api';
-import { tagsApi as tags } from '@features/admin/activities-authoring/api/tags.api';
-import { tipsApi } from '@features/admin/activities-authoring/api/tips.api';
 import {
     activityWrites,
     createEmptyActivity,
@@ -276,11 +274,10 @@ export function useReferenceOptions() {
     const tips = ref<ActivityTipData[]>([]);
 
     onMounted(async () => {
-        [known.value, safetyInstructions.value, tips.value] = await Promise.all([
-            tags.getAll(),
-            safetyInstructionsApi.getAll(),
-            tipsApi.getAll(),
-        ]);
+        const references = await referencesApi.getAll();
+        known.value = references.tags;
+        safetyInstructions.value = references.safetyInstructions;
+        tips.value = references.tips;
     });
 
     return { tagOptions: computed(() => tagOptions(known.value)), safetyInstructions, tips };
@@ -299,7 +296,7 @@ export function useMaterialCatalogue(selected: Ref<ActivityMaterialData[]>) {
     const isNewName = computed(() => canCreateMaterial(search.value, known.value, selected.value));
 
     onMounted(async () => {
-        known.value = await materials.getAll();
+        known.value = await materialCatalogueApi.getAll();
     });
 
     return { search, suggestions, isNewName };

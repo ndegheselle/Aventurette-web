@@ -1,10 +1,8 @@
 import { useOneFile } from '@chapelure/ui/files/useFiles';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
-import { materialsApi as materials } from '@features/admin/activities-authoring/api/materials.api';
-import { safetyInstructionsApi } from '@features/admin/activities-authoring/api/safety.api';
+import { materialCatalogueApi } from '@features/admin/activities-authoring/api/materials.api';
+import { referencesApi } from '@features/admin/activities-authoring/api/references.api';
 import { saveApi } from '@features/admin/activities-authoring/api/save.api';
-import { tagsApi as tags } from '@features/admin/activities-authoring/api/tags.api';
-import { tipsApi } from '@features/admin/activities-authoring/api/tips.api';
 import { activityWrites } from '@features/admin/activities-authoring/model/activity.edit';
 import {
     activityFromSheet,
@@ -71,12 +69,7 @@ export function useActivityImport() {
         picks.value = {};
         stepFiles.value = [];
         visual.value = [];
-        const [knownTags, safetyInstructions, tips] = await Promise.all([
-            tags.getAll(),
-            safetyInstructionsApi.getAll(),
-            tipsApi.getAll(),
-        ]);
-        known.value = { tags: knownTags, safetyInstructions, tips };
+        known.value = await referencesApi.getAll();
     }
 
     async function readSheet(files: File[]) {
@@ -105,7 +98,7 @@ export function useActivityImport() {
         if (!sheet.value || !preview.value) return;
 
         const activity = { ...preview.value.activity, id: saveApi.newId(), user: currentId() };
-        const catalogue = await materials.getAll();
+        const catalogue = await materialCatalogueApi.getAll();
         const draft = draftFromSheet(sheet.value, activity, catalogue, saveApi.newId, stepFiles.value);
         const writes = activityWrites(null, draft.activity, draft.newMaterials, visual.value[0]);
         await saveApi.send(writes);
