@@ -10,7 +10,7 @@
 -->
 <script setup lang="ts">
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import { formatBytes } from '@chapelure/ui/files/useFiles';
+import { formatBytes, matchesAccept } from '@chapelure/ui/files/useFiles';
 import { FolderOpenIcon, UploadIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -50,18 +50,6 @@ function onDrop(e: DragEvent) {
 function onChange() {
     const picked = fileInput.value?.files;
     if (picked) takeFiles(picked);
-}
-
-function matchesAccept(file: File, accept: string): boolean {
-    return accept.split(',').map(s => s.trim()).some(token => {
-        if (token.startsWith('.')) {
-            return file.name.toLowerCase().endsWith(token.toLowerCase());
-        }
-        if (token.endsWith('/*')) {
-            return file.type.startsWith(token.slice(0, -1));
-        }
-        return file.type === token;
-    });
 }
 
 /** Why `file` is turned down, or null when it may be taken. */
