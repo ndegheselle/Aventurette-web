@@ -13,11 +13,11 @@ const DEFAULT_PER_PAGE = 25;
  * The catalogue's screen: its page, its search, and adding, renaming and deleting a material.
  * Each is a write of its own; there is no form to save.
  */
-export function useMaterialsEditList(perPage: number = DEFAULT_PER_PAGE) {
+export function useMaterialsEditList() {
     const paginated = ref<Paginated<MaterialData>>({
         items: [],
         total: 0,
-        options: { page: 1, perPage, sortBy: 'name', sortDirection: SortDirection.ASC },
+        options: { page: 1, perPage: DEFAULT_PER_PAGE, sortBy: 'name', sortDirection: SortDirection.ASC },
     });
     const search = ref('');
 

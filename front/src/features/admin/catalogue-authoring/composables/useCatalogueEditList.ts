@@ -22,12 +22,11 @@ const DEFAULT_PER_PAGE = 25;
 export function useCatalogueEditList<T extends { id: string, name: string }>(
     crud: IDataCrud<T>,
     filterOf: (search: string) => FilterGroup<T>,
-    perPage: number = DEFAULT_PER_PAGE,
 ) {
     const paginated = ref<Paginated<T>>({
         items: [],
         total: 0,
-        options: { page: 1, perPage, sortBy: 'name', sortDirection: SortDirection.ASC },
+        options: { page: 1, perPage: DEFAULT_PER_PAGE, sortBy: 'name', sortDirection: SortDirection.ASC },
     });
     const search = ref('');
 

@@ -15,9 +15,9 @@ const DEFAULT_PER_PAGE = 10;
  * The author's list: its state tabs, its page, and the delete button. Adding is a link to the
  * editor, which writes nothing until its first save.
  */
-export function useActivitiesEditList(perPage: number = DEFAULT_PER_PAGE) {
+export function useActivitiesEditList() {
     const paginated = ref<Paginated<ActivityData>>(
-        { items: [], total: 0, options: { page: 1, perPage } },
+        { items: [], total: 0, options: { page: 1, perPage: DEFAULT_PER_PAGE } },
     );
 
     /** `null` is the "all" tab. See `authoredStateTabs`. */

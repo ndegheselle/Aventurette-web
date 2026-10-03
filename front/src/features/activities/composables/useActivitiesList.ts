@@ -10,9 +10,9 @@ const DEFAULT_PER_PAGE = 25;
  * The public activity list. Read-only — writing an activity is the `activities-authoring`
  * feature's, which lists the author's own rather than everybody's.
  */
-export function useActivitiesList(perPage: number = DEFAULT_PER_PAGE) {
+export function useActivitiesList() {
     const paginated = ref<Paginated<ActivityData>>(
-        { items: [], total: 0, options: { page: 1, perPage } },
+        { items: [], total: 0, options: { page: 1, perPage: DEFAULT_PER_PAGE } },
     );
     const search = ref<string>('');
 
