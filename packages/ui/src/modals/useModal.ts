@@ -19,14 +19,12 @@ export interface IEditModal<T> {
     show(record: T): Promise<T | null>;
 }
 
-/** Hooks around the modal's lifetime. Return false from `onConfirm` to leave the promise pending. */
-export interface IModalOptions<T = boolean> {
+/** Hooks around the modal's lifetime. */
+export interface IModalOptions {
     onShow?: () => void;
-    onConfirm?: (result: T | null) => boolean | void;
-    onCancel?: () => void;
 }
 
-export function useModal<T = boolean>(option: IModalOptions<T> = {}): IModalController<T> {
+export function useModal<T = boolean>(option: IModalOptions = {}): IModalController<T> {
     const isShown = ref<boolean>(false);
     let deferred: Deferred<T | null> | null = null;
 
@@ -39,15 +37,12 @@ export function useModal<T = boolean>(option: IModalOptions<T> = {}): IModalCont
 
     function confirm(result: T | null = true as any) {
         isShown.value = false;
-        if (option.onConfirm?.(result) === false)
-            return;
         deferred?.resolve(result ?? true as any);
         deferred = null;
     }
 
     function cancel() {
         isShown.value = false;
-        option.onCancel?.();
         deferred?.resolve(null);
         deferred = null;
     }
