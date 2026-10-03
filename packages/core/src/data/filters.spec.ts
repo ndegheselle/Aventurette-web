@@ -88,13 +88,14 @@ describe('removeEmptyFilters', () => {
         expect(isFilterGroup(nested!) && nested.filters).toHaveLength(1);
     });
 
-    it('drops falsy scalars, so `0` cannot be filtered on', () => {
+    it('keeps `0` and `false`, which are values to filter on', () => {
         const group = createGroup<Activity>({
-            filters: [createFilter<Activity>({ key: 'ageMin', value: 0 })],
+            filters: [
+                createFilter<Activity>({ key: 'ageMin', value: 0 }),
+                createFilter<Activity>({ key: 'name', value: false }),
+            ],
         });
 
-        // Falsy scalars are dropped, so a zero-minimum-age filter looks like an untouched field.
-        // The age form treats null, not 0, as "not set".
-        expect(removeEmptyFilters(group).filters).toHaveLength(0);
+        expect(removeEmptyFilters(group).filters).toHaveLength(2);
     });
 });

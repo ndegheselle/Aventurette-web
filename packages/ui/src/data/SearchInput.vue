@@ -2,20 +2,16 @@
 import { debounce } from '@chapelure/core';
 import { SearchIcon, XIcon } from 'lucide-vue-next';
 
-const props = withDefaults(defineProps<{
-    delay?: number;
-}>(), {
-    delay: 300,
-});
+/** Long enough that typing a word searches once, at its end. */
+const SEARCH_DELAY_MS = 300;
+
 const model = defineModel<string>();
 
 const emit = defineEmits<{
     (e: 'search', value: string): void;
 }>();
 
-const emitSearch = props.delay
-    ? debounce((value: string) => emit('search', value), props.delay)
-    : (value: string) => emit('search', value);
+const emitSearch = debounce((value: string) => emit('search', value), SEARCH_DELAY_MS);
 
 function onInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;

@@ -37,9 +37,5 @@ export function createPocketBaseAuth<TUser extends BaseEntity>(
         logout(): void {
             client.authStore.clear();
         },
-
-        async update(id: string, data: Partial<TUser>): Promise<TUser> {
-            return await mapErrors(() => collection.update<TUser>(id, data));
-        },
     };
 }

@@ -1,16 +1,11 @@
 import type { ActivitiesMaterialsResponse, CatalogMaterialsResponse } from "@/backend/schema.g";
-import type { EntityMapper } from "@chapelure/core";
-import { omit } from "@chapelure/core";
+import { omit, plainMapper, type EntityMapper } from "@chapelure/core";
 import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
 
 /** A catalogue material as the backend stores it. */
 export type MaterialPayload = CatalogMaterialsResponse;
 
-export const materialMapper: EntityMapper<MaterialPayload, MaterialData> = {
-    relations: [],
-    toEntity: (material) => omit(material, "expand"),
-    toPayload: (material) => material,
-};
+export const materialMapper: EntityMapper<MaterialPayload, MaterialData> = plainMapper<MaterialPayload>();
 
 /** An activity's link to a catalogue material, with the material an expanded read carries. */
 export type ActivityMaterialPayload = ActivitiesMaterialsResponse<{

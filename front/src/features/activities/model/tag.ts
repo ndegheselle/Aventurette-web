@@ -21,8 +21,12 @@ export function tagOptions<T extends ActivityTagData>(tags: T[]): Record<Activit
         Object.values(ActivityTagType).map(type => [type, [] as T[]]),
     ) as Record<ActivityTagType, T[]>;
 
-    for (const tag of tags)
-        (byType[tag.type] ??= []).push(tag);
+    // A kind the backend has gained since is grouped too, rather than dropped.
+    for (const tag of tags) {
+        const group = byType[tag.type] ?? [];
+        group.push(tag);
+        byType[tag.type] = group;
+    }
 
     for (const group of Object.values(byType))
         group.sort((a, b) => a.name.localeCompare(b.name));

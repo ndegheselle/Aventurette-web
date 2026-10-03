@@ -17,11 +17,15 @@ describe('toValidationError', () => {
     });
 
     it('is a ValidationError with no fields when the backend sent no detail', () => {
-        expect(toValidationError({ status: 500, message: 'Something went wrong' })?.fields).toEqual({});
+        expect(toValidationError({ status: 400, message: 'Failed to authenticate.' })?.fields).toEqual({});
     });
 
     it.each([
         ['a network failure', new Error('Failed to fetch')],
+        ['a network failure, as the SDK reports it', { status: 0, message: 'Something went wrong.' }],
+        ['a missing record', { status: 404, message: 'The requested resource wasn\'t found.' }],
+        ['a forbidden call', { status: 403, message: 'Only superusers can perform this action.' }],
+        ['a server error', { status: 500, message: 'Something went wrong.' }],
         ['an abort', { name: 'AbortError' }],
         ['a string', 'boom'],
         ['nothing', undefined],

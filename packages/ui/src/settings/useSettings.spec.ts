@@ -1,6 +1,6 @@
 import { withSetup } from '@tests';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { EnumTheme, SETTINGS_STORAGE_KEYS, useSettings } from './useSettings';
+import { applyStoredTheme, EnumTheme, SETTINGS_STORAGE_KEYS, useSettings } from './useSettings';
 
 /** What the OS says it prefers; the `auto` theme mirrors it. */
 function prefersDark(dark: boolean) {
@@ -16,34 +16,36 @@ beforeEach(() => {
 });
 
 describe('useSettings', () => {
-    describe('on load', () => {
+    describe('applying the stored theme', () => {
         it('starts on auto when nothing was stored', () => {
-            const [settings] = withSetup(() => useSettings());
+            prefersDark(true);
 
-            expect(settings.currentTheme.value).toBe(EnumTheme.auto);
+            applyStoredTheme();
+
+            expect(themeAttribute()).toBe('dark');
         });
 
         it('adopts the stored theme', () => {
             localStorage.setItem(SETTINGS_STORAGE_KEYS.theme, 'dark');
 
-            const [settings] = withSetup(() => useSettings());
+            applyStoredTheme();
 
-            expect(settings.currentTheme.value).toBe(EnumTheme.dark);
             expect(themeAttribute()).toBe('dark');
         });
 
         it('falls back to auto for a stored value that no longer names a theme', () => {
             localStorage.setItem(SETTINGS_STORAGE_KEYS.theme, 'solarized');
+            prefersDark(true);
 
-            const [settings] = withSetup(() => useSettings());
+            applyStoredTheme();
 
-            expect(settings.currentTheme.value).toBe(EnumTheme.auto);
+            expect(themeAttribute()).toBe('dark');
         });
 
         it('resolves auto against what the OS prefers, rather than leaving it unset', () => {
             prefersDark(true);
 
-            withSetup(() => useSettings());
+            applyStoredTheme();
 
             expect(themeAttribute()).toBe('dark');
         });

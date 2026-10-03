@@ -26,6 +26,7 @@ import {
     createCatalogueMaterial,
     createMaterialLink,
     materialNamed,
+    nameKey,
 } from "@features/admin/activities-authoring/model/material.edit";
 import { createEmptyStep, isBlankHtml } from "@features/admin/activities-authoring/model/step.edit";
 import { createEmptyWorkshop } from "@features/admin/activities-authoring/model/workshop.edit";
@@ -339,7 +340,7 @@ export type ReferencePicks = Record<string, string>;
 
 /** The key a pick is held under. Two spellings of one name, in one kind, share it. */
 export function referenceKey(reference: Pick<UnknownReference, 'kind' | 'name'>): string {
-    return `${reference.kind}:${key(reference.name)}`;
+    return `${reference.kind}:${nameKey(reference.name)}`;
 }
 
 /** What a name of that kind may be linked to instead, by name. */
@@ -370,7 +371,7 @@ export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences, 
         const found: T[] = [];
 
         for (const name of names) {
-            const match = candidates.find(candidate => key(candidate.name) === key(name) || key(candidate.slug) === key(name));
+            const match = candidates.find(candidate => nameKey(candidate.name) === nameKey(name) || nameKey(candidate.slug) === nameKey(name));
             if (match) {
                 found.push(match);
                 continue;
@@ -489,17 +490,17 @@ export function materialsOfSheet(sheet: ActivitySheet): SheetMaterial[] {
 
     const byKey = new Map<string, SheetMaterial>();
     for (const material of [...sheet.materials, ...recalled]) {
-        if (!byKey.has(key(material.name)))
-            byKey.set(key(material.name), material);
+        if (!byKey.has(nameKey(material.name)))
+            byKey.set(nameKey(material.name), material);
     }
 
     return [...byKey.values()];
 }
 
 /** The activity's own materials a step or workshop recalls by name, each once. */
-export function materialsNamed(materials: ActivityMaterialData[], names: string[]): ActivityMaterialData[] {
-    const wanted = names.map(key);
-    const named = wanted.flatMap(name => materials.filter(material => key(material.name) === name));
+function recalledMaterials(materials: ActivityMaterialData[], names: string[]): ActivityMaterialData[] {
+    const wanted = names.map(nameKey);
+    const named = wanted.flatMap(name => materials.filter(material => nameKey(material.name) === name));
     return distinctById(named);
 }
 
@@ -576,12 +577,12 @@ export function stepFromSheet(
         duration: step.duration,
         description,
         actions: step.actions,
-        materials: materialsNamed(materials, step.materials),
+        materials: recalledMaterials(materials, step.materials),
     };
 }
 
 /** A sheet's workshop, the same way. */
-export function workshopFromSheet(
+function workshopFromSheet(
     workshop: SheetWorkshop,
     id: string,
     activity: string,
@@ -592,15 +593,10 @@ export function workshopFromSheet(
         theme: workshop.theme,
         challenges: workshop.challenges,
         adults_required: workshop.adultsRequired,
-        materials: materialsNamed(materials, workshop.materials),
+        materials: recalledMaterials(materials, workshop.materials),
     };
 }
 
 function escapeHtml(text: string): string {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-/** Comparison key: two spellings of the same name share one. */
-function key(name: string | undefined): string {
-    return (name ?? "").trim().toLowerCase();
 }

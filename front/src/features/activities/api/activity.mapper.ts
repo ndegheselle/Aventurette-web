@@ -1,5 +1,5 @@
 import type { ActivitiesResponse } from "@/backend/schema.g";
-import { convert, toEntities, toIds, type EntityMapper } from "@chapelure/core";
+import { emptyIfNull, toEntities, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import { safetyInstructionMapper, type SafetyInstructionPayload } from "@features/activities/api/safety.mapper";
 import { stepMapper, type ActivityStepPayload } from "@features/activities/api/step.mapper";
@@ -30,7 +30,8 @@ const TAG_RELATIONS = [
 type TagRelation = typeof TAG_RELATIONS[number];
 
 /**
- * Mapping between the domain object and the flat database object.
+ * The columns stay flat and the entity groups them by family (ADR 0015), so this is where the
+ * two meet: each family is read out of its columns, and written back into them.
  */
 export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
     relations: [
@@ -46,7 +47,7 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
     ],
     toEntity: (activity, files) => {
         const { expand } = activity;
-        const tags = (relation: TagRelation) => (expand?.[relation] ?? []).map(tag => tagMapper.toEntity(tag, files));
+        const tags = (relation: TagRelation) => toEntities(expand?.[relation], tagMapper, files);
         const developmentTags = tags('development_tags');
         const development = Object.fromEntries(
             DEVELOPMENT_AXES.map(axis => [axis, developmentTags.filter(tag => tag.type === axis)]),
@@ -104,9 +105,9 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
                 development: development as Record<DevelopmentAxis, ActivityTagData[]>,
             },
 
-            steps: (expand?.steps ?? []).map(step => stepMapper.toEntity(step, files)),
-            materials: (expand?.materials ?? []).map(material => activityMaterialMapper.toEntity(material, files)),
-            workshops: (expand?.workshops ?? []).map(workshop => workshopMapper.toEntity(workshop, files)),
+            steps: toEntities(expand?.steps, stepMapper, files),
+            materials: toEntities(expand?.materials, activityMaterialMapper, files),
+            workshops: toEntities(expand?.workshops, workshopMapper, files),
             tips: toEntities(expand?.tips, tipMapper, files),
         };
     },
@@ -121,12 +122,12 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             ...columns,
             ...(visualBrief !== undefined && { visual_brief: visualBrief }),
             ...(classification && {
-                format: convert(classification.format),
+                format: emptyIfNull(classification.format),
                 practices: classification.practices,
                 theme_tags: toIds(classification.themes),
             }),
             ...(imaginary && {
-                imaginary_rule: convert(imaginary.rule),
+                imaginary_rule: emptyIfNull(imaginary.rule),
                 imaginary_tags: toIds(imaginary.universes),
             }),
             ...(audience && {
@@ -134,11 +135,11 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
                 age_max: audience.ageMax,
                 participants_min: audience.participantsMin,
                 participants_max: audience.participantsMax,
-                children_pace: convert(audience.childrenPace),
+                children_pace: emptyIfNull(audience.childrenPace),
                 age_variants: audience.ageVariants,
             }),
             ...(supervision && {
-                host_effort: convert(supervision.hostEffort),
+                host_effort: emptyIfNull(supervision.hostEffort),
                 recommended_hosts_numbers: supervision.hostsRequired,
                 cross_supervision: supervision.crossSupervision,
                 supervision_notes: supervision.notes,

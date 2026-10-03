@@ -91,7 +91,9 @@ of them held in memory until the save sends them through `save.api.ts`. How savi
 in which order, is described in [activities](activities.md#saving).
 
 On the `new` route it starts from a blank activity, with its id and its author; on `:id` it reads
-the activity and keeps a copy, which is what the save compares against.
+the activity and keeps a copy, which is what the save compares against. An id with no activity
+behind it goes back to the list with an alert, rather than opening a form whose save would
+update a record that is not there.
 
 The form is **one panel per family**, in the template's order: information (name, picture,
 visual brief), description, classification, imaginary, audience, supervision, place and
@@ -111,8 +113,8 @@ floor. `useActivityEdit` binds each end through a writable `computed`. `rangeLab
 same package, says what the range reads as beside its label ("3 to 10", "up to 10", "any").
 
 **Tags are one picker per kind, placed in their family's panel.** `useReferenceOptions` reads
-every tag, safety instruction and tip once, through the read-only `tags.api.ts`, `safety.api.ts`
-and `tips.api.ts`, and `tagOptions` groups the tags by kind. Each is a `TagSelect` bound straight
+every tag, safety instruction and tip once, through the read-only `references.api.ts` the import
+uses too, and `tagOptions` groups the tags by kind. Each is a `TagSelect` bound straight
 to the family's list, for example `activity.pedagogy.goals`, in a `Field` showing the error the
 backend keys by that relation (the development axes share one, shown under all six). The
 safety tab picks `activity.safety.instructions` the same way, and the tips tab
@@ -188,11 +190,13 @@ The specs, in `tests/`.
 - A name finds its catalogue material whatever its case and the spaces around it.
 - A removed material leaves the activity's list and every step and workshop that recalled it.
 
-*`tests/step.edit.spec.ts`* — the file limit, and what a step must hold
+*`tests/step.edit.spec.ts`* — the file limit, what a step must hold, and how a file is shown
 
 - A step takes at most `MAX_STEP_RESOURCES` (10) files. Over the limit, the files that fit are
   still taken and the rest reported — a partial pick beats dropping all of it.
 - A description with no text in it — an emptied editor's `<p></p>` included — is refused.
+- A resource's tile reads its type from the url's extension, the query string aside; a picked
+  file, whose `blob:` url has none, from its own name.
 
 *`tests/activity.import.spec.ts`* — reading a sheet and turning it into records
 

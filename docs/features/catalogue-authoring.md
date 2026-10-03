@@ -30,25 +30,29 @@ delete rules ask for `@request.auth.role = "ADMIN"`
 
 ## The materials tab
 
-`useMaterialsEditList` owns it: the page, sorted by name, a search on the name, and three
-writes, each on its own. There is no form to save.
+`useMaterialsEditList` owns it: `useCatalogueEditList`'s page, search and delete, with adding
+and renaming on top. There is no modal and no form to save: each write is its own.
 
 - **Adding** writes the typed name, trimmed. The backend refuses a name it already has, whatever
-  its case, and `useSubmit` puts the refusal under the field.
+  its case: an alert says so, and the name stays typed.
 - **Renaming** is written as a row's field is left. `renamedTo` decides whether there is
   anything to write: nothing for a blank field or an unchanged one. A blank field, or a name
   the backend refuses, shows the saved name again. The composable keeps the last saved names by
   id for that, so the list never shows a name the catalogue does not hold.
 - **Deleting** asks first, because it reaches every activity using the material: the links
-  cascade, and each activity, step and workshop loses it. The page confirms, the composable
-  writes, then re-queries.
+  cascade, and each activity, step and workshop loses it. `CatalogueTab` confirms, the
+  composable writes, then re-queries.
 
 ## The tags, safety instructions and tips tabs
 
 Each is a list, sorted by name, with a search, and a modal per entry. `useCatalogueEditList`
-holds what the three share: the page, the search and the delete. `useTagsEditList`,
+holds what they share with the materials tab: the page, the search and the delete. `useTagsEditList`,
 `useSafetyInstructionsEditList` and `useTipsEditList` give it its catalogue and its search. The
 modals save through `useEditModal`, and the tab re-queries once one is confirmed.
+
+Every tab, materials included, renders through `components/CatalogueTab.vue`: the search and
+its add button, each row's delete (and edit) button, the delete's confirmation and the pages.
+A page gives it the row's content and, for tags, the kind selector.
 
 - **Tags** are searched by name or slug, and narrowed to one kind by the selector
   (`tagsFilter`). A new tag takes the kind the selector shows, or THEME on "every kind". Its
@@ -57,8 +61,9 @@ modals save through `useEditModal`, and the tab re-queries once one is confirmed
 - **Safety instructions** have a name, a slug and their precautions as rich text, searched by
   name or slug.
 - **Tips** have a name and the advice as rich text, searched by name.
-- **A slug follows the name** while a new entry is written (`slugFollowing`): it is `slugify`'s
-  reading of the name until the author writes one of their own. An existing slug changes only
+- **A slug follows the name** while a new entry is written (`slugFollowing`, wired into both
+  modals by `useSluggedEditModal`): it is `slugify`'s reading of the name until the author
+  writes one of their own. An existing slug changes only
   by hand, since the import matches on it. The backend refuses a slug that is not lower-case
   letters, digits and dashes, and one its catalogue already has (within a kind, for tags).
 - **Deleting** asks first. The backend unlinks the entry from every activity using it: the
@@ -83,6 +88,7 @@ them, and `api/` holds one `crud` per catalogue.
 
 - A refusal shows the last saved name, not the one first read.
 - A blank field writes nothing and shows the saved name.
+- A refused name to add stays typed; an added one clears the search.
 
 ## Not finished
 

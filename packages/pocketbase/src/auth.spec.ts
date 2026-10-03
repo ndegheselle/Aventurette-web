@@ -97,12 +97,4 @@ describe('createPocketBaseAuth', () => {
 
         expect(pb.calls.map(c => c.method)).toEqual(['authStore.clear']);
     });
-
-    it('patches the user record on update', async () => {
-        const { pb, auth } = setup();
-
-        await auth.update('usr1', { email: 'changed@example.com' });
-
-        expect(pb.lastCall('update')?.slice(0, 2)).toEqual(['usr1', { email: 'changed@example.com' }]);
-    });
 });

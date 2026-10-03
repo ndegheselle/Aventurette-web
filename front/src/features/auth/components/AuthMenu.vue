@@ -3,9 +3,15 @@ import { LogOutIcon } from 'lucide-vue-next';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as authRoutesNames } from '@features/auth/routes';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import type { UserData } from '@features/auth/model/user';
+import { useRouter } from 'vue-router';
 
-const { isLoggedIn, current, logout } = useAuth<UserData>();
+const { isLoggedIn, current, logout } = useAuth();
+const router = useRouter();
+
+function logoutToLogin() {
+    logout();
+    router.push({ name: authRoutesNames.login });
+}
 </script>
 
 <template>
@@ -14,7 +20,7 @@ const { isLoggedIn, current, logout } = useAuth<UserData>();
             <summary class="btn btn-circle btn-ghost">
                 <div class="avatar">
                     <div class="rounded-full">
-                        <img alt="Tailwind-CSS-Avatar-component"
+                        <img alt=""
                             src="https://placeholder.pagebee.io/api/plain/32/32" />
                     </div>
                 </div>
@@ -22,7 +28,7 @@ const { isLoggedIn, current, logout } = useAuth<UserData>();
         </template>
         <ul class="menu p-2 w-40">
             <li class="menu-title">{{ current?.email }}</li>
-            <a @click="logout()" class="btn">
+            <a @click="logoutToLogin" class="btn">
                 <LogOutIcon /> {{ $t('auth.logout') }}
             </a>
         </ul>

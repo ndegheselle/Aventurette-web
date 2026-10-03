@@ -29,7 +29,7 @@ describe('renameMaterial', () => {
         const [rope] = subject.paginated.value.items;
 
         rope!.name = '  Long rope ';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
 
         expect(materials.items[0]!.name).toBe('Long rope');
         expect(rope!.name).toBe('Long rope');
@@ -41,7 +41,7 @@ describe('renameMaterial', () => {
         materials.failNextWith({ name: { code: 'validation_not_unique' } });
 
         rope!.name = 'Chalk';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
 
         expect(rope!.name).toBe('Rope');
     });
@@ -51,10 +51,10 @@ describe('renameMaterial', () => {
         const [rope] = subject.paginated.value.items;
 
         rope!.name = 'Long rope';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
         materials.failNextWith({ name: { code: 'validation_not_unique' } });
         rope!.name = 'Chalk';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
 
         expect(rope!.name).toBe('Long rope');
     });
@@ -65,9 +65,32 @@ describe('renameMaterial', () => {
         const write = vi.spyOn(materials, 'update');
 
         rope!.name = '   ';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
 
         expect(write).not.toHaveBeenCalled();
         expect(rope!.name).toBe('Rope');
+    });
+});
+
+describe('createMaterial', () => {
+    it('adds the searched name, trimmed, and clears the search', async () => {
+        const subject = await setup();
+
+        subject.search.value = '  Chalk ';
+        await subject.createMaterial();
+
+        expect(materials.items.map(material => material.name)).toContain('Chalk');
+        expect(subject.search.value).toBe('');
+    });
+
+    it('keeps the name typed when the backend refuses it', async () => {
+        const subject = await setup();
+        materials.failNextWith({ name: { code: 'validation_not_unique' } });
+
+        subject.search.value = 'Rope';
+        await subject.createMaterial();
+
+        expect(materials.items).toHaveLength(1);
+        expect(subject.search.value).toBe('Rope');
     });
 });

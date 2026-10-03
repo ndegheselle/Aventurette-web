@@ -16,7 +16,7 @@ import { type IDataCrud, type PaginationOptions, type Paginated, SortDirection }
 
 ```ts
 create(data)      update(id, data)     remove(id)
-getById(id)       getAll()             getList(options)      filter(group, options)
+getById(id)       getAll()             filter(group, options)
 ```
 
 `CrudFactory` is how an app gets one — an adapter supplies the implementation, the app wires
@@ -69,14 +69,14 @@ const group = removeEmptyFilters(createGroup({
 
 | | |
 |---|---|
-| `IAuthProvider<TUser>` | `login`, `register`, `refresh`, `logout`, `update`. Keeps session handling and token storage out of the UI. |
+| `IAuthProvider<TUser>` | `login`, `register`, `refresh`, `logout`. Keeps session handling and token storage out of the UI. |
 | `IFileUrlResolver` | Turns a stored file reference into a URL, so a component never needs the backend client to show an upload. |
 
 ## Errors
 
 `ValidationError` carries per-field codes (`{ [field]: { code } }`) normalised away from any
 backend's error shape — adapters are responsible for the mapping. Plus
-`NotAuthentifiedError` and `NotImplementedError`.
+`NotAuthenticatedError` and `NotImplementedError`.
 
 ## Utils
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { EnumAlertType, useAlert } from '@chapelure/ui/alerts/useAlert';
-import { BrushCleaningIcon, CircleAlertIcon, CircleCheckIcon, TriangleAlertIcon, XIcon } from 'lucide-vue-next';
+import { CircleCheckIcon, TriangleAlertIcon, XIcon } from 'lucide-vue-next';
 import { useTemplateRef, watchEffect } from 'vue';
 
 const { alerts, close } = useAlert();
@@ -20,17 +20,13 @@ watchEffect(() => {
             <div role="alert" class="alert" 
                 v-for="alert in alerts.toReversed()" :key="alert.id" 
                 :class="{
-                    'alert-warning alert-dash': alert.type === EnumAlertType.Debug,
-                    'alert-warning alert-soft border border-warning': alert.type === EnumAlertType.Warning,
                     'alert-error alert-soft border border-error': alert.type === EnumAlertType.Error,
                     'alert-success alert-soft border border-success': alert.type === EnumAlertType.Success
                 }">
-                <CircleAlertIcon class="opacity-50" v-if="alert.type === EnumAlertType.Info" />
-                <TriangleAlertIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Warning || alert.type === EnumAlertType.Error" />
+                <TriangleAlertIcon class="opacity-50" v-if="alert.type === EnumAlertType.Error" />
                 <CircleCheckIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Success" />
-                <BrushCleaningIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Debug" />
                 <span>{{ alert.message }}</span>
-                <button @click="close(alert.id)" class="btn btn-sm btn-ghost btn-circle" aria-label="close">
+                <button @click="close(alert.id)" class="btn btn-sm btn-ghost btn-circle" :aria-label="$t('actions.close')">
                     <XIcon class="icon-sm" />
                 </button>
             </div>

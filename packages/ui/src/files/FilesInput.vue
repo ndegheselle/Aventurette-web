@@ -6,11 +6,11 @@
     <FilesInput accept="image/*" @change="update">
       <template #constraints>JPG or PNG, max 2 MB</template>
     </FilesInput>
-    <FilesList :files />
+    <FilesList v-model:files="files" />
 -->
 <script setup lang="ts">
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import { formatBytes } from '@chapelure/ui/files/useFiles';
+import { formatBytes, matchesAccept } from '@chapelure/ui/files/useFiles';
 import { FolderOpenIcon, UploadIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -43,49 +43,43 @@ function onDrop(e: DragEvent) {
     e.preventDefault();
     isDragging.value = false;
 
-    if (e.dataTransfer?.files && fileInput.value) {
-        fileInput.value.files = e.dataTransfer.files;
-        fileInput.value.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-}
-
-function matchesAccept(file: File, accept: string): boolean {
-    return accept.split(',').map(s => s.trim()).some(token => {
-        if (token.startsWith('.')) {
-            return file.name.toLowerCase().endsWith(token.toLowerCase());
-        }
-        if (token.endsWith('/*')) {
-            return file.type.startsWith(token.slice(0, -1));
-        }
-        return file.type === token;
-    });
+    const dropped = e.dataTransfer?.files;
+    if (dropped) takeFiles(dropped);
 }
 
 function onChange() {
-    const fileList = fileInput.value?.files;
-    if (!fileList) return;
+    const picked = fileInput.value?.files;
+    if (picked) takeFiles(picked);
+}
+
+/** Why `file` is turned down, or null when it may be taken. */
+function refusalOf(file: File): string | null {
+    if (!matchesAccept(file, accept))
+        return t('inputs.file.upload.unsuported', { name: file.name });
 
     const maxBytes = maxMbSize * 1_048_576;
-    const rejected: string[] = [];
+    if (file.size > maxBytes)
+        return t('inputs.file.upload.exceedSize', { name: file.name, size: formatBytes(file.size), maxSize: maxMbSize });
 
-    const valid = Array.from(fileList).filter(file => {
-        if (!matchesAccept(file, accept)) {
-            rejected.push(t('inputs.file.upload.unsuported', { name: file.name }));
-            return false;
-        }
-        if (file.size > maxBytes) {
-            rejected.push(t('inputs.file.upload.exceedSize', { name: file.name, size: formatBytes(file.size), maxSize: maxMbSize }));
-            return false;
-        }
-        return true;
-    });
+    return null;
+}
+
+/** Emit the files that pass, picked or dropped alike, and say why the others did not. */
+function takeFiles(files: ArrayLike<File>) {
+    const valid: File[] = [];
+    const rejected: string[] = [];
+    for (const file of Array.from(files)) {
+        const refusal = refusalOf(file);
+        if (refusal) rejected.push(refusal);
+        else valid.push(file);
+    }
 
     if (rejected.length) {
         alert.error(rejected.join('\n'));
     }
 
     if (!valid.length) return;
-    
+
     emit('change', valid);
 }
 </script>

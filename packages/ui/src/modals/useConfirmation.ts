@@ -17,15 +17,15 @@ export function useConfirmation() {
         modalController = modal;
     }
 
-    function show(t: string, m: string, i?: Component): Promise<boolean | null> {
+    function show(titleText: string, messageText: string, iconComponent?: Component): Promise<boolean | null> {
         if (!modalController) {
             console.error('[chapelure/ui] useConfirmation().show() was called but no <ConfirmationModal /> is mounted — add one to your layout.');
             return Promise.resolve(null);
         }
 
-        title.value = t;
-        message.value = m;
-        icon.value = i ?? null;
+        title.value = titleText;
+        message.value = messageText;
+        icon.value = iconComponent ?? null;
         return modalController.show();
     }
 

@@ -149,12 +149,12 @@ defineExpose({ show });
                         {{ $t('activities.constraints.picture') }}
                     </template>
                 </FilesInput>
-                <FilesList :files="visual" />
+                <FilesList v-model:files="visual" />
             </div>
 
             <div v-for="(files, index) in stepFiles" :key="files.id" class="flex flex-col gap-1">
                 <b>{{ $t('activities.authoring.import.stepResources', { title: sheet?.steps[index]?.title }) }}</b>
-                <ResourcesSelection v-model="files.resources" :step="files.id" />
+                <ResourcesSelection v-model="files.resources" :step-id="files.id" />
             </div>
 
             <p class="text-sm opacity-60">{{ $t('activities.authoring.import.files.optional') }}</p>

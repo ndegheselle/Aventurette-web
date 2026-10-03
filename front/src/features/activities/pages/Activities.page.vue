@@ -1,18 +1,12 @@
 <script setup lang="ts">
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
-import { rangeLabel } from '@chapelure/ui/inputs/range';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
-import { rangeEndOf, totalMinutesOf, type ActivityData } from '@features/activities/model/activity';
 import { routesNames } from '@features/activities/routes';
 import { CakeIcon, CircleQuestionMarkIcon, ClockIcon } from 'lucide-vue-next';
 
-const { paginated, search, refresh } = useActivitiesList();
-
-function ageLabelOf(activity: ActivityData) {
-    return rangeLabel(rangeEndOf(activity.audience.ageMin), rangeEndOf(activity.audience.ageMax));
-}
+const { paginated, cards, search, refresh } = useActivitiesList();
 </script>
 
 <template>
@@ -27,27 +21,27 @@ function ageLabelOf(activity: ActivityData) {
         </div>
 
         <div v-else class="flex-1 grid content-start grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2">
-            <RouterLink v-for="item in paginated.items" :key="item.id"
+            <RouterLink v-for="{ activity, ageLabel, totalMinutes } in cards" :key="activity.id"
                 class="card bg-base-200 border border-base-content/5 hover:shadow-lg"
-                :to="{ name: routesNames.page, params: { id: item.id } }">
+                :to="{ name: routesNames.page, params: { id: activity.id } }">
 
                 <figure>
                     <img class="w-full h-32 object-cover" src="https://placeholder.pagebee.io/api/plain/320/128" />
                 </figure>
                 <div class="card-body">
-                    <h2 class="card-title">{{ item.name }}</h2>
+                    <h2 class="card-title">{{ activity.name }}</h2>
                     <div class="flex flex-wrap gap-1">
                         <span class="badge badge-soft" :title="$t('activities.fields.age')">
                             <CakeIcon class="size-3" />
-                            {{ $t(ageLabelOf(item).key, ageLabelOf(item).params) }}
+                            {{ $t(ageLabel.key, ageLabel.params) }}
                         </span>
-                        <span v-if="totalMinutesOf(item)" class="badge badge-soft"
+                        <span v-if="totalMinutes" class="badge badge-soft"
                             :title="$t('activities.fields.totalTime')">
                             <ClockIcon class="size-3" />
-                            {{ $t('activities.minutes', { minutes: totalMinutesOf(item) }) }}
+                            {{ $t('activities.minutes', { minutes: totalMinutes }) }}
                         </span>
                     </div>
-                    <p class="text-xs line-clamp-3" v-html="item.description"></p>
+                    <p class="text-xs line-clamp-3" v-html="activity.description"></p>
                 </div>
             </RouterLink>
         </div>

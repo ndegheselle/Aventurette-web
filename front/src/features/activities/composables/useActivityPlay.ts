@@ -1,6 +1,7 @@
 import { useActivity } from '@features/activities/composables/useActivity';
 import { actionKey, playStepsOf, type PlayStep } from '@features/activities/model/play';
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /**
  * Running one activity: its steps one at a time, and the actions ticked along the way. A run
@@ -8,6 +9,7 @@ import { computed, ref, watch } from 'vue';
  */
 export function useActivityPlay() {
     const { activity } = useActivity();
+    const { t } = useI18n();
 
     const steps = computed(() => playStepsOf(activity.value));
     const index = ref(0);
@@ -20,12 +22,19 @@ export function useActivityPlay() {
 
     /** Move to a step, staying within the run. */
     function goTo(target: number) {
-        index.value = Math.min(Math.max(target, 0), Math.max(steps.value.length - 1, 0));
+        const lastIndex = Math.max(steps.value.length - 1, 0);
+        index.value = Math.min(Math.max(target, 0), lastIndex);
+    }
+
+    /** What a step reads as: its own title, or else its kind's name, as a generated step has no title. */
+    function headingOf(step: PlayStep): string {
+        return step.title || t(`activities.steps.kind.${step.kind}`);
     }
 
     function toggle(step: PlayStep, actionIndex: number) {
         const key = actionKey(step, actionIndex);
-        if (!ticked.value.delete(key)) ticked.value.add(key);
+        if (ticked.value.has(key)) ticked.value.delete(key);
+        else ticked.value.add(key);
     }
 
     return {
@@ -40,5 +49,6 @@ export function useActivityPlay() {
         next: () => goTo(index.value + 1),
         isTicked: (step: PlayStep, actionIndex: number) => ticked.value.has(actionKey(step, actionIndex)),
         toggle,
+        headingOf,
     };
 }

@@ -1,16 +1,16 @@
 <!--
-  The files held by useOneFile: thumbnails for images, an icon otherwise.
-  Removing splices the prop array in place, so the parent's ref follows.
+  The files held by useOneFile: thumbnails for images, an icon otherwise. Removing one hands the
+  rest back through `v-model:files`.
 
     const { files, update } = useOneFile();
     <FilesInput @change="update" />
-    <FilesList :files />
+    <FilesList v-model:files="files" />
 -->
 <script setup lang="ts">
 import { formatBytes } from '@chapelure/ui/files/useFiles';
 import { FileIcon, XIcon } from 'lucide-vue-next';
 
-const {files = []} = defineProps<{ files: File[] }>();
+const files = defineModel<File[]>('files', { required: true });
 const PREVIEWABLE_TYPES = new Set([
     "image/jpeg",
     "image/png",
@@ -28,7 +28,7 @@ function canPreviewAsImage(file: File): boolean {
 }
 
 function removeFile(index: number) {
-    files.splice(index, 1);
+    files.value = files.value.filter((_, i) => i !== index);
 }
 </script>
 

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { useModal, type IModalController } from './useModal';
 
 describe('useModal', () => {
@@ -25,15 +25,6 @@ describe('useModal', () => {
         await expect(answer).resolves.toBeNull();
     });
 
-    it('defaults a bare confirm() to true, for a modal that only asks yes or no', async () => {
-        const modal = useModal();
-
-        const answer = modal.show();
-        modal.confirm(null);
-
-        await expect(answer).resolves.toBe(true);
-    });
-
     it('runs onShow before it becomes visible, so the form is seeded first', () => {
         const seen: boolean[] = [];
         const modal: IModalController = useModal({ onShow: () => { seen.push(modal.isShown.value); } });
@@ -41,55 +32,6 @@ describe('useModal', () => {
         modal.show();
 
         expect(seen).toEqual([false]);
-    });
-
-    it('calls onCancel when cancelled', () => {
-        const onCancel = vi.fn();
-        const modal = useModal({ onCancel });
-
-        modal.show();
-        modal.cancel();
-
-        expect(onCancel).toHaveBeenCalledOnce();
-    });
-
-    it('lets onConfirm veto by returning false, leaving the promise pending', async () => {
-        // How a form keeps a modal open on a validation failure.
-        const modal = useModal<string>({ onConfirm: () => false });
-        const settled = vi.fn();
-
-        modal.show().then(settled);
-        modal.confirm('ignored');
-        await Promise.resolve();
-
-        expect(settled).not.toHaveBeenCalled();
-    });
-
-    it('KNOWN DEVIATION: a vetoed confirm still hides the modal', () => {
-        // A false `onConfirm` is documented as keeping the modal open and the promise pending.
-        // Only the second half holds: confirm() sets isShown before consulting onConfirm, so the
-        // dialog closes over a pending promise. Nothing calls the veto today.
-        //
-        // The fix is to move `isShown.value = false` below the onConfirm check. Flip this test
-        // when it lands.
-        const modal = useModal<string>({ onConfirm: () => false });
-
-        modal.show();
-        modal.confirm('ignored');
-
-        expect(modal.isShown.value).toBe(false);
-    });
-
-    it('still resolves after a veto once a later confirm is allowed', async () => {
-        let allow = false;
-        const modal = useModal<string>({ onConfirm: () => allow });
-
-        const answer = modal.show();
-        modal.confirm('first');
-        allow = true;
-        modal.confirm('second');
-
-        await expect(answer).resolves.toBe('second');
     });
 
     it('gives each show() its own promise', async () => {

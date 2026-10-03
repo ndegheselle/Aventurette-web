@@ -21,11 +21,9 @@ import type { ActivityStepData } from '@features/activities/model/step';
 import { tagOptions, type ActivityTagData } from '@features/activities/model/tag';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { materialsApi as materials } from '@features/admin/activities-authoring/api/materials.api';
-import { safetyInstructionsApi } from '@features/admin/activities-authoring/api/safety.api';
+import { materialCatalogueApi } from '@features/admin/activities-authoring/api/materials.api';
+import { referencesApi } from '@features/admin/activities-authoring/api/references.api';
 import { saveApi } from '@features/admin/activities-authoring/api/save.api';
-import { tagsApi as tags } from '@features/admin/activities-authoring/api/tags.api';
-import { tipsApi } from '@features/admin/activities-authoring/api/tips.api';
 import {
     activityWrites,
     createEmptyActivity,
@@ -41,6 +39,7 @@ import {
 } from '@features/admin/activities-authoring/model/material.edit';
 import { createEmptyStep } from '@features/admin/activities-authoring/model/step.edit';
 import { createEmptyWorkshop } from '@features/admin/activities-authoring/model/workshop.edit';
+import { routesNames } from '@features/admin/activities-authoring/routes';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { computed, onMounted, ref, shallowRef, toRaw, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -68,14 +67,14 @@ export function useActivityEdit() {
     const isNew = computed(() => original.value === null);
 
     /** Names added to the catalogue here. The save creates the ones a link still uses. */
-    let newMaterials: MaterialData[] = [];
+    const newMaterials = shallowRef<MaterialData[]>([]);
 
     const isChangingState = ref(false);
 
     watch(
         () => route.params.id,
         async (id) => {
-            newMaterials = [];
+            newMaterials.value = [];
 
             if (typeof id !== 'string') {
                 original.value = null;
@@ -83,7 +82,13 @@ export function useActivityEdit() {
                 return;
             }
 
-            const read = await activities.getById(id) ?? createEmptyActivity();
+            const read = await activities.getById(id);
+            if (!read) {
+                alert.error(t('activities.authoring.notFound'));
+                await router.replace({ name: routesNames.all });
+                return;
+            }
+
             original.value = structuredClone(read);
             activity.value = read;
         },
@@ -114,7 +119,7 @@ export function useActivityEdit() {
     /** Add a name the catalogue does not have, and list it. The save creates both. */
     function createMaterial(name: string) {
         const material = createCatalogueMaterial(saveApi.newId(), name);
-        newMaterials = [...newMaterials, material];
+        newMaterials.value = [...newMaterials.value, material];
         addMaterial(material);
     }
 
@@ -162,7 +167,7 @@ export function useActivityEdit() {
      * A multi-valued field, as a `MultiSelect` binds it: every value as a translated option, and
      * the picked options over the values the field stores.
      */
-    function choice<V extends string>(values: V[], labelKey: string, read: () => V[], write: (values: V[]) => void) {
+    function multiSelectBinding<V extends string>(values: V[], labelKey: string, read: () => V[], write: (values: V[]) => void) {
         const options = computed(() => optionsOf(values, value => t(`${labelKey}.${value}`)));
         const picked = computed<Option<V>[]>({
             get: () => optionsFor(options.value, read()),
@@ -171,17 +176,17 @@ export function useActivityEdit() {
         return { options, picked };
     }
 
-    const { options: practiceOptions, picked: practices } = choice(
+    const { options: practiceOptions, picked: practices } = multiSelectBinding(
         Object.values(ActivityPractice), 'activities.practice',
         () => activity.value.classification.practices,
         values => { activity.value.classification.practices = values; },
     );
-    const { options: seasonOptions, picked: seasons } = choice(
+    const { options: seasonOptions, picked: seasons } = multiSelectBinding(
         Object.values(ActivitySeason), 'activities.season',
         () => activity.value.place.seasons,
         values => { activity.value.place.seasons = values; },
     );
-    const { options: locationOptions, picked: locations } = choice(
+    const { options: locationOptions, picked: locations } = multiSelectBinding(
         Object.values(ActivityLocation), 'activities.location',
         () => activity.value.place.locations,
         values => { activity.value.place.locations = values; },
@@ -217,7 +222,7 @@ export function useActivityEdit() {
     }
 
     const { isLoading, errors, submit } = useSubmit(async () => {
-        const writes = activityWrites(original.value, toRaw(activity.value), newMaterials);
+        const writes = activityWrites(original.value, toRaw(activity.value), newMaterials.value);
         await saveApi.send(writes);
 
         alert.success(t(isNew.value ? 'data.created' : 'data.updated'));
@@ -269,11 +274,10 @@ export function useReferenceOptions() {
     const tips = ref<ActivityTipData[]>([]);
 
     onMounted(async () => {
-        [known.value, safetyInstructions.value, tips.value] = await Promise.all([
-            tags.getAll(),
-            safetyInstructionsApi.getAll(),
-            tipsApi.getAll(),
-        ]);
+        const references = await referencesApi.getAll();
+        known.value = references.tags;
+        safetyInstructions.value = references.safetyInstructions;
+        tips.value = references.tips;
     });
 
     return { tagOptions: computed(() => tagOptions(known.value)), safetyInstructions, tips };
@@ -292,7 +296,7 @@ export function useMaterialCatalogue(selected: Ref<ActivityMaterialData[]>) {
     const isNewName = computed(() => canCreateMaterial(search.value, known.value, selected.value));
 
     onMounted(async () => {
-        known.value = await materials.getAll();
+        known.value = await materialCatalogueApi.getAll();
     });
 
     return { search, suggestions, isNewName };

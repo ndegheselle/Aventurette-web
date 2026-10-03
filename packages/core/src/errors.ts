@@ -1,5 +1,5 @@
 export class NotImplementedError extends Error { }
-export class NotAuthentifiedError extends Error { }
+export class NotAuthenticatedError extends Error { }
 
 /** Backend error codes keyed by field name. The UI turns each code into a message. */
 export type FieldErrors = Record<string, { code?: string }>;

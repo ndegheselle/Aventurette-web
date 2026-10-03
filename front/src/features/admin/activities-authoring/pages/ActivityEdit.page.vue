@@ -102,10 +102,8 @@ const stepModal = useTemplateRef<IEditModal<ActivityStepData>>('stepModal');
 const workshopModal = useTemplateRef<IEditModal<ActivityWorkshopData>>('workshopModal');
 const sectionsModal = useTemplateRef<InstanceType<typeof SectionsMenuModal>>('sectionsModal');
 
-/** The families tab shown. */
-const family = ref('classification');
-/** The preparation tab shown. */
-const preparation = ref('safety');
+const familyTab = ref('classification');
+const preparationTab = ref('safety');
 
 // A tabbed panel's entries open their tab, then bring the panel into view.
 function tabEntry(tab: Ref<string>, anchor: string, key: string, label: string, icon: Component): SectionEntry {
@@ -113,11 +111,11 @@ function tabEntry(tab: Ref<string>, anchor: string, key: string, label: string, 
 }
 
 function familyEntry(key: string, icon: Component): SectionEntry {
-    return tabEntry(family, 'section-families', key, `activities.families.${key}`, icon);
+    return tabEntry(familyTab, 'section-families', key, `activities.families.${key}`, icon);
 }
 
 function preparationEntry(key: string, label: string, icon: Component): SectionEntry {
-    return tabEntry(preparation, 'section-preparation', key, label, icon);
+    return tabEntry(preparationTab, 'section-preparation', key, label, icon);
 }
 
 const sections: SectionEntry[] = [
@@ -248,7 +246,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                 {{ $t('activities.constraints.picture') }}
                             </template>
                         </FilesInput>
-                        <FilesList :files />
+                        <FilesList v-model:files="files" />
                     </Field>
                 </Panel>
 
@@ -260,12 +258,12 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <FieldError :error="errors.get('description')" />
                 </Panel>
 
-                <!-- Optional selects: an empty string is how PocketBase stores "none". -->
+                <!-- An optional select's "none" is null here; the mapper writes it as the empty string PocketBase stores. -->
                 <Panel id="section-families" class="scroll-mt-16">
                     <div class="tabs tabs-box">
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.families.classification')">
-                            <input type="radio" name="activity-families" value="classification" v-model="family" />
+                            <input type="radio" name="activity-families" value="classification" v-model="familyTab" />
                             <ShapesIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.classification') }}</span>
                         </label>
@@ -292,7 +290,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.families.imaginary')">
-                            <input type="radio" name="activity-families" value="imaginary" v-model="family" />
+                            <input type="radio" name="activity-families" value="imaginary" v-model="familyTab" />
                             <SparklesIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.imaginary') }}</span>
                         </label>
@@ -315,7 +313,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.families.audience')">
-                            <input type="radio" name="activity-families" value="audience" v-model="family" />
+                            <input type="radio" name="activity-families" value="audience" v-model="familyTab" />
                             <UsersIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.audience') }}</span>
                         </label>
@@ -356,7 +354,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.families.supervision')">
-                            <input type="radio" name="activity-families" value="supervision" v-model="family" />
+                            <input type="radio" name="activity-families" value="supervision" v-model="familyTab" />
                             <UserCheckIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.supervision') }}</span>
                         </label>
@@ -388,7 +386,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.families.place')">
-                            <input type="radio" name="activity-families" value="place" v-model="family" />
+                            <input type="radio" name="activity-families" value="place" v-model="familyTab" />
                             <MapPinIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.place') }}</span>
                         </label>
@@ -420,7 +418,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.families.pedagogy')">
-                            <input type="radio" name="activity-families" value="pedagogy" v-model="family" />
+                            <input type="radio" name="activity-families" value="pedagogy" v-model="familyTab" />
                             <GraduationCapIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.pedagogy') }}</span>
                         </label>
@@ -450,7 +448,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <div class="tabs tabs-box">
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.families.safety')">
-                            <input type="radio" name="activity-preparation" value="safety" v-model="preparation" />
+                            <input type="radio" name="activity-preparation" value="safety" v-model="preparationTab" />
                             <ShieldAlertIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.families.safety') }}</span>
                         </label>
@@ -462,7 +460,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.materials.title')">
-                            <input type="radio" name="activity-preparation" value="materials" v-model="preparation" />
+                            <input type="radio" name="activity-preparation" value="materials" v-model="preparationTab" />
                             <PackageOpenIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.materials.title') }}</span>
                         </label>
@@ -474,7 +472,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
                             :data-tip="$t('activities.tips.title')">
-                            <input type="radio" name="activity-preparation" value="tips" v-model="preparation" />
+                            <input type="radio" name="activity-preparation" value="tips" v-model="preparationTab" />
                             <LightbulbIcon class="opacity-50" />
                             <span class="sr-only sm:not-sr-only">{{ $t('activities.tips.title') }}</span>
                         </label>

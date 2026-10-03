@@ -18,16 +18,17 @@ const DEFAULT_PER_PAGE = 25;
  *
  * @param crud the catalogue
  * @param filterOf what the search asks for
+ * @param onRefreshed called with every page read, as soon as it is the one shown
  */
 export function useCatalogueEditList<T extends { id: string, name: string }>(
     crud: IDataCrud<T>,
     filterOf: (search: string) => FilterGroup<T>,
-    perPage: number = DEFAULT_PER_PAGE,
+    onRefreshed?: (items: T[]) => void,
 ) {
     const paginated = ref<Paginated<T>>({
         items: [],
         total: 0,
-        options: { page: 1, perPage, sortBy: 'name', sortDirection: SortDirection.ASC },
+        options: { page: 1, perPage: DEFAULT_PER_PAGE, sortBy: 'name', sortDirection: SortDirection.ASC },
     });
     const search = ref('');
 
@@ -36,7 +37,9 @@ export function useCatalogueEditList<T extends { id: string, name: string }>(
 
     /** Re-query the current page. */
     async function refresh() {
-        paginated.value = await crud.filter(filterOf(search.value), paginated.value.options) as Paginated<T>;
+        const page = await crud.filter(filterOf(search.value), paginated.value.options);
+        paginated.value = page as Paginated<T>;
+        onRefreshed?.(page.items);
     }
 
     /**

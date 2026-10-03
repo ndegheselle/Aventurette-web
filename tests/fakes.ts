@@ -76,10 +76,6 @@ export function fakeCrud<T extends BaseEntity>(seed: T[] = []): FakeCrud<T> {
             return [...fake.items];
         },
 
-        async getList(options: PaginationOptions) {
-            return page(fake.items, options);
-        },
-
         async filter(group: FilterGroup<T>, options: PaginationOptions) {
             // Not a filter engine: the query language is the adapter's, and tested there.
             fake.lastFilter = group;
@@ -137,12 +133,6 @@ export function fakeAuthProvider<TUser extends BaseEntity>(user: TUser): FakeAut
 
         logout() {
             fake.session = null;
-        },
-
-        async update(_id, data) {
-            raiseIfArmed();
-            fake.session = { ...(fake.session ?? user), ...data } as TUser;
-            return fake.session;
         },
     };
 

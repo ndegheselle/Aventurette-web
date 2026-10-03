@@ -1,26 +1,15 @@
-import { NotAuthentifiedError, type BaseEntity } from '@chapelure/core';
+import { NotAuthenticatedError } from '@chapelure/core';
 import { sessionProvider } from '@features/auth/api/session';
 import { hasRole as userHasRole, type Role, type UserData } from '@features/auth/model/user';
-import { routesNames } from '@features/auth/routes';
-import { computed, getCurrentInstance, readonly, ref, type Ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, readonly, ref } from 'vue';
 
 // Module state: one session, shared by every caller.
-const current = ref<BaseEntity | null>(null);
+const current = ref<UserData | null>(null);
 
-export function useAuth<TUser extends BaseEntity>() {
+export function useAuth() {
 
-    const auth = sessionProvider<TUser>();
+    const auth = sessionProvider();
     const isLoggedIn = computed(() => current.value !== null);
-
-    // `useRouter` is an inject, so it only works inside a component's setup. The route guard
-    // calls this outside of one, and only `logout` needs to navigate.
-    const router = getCurrentInstance() ? useRouter() : null;
-
-    async function update(data: Partial<TUser>) {
-        if (!current.value) return;
-        current.value = await auth.update(current.value.id, data);
-    }
 
     async function register(email: string, password: string, passwordConfirm: string) {
         current.value = await auth.register(email, password, passwordConfirm);
@@ -30,10 +19,10 @@ export function useAuth<TUser extends BaseEntity>() {
         current.value = await auth.login(email, password);
     }
 
-    async function logout() {
+    /** Drop the session. Where to go next is the caller's. */
+    function logout() {
         auth.logout();
         current.value = null;
-        router?.push({ name: routesNames.login });
     }
 
     async function refresh() {
@@ -43,22 +32,21 @@ export function useAuth<TUser extends BaseEntity>() {
 
     /** Whether the signed-in user holds one of `roles`. Reactive in a template, as it reads the session. */
     function hasRole(...roles: Role[]): boolean {
-        return userHasRole(current.value as UserData | null, roles);
+        return userHasRole(current.value, roles);
     }
 
     function currentId(): string {
-        if (!current.value) throw new NotAuthentifiedError();
+        if (!current.value) throw new NotAuthenticatedError();
         return current.value.id;
     }
 
     return {
-        current: readonly(current) as Readonly<Ref<TUser | null>>,
+        current: readonly(current),
         isLoggedIn,
         login,
         register,
         logout,
         refresh,
-        update,
         currentId,
         hasRole,
     };

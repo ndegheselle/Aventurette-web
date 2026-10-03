@@ -66,16 +66,18 @@ export function isFilterGroup<T>(filter: Filter<T> | FilterGroup<T>): filter is 
     return 'filters' in filter;
 }
 
+/** No value to filter on: what an untouched field holds. `0` and `false` are values. */
+function isEmptyValue(value: unknown): boolean {
+    if (Array.isArray(value)) return value.length === 0;
+    return value === null || value === undefined || value === '';
+}
+
 /** Drop filters with no value. An untouched form builds a group the backend never sees. */
 export function removeEmptyFilters<T>(group: FilterGroup<T>): FilterGroup<T> {
     const cleanedFilters = group.filters
         .map(f => {
-            if (isFilterGroup(f)) {
-                return removeEmptyFilters(f);
-            } else {
-                if (Array.isArray(f.value)) return f.value.length ? f : null;
-                return f.value ? f : null;
-            }
+            if (isFilterGroup(f)) return removeEmptyFilters(f);
+            return isEmptyValue(f.value) ? null : f;
         })
         .filter((f): f is Filter<T> | FilterGroup<T> => f !== null);
     return {

@@ -4,6 +4,7 @@ import './styles/index.css';
 import '@/backend';
 
 import { i18n } from '@/app/i18n';
+import { applyStoredTheme } from '@chapelure/ui/settings/useSettings';
 import { authGuard } from '@features/auth/guard';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -15,6 +16,8 @@ const router = createRouter({
     routes,
 });
 router.beforeEach(authGuard);
+
+applyStoredTheme();
 
 createApp(App)
     .use(i18n)

@@ -64,16 +64,27 @@ describe('createPocketBaseBatch', () => {
         expect(error.fields).toEqual({ title: { code: 'validation_required' } });
     });
 
-    it('is a plain ValidationError when the rejection names no write', async () => {
-        // Batching switched off on the server answers 403 and no `requests`.
+    it('is a plain ValidationError when a refusal names no write', async () => {
         const pb = fakePocketBase();
         const batch = createPocketBaseBatch(pb.client);
-        pb.failNextWith({ status: 403, message: 'Batch requests are not allowed.', response: { data: {} } });
+        pb.failNextWith({ status: 400, message: 'Failed', response: { data: {} } });
 
         const error = await batch.send().catch(error => error);
 
         expect(error).toBeInstanceOf(ValidationError);
         expect(error).not.toBeInstanceOf(BatchError);
+    });
+
+    it('rethrows a failure that is not a refusal untouched', async () => {
+        // Batching switched off on the server answers 403 and no `requests`.
+        const pb = fakePocketBase();
+        const batch = createPocketBaseBatch(pb.client);
+        const forbidden = { status: 403, message: 'Batch requests are not allowed.', response: { data: {} } };
+        pb.failNextWith(forbidden);
+
+        const error = await batch.send().catch(error => error);
+
+        expect(error).toBe(forbidden);
     });
 });
 

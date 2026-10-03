@@ -31,7 +31,7 @@ and nothing else; the rest below is internal.
 | `createPocketBaseAuth(client, collection)` | `IAuthProvider`. Wraps `authWithPassword`, `authRefresh`, `requestVerification` and the auth store. |
 | `createPocketBaseFileUrls(client)` | `IFileUrlResolver`, over `pb.files.getURL`. The CRUD adapter builds one and hands it to every `toEntity`, so a mapper resolves a stored file without knowing the backend. |
 | `filterGroupToPocketBase(group)` | Core's filter tree → a PocketBase filter string. |
-| `toValidationError(error)` / `mapErrors(fn)` | Maps a PocketBase `ClientResponseError` to core's `ValidationError`. Returns `undefined` for anything that is not a response error (network failures, aborts) so those are rethrown untouched rather than mislabelled. |
+| `toValidationError(error)` / `mapErrors(fn)` | Maps a PocketBase refusal (status 400) to core's `ValidationError`. Returns `undefined` for anything else (a missing record, a forbidden call, a server error, network failures and aborts) so those are rethrown untouched rather than mislabelled. |
 
 ## Generated types
 

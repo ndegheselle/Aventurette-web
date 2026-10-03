@@ -78,6 +78,17 @@ describe('FilesInput', () => {
         expect(wrapper.emitted('change')).toBeUndefined();
     });
 
+    it('takes dropped files the way it takes picked ones', async () => {
+        const wrapper = mount(FilesInput, { props: { accept: 'image/*', multiple: true } });
+
+        await wrapper.find('div').trigger('drop', {
+            dataTransfer: { files: [aFile('a.png', 'image/png'), aFile('notes.txt', 'text/plain')] },
+        });
+
+        expect(wrapper.emitted('change')?.[0]?.[0]).toHaveLength(1);
+        expect(alert.alerts.value).toHaveLength(1);
+    });
+
     it('passes accept and multiple through to the real input', () => {
         const wrapper = mount(FilesInput, { props: { accept: '.png,.pdf', multiple: true } });
 

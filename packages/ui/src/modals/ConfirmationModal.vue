@@ -20,6 +20,6 @@ onMounted(() => {
                 {{ confirmation.title }}
             </span>
         </template>
-        <p v-html="confirmation.message.value"></p>
+        <p>{{ confirmation.message.value }}</p>
     </Modal>
 </template>

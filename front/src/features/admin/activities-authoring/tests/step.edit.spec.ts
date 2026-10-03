@@ -1,5 +1,5 @@
-import { filesWithinLimit, joinDuration, splitDuration, stepProblems } from '@features/admin/activities-authoring/model/step.edit';
-import { aPickedFile } from '@tests';
+import { filesWithinLimit, joinDuration, resourcePreviewOf, splitDuration, stepProblems } from '@features/admin/activities-authoring/model/step.edit';
+import { aPickedFile, aResource } from '@tests';
 import { describe, expect, it } from 'vitest';
 
 describe('splitDuration', () => {
@@ -55,5 +55,22 @@ describe('stepProblems', () => {
         expect(stepProblems({ description: '<p></p>' })).toEqual({ description: { code: 'validation_required' } });
         expect(stepProblems({ description: '<p>&nbsp;</p>' })).toEqual({ description: { code: 'validation_required' } });
         expect(stepProblems({ description: '<p>Line up.</p>' })).toEqual({});
+    });
+});
+
+describe('resourcePreviewOf', () => {
+    it('reads a stored file by its url, without the query string', () => {
+        expect(resourcePreviewOf(aResource({ url: 'https://files.test/map.PNG?thumb=100x100' }))).toBe('image');
+        expect(resourcePreviewOf(aResource({ url: 'https://files.test/rules.pdf' }))).toBe('pdf');
+    });
+
+    it('reads a picked file by its name, as its blob url has no extension', () => {
+        const resource = aResource({ url: 'blob:https://app.test/1234', file: aPickedFile('rules.pdf', 'application/pdf') });
+
+        expect(resourcePreviewOf(resource)).toBe('pdf');
+    });
+
+    it('shows anything else as a plain file', () => {
+        expect(resourcePreviewOf(aResource({ url: 'https://files.test/notes.txt' }))).toBe('file');
     });
 });

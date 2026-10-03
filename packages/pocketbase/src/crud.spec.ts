@@ -54,6 +54,23 @@ describe('createPocketBaseCrud', () => {
         });
     });
 
+    it('reads a missing record as null', async () => {
+        const pb = fakePocketBase();
+        pb.failNextWith({ status: 404, message: "The requested resource wasn't found.", response: { data: {} } });
+        const crud = createPocketBaseCrud(pb.client, 'activities', activityMapper);
+
+        expect(await crud.getById('gone')).toBeNull();
+    });
+
+    it('rethrows any other failure of a read by id', async () => {
+        const pb = fakePocketBase();
+        const forbidden = { status: 403, message: 'Forbidden', response: { data: {} } };
+        pb.failNextWith(forbidden);
+        const crud = createPocketBaseCrud(pb.client, 'activities', activityMapper);
+
+        await expect(crud.getById('act1')).rejects.toBe(forbidden);
+    });
+
     it('sends what the mapper produced, not what the caller held', async () => {
         const pb = fakePocketBase();
         const crud = createPocketBaseCrud(pb.client, 'activities', activityMapper);
@@ -67,7 +84,7 @@ describe('createPocketBaseCrud', () => {
         const pb = fakePocketBase(Array.from({ length: 12 }, (_, i) => ({ id: `act${i}` })));
         const crud = createPocketBaseCrud(pb.client, 'activities', passthroughMapper<BaseEntity>());
 
-        const paginated = await crud.getList({ page: 1, perPage: 5 });
+        const paginated = await crud.filter(createGroup<BaseEntity>({}), { page: 1, perPage: 5 });
 
         expect(paginated.items).toHaveLength(5);
         expect(paginated.total).toBe(12);
@@ -77,7 +94,7 @@ describe('createPocketBaseCrud', () => {
         const pb = fakePocketBase();
         const crud = createPocketBaseCrud(pb.client, 'activities', passthroughMapper<BaseEntity>());
 
-        await crud.getList({ page: 1, perPage: 5, sortBy: 'name', sortDirection: SortDirection.DESC });
+        await crud.filter(createGroup<BaseEntity>({}), { page: 1, perPage: 5, sortBy: 'name', sortDirection: SortDirection.DESC });
 
         expect(pb.lastCall('getList')?.[2]).toMatchObject({ sort: '-name' });
     });
@@ -86,7 +103,7 @@ describe('createPocketBaseCrud', () => {
         const pb = fakePocketBase();
         const crud = createPocketBaseCrud(pb.client, 'activities', passthroughMapper<BaseEntity>());
 
-        await crud.getList({ page: 1, perPage: 5 });
+        await crud.filter(createGroup<BaseEntity>({}), { page: 1, perPage: 5 });
 
         expect(pb.lastCall('getList')?.[2]).toMatchObject({ sort: undefined });
     });

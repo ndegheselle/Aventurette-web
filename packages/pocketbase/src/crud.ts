@@ -1,6 +1,6 @@
 import { type Paginated, type PaginationOptions, type BaseEntity, type EntityMapper, type FilterGroup, type IDataCrud } from "@chapelure/core";
 import type PocketBase from 'pocketbase';
-import { mapErrors } from "./errors";
+import { mapErrors, NOT_FOUND, statusOf, toValidationError } from "./errors";
 import { createPocketBaseFileUrls } from "./files";
 import { filterGroupToPocketBase } from "./filters";
 
@@ -30,33 +30,37 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
     }
 
     async function create(data: TEntity): Promise<TEntity> {
-        return toEntity(await mapErrors(() => collection.create(mapper.toPayload(data), { expand })));
+        const payload = mapper.toPayload(data);
+        const record = await mapErrors(() => collection.create(payload, { expand }));
+        return toEntity(record);
     }
 
     async function update(id: string, data: Partial<TEntity>): Promise<TEntity> {
-        return toEntity(await mapErrors(() => collection.update(id, mapper.toPayload(data), { expand })));
+        const payload = mapper.toPayload(data);
+        const record = await mapErrors(() => collection.update(id, payload, { expand }));
+        return toEntity(record);
     }
 
     async function remove(id: string): Promise<void> {
         await mapErrors(() => collection.delete(id));
     }
 
+    /** Null for an id with no record behind it: the port reads a missing record as data. */
     async function getById(id: string): Promise<TEntity | null> {
-        return toEntity(await mapErrors(() => collection.getOne(id, { expand })));
+        let record: unknown;
+        try {
+            record = await collection.getOne(id, { expand });
+        } catch (error) {
+            if (statusOf(error) === NOT_FOUND) return null;
+            throw toValidationError(error) ?? error;
+        }
+
+        return toEntity(record);
     }
 
     async function getAll(): Promise<TEntity[]> {
         const records = await mapErrors(() => collection.getFullList({ expand }));
         return records.map(toEntity);
-    }
-
-    async function getList(options: PaginationOptions): Promise<Paginated<TEntity>> {
-        const result = await mapErrors(() => collection.getList(options.page, options.perPage, {
-            expand,
-            sort: sort(options),
-        }));
-
-        return { items: result.items.map(toEntity), total: result.totalItems, options };
     }
 
     async function filter(group: FilterGroup<TEntity>, options: PaginationOptions): Promise<Paginated<TEntity>> {
@@ -70,5 +74,5 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
         return { items: result.items.map(toEntity), total: result.totalItems, options };
     }
 
-    return { create, update, remove, getAll, getById, getList, filter };
+    return { create, update, remove, getAll, getById, filter };
 }

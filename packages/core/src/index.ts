@@ -6,7 +6,7 @@ export type { BaseEntity, Entity } from './data/entity';
 export type { BatchFactory, IBatchCollection, IDataBatch, IdFactory } from './data/batch';
 export { SortDirection } from './data/crud';
 export type { CrudFactory, IDataCrud, Paginated, PaginationOptions } from './data/crud';
-export { convert, omit, toEntities, toIds, type EntityMapper } from './data/mapper';
+export { emptyIfNull, omit, plainMapper, toEntities, toIds, type EntityMapper } from './data/mapper';
 
 export {
     createFilter,
@@ -24,7 +24,7 @@ export type { IFileUrlResolver } from './files/resolver';
 
 export {
     BatchError,
-    NotAuthentifiedError,
+    NotAuthenticatedError,
     NotImplementedError,
     ValidationError
 } from './errors';

@@ -23,7 +23,7 @@ const { hasRole } = useAuth();
         <input id="side-menu-drawer" type="checkbox" class="drawer-toggle inline" v-model="isDrawerOpen" />
         <div class="drawer-content flex flex-col">
             <nav class="navbar bg-base-300 min-h-0 p-1">
-                <label for="side-menu-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost drawer-button">
+                <label for="side-menu-drawer" :aria-label="$t('sidebar.open')" class="btn btn-square btn-ghost drawer-button">
                     <PanelLeftCloseIcon v-if="isDrawerOpen" />
                     <PanelLeftOpenIcon v-else />
                 </label>
@@ -50,7 +50,7 @@ const { hasRole } = useAuth();
         </div>
 
         <div class="drawer-side is-drawer-close:overflow-visible">
-            <label for="side-menu-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+            <label for="side-menu-drawer" :aria-label="$t('sidebar.close')" class="drawer-overlay"></label>
             <div class="min-h-full flex flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
                 <RouterLink :to="{ name: dashboardRoutesNames.dashboard }"  class="flex my-2 mx-3">
                     <img class="my-auto" src="https://placeholder.pagebee.io/api/plain/32/32" style="height: 32px;" />

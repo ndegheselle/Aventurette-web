@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 export enum EnumTheme {
@@ -13,8 +12,6 @@ export const SETTINGS_STORAGE_KEYS = {
     language: 'language',
 } as const;
 
-const currentTheme = ref<EnumTheme>(EnumTheme.auto);
-
 function applyTheme(theme: EnumTheme) {
     const html = document.documentElement;
     if (theme === EnumTheme.light) {
@@ -28,19 +25,21 @@ function applyTheme(theme: EnumTheme) {
     }
 }
 
+/** Apply the theme stored by `changeTheme`, or auto. Call once, as the app starts. */
+export function applyStoredTheme() {
+    const storedTheme = localStorage.getItem(SETTINGS_STORAGE_KEYS.theme);
+    const theme = storedTheme
+        ? EnumTheme[storedTheme as keyof typeof EnumTheme] ?? EnumTheme.auto
+        : EnumTheme.auto;
+
+    applyTheme(theme);
+}
+
 export function useSettings() {
     // Global scope: switching the language has to affect the whole app, not this component.
     const { locale } = useI18n({ useScope: 'global' });
 
-    const storedTheme = localStorage.getItem(SETTINGS_STORAGE_KEYS.theme);
-    currentTheme.value = storedTheme
-        ? EnumTheme[storedTheme as keyof typeof EnumTheme] ?? EnumTheme.auto
-        : EnumTheme.auto;
-
-    applyTheme(currentTheme.value);
-
     function changeTheme(newTheme: EnumTheme) {
-        currentTheme.value = newTheme;
         localStorage.setItem(SETTINGS_STORAGE_KEYS.theme, EnumTheme[newTheme]);
         applyTheme(newTheme);
     }
@@ -52,7 +51,6 @@ export function useSettings() {
 
     return {
         currentLanguage: locale,
-        currentTheme,
         changeLang,
         changeTheme
     };
