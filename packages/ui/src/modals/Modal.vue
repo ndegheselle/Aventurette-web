@@ -52,8 +52,9 @@ defineSlots<{
                         <XIcon />
                         {{ $t("actions.cancel") }}
                     </button>
+                    <!-- The default actions are a yes or no: a modal answering anything else brings its own. -->
                     <button class="btn btn-primary"
-                            @click="() => controller.confirm(true as any)">
+                            @click="() => controller.confirm(true as T)">
                         <CheckIcon />
                         {{ $t("actions.confirm") }}
                     </button>

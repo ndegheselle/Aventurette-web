@@ -2,12 +2,12 @@ import { Deferred } from '@chapelure/core';
 import { ref, type Ref } from 'vue';
 
 /**
- * Drives a modal. `show` resolves with the result on confirm, or null on cancel.
+ * Drives a modal. `show` resolves with what `confirm` is given, or null on cancel.
  */
 export interface IModalController<T = boolean> {
     isShown: Ref<boolean>;
     show(): Promise<T | null>;
-    confirm(result: T | null): void;
+    confirm(result: T): void;
     cancel(): void;
 }
 
@@ -35,9 +35,9 @@ export function useModal<T = boolean>(option: IModalOptions = {}): IModalControl
         return deferred.promise;
     }
 
-    function confirm(result: T | null = true as any) {
+    function confirm(result: T) {
         isShown.value = false;
-        deferred?.resolve(result ?? true as any);
+        deferred?.resolve(result);
         deferred = null;
     }
 

@@ -25,15 +25,6 @@ describe('useModal', () => {
         await expect(answer).resolves.toBeNull();
     });
 
-    it('defaults a bare confirm() to true, for a modal that only asks yes or no', async () => {
-        const modal = useModal();
-
-        const answer = modal.show();
-        modal.confirm(null);
-
-        await expect(answer).resolves.toBe(true);
-    });
-
     it('runs onShow before it becomes visible, so the form is seeded first', () => {
         const seen: boolean[] = [];
         const modal: IModalController = useModal({ onShow: () => { seen.push(modal.isShown.value); } });
