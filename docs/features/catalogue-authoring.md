@@ -40,8 +40,8 @@ and renaming on top. There is no modal and no form to save: each write is its ow
   the backend refuses, shows the saved name again. The composable keeps the last saved names by
   id for that, so the list never shows a name the catalogue does not hold.
 - **Deleting** asks first, because it reaches every activity using the material: the links
-  cascade, and each activity, step and workshop loses it. The page confirms, the composable
-  writes, then re-queries.
+  cascade, and each activity, step and workshop loses it. `CatalogueTab` confirms, the
+  composable writes, then re-queries.
 
 ## The tags, safety instructions and tips tabs
 
@@ -49,6 +49,10 @@ Each is a list, sorted by name, with a search, and a modal per entry. `useCatalo
 holds what they share with the materials tab: the page, the search and the delete. `useTagsEditList`,
 `useSafetyInstructionsEditList` and `useTipsEditList` give it its catalogue and its search. The
 modals save through `useEditModal`, and the tab re-queries once one is confirmed.
+
+Every tab, materials included, renders through `components/CatalogueTab.vue`: the search and
+its add button, each row's delete (and edit) button, the delete's confirmation and the pages.
+A page gives it the row's content and, for tags, the kind selector.
 
 - **Tags** are searched by name or slug, and narrowed to one kind by the selector
   (`tagsFilter`). A new tag takes the kind the selector shows, or THEME on "every kind". Its
