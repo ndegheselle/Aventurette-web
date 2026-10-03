@@ -3,21 +3,14 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
-import { useEditModal } from '@chapelure/ui/modals/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import type { SafetyInstructionData } from '@features/activities/model/activity';
 import { safetyInstructionsApi } from '@features/admin/catalogue-authoring/api/safety.api';
-import { slugFollowing } from '@features/admin/catalogue-authoring/model/catalogue.edit';
+import { useSluggedEditModal } from '@features/admin/catalogue-authoring/composables/useSluggedEditModal';
 import { CheckIcon, XIcon } from 'lucide-vue-next';
-import { watch } from 'vue';
 
 const controller = useModal<SafetyInstructionData>();
-const { show, confirm, cancel, isNew, isLoading, data: instruction, errors } = useEditModal(controller, safetyInstructionsApi);
-
-watch(() => instruction.value.name, (name, previous) => {
-    if (isNew.value)
-        instruction.value.slug = slugFollowing(instruction.value.slug ?? '', previous ?? '', name ?? '');
-});
+const { show, confirm, cancel, isNew, isLoading, data: instruction, errors } = useSluggedEditModal(controller, safetyInstructionsApi);
 
 defineExpose<IEditModal<SafetyInstructionData>>({ show });
 </script>

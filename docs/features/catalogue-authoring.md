@@ -57,8 +57,9 @@ modals save through `useEditModal`, and the tab re-queries once one is confirmed
 - **Safety instructions** have a name, a slug and their precautions as rich text, searched by
   name or slug.
 - **Tips** have a name and the advice as rich text, searched by name.
-- **A slug follows the name** while a new entry is written (`slugFollowing`): it is `slugify`'s
-  reading of the name until the author writes one of their own. An existing slug changes only
+- **A slug follows the name** while a new entry is written (`slugFollowing`, wired into both
+  modals by `useSluggedEditModal`): it is `slugify`'s reading of the name until the author
+  writes one of their own. An existing slug changes only
   by hand, since the import matches on it. The backend refuses a slug that is not lower-case
   letters, digits and dashes, and one its catalogue already has (within a kind, for tags).
 - **Deleting** asks first. The backend unlinks the entry from every activity using it: the

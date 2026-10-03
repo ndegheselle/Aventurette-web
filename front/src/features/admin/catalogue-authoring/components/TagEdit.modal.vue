@@ -2,21 +2,14 @@
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
-import { useEditModal } from '@chapelure/ui/modals/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
 import { tagsApi } from '@features/admin/catalogue-authoring/api/tags.api';
-import { slugFollowing } from '@features/admin/catalogue-authoring/model/catalogue.edit';
+import { useSluggedEditModal } from '@features/admin/catalogue-authoring/composables/useSluggedEditModal';
 import { CheckIcon, XIcon } from 'lucide-vue-next';
-import { watch } from 'vue';
 
 const controller = useModal<ActivityTagData>();
-const { show, confirm, cancel, isNew, isLoading, data: tag, errors } = useEditModal(controller, tagsApi);
-
-watch(() => tag.value.name, (name, previous) => {
-    if (isNew.value)
-        tag.value.slug = slugFollowing(tag.value.slug ?? '', previous ?? '', name ?? '');
-});
+const { show, confirm, cancel, isNew, isLoading, data: tag, errors } = useSluggedEditModal(controller, tagsApi);
 
 defineExpose<IEditModal<ActivityTagData>>({ show });
 </script>
