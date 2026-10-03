@@ -6,7 +6,7 @@ export type { BaseEntity, Entity } from './data/entity';
 export type { BatchFactory, IBatchCollection, IDataBatch, IdFactory } from './data/batch';
 export { SortDirection } from './data/crud';
 export type { CrudFactory, IDataCrud, Paginated, PaginationOptions } from './data/crud';
-export { convert, omit, toEntities, toIds, type EntityMapper } from './data/mapper';
+export { convert, omit, plainMapper, toEntities, toIds, type EntityMapper } from './data/mapper';
 
 export {
     createFilter,
