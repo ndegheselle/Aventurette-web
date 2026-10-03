@@ -17,11 +17,6 @@ export function useAuth<TUser extends BaseEntity>() {
     // calls this outside of one, and only `logout` needs to navigate.
     const router = getCurrentInstance() ? useRouter() : null;
 
-    async function update(data: Partial<TUser>) {
-        if (!current.value) return;
-        current.value = await auth.update(current.value.id, data);
-    }
-
     async function register(email: string, password: string, passwordConfirm: string) {
         current.value = await auth.register(email, password, passwordConfirm);
     }
@@ -58,7 +53,6 @@ export function useAuth<TUser extends BaseEntity>() {
         register,
         logout,
         refresh,
-        update,
         currentId,
         hasRole,
     };

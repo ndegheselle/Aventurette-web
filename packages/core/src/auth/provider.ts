@@ -16,7 +16,4 @@ export interface IAuthProvider<TUser extends BaseEntity> {
 
     /** Discard the local session. */
     logout(): void;
-
-    /** Patch the authenticated user's own record. */
-    update(id: string, data: Partial<TUser>): Promise<TUser>;
 }

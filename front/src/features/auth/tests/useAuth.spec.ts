@@ -97,25 +97,6 @@ describe('useAuth', () => {
         });
     });
 
-    describe('update', () => {
-        it('patches the signed-in user and keeps the new record', async () => {
-            const { auth } = await setup();
-            await auth.login('parent@example.com', 'secret');
-
-            await auth.update({ type: 'SCHOOL' });
-
-            expect(auth.current.value?.type).toBe('SCHOOL');
-        });
-
-        it('does nothing when no one is signed in', async () => {
-            const { auth } = await setup();
-
-            await auth.update({ type: 'SCHOOL' });
-
-            expect(auth.current.value).toBeNull();
-        });
-    });
-
     describe('currentId', () => {
         it('returns the signed-in user\'s id', async () => {
             const { auth } = await setup();

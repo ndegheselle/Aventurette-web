@@ -138,12 +138,6 @@ export function fakeAuthProvider<TUser extends BaseEntity>(user: TUser): FakeAut
         logout() {
             fake.session = null;
         },
-
-        async update(_id, data) {
-            raiseIfArmed();
-            fake.session = { ...(fake.session ?? user), ...data } as TUser;
-            return fake.session;
-        },
     };
 
     return fake;
