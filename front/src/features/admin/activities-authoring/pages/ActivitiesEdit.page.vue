@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
@@ -51,17 +51,17 @@ useNavbar(t('activities.authoring.title'));
                    class="tab"
                    :class="{ 'tab-active': state === tab.value }"
                    @click="selectState(tab.value)">
-                    {{ $t(tab.label) }}
+                    {{ t(tab.label) }}
                 </a>
             </div>
             <div class="ms-auto my-auto flex gap-2">
                 <button class="btn btn-soft btn-square"
-                        :title="$t('activities.authoring.import.title')"
+                        :title="t('activities.authoring.import.title')"
                         @click="() => importModal?.show()">
                     <ImportIcon />
                 </button>
                 <RouterLink class="btn btn-primary btn-square"
-                            :title="$t('actions.add')"
+                            :title="t('actions.add')"
                             :to="{ name: routesNames.new }">
                     <PlusIcon />
                 </RouterLink>
@@ -78,7 +78,7 @@ useNavbar(t('activities.authoring.title'));
                     <b class="my-auto">{{ item.name }}</b>
                     <span class="badge badge-sm my-auto"
                           :class="item.state === ActivityState.PUBLISHED ? 'badge-success' : 'badge-ghost'">
-                        {{ $t(`activities.state.${item.state}`) }}
+                        {{ t(`activities.state.${item.state}`) }}
                     </span>
                 </div>
                 <p class="text-xs"

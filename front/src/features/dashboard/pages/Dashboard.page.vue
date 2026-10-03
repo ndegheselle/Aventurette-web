@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { useI18n } from 'vue-i18n';

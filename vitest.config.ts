@@ -4,7 +4,17 @@ import { defineConfig } from 'vitest/config';
 import { aliases } from './scripts/aliases.mjs';
 
 export default defineConfig({
-    plugins: [vue()],
+    plugins: [
+        vue(),
+        {
+            // Vapor needs Vue's ESM builds; the `node` condition Vitest adds resolves the CJS ones.
+            name: 'esm-conditions',
+            configEnvironment(_, config) {
+                config.resolve ??= {};
+                config.resolve.conditions = (config.resolve.conditions ?? []).filter(c => c !== 'node');
+            },
+        },
+    ],
     // The same map the app builds with, so a test resolves an import as the browser will.
     resolve: { alias: aliases },
     test: {
@@ -13,6 +23,8 @@ export default defineConfig({
         // fuller browser surface.
         environment: 'happy-dom',
         setupFiles: ['./tests/setup.ts'],
+        // Bundled through Vite so they get the ESM builds too: one Vue instance.
+        server: { deps: { inline: [/vue/] } },
         env: {
             // front/src/backend/index.ts refuses to load without this, and any component tree
             // deep enough pulls it in. The client is built but never called — anything that

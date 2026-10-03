@@ -1,10 +1,13 @@
 <!-- The page's sections for a small screen: a group opens onto its children, with a way back. -->
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
 import type { SectionEntry } from '@features/admin/activities-authoring/components/SectionsMenu.vue';
 import { ArrowLeftIcon, ChevronRightIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { entries } = defineProps<{ entries: SectionEntry[] }>();
 
@@ -30,14 +33,14 @@ defineExpose({ show: controller.show });
             <span v-if="group"
                   class="flex items-center gap-2">
                 <button class="btn btn-sm btn-ghost btn-square"
-                        :aria-label="$t('actions.back')"
+                        :aria-label="t('actions.back')"
                         @click="() => group = null">
                     <ArrowLeftIcon />
                 </button>
-                {{ $t(group.label) }}
+                {{ t(group.label) }}
             </span>
             <template v-else>
-                {{ $t('activities.authoring.navigation.title') }}
+                {{ t('activities.authoring.navigation.title') }}
             </template>
         </template>
 
@@ -47,7 +50,7 @@ defineExpose({ show: controller.show });
                 <button @click="() => pick(entry)">
                     <component :is="entry.icon"
                                class="icon-sm opacity-50" />
-                    {{ $t(entry.label) }}
+                    {{ t(entry.label) }}
                     <ChevronRightIcon v-if="entry.children?.length"
                                       class="icon-sm ms-auto opacity-50" />
                 </button>

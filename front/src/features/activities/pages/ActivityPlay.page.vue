@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import ActivityNotices from '@features/activities/components/ActivityNotices.vue';
@@ -7,6 +7,9 @@ import { isGenerated } from '@features/activities/model/play';
 import { stepNumber } from '@features/activities/model/step';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, ArrowRightIcon, CircleQuestionMarkIcon, ClockIcon, FileTextIcon, FlagIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, isTicked, toggle, headingOf } = useActivityPlay();
 </script>
@@ -14,17 +17,17 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
     <Container v-if="activity">
         <div class="sticky top-0 flex items-center gap-2 py-1 bg-base-100 z-10">
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
-                 :data-tip="$t('actions.back')">
+                 :data-tip="t('actions.back')">
                 <RouterLink class="btn btn-ghost"
                             :to="{ name: activitiesRoutesNames.page, params: { id: activity.id } }">
                     <ArrowLeftIcon />
-                    <span class="sr-only sm:not-sr-only">{{ $t('actions.back') }}</span>
+                    <span class="sr-only sm:not-sr-only">{{ t('actions.back') }}</span>
                 </RouterLink>
             </div>
             <h1 class="text-lg truncate">{{ activity.name }}</h1>
             <span v-if="steps.length"
                   class="ms-auto text-sm opacity-60 tabular-nums whitespace-nowrap">
-                {{ $t('activities.play.progress', { current: index + 1, total: steps.length }) }}
+                {{ t('activities.play.progress', { current: index + 1, total: steps.length }) }}
             </span>
             <ActivityNotices :safety="activity.safety.instructions"
                              :tips="activity.tips" />
@@ -34,7 +37,7 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
              class="flex flex-1 p-4 opacity-30 tracking-wide">
             <div class="flex m-auto">
                 <CircleQuestionMarkIcon class="mr-2 my-auto" />
-                <span>{{ $t('activities.play.empty') }}</span>
+                <span>{{ t('activities.play.empty') }}</span>
             </div>
         </div>
 
@@ -69,25 +72,25 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
                             <div class="flex flex-wrap gap-1">
                                 <span v-if="current.title"
                                       class="badge badge-ghost">
-                                    {{ $t(`activities.steps.kind.${current.kind}`) }}
+                                    {{ t(`activities.steps.kind.${current.kind}`) }}
                                 </span>
                                 <span v-if="current.duration"
                                       class="badge"
-                                      :title="$t('activities.steps.fields.duration')">
+                                      :title="t('activities.steps.fields.duration')">
                                     <ClockIcon class="size-3" />
-                                    {{ $t('activities.minutes', { minutes: current.duration }) }}
+                                    {{ t('activities.minutes', { minutes: current.duration }) }}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <p v-if="isGenerated(current)">{{ $t(`activities.play.generated.${current.kind}`) }}</p>
+                    <p v-if="isGenerated(current)">{{ t(`activities.play.generated.${current.kind}`) }}</p>
                     <div v-if="current.description"
                          v-html="current.description"></div>
 
                     <div v-if="current.actions.length">
                         <h3 class="text-sm opacity-60 flex items-center gap-1">
-                            <ListChecksIcon class="size-4" /> {{ $t('activities.steps.fields.actions.title') }}
+                            <ListChecksIcon class="size-4" /> {{ t('activities.steps.fields.actions.title') }}
                         </h3>
                         <ul class="flex flex-col">
                             <li v-for="(action, actionIndex) in current.actions"
@@ -105,7 +108,7 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
 
                     <div v-if="current.materials.length">
                         <h3 class="text-sm opacity-60 flex items-center gap-1">
-                            <PackageOpenIcon class="size-4" /> {{ $t('activities.steps.fields.materials.title') }}
+                            <PackageOpenIcon class="size-4" /> {{ t('activities.steps.fields.materials.title') }}
                         </h3>
                         <div class="flex flex-wrap gap-1">
                             <span v-for="material in current.materials"
@@ -120,7 +123,7 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
 
                     <div v-if="current.resources.length">
                         <h3 class="text-sm opacity-60 flex items-center gap-1">
-                            <FileTextIcon class="size-4" /> {{ $t('activities.steps.fields.resources.title') }}
+                            <FileTextIcon class="size-4" /> {{ t('activities.steps.fields.resources.title') }}
                         </h3>
                         <div class="flex flex-wrap gap-1">
                             <a v-for="resource in current.resources"
@@ -138,30 +141,30 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
 
             <div class="sticky bottom-0 flex gap-2 py-1 bg-base-100">
                 <div class="tooltip sm:before:hidden sm:after:hidden"
-                     :data-tip="$t('activities.play.previous')">
+                     :data-tip="t('activities.play.previous')">
                     <button class="btn"
                             :disabled="isFirst"
                             @click="previous">
                         <ArrowLeftIcon />
-                        <span class="sr-only sm:not-sr-only">{{ $t('activities.play.previous') }}</span>
+                        <span class="sr-only sm:not-sr-only">{{ t('activities.play.previous') }}</span>
                     </button>
                 </div>
                 <div v-if="!isLast"
                      class="tooltip sm:before:hidden sm:after:hidden ms-auto"
-                     :data-tip="$t('activities.play.next')">
+                     :data-tip="t('activities.play.next')">
                     <button class="btn btn-primary"
                             @click="next">
-                        <span class="sr-only sm:not-sr-only">{{ $t('activities.play.next') }}</span>
+                        <span class="sr-only sm:not-sr-only">{{ t('activities.play.next') }}</span>
                         <ArrowRightIcon />
                     </button>
                 </div>
                 <div v-else
                      class="tooltip sm:before:hidden sm:after:hidden ms-auto"
-                     :data-tip="$t('activities.play.finish')">
+                     :data-tip="t('activities.play.finish')">
                     <RouterLink class="btn btn-success"
                                 :to="{ name: activitiesRoutesNames.page, params: { id: activity.id } }">
                         <FlagIcon />
-                        <span class="sr-only sm:not-sr-only">{{ $t('activities.play.finish') }}</span>
+                        <span class="sr-only sm:not-sr-only">{{ t('activities.play.finish') }}</span>
                     </RouterLink>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount } from '@tests';
 import { describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { useModal } from '@chapelure/ui/modals/useModal';

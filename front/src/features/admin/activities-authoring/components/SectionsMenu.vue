@@ -15,7 +15,11 @@ export interface SectionEntry {
 }
 </script>
 
-<script setup lang="ts">
+<script setup vapor lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 const { entries } = defineProps<{ entries: SectionEntry[] }>();
 const emit = defineEmits<{ select: [entry: SectionEntry] }>();
 </script>
@@ -27,7 +31,7 @@ const emit = defineEmits<{ select: [entry: SectionEntry] }>();
             <button @click="() => emit('select', entry)">
                 <component :is="entry.icon"
                            class="icon-sm opacity-50" />
-                {{ $t(entry.label) }}
+                {{ t(entry.label) }}
             </button>
             <ul v-if="entry.children?.length">
                 <li v-for="child in entry.children"
@@ -35,7 +39,7 @@ const emit = defineEmits<{ select: [entry: SectionEntry] }>();
                     <button @click="() => emit('select', child)">
                         <component :is="child.icon"
                                    class="icon-sm opacity-50" />
-                        {{ $t(child.label) }}
+                        {{ t(child.label) }}
                     </button>
                 </li>
             </ul>

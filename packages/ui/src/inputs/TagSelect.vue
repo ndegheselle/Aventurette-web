@@ -1,8 +1,11 @@
-<script setup lang="ts" generic="T">
+<script setup vapor lang="ts" generic="T">
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import { displayOf, isPicked } from '@chapelure/ui/inputs/selection';
 import { CircleQuestionMarkIcon, XIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 /** `keyBy` matches a picked item to an option by that key, rather than by reference. */
 const { items = [], displayKey, keyBy } = defineProps<{
@@ -50,7 +53,7 @@ function openDropdown() {
                     </span>
                 </div>
                 <div class="flex-1 min-w-32 flex items-center">
-                    <input type="text" class="w-full outline-hidden" :placeholder="$t('actions.search')"
+                    <input type="text" class="w-full outline-hidden" :placeholder="t('actions.search')"
                         @focus="openDropdown" v-model="search" />
                 </div>
             </summary>
@@ -62,7 +65,7 @@ function openDropdown() {
             <li class="opacity-30" v-if="!availableItems.length">
                 <div class="flex justify-center">
                     <CircleQuestionMarkIcon  />
-                    <span>{{ $t('data.noData') }}</span>
+                    <span>{{ t('data.noData') }}</span>
                 </div>
             </li>
         </ul>

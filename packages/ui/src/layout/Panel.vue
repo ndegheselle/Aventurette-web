@@ -1,4 +1,6 @@
 <!-- Groups related elements on a visible background. -->
+<script setup vapor lang="ts"></script>
+
 <template>
     <div class="flex flex-col gap-2 rounded-box bg-base-200 p-3 shadow">
         <slot />

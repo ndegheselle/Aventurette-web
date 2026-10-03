@@ -6,9 +6,12 @@
                     :total="total"
                     @change="refresh" />
 -->
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { ChevronFirstIcon, ChevronLastIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-vue-next';
 import { computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const capacityOptions = [5, 10, 25, 50, 100];
 
@@ -57,13 +60,13 @@ watch([page, totalPages], ([currentPage, maxPages]) => {
         <div class="join">
             <button class="join-item btn btn-sm btn-square"
                     :class="{ 'btn-disabled': page <= 1 }"
-                    :aria-label="$t('data.pagination.first')"
+                    :aria-label="t('data.pagination.first')"
                     @click="goTo(1)">
                     <ChevronFirstIcon />
             </button>
             <button class="join-item btn btn-sm btn-square"
                     :class="{ 'btn-disabled': page <= 1 }"
-                    :aria-label="$t('data.pagination.previous')"
+                    :aria-label="t('data.pagination.previous')"
                     @click="goTo(page - 1)">
                     <ChevronLeftIcon />
             </button>
@@ -72,20 +75,20 @@ watch([page, totalPages], ([currentPage, maxPages]) => {
             </span>
             <button class="join-item btn btn-sm btn-square"
                     :class="{ 'btn-disabled': page >= totalPages }"
-                    :aria-label="$t('data.pagination.next')"
+                    :aria-label="t('data.pagination.next')"
                     @click="goTo(page + 1)">
                     <ChevronRightIcon />
             </button>
             <button class="join-item btn btn-sm btn-square"
                     :class="{ 'btn-disabled': page >= totalPages }"
-                    :aria-label="$t('data.pagination.last')"
+                    :aria-label="t('data.pagination.last')"
                     @click="goTo(totalPages)">
                     <ChevronLastIcon />
             </button>
         </div>
 
         <span class="ms-auto opacity-50 text-sm my-auto hidden md:inline">
-            {{ firstElement }} - {{ lastElement }} {{ $t('data.pagination.of') }} {{ total }}
+            {{ firstElement }} - {{ lastElement }} {{ t('data.pagination.of') }} {{ total }}
         </span>
         <select v-model="perPage"
                 class="select w-18 select-sm ms-auto md:ms-2">

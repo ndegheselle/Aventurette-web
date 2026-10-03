@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup vapor lang="ts">
 import { TriangleAlertIcon } from 'lucide-vue-next';
 
 defineProps<{

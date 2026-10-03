@@ -22,5 +22,8 @@
         "@vue/test-utils": "^2.5.0",
         "happy-dom": "^20.14.3",
         "vitest": "^5.0.0"
+    },
+    "overrides": {
+        "vue": "3.6.0-rc.10"
     }
 }

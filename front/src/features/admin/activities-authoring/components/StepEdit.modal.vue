@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
@@ -12,6 +12,9 @@ import ResourcesSelection from '@features/admin/activities-authoring/components/
 import { joinDuration, splitDuration, stepProblems } from '@features/admin/activities-authoring/model/step.edit';
 import { CheckIcon, PlusIcon, TrashIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 /** The activity's materials: a step recalls the ones it uses, it does not own any. */
 const { materials = [] } = defineProps<{ materials?: ActivityMaterialData[] }>();
@@ -46,7 +49,7 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
 <template>
     <Modal :controller>
         <template #title>
-            {{ $t('actions.update') }}
+            {{ t('actions.update') }}
         </template>
         <div class="flex flex-col">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4">
@@ -57,11 +60,11 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
                     <div class="join w-full">
                         <label class="join-item input w-full">
                             <input type="number" min="0" v-model.number="hours" />
-                            <span class="label">{{ $t('activities.authoring.steps.hours') }}</span>
+                            <span class="label">{{ t('activities.authoring.steps.hours') }}</span>
                         </label>
                         <label class="join-item input w-full">
                             <input type="number" min="0" max="59" v-model.number="minutes" />
-                            <span class="label">{{ $t('activities.authoring.steps.minutes') }}</span>
+                            <span class="label">{{ t('activities.authoring.steps.minutes') }}</span>
                         </label>
                     </div>
                 </Field>
@@ -69,7 +72,7 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
             <Field label="activities.steps.fields.kind" :error="errors.get('kind')">
                 <select class="select w-full" v-model="step.kind">
                     <option v-for="value in kinds" :key="value" :value="value">
-                        {{ $t(`activities.steps.kind.${value}`) }}
+                        {{ t(`activities.steps.kind.${value}`) }}
                     </option>
                 </select>
             </Field>
@@ -86,7 +89,7 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
                         </button>
                     </div>
                     <button class="btn btn-sm btn-ghost self-start" @click="addAction">
-                        <PlusIcon class="icon-sm" /> {{ $t('activities.authoring.steps.addAction') }}
+                        <PlusIcon class="icon-sm" /> {{ t('activities.authoring.steps.addAction') }}
                     </button>
                 </div>
             </Field>
@@ -101,11 +104,11 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
         <template #actions>
             <button class="btn" @click="cancel">
                 <XIcon />
-                {{ $t('actions.cancel') }}
+                {{ t('actions.cancel') }}
             </button>
             <button class="btn btn-primary" @click="confirm">
                 <CheckIcon />
-                {{ $t('actions.confirm') }}
+                {{ t('actions.confirm') }}
             </button>
         </template>
     </Modal>

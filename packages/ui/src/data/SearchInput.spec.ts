@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount } from '@tests';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import SearchInput from './SearchInput.vue';
 

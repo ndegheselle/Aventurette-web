@@ -6,7 +6,7 @@
     <FilesInput @change="update" />
     <FilesList v-model:files="files" />
 -->
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { formatBytes } from '@chapelure/ui/files/useFiles';
 import { FileIcon, XIcon } from 'lucide-vue-next';
 

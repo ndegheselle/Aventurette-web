@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { NotImplementedError } from '@chapelure/core';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
@@ -7,6 +7,9 @@ import LoginProviders from '@features/auth/components/LoginProviders.vue';
 import { useLoginForm } from '@features/auth/composables/useLoginForm';
 import { routesNames } from '@features/auth/routes';
 import { MailIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { credentials, rememberMe, isLoading, errors, submit } = useLoginForm();
 
@@ -18,7 +21,7 @@ function signInWith(_provider: string) {
 <template>
     <div class="flex flex-1 my-2">
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
-            <legend class="fieldset-legend">{{ $t('auth.login.title') }}</legend>
+            <legend class="fieldset-legend">{{ t('auth.login.title') }}</legend>
 
             <Field label="auth.form.email"
                    :error="errors.get('email')">
@@ -40,21 +43,21 @@ function signInWith(_provider: string) {
 
             <label class="label">
                 <input type="checkbox" class="checkbox" v-model="rememberMe" />
-                {{ $t('auth.form.rememberMe') }}
+                {{ t('auth.form.rememberMe') }}
             </label>
 
-            <div class="divider">{{ $t('auth.form.withOauth2') }}</div>
+            <div class="divider">{{ t('auth.form.withOauth2') }}</div>
             <LoginProviders @provider-selected="signInWith" />
 
             <button class="btn btn-primary mt-4"
                     :disabled="isLoading"
                     @click="submit">
                 <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
-                {{ $t('auth.login.title') }}
+                {{ t('auth.login.title') }}
             </button>
             <RouterLink class="btn btn-ghost"
                         :to="{ name: routesNames.register }">
-                {{ $t('auth.form.accountNew') }}
+                {{ t('auth.form.accountNew') }}
             </RouterLink>
         </fieldset>
     </div>

@@ -104,8 +104,10 @@ can check *what was asked for*, and `failNextWith({ email: { code: 'validation_r
 arms the next write to fail the way a backend rejection does. `fakeAuthProvider` and
 `fakeFileUrls` are the same idea for the other two ports.
 
-**Mounting** (`tests/mount.ts`). Plain `mount` already carries i18n and a `<RouterLink>`
-stand-in. Use `mountWithRouter` when the subject navigates or reads a route param:
+**Mounting** (`tests/mount.ts`). Import `mount` from `@tests`, not from `@vue/test-utils`: it
+hosts the Vapor component test-utils cannot take as its root
+([ADR 0020](adr/0020-components-render-in-vapor-mode.md)), and carries i18n and a
+`<RouterLink>` stand-in. Use `mountWithRouter` when the subject navigates or reads a route param:
 
 ```ts
 const { wrapper, router } = await mountWithRouter(LoginPage, {

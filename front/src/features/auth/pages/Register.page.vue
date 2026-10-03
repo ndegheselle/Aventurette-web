@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { NotImplementedError } from '@chapelure/core';
 import Field from '@chapelure/ui/forms/Field.vue';
 import PasswordInput from '@chapelure/ui/forms/PasswordInput.vue';
@@ -6,6 +6,9 @@ import LoginProviders from '@features/auth/components/LoginProviders.vue';
 import { useRegisterForm } from '@features/auth/composables/useRegisterForm';
 import { routesNames } from '@features/auth/routes';
 import { MailIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { credentials, isLoading, errors, submit } = useRegisterForm();
 
@@ -17,7 +20,7 @@ function signInWith(_provider: string) {
 <template>
     <div class="flex flex-1 my-2">
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
-            <legend class="fieldset-legend">{{ $t('auth.register') }}</legend>
+            <legend class="fieldset-legend">{{ t('auth.register') }}</legend>
 
             <Field label="auth.form.email"
                    :error="errors.get('email')">
@@ -40,18 +43,18 @@ function signInWith(_provider: string) {
                                :error="!!errors.get('passwordConfirm')" />
             </Field>
 
-            <div class="divider">{{ $t('auth.form.withOauth2') }}</div>
+            <div class="divider">{{ t('auth.form.withOauth2') }}</div>
             <LoginProviders @provider-selected="signInWith" />
 
             <button class="btn btn-primary mt-4"
                     :disabled="isLoading"
                     @click="submit">
                 <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
-                {{ $t('auth.register') }}
+                {{ t('auth.register') }}
             </button>
             <RouterLink class="btn btn-ghost"
                         :to="{ name: routesNames.login }">
-                {{ $t('auth.form.accountAlready') }}
+                {{ t('auth.form.accountAlready') }}
             </RouterLink>
         </fieldset>
     </div>

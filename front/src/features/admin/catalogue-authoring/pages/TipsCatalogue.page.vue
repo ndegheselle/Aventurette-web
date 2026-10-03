@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import type { ActivityTipData } from '@features/activities/model/activity';
 import CatalogueTab from '@features/admin/catalogue-authoring/components/CatalogueTab.vue';
 import TipEditModal from '@features/admin/catalogue-authoring/components/TipEdit.modal.vue';

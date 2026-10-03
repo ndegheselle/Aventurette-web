@@ -1,7 +1,10 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { EnumAlertType, useAlert } from '@chapelure/ui/alerts/useAlert';
 import { CircleCheckIcon, TriangleAlertIcon, XIcon } from 'lucide-vue-next';
 import { useTemplateRef, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { alerts, close } = useAlert();
 
@@ -26,7 +29,7 @@ watchEffect(() => {
                 <TriangleAlertIcon class="opacity-50" v-if="alert.type === EnumAlertType.Error" />
                 <CircleCheckIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Success" />
                 <span>{{ alert.message }}</span>
-                <button @click="close(alert.id)" class="btn btn-sm btn-ghost btn-circle" :aria-label="$t('actions.close')">
+                <button @click="close(alert.id)" class="btn btn-sm btn-ghost btn-circle" :aria-label="t('actions.close')">
                     <XIcon class="icon-sm" />
                 </button>
             </div>

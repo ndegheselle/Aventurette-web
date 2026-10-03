@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { vClickOutside } from '@chapelure/ui/dropdown/clickOutside';
 import { useId } from 'vue';
 

@@ -1,10 +1,13 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useActivitiesList } from '@features/activities/composables/useActivitiesList';
 import { routesNames } from '@features/activities/routes';
 import { CakeIcon, CircleQuestionMarkIcon, ClockIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { paginated, cards, search, refresh } = useActivitiesList();
 </script>
@@ -16,7 +19,7 @@ const { paginated, cards, search, refresh } = useActivitiesList();
         <div v-if="!paginated.items?.length" class="flex flex-1 p-4 opacity-30 tracking-wide">
             <div class="flex m-auto">
                 <CircleQuestionMarkIcon class="mr-2 my-auto" />
-                <span>{{ $t('data.noData') }}</span>
+                <span>{{ t('data.noData') }}</span>
             </div>
         </div>
 
@@ -31,14 +34,14 @@ const { paginated, cards, search, refresh } = useActivitiesList();
                 <div class="card-body">
                     <h2 class="card-title">{{ activity.name }}</h2>
                     <div class="flex flex-wrap gap-1">
-                        <span class="badge badge-soft" :title="$t('activities.fields.age')">
+                        <span class="badge badge-soft" :title="t('activities.fields.age')">
                             <CakeIcon class="size-3" />
-                            {{ $t(ageLabel.key, ageLabel.params) }}
+                            {{ t(ageLabel.key, ageLabel.params) }}
                         </span>
                         <span v-if="totalMinutes" class="badge badge-soft"
-                            :title="$t('activities.fields.totalTime')">
+                            :title="t('activities.fields.totalTime')">
                             <ClockIcon class="size-3" />
-                            {{ $t('activities.minutes', { minutes: totalMinutes }) }}
+                            {{ t('activities.minutes', { minutes: totalMinutes }) }}
                         </span>
                     </div>
                     <p class="text-xs line-clamp-3" v-html="activity.description"></p>
