@@ -1,6 +1,5 @@
 import { createSearchFilter, SortDirection, type Paginated } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import type { MaterialData } from '@features/activities/model/material';
 import { materialsApi as materials } from '@features/admin/catalogue-authoring/api/materials.api';
 import { renamedTo } from '@features/admin/catalogue-authoring/model/catalogue.edit';
@@ -37,17 +36,18 @@ export function useMaterialsEditList(perPage: number = DEFAULT_PER_PAGE) {
         saved = new Map(paginated.value.items.map(material => [material.id, material.name]));
     }
 
-    /** Add a name to the catalogue. A name it already has is refused, and the refusal lands on the field. */
-    const { submit } = useSubmit(async () => {
-        await materials.create({ name: search.value.trim() } as MaterialData);
+    /** Add the searched name to the catalogue. A name it already has is refused, and stays typed. */
+    async function createMaterial() {
+        try {
+            await materials.create({ name: search.value.trim() } as MaterialData);
+        } catch {
+            alert.error(t('catalogue.materials.createRefused'));
+            return;
+        }
+
         search.value = '';
         alert.success(t('catalogue.materials.created'));
         await refresh();
-    });
-
-    async function createMaterial() {
-        if (await submit() == false)
-            alert.error(t('catalogue.materials.renameRefused'));
     }
 
     /**

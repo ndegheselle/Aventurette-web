@@ -34,7 +34,7 @@ delete rules ask for `@request.auth.role = "ADMIN"`
 writes, each on its own. There is no form to save.
 
 - **Adding** writes the typed name, trimmed. The backend refuses a name it already has, whatever
-  its case, and `useSubmit` puts the refusal under the field.
+  its case: an alert says so, and the name stays typed.
 - **Renaming** is written as a row's field is left. `renamedTo` decides whether there is
   anything to write: nothing for a blank field or an unchanged one. A blank field, or a name
   the backend refuses, shows the saved name again. The composable keeps the last saved names by
@@ -83,6 +83,7 @@ them, and `api/` holds one `crud` per catalogue.
 
 - A refusal shows the last saved name, not the one first read.
 - A blank field writes nothing and shows the saved name.
+- A refused name to add stays typed; an added one clears the search.
 
 ## Not finished
 
