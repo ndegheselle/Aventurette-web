@@ -1,14 +1,10 @@
 <script setup lang="ts">
 const emit = defineEmits<{ 'provider-selected': [provider: string] }>();
-
-function emitProvider(provider: string) {
-    emit('provider-selected', provider);
-}
 </script>
 
 <template>
     <div class="flex gap-2 justify-center">
-        <button class="btn h-auto" @click="emitProvider('google')">
+        <button class="btn h-auto" @click="emit('provider-selected', 'google')">
             <div class="flex flex-col items-center p-2">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="32" height="32"
                     xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
@@ -30,7 +26,7 @@ function emitProvider(provider: string) {
                 <span>Google</span>
             </div>
         </button>
-        <button class="btn h-auto" @click="emitProvider('microsoft')">
+        <button class="btn h-auto" @click="emit('provider-selected', 'microsoft')">
             <div class="flex flex-col items-center p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23" width="32" height="32">
                     <path fill="#f3f3f3" d="M0 0h23v23H0z" />
@@ -43,7 +39,7 @@ function emitProvider(provider: string) {
                 <span>Microsoft</span>
             </div>
         </button>
-        <button class="btn h-auto" @click="emitProvider('apple')">
+        <button class="btn h-auto" @click="emit('provider-selected', 'apple')">
             <div class="flex flex-col items-center p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 814 1000" width="32" height="32">
                     <path

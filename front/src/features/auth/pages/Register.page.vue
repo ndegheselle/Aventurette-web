@@ -9,7 +9,7 @@ import { MailIcon } from 'lucide-vue-next';
 
 const { credentials, isLoading, errors, submit } = useRegisterForm();
 
-function handleProvider(_provider: string) {
+function signInWith(_provider: string) {
     throw new NotImplementedError();
 }
 </script>
@@ -41,7 +41,7 @@ function handleProvider(_provider: string) {
             </Field>
 
             <div class="divider">{{ $t('auth.form.withOauth2') }}</div>
-            <LoginProviders @provider-selected="handleProvider" />
+            <LoginProviders @provider-selected="signInWith" />
 
             <button class="btn btn-primary mt-4"
                     :disabled="isLoading"
