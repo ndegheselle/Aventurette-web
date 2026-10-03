@@ -46,7 +46,7 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
     ],
     toEntity: (activity, files) => {
         const { expand } = activity;
-        const tags = (relation: TagRelation) => (expand?.[relation] ?? []).map(tag => tagMapper.toEntity(tag, files));
+        const tags = (relation: TagRelation) => toEntities(expand?.[relation], tagMapper, files);
         const developmentTags = tags('development_tags');
         const development = Object.fromEntries(
             DEVELOPMENT_AXES.map(axis => [axis, developmentTags.filter(tag => tag.type === axis)]),
@@ -104,9 +104,9 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
                 development: development as Record<DevelopmentAxis, ActivityTagData[]>,
             },
 
-            steps: (expand?.steps ?? []).map(step => stepMapper.toEntity(step, files)),
-            materials: (expand?.materials ?? []).map(material => activityMaterialMapper.toEntity(material, files)),
-            workshops: (expand?.workshops ?? []).map(workshop => workshopMapper.toEntity(workshop, files)),
+            steps: toEntities(expand?.steps, stepMapper, files),
+            materials: toEntities(expand?.materials, activityMaterialMapper, files),
+            workshops: toEntities(expand?.workshops, workshopMapper, files),
             tips: toEntities(expand?.tips, tipMapper, files),
         };
     },
