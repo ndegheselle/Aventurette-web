@@ -10,13 +10,12 @@ import { useI18n } from 'vue-i18n';
  * goes up with the activity's save — in the same batch as the step, so a step never points at a
  * file that was not stored, nor a file at a step that was not.
  *
- * `step` is a getter: the modal shows one step after another without being rebuilt, so the id
+ * `stepId` is a getter: the modal shows one step after another without being rebuilt, so the id
  * has to be read on each pick rather than captured.
  *
  * @param selected the step's resources, as the input binds them
- * @param step id of the step they belong to
  */
-export function useStepResources(selected: Ref<ActivityResourceData[]>, step: () => string) {
+export function useStepResources(selected: Ref<ActivityResourceData[]>, stepId: () => string) {
     const { t } = useI18n();
     const alert = useAlert();
 
@@ -26,7 +25,7 @@ export function useStepResources(selected: Ref<ActivityResourceData[]>, step: ()
         if (rejected)
             alert.error(t('inputs.file.upload.exceedNumber', { number: MAX_STEP_RESOURCES }));
 
-        const resources = accepted.map(file => createResource(saveApi.newId(), step(), file, URL.createObjectURL(file)));
+        const resources = accepted.map(file => createResource(saveApi.newId(), stepId(), file, URL.createObjectURL(file)));
         selected.value = [...selected.value, ...resources];
     }
 

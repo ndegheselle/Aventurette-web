@@ -94,7 +94,7 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
                 <TagSelect :items="materials" displayKey="name" keyBy="id" v-model="step.materials" />
             </Field>
             <Field label="activities.steps.fields.resources.title">
-                <ResourcesSelection v-model="step.resources" :step="step.id" />
+                <ResourcesSelection v-model="step.resources" :step-id="step.id" />
             </Field>
         </div>
         <FieldError :error="errors.global.value" />

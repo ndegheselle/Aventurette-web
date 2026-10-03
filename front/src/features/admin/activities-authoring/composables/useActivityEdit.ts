@@ -167,7 +167,7 @@ export function useActivityEdit() {
      * A multi-valued field, as a `MultiSelect` binds it: every value as a translated option, and
      * the picked options over the values the field stores.
      */
-    function choice<V extends string>(values: V[], labelKey: string, read: () => V[], write: (values: V[]) => void) {
+    function multiSelectBinding<V extends string>(values: V[], labelKey: string, read: () => V[], write: (values: V[]) => void) {
         const options = computed(() => optionsOf(values, value => t(`${labelKey}.${value}`)));
         const picked = computed<Option<V>[]>({
             get: () => optionsFor(options.value, read()),
@@ -176,17 +176,17 @@ export function useActivityEdit() {
         return { options, picked };
     }
 
-    const { options: practiceOptions, picked: practices } = choice(
+    const { options: practiceOptions, picked: practices } = multiSelectBinding(
         Object.values(ActivityPractice), 'activities.practice',
         () => activity.value.classification.practices,
         values => { activity.value.classification.practices = values; },
     );
-    const { options: seasonOptions, picked: seasons } = choice(
+    const { options: seasonOptions, picked: seasons } = multiSelectBinding(
         Object.values(ActivitySeason), 'activities.season',
         () => activity.value.place.seasons,
         values => { activity.value.place.seasons = values; },
     );
-    const { options: locationOptions, picked: locations } = choice(
+    const { options: locationOptions, picked: locations } = multiSelectBinding(
         Object.values(ActivityLocation), 'activities.location',
         () => activity.value.place.locations,
         values => { activity.value.place.locations = values; },

@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import type { ActivityResourceData } from '@features/activities/model/step';
-import { useStepResources } from '@features/admin/activities-authoring/composables/useStepEdit';
+import { useStepResources } from '@features/admin/activities-authoring/composables/useStepResources';
 import { ACCEPTED_RESOURCE_TYPES, resourcePreviewOf } from '@features/admin/activities-authoring/model/step.edit';
 import { CircleOffIcon, FileIcon, FileTextIcon, TrashIcon } from 'lucide-vue-next';
 
-/** The step these belong to: a picked file is stored against it when the activity is saved. */
-const props = defineProps<{ step: string }>();
+/** A picked file is stored against this step when the activity is saved. */
+const props = defineProps<{ stepId: string }>();
 
 /** Stored resources, and picked ones carrying their file until the save uploads it. */
 const selected = defineModel<ActivityResourceData[]>({ default: () => [] });
 
-const { add, remove } = useStepResources(selected, () => props.step);
+const { add, remove } = useStepResources(selected, () => props.stepId);
 </script>
 
 <template>

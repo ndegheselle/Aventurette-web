@@ -498,7 +498,7 @@ export function materialsOfSheet(sheet: ActivitySheet): SheetMaterial[] {
 }
 
 /** The activity's own materials a step or workshop recalls by name, each once. */
-function materialsNamed(materials: ActivityMaterialData[], names: string[]): ActivityMaterialData[] {
+function recalledMaterials(materials: ActivityMaterialData[], names: string[]): ActivityMaterialData[] {
     const wanted = names.map(nameKey);
     const named = wanted.flatMap(name => materials.filter(material => nameKey(material.name) === name));
     return distinctById(named);
@@ -577,7 +577,7 @@ export function stepFromSheet(
         duration: step.duration,
         description,
         actions: step.actions,
-        materials: materialsNamed(materials, step.materials),
+        materials: recalledMaterials(materials, step.materials),
     };
 }
 
@@ -593,7 +593,7 @@ function workshopFromSheet(
         theme: workshop.theme,
         challenges: workshop.challenges,
         adults_required: workshop.adultsRequired,
-        materials: materialsNamed(materials, workshop.materials),
+        materials: recalledMaterials(materials, workshop.materials),
     };
 }
 
