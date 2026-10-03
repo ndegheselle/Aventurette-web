@@ -67,14 +67,14 @@ export function useActivityEdit() {
     const isNew = computed(() => original.value === null);
 
     /** Names added to the catalogue here. The save creates the ones a link still uses. */
-    let newMaterials: MaterialData[] = [];
+    const newMaterials = shallowRef<MaterialData[]>([]);
 
     const isChangingState = ref(false);
 
     watch(
         () => route.params.id,
         async (id) => {
-            newMaterials = [];
+            newMaterials.value = [];
 
             if (typeof id !== 'string') {
                 original.value = null;
@@ -119,7 +119,7 @@ export function useActivityEdit() {
     /** Add a name the catalogue does not have, and list it. The save creates both. */
     function createMaterial(name: string) {
         const material = createCatalogueMaterial(saveApi.newId(), name);
-        newMaterials = [...newMaterials, material];
+        newMaterials.value = [...newMaterials.value, material];
         addMaterial(material);
     }
 
@@ -222,7 +222,7 @@ export function useActivityEdit() {
     }
 
     const { isLoading, errors, submit } = useSubmit(async () => {
-        const writes = activityWrites(original.value, toRaw(activity.value), newMaterials);
+        const writes = activityWrites(original.value, toRaw(activity.value), newMaterials.value);
         await saveApi.send(writes);
 
         alert.success(t(isNew.value ? 'data.created' : 'data.updated'));
