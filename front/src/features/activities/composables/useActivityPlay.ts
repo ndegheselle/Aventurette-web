@@ -33,7 +33,8 @@ export function useActivityPlay() {
 
     function toggle(step: PlayStep, actionIndex: number) {
         const key = actionKey(step, actionIndex);
-        if (!ticked.value.delete(key)) ticked.value.add(key);
+        if (ticked.value.has(key)) ticked.value.delete(key);
+        else ticked.value.add(key);
     }
 
     return {

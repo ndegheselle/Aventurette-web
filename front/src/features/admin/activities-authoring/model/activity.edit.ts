@@ -186,7 +186,7 @@ export function activityWrites(
 
     return [
         ...newMaterials.filter(material => linked.has(material.id)).map(creating('catalogue')),
-        ...(original ? [] : [creating('activity')(bare)]),
+        ...(original ? [] : [{ record: 'activity', kind: 'create', data: bare } satisfies ActivityWrite]),
         ...added(before.materials, edited.materials).map(creating('material')),
         ...changed(before.materials, edited.materials).map(updating('material')),
         ...newSteps.map(step => creating('step')({ ...step, resources: [] })),
@@ -196,7 +196,7 @@ export function activityWrites(
         ...changed(before.steps, edited.steps).map(updating('step')),
         ...added(before.workshops, edited.workshops).map(creating('workshop')),
         ...changed(before.workshops, edited.workshops).map(updating('workshop')),
-        { record: 'activity', kind: 'update', id: edited.id, data: edited, ...(visual && { visual }) },
+        { record: 'activity', kind: 'update', id: edited.id, data: edited, ...(visual ? { visual } : {}) },
         ...dropped(before.steps, edited.steps).map(removing('step')),
         ...dropped(before.workshops, edited.workshops).map(removing('workshop')),
         ...dropped(before.materials, edited.materials).map(removing('material')),

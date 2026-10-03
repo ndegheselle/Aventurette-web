@@ -30,6 +30,12 @@ function createAndAdd(name: string) {
     emit('create', name);
     search.value = '';
 }
+
+/** Enter adds the typed name, when it is one the catalogue and the list do not have yet. */
+function createTyped() {
+    if (!isNewName.value) return;
+    createAndAdd(search.value);
+}
 </script>
 
 <template>
@@ -40,7 +46,7 @@ function createAndAdd(name: string) {
                 <div class="flex-1 flex items-center">
                     <SearchIcon class="opacity-50 mx-2" />
                     <input type="text" class="w-full outline-hidden" :placeholder="$t('actions.search')"
-                        @focus="open = true" @keyup.enter="isNewName && createAndAdd(search)" v-model="search" />
+                        @focus="open = true" @keyup.enter="createTyped" v-model="search" />
                 </div>
             </summary>
         </template>
