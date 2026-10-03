@@ -5,7 +5,7 @@
 -->
 <script setup lang="ts" generic="T">
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import { isPicked, toggled } from '@chapelure/ui/inputs/selection';
+import { displayOf, isPicked, toggled } from '@chapelure/ui/inputs/selection';
 import { ChevronDownIcon, CircleQuestionMarkIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
@@ -23,7 +23,7 @@ const open = ref<boolean>(false);
 const summary = computed(() => selected.value.map(getDisplay).join(', '));
 
 function getDisplay(value: T): string {
-    return displayKey ? new String(value[displayKey]).toString() : new String(value).toString();
+    return displayOf(value, displayKey);
 }
 
 function toggle(item: T) {

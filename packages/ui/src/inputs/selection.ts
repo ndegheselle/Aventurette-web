@@ -8,6 +8,12 @@ export function isPicked<T>(selected: T[], item: T, keyBy?: keyof T): boolean {
     return selected.some(picked => picked[keyBy] === item[keyBy]);
 }
 
+/** What `item` reads as in a picker: its `displayKey` field, or the item itself. */
+export function displayOf<T>(item: T, displayKey?: keyof T): string {
+    const shown = displayKey ? item[displayKey] : item;
+    return String(shown);
+}
+
 /** `selected` with `item` removed if it was picked, added otherwise. */
 export function toggled<T>(selected: T[], item: T, keyBy?: keyof T): T[] {
     if (!isPicked(selected, item, keyBy))

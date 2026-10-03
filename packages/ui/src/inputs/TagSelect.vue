@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T">
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import { isPicked } from '@chapelure/ui/inputs/selection';
+import { displayOf, isPicked } from '@chapelure/ui/inputs/selection';
 import { CircleQuestionMarkIcon, XIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
@@ -21,7 +21,7 @@ const open = ref<boolean>(false);
 const search = ref<string>("");
 
 function getDisplay(value: T): string {
-    return displayKey ? new String(value[displayKey]).toString() : new String(value).toString();
+    return displayOf(value, displayKey);
 }
 
 function addItem(item: T) {
