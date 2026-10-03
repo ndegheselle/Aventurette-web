@@ -40,10 +40,10 @@ export function materialSuggestions(
     search: string = "",
 ): MaterialData[] {
     const taken = new Set(selected.map(link => link.material));
-    const term = key(search);
+    const term = nameKey(search);
 
     return catalogue
-        .filter(material => !taken.has(material.id) && key(material.name).includes(term))
+        .filter(material => !taken.has(material.id) && nameKey(material.name).includes(term))
         .sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -57,20 +57,20 @@ export function canCreateMaterial(
     catalogue: MaterialData[],
     selected: ActivityMaterialData[],
 ): boolean {
-    const name = key(search);
+    const name = nameKey(search);
     if (!name) return false;
 
-    return !materialNamed(catalogue, name) && !selected.some(link => key(link.name) === name);
+    return !materialNamed(catalogue, name) && !selected.some(link => nameKey(link.name) === name);
 }
 
 /** The catalogue material going by a name, whatever its case — the one the backend would refuse to repeat. */
 export function materialNamed(catalogue: MaterialData[], name: string): MaterialData | undefined {
-    const wanted = key(name);
-    return catalogue.find(material => key(material.name) === wanted);
+    const wanted = nameKey(name);
+    return catalogue.find(material => nameKey(material.name) === wanted);
 }
 
-/** Comparison key: two spellings of the same material share one. */
-function key(name: string | undefined): string {
+/** Comparison key for a name: two spellings of the same name share one. */
+export function nameKey(name: string | undefined): string {
     return (name ?? "").trim().toLowerCase();
 }
 
