@@ -25,16 +25,19 @@ function applyTheme(theme: EnumTheme) {
     }
 }
 
-export function useSettings() {
-    // Global scope: switching the language has to affect the whole app, not this component.
-    const { locale } = useI18n({ useScope: 'global' });
-
+/** Apply the theme stored by `changeTheme`, or auto. Call once, as the app starts. */
+export function applyStoredTheme() {
     const storedTheme = localStorage.getItem(SETTINGS_STORAGE_KEYS.theme);
     const theme = storedTheme
         ? EnumTheme[storedTheme as keyof typeof EnumTheme] ?? EnumTheme.auto
         : EnumTheme.auto;
 
     applyTheme(theme);
+}
+
+export function useSettings() {
+    // Global scope: switching the language has to affect the whole app, not this component.
+    const { locale } = useI18n({ useScope: 'global' });
 
     function changeTheme(newTheme: EnumTheme) {
         localStorage.setItem(SETTINGS_STORAGE_KEYS.theme, EnumTheme[newTheme]);

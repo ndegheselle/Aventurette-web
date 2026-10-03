@@ -47,6 +47,9 @@ their host components mounted once, near the root:
 `useConfirmation().show()` logs and resolves to `null` — read as "cancelled" — if the modal
 is missing, rather than throwing.
 
+**4. The stored theme.** Call `applyStoredTheme()` from `settings/useSettings` once at boot, so
+the theme picked in `SettingsMenu` holds from the first paint.
+
 ## Layout of the package
 
 A folder is one family, and it holds everything that family is made of — the components and
@@ -61,7 +64,7 @@ the composable driving them together, the way `settings/` holds `SettingsMenu` n
 | `data/` | List, Pagination, SearchInput |
 | `files/` | FilesInput, FilesList, `useOneFile` |
 | `forms/` | Field, FieldError, PasswordInput, TextEditor, `useSubmit`, `useValidationErrors` |
-| `settings/` | SettingsMenu, `useSettings` |
+| `settings/` | SettingsMenu, `useSettings`, `applyStoredTheme` |
 | `layout/` | Container, Panel |
 
 Everything is deep-imported, components and composables alike — there is no barrel. Icons are
