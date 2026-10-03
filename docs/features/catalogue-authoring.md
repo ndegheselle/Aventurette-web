@@ -30,8 +30,8 @@ delete rules ask for `@request.auth.role = "ADMIN"`
 
 ## The materials tab
 
-`useMaterialsEditList` owns it: the page, sorted by name, a search on the name, and three
-writes, each on its own. There is no form to save.
+`useMaterialsEditList` owns it: `useCatalogueEditList`'s page, search and delete, with adding
+and renaming on top. There is no modal and no form to save: each write is its own.
 
 - **Adding** writes the typed name, trimmed. The backend refuses a name it already has, whatever
   its case: an alert says so, and the name stays typed.
@@ -46,7 +46,7 @@ writes, each on its own. There is no form to save.
 ## The tags, safety instructions and tips tabs
 
 Each is a list, sorted by name, with a search, and a modal per entry. `useCatalogueEditList`
-holds what the three share: the page, the search and the delete. `useTagsEditList`,
+holds what they share with the materials tab: the page, the search and the delete. `useTagsEditList`,
 `useSafetyInstructionsEditList` and `useTipsEditList` give it its catalogue and its search. The
 modals save through `useEditModal`, and the tab re-queries once one is confirmed.
 

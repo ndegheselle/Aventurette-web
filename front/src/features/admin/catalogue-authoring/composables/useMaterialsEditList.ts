@@ -1,40 +1,28 @@
-import { createSearchFilter, SortDirection, type Paginated } from '@chapelure/core';
+import { createSearchFilter } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import type { MaterialData } from '@features/activities/model/material';
 import { materialsApi as materials } from '@features/admin/catalogue-authoring/api/materials.api';
+import { useCatalogueEditList } from '@features/admin/catalogue-authoring/composables/useCatalogueEditList';
 import { renamedTo } from '@features/admin/catalogue-authoring/model/catalogue.edit';
-import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-// One of <Pagination>'s page sizes, or its selector shows blank.
-const DEFAULT_PER_PAGE = 25;
-
 /**
- * The catalogue's screen: its page, its search, and adding, renaming and deleting a material.
- * Each is a write of its own; there is no form to save.
+ * The materials tab: a catalogue tab with no modal, since a material is only a name. Adding
+ * takes the searched name, and renaming is written as a row's field is left.
  */
 export function useMaterialsEditList() {
-    const paginated = ref<Paginated<MaterialData>>({
-        items: [],
-        total: 0,
-        options: { page: 1, perPage: DEFAULT_PER_PAGE, sortBy: 'name', sortDirection: SortDirection.ASC },
-    });
-    const search = ref('');
-
-    const alert = useAlert();
-    const { t } = useI18n();
-
     /** The names the catalogue holds, by id — what a refused rename goes back to. */
     let saved = new Map<string, string>();
 
-    /** Re-query the current page. */
-    async function refresh() {
-        paginated.value = await materials.filter(
-            createSearchFilter(search.value, ['name']),
-            paginated.value.options,
-        );
-        saved = new Map(paginated.value.items.map(material => [material.id, material.name]));
-    }
+    const list = useCatalogueEditList<MaterialData>(
+        materials,
+        search => createSearchFilter(search, ['name']),
+        items => { saved = new Map(items.map(material => [material.id, material.name])); },
+    );
+    const { search, refresh } = list;
+
+    const alert = useAlert();
+    const { t } = useI18n();
 
     /** Add the searched name to the catalogue. A name it already has is refused, and stays typed. */
     async function createMaterial() {
@@ -73,30 +61,5 @@ export function useMaterialsEditList() {
         }
     }
 
-    /**
-     * Delete a material from the catalogue. Every activity listing it loses it, and so do their
-     * steps and workshops — the backend's cascade, which the screen warns about before calling.
-     */
-    async function removeMaterial(material: MaterialData) {
-        try {
-            await materials.remove(material.id);
-        } catch {
-            alert.error(t('validation.errors.default'));
-            return;
-        }
-
-        alert.success(t('catalogue.materials.removed'));
-        await refresh();
-    }
-
-    onMounted(refresh);
-
-    return {
-        paginated,
-        search,
-        refresh,
-        createMaterial,
-        renameMaterial,
-        removeMaterial,
-    };
+    return { ...list, createMaterial, renameMaterial };
 }

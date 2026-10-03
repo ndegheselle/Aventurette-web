@@ -14,7 +14,7 @@ const {
     refresh,
     createMaterial,
     renameMaterial,
-    removeMaterial,
+    remove: removeMaterial,
 } = useMaterialsEditList();
 
 const { t } = useI18n();
