@@ -41,6 +41,7 @@ import {
 } from '@features/admin/activities-authoring/model/material.edit';
 import { createEmptyStep } from '@features/admin/activities-authoring/model/step.edit';
 import { createEmptyWorkshop } from '@features/admin/activities-authoring/model/workshop.edit';
+import { routesNames } from '@features/admin/activities-authoring/routes';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { computed, onMounted, ref, shallowRef, toRaw, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -83,7 +84,13 @@ export function useActivityEdit() {
                 return;
             }
 
-            const read = await activities.getById(id) ?? createEmptyActivity();
+            const read = await activities.getById(id);
+            if (!read) {
+                alert.error(t('activities.authoring.notFound'));
+                await router.replace({ name: routesNames.all });
+                return;
+            }
+
             original.value = structuredClone(read);
             activity.value = read;
         },

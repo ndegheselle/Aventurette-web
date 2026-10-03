@@ -1,6 +1,6 @@
 import { type Paginated, type PaginationOptions, type BaseEntity, type EntityMapper, type FilterGroup, type IDataCrud } from "@chapelure/core";
 import type PocketBase from 'pocketbase';
-import { mapErrors } from "./errors";
+import { mapErrors, NOT_FOUND, statusOf, toValidationError } from "./errors";
 import { createPocketBaseFileUrls } from "./files";
 import { filterGroupToPocketBase } from "./filters";
 
@@ -41,8 +41,17 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
         await mapErrors(() => collection.delete(id));
     }
 
+    /** Null for an id with no record behind it: the port reads a missing record as data. */
     async function getById(id: string): Promise<TEntity | null> {
-        return toEntity(await mapErrors(() => collection.getOne(id, { expand })));
+        let record: unknown;
+        try {
+            record = await collection.getOne(id, { expand });
+        } catch (error) {
+            if (statusOf(error) === NOT_FOUND) return null;
+            throw toValidationError(error) ?? error;
+        }
+
+        return toEntity(record);
     }
 
     async function getAll(): Promise<TEntity[]> {

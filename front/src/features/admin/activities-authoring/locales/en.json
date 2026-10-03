@@ -28,6 +28,7 @@
             "unpublish": "Back to draft",
             "remove": "Delete",
             "removed": "Activity deleted.",
+            "notFound": "This activity does not exist, or no longer does.",
             "materials": {
                 "create": "Add \"{name}\""
             },

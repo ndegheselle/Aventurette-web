@@ -91,7 +91,9 @@ of them held in memory until the save sends them through `save.api.ts`. How savi
 in which order, is described in [activities](activities.md#saving).
 
 On the `new` route it starts from a blank activity, with its id and its author; on `:id` it reads
-the activity and keeps a copy, which is what the save compares against.
+the activity and keeps a copy, which is what the save compares against. An id with no activity
+behind it goes back to the list with an alert, rather than opening a form whose save would
+update a record that is not there.
 
 The form is **one panel per family**, in the template's order: information (name, picture,
 visual brief), description, classification, imaginary, audience, supervision, place and

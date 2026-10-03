@@ -54,6 +54,23 @@ describe('createPocketBaseCrud', () => {
         });
     });
 
+    it('reads a missing record as null', async () => {
+        const pb = fakePocketBase();
+        pb.failNextWith({ status: 404, message: "The requested resource wasn't found.", response: { data: {} } });
+        const crud = createPocketBaseCrud(pb.client, 'activities', activityMapper);
+
+        expect(await crud.getById('gone')).toBeNull();
+    });
+
+    it('rethrows any other failure of a read by id', async () => {
+        const pb = fakePocketBase();
+        const forbidden = { status: 403, message: 'Forbidden', response: { data: {} } };
+        pb.failNextWith(forbidden);
+        const crud = createPocketBaseCrud(pb.client, 'activities', activityMapper);
+
+        await expect(crud.getById('act1')).rejects.toBe(forbidden);
+    });
+
     it('sends what the mapper produced, not what the caller held', async () => {
         const pb = fakePocketBase();
         const crud = createPocketBaseCrud(pb.client, 'activities', activityMapper);

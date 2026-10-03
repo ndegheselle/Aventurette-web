@@ -4,8 +4,11 @@ import type { ClientResponseError } from 'pocketbase';
 /** The status PocketBase answers a refused write with: a field failed a rule, or a login failed. */
 const BAD_REQUEST = 400;
 
+/** What PocketBase answers for an id it has no record under, or one the caller may not read. */
+export const NOT_FOUND = 404;
+
 /** The status of a PocketBase response error, or undefined for anything else. */
-function statusOf(error: unknown): number | undefined {
+export function statusOf(error: unknown): number | undefined {
     if (!error || typeof error !== 'object') return undefined;
 
     const { status } = error as Partial<ClientResponseError>;

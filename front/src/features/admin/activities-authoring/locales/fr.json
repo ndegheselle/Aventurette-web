@@ -28,6 +28,7 @@
             "unpublish": "Repasser en brouillon",
             "remove": "Supprimer",
             "removed": "Activité supprimée.",
+            "notFound": "Cette activité n'existe pas ou plus.",
             "materials": {
                 "create": "Créer « {name} »"
             },
