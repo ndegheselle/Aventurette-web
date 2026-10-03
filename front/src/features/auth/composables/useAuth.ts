@@ -1,4 +1,4 @@
-import { NotAuthentifiedError } from '@chapelure/core';
+import { NotAuthenticatedError } from '@chapelure/core';
 import { sessionProvider } from '@features/auth/api/session';
 import { hasRole as userHasRole, type Role, type UserData } from '@features/auth/model/user';
 import { computed, readonly, ref } from 'vue';
@@ -36,7 +36,7 @@ export function useAuth() {
     }
 
     function currentId(): string {
-        if (!current.value) throw new NotAuthentifiedError();
+        if (!current.value) throw new NotAuthenticatedError();
         return current.value.id;
     }
 

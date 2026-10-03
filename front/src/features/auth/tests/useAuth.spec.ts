@@ -1,4 +1,4 @@
-import { NotAuthentifiedError } from '@chapelure/core';
+import { NotAuthenticatedError } from '@chapelure/core';
 import { aUser, fakeAuthProvider, withSetup } from '@tests';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { UserData } from '@features/auth/model/user';
@@ -100,7 +100,7 @@ describe('useAuth', () => {
         it('throws rather than returning an empty id when signed out', async () => {
             const { auth } = await setup();
 
-            expect(() => auth.currentId()).toThrow(NotAuthentifiedError);
+            expect(() => auth.currentId()).toThrow(NotAuthenticatedError);
         });
     });
 });

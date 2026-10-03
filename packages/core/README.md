@@ -76,7 +76,7 @@ const group = removeEmptyFilters(createGroup({
 
 `ValidationError` carries per-field codes (`{ [field]: { code } }`) normalised away from any
 backend's error shape — adapters are responsible for the mapping. Plus
-`NotAuthentifiedError` and `NotImplementedError`.
+`NotAuthenticatedError` and `NotImplementedError`.
 
 ## Utils
 

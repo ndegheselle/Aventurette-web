@@ -82,7 +82,7 @@ One rule, in one place.
 - One session is shared by every caller.
 - A rejected login reaches the caller rather than being swallowed, and leaves the session empty.
 - `logout` clears the session.
-- `currentId()` throws `NotAuthentifiedError` rather than returning an empty id when signed out.
+- `currentId()` throws `NotAuthenticatedError` rather than returning an empty id when signed out.
 - The guard lets login and register through, sends an anonymous visitor to login, admits a
   visitor whose stored session is valid, and does not ask the backend again once signed in.
 - On a route with `meta.roles`, the guard sends a user without the role home, admits one with

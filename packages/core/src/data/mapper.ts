@@ -14,8 +14,8 @@ export function toEntities<TPayload extends BaseEntity, TEntity extends BaseEnti
     return (payloads ?? []).map(payload => mapper.toEntity(payload, files))
 }
 
-/** Convert a [choice] to the default '' if the [choice] is null. */
-export function convert<T extends string>(choice: T | null): T {
+/** An optional choice as the backend stores it: none is the empty string. */
+export function emptyIfNull<T extends string>(choice: T | null): T {
     return (choice ?? '') as T;
 }
 
