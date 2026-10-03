@@ -20,7 +20,7 @@ function logoutToLogin() {
             <summary class="btn btn-circle btn-ghost">
                 <div class="avatar">
                     <div class="rounded-full">
-                        <img alt="Tailwind-CSS-Avatar-component"
+                        <img alt=""
                             src="https://placeholder.pagebee.io/api/plain/32/32" />
                     </div>
                 </div>

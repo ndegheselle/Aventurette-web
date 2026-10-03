@@ -26,7 +26,8 @@
         "cancel": "Cancel",
         "update": "Edit",
         "confirm": "Confirm",
-        "back": "Back"
+        "back": "Back",
+        "close": "Close"
     },
     "inputs": {
         "file": {

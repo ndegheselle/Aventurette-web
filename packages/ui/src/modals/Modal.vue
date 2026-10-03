@@ -63,7 +63,7 @@ defineSlots<{
         </div>
 
         <div class="modal-backdrop">
-            <button @click="() => controller.cancel()">close</button>
+            <button @click="() => controller.cancel()">{{ $t('actions.close') }}</button>
         </div>
     </dialog>
 </template>

@@ -2,5 +2,9 @@
     "home": "Accueil",
     "admin": {
         "title": "Administration"
+    },
+    "sidebar": {
+        "open": "Ouvrir le menu",
+        "close": "Fermer le menu"
     }
 }
