@@ -29,7 +29,7 @@ describe('renameMaterial', () => {
         const [rope] = subject.paginated.value.items;
 
         rope!.name = '  Long rope ';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
 
         expect(materials.items[0]!.name).toBe('Long rope');
         expect(rope!.name).toBe('Long rope');
@@ -41,7 +41,7 @@ describe('renameMaterial', () => {
         materials.failNextWith({ name: { code: 'validation_not_unique' } });
 
         rope!.name = 'Chalk';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
 
         expect(rope!.name).toBe('Rope');
     });
@@ -51,10 +51,10 @@ describe('renameMaterial', () => {
         const [rope] = subject.paginated.value.items;
 
         rope!.name = 'Long rope';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
         materials.failNextWith({ name: { code: 'validation_not_unique' } });
         rope!.name = 'Chalk';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
 
         expect(rope!.name).toBe('Long rope');
     });
@@ -65,7 +65,7 @@ describe('renameMaterial', () => {
         const write = vi.spyOn(materials, 'update');
 
         rope!.name = '   ';
-        await subject.renameMaterial(rope!);
+        await subject.renameMaterial(rope!.id, rope!.name);
 
         expect(write).not.toHaveBeenCalled();
         expect(rope!.name).toBe('Rope');

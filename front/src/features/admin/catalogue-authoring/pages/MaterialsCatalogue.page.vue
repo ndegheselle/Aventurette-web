@@ -28,6 +28,6 @@ const {
                class="input input-ghost w-full my-auto"
                :aria-label="$t('catalogue.materials.name')"
                v-model="item.name"
-               @change="() => renameMaterial(item)" />
+               @change="() => renameMaterial(item.id, item.name)" />
     </CatalogueTab>
 </template>

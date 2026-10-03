@@ -39,24 +39,30 @@ export function useMaterialsEditList() {
     }
 
     /**
-     * Write a material's name, as its field is left. A blank or unchanged field writes nothing
-     * and shows the saved name again; a refusal — a name already taken — does the same, so the
-     * list never shows a name the catalogue does not hold.
+     * Write a material's name, as its field is left, and set the row to the name the catalogue
+     * then holds. A blank or unchanged field writes nothing and shows the saved name again; a
+     * refusal — a name already taken — does the same, so the list never shows a name the
+     * catalogue does not hold.
+     *
+     * @param typed what the row's field holds
      */
-    async function renameMaterial(material: MaterialData) {
-        const previous = saved.get(material.id) ?? material.name;
-        const next = renamedTo(previous, material.name);
+    async function renameMaterial(id: string, typed: string) {
+        const row = list.paginated.value.items.find(material => material.id === id);
+        if (!row) return;
+
+        const previous = saved.get(id) ?? typed;
+        const next = renamedTo(previous, typed);
         if (!next) {
-            material.name = previous;
+            row.name = previous;
             return;
         }
 
         try {
-            await materials.update(material.id, { name: next });
-            material.name = next;
-            saved.set(material.id, next);
+            await materials.update(id, { name: next });
+            row.name = next;
+            saved.set(id, next);
         } catch {
-            material.name = previous;
+            row.name = previous;
             alert.error(t('catalogue.materials.renameRefused'));
         }
     }
