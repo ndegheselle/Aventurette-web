@@ -3,10 +3,9 @@ import { LogOutIcon } from 'lucide-vue-next';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as authRoutesNames } from '@features/auth/routes';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import type { UserData } from '@features/auth/model/user';
 import { useRouter } from 'vue-router';
 
-const { isLoggedIn, current, logout } = useAuth<UserData>();
+const { isLoggedIn, current, logout } = useAuth();
 const router = useRouter();
 
 function logoutToLogin() {

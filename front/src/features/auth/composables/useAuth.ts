@@ -1,14 +1,14 @@
-import { NotAuthentifiedError, type BaseEntity } from '@chapelure/core';
+import { NotAuthentifiedError } from '@chapelure/core';
 import { sessionProvider } from '@features/auth/api/session';
 import { hasRole as userHasRole, type Role, type UserData } from '@features/auth/model/user';
-import { computed, readonly, ref, type Ref } from 'vue';
+import { computed, readonly, ref } from 'vue';
 
 // Module state: one session, shared by every caller.
-const current = ref<BaseEntity | null>(null);
+const current = ref<UserData | null>(null);
 
-export function useAuth<TUser extends BaseEntity>() {
+export function useAuth() {
 
-    const auth = sessionProvider<TUser>();
+    const auth = sessionProvider();
     const isLoggedIn = computed(() => current.value !== null);
 
     async function register(email: string, password: string, passwordConfirm: string) {
@@ -32,7 +32,7 @@ export function useAuth<TUser extends BaseEntity>() {
 
     /** Whether the signed-in user holds one of `roles`. Reactive in a template, as it reads the session. */
     function hasRole(...roles: Role[]): boolean {
-        return userHasRole(current.value as UserData | null, roles);
+        return userHasRole(current.value, roles);
     }
 
     function currentId(): string {
@@ -41,7 +41,7 @@ export function useAuth<TUser extends BaseEntity>() {
     }
 
     return {
-        current: readonly(current) as Readonly<Ref<TUser | null>>,
+        current: readonly(current),
         isLoggedIn,
         login,
         register,

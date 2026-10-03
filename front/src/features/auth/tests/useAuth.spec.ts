@@ -10,7 +10,7 @@ const provider = fakeAuthProvider<UserData>(user);
 vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => provider }));
 
 async function setup() {
-    const [auth] = withSetup(() => useAuth<UserData>());
+    const [auth] = withSetup(() => useAuth());
     return { auth };
 }
 

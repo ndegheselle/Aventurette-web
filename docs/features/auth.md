@@ -16,7 +16,7 @@ only a home link and the theme and language menus, above the same footer.
 
 `useAuth` is the session, and there is exactly one: `current` is module-level state, shared by
 every caller, so signing in anywhere signs in everywhere. `UserData` in `model/user.ts` is this
-app's user record, for callers that need more than an id: `useAuth<UserData>()`.
+app's user record, and what `useAuth().current` holds.
 
 `AuthMenu` is the session's corner of the navbar: the signed-in user's email and a logout, or a
 login link. `logout` only drops the session; the menu then goes to the login screen.
