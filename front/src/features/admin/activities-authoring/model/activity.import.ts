@@ -497,7 +497,7 @@ export function materialsOfSheet(sheet: ActivitySheet): SheetMaterial[] {
 }
 
 /** The activity's own materials a step or workshop recalls by name, each once. */
-export function materialsNamed(materials: ActivityMaterialData[], names: string[]): ActivityMaterialData[] {
+function materialsNamed(materials: ActivityMaterialData[], names: string[]): ActivityMaterialData[] {
     const wanted = names.map(key);
     const named = wanted.flatMap(name => materials.filter(material => key(material.name) === name));
     return distinctById(named);
@@ -581,7 +581,7 @@ export function stepFromSheet(
 }
 
 /** A sheet's workshop, the same way. */
-export function workshopFromSheet(
+function workshopFromSheet(
     workshop: SheetWorkshop,
     id: string,
     activity: string,

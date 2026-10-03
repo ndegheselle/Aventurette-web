@@ -38,7 +38,7 @@ export function isGenerated(step: Pick<PlayStep, 'kind'>): boolean {
 }
 
 /** A material as an action to tick while gathering it: its name, then how much of it. */
-export function materialAction(material: Pick<ActivityMaterialData, 'name' | 'quantity'>): string {
+function materialAction(material: Pick<ActivityMaterialData, 'name' | 'quantity'>): string {
     return material.quantity ? `${material.name} — ${material.quantity}` : material.name;
 }
 
