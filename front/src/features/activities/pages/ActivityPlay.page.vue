@@ -8,7 +8,7 @@ import { stepNumber } from '@features/activities/model/step';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, ArrowRightIcon, CircleQuestionMarkIcon, ClockIcon, FileTextIcon, FlagIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
 
-const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, isTicked, toggle } = useActivityPlay();
+const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, isTicked, toggle, headingOf } = useActivityPlay();
 </script>
 <template>
     <Container v-if="activity">
@@ -54,7 +54,7 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
                                 <button class="text-start hover:underline"
                                         :class="{ 'font-bold': stepIndex === index }"
                                         @click="goTo(stepIndex)">
-                                    {{ step.title || $t(`activities.steps.kind.${step.kind}`) }}
+                                    {{ headingOf(step) }}
                                 </button>
                             </li>
                         </ul>
@@ -65,7 +65,7 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
                     <div class="flex items-start gap-3">
                         <div class="text-5xl font-thin opacity-30 tabular-nums">{{ stepNumber(index) }}</div>
                         <div class="flex flex-col gap-1">
-                            <h2 class="text-2xl">{{ current.title || $t(`activities.steps.kind.${current.kind}`) }}</h2>
+                            <h2 class="text-2xl">{{ headingOf(current) }}</h2>
                             <div class="flex flex-wrap gap-1">
                                 <span v-if="current.title"
                                       class="badge badge-ghost">
