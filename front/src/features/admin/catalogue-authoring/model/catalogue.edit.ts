@@ -57,7 +57,8 @@ export function tagsFilter(search: string, type: ActivityTagType | null): Filter
     if (search.trim())
         filters.unshift(createSearchFilter<ActivityTagData>(search.trim(), ['name', 'slug']));
 
-    return removeEmptyFilters(createGroup<ActivityTagData>({ filters }));
+    const group = createGroup<ActivityTagData>({ filters });
+    return removeEmptyFilters(group);
 }
 
 /** A tag not written yet, of the kind the tab shows, or a theme on the "all" tab. */

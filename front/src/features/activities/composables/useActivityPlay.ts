@@ -22,7 +22,8 @@ export function useActivityPlay() {
 
     /** Move to a step, staying within the run. */
     function goTo(target: number) {
-        index.value = Math.min(Math.max(target, 0), Math.max(steps.value.length - 1, 0));
+        const lastIndex = Math.max(steps.value.length - 1, 0);
+        index.value = Math.min(Math.max(target, 0), lastIndex);
     }
 
     /** What a step reads as: its own title, or else its kind's name, as a generated step has no title. */

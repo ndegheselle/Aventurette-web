@@ -85,11 +85,9 @@ export const authoredStateTabs: { label: string, value: ActivityStateFilter }[] 
  * Not scoped to the signed-in author: for now everybody may edit every activity.
  */
 export function buildAuthoredFilters(state: ActivityStateFilter): FilterGroup<ActivityData> {
-    return removeEmptyFilters(createGroup<ActivityData>({
-        filters: [
-            createFilter<ActivityData>({ key: 'state', value: state, operator: FilterOperator.Equals }),
-        ],
-    }));
+    const byState = createFilter<ActivityData>({ key: 'state', value: state, operator: FilterOperator.Equals });
+    const group = createGroup<ActivityData>({ filters: [byState] });
+    return removeEmptyFilters(group);
 }
 
 // ── The state button ────────────────────────────────────────────────────────────────────────

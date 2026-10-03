@@ -79,12 +79,15 @@ export function playStepsOf(activity: Pick<ActivityData, 'steps' | 'materials'> 
 
     const steps = activity.steps.map(authoredStep);
 
+    // Spliced before anything is put in front: the index counts the authored steps only.
     const firstWithChildren = activity.steps.findIndex(step => step.kind !== StepKind.PREPARE);
     if (firstWithChildren !== -1)
         steps.splice(firstWithChildren, 0, generatedStep(GeneratedStepKind.GATHER_CHILDREN));
 
-    if (activity.materials.length)
-        steps.unshift(generatedStep(GeneratedStepKind.GATHER_MATERIAL, activity.materials.map(materialAction)));
+    if (activity.materials.length) {
+        const gathering = activity.materials.map(materialAction);
+        steps.unshift(generatedStep(GeneratedStepKind.GATHER_MATERIAL, gathering));
+    }
 
     return steps;
 }

@@ -30,11 +30,15 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
     }
 
     async function create(data: TEntity): Promise<TEntity> {
-        return toEntity(await mapErrors(() => collection.create(mapper.toPayload(data), { expand })));
+        const payload = mapper.toPayload(data);
+        const record = await mapErrors(() => collection.create(payload, { expand }));
+        return toEntity(record);
     }
 
     async function update(id: string, data: Partial<TEntity>): Promise<TEntity> {
-        return toEntity(await mapErrors(() => collection.update(id, mapper.toPayload(data), { expand })));
+        const payload = mapper.toPayload(data);
+        const record = await mapErrors(() => collection.update(id, payload, { expand }));
+        return toEntity(record);
     }
 
     async function remove(id: string): Promise<void> {
