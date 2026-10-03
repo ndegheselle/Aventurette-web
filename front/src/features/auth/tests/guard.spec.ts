@@ -15,7 +15,7 @@ const going = (name: string, roles?: Role[]) => ({ name, meta: { roles } } as Ro
 
 beforeEach(async () => {
     // The session is module state, so a user signed in by one test is still there in the next.
-    await useAuth().logout();
+    useAuth().logout();
     provider.session = null;
 });
 

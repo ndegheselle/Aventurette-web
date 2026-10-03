@@ -19,15 +19,13 @@ every caller, so signing in anywhere signs in everywhere. `UserData` in `model/u
 app's user record, for callers that need more than an id: `useAuth<UserData>()`.
 
 `AuthMenu` is the session's corner of the navbar: the signed-in user's email and a logout, or a
-login link.
+login link. `logout` only drops the session; the menu then goes to the login screen.
 
 The session itself is persisted by the backend adapter, not here. `refresh()` is what asks
 whether a stored one is still valid — which is what makes a reload keep you signed in.
 
-`useAuth` reaches for the router only when it is running inside a component. The route guard
-calls it outside of one (it needs `isLoggedIn` and `refresh`, nothing else), and reaching for
-the router there warned on every guarded navigation. Only `logout` navigates, and nothing
-outside a component calls it.
+`useAuth` never navigates: the route guard calls it outside of a component, where the router
+cannot be injected, so moving between screens is left to the component that asks for it.
 
 ## The guard
 
@@ -83,7 +81,7 @@ One rule, in one place.
 
 - One session is shared by every caller.
 - A rejected login reaches the caller rather than being swallowed, and leaves the session empty.
-- `logout` clears the session and goes to the login screen.
+- `logout` clears the session.
 - `currentId()` throws `NotAuthentifiedError` rather than returning an empty id when signed out.
 - The guard lets login and register through, sends an anonymous visitor to login, admits a
   visitor whose stored session is valid, and does not ask the backend again once signed in.
