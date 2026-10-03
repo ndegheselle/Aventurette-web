@@ -59,15 +59,6 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
         return records.map(toEntity);
     }
 
-    async function getList(options: PaginationOptions): Promise<Paginated<TEntity>> {
-        const result = await mapErrors(() => collection.getList(options.page, options.perPage, {
-            expand,
-            sort: sort(options),
-        }));
-
-        return { items: result.items.map(toEntity), total: result.totalItems, options };
-    }
-
     async function filter(group: FilterGroup<TEntity>, options: PaginationOptions): Promise<Paginated<TEntity>> {
         const expression = filterGroupToPocketBase(group);
         const result = await mapErrors(() => collection.getList(options.page, options.perPage, {
@@ -79,5 +70,5 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
         return { items: result.items.map(toEntity), total: result.totalItems, options };
     }
 
-    return { create, update, remove, getAll, getById, getList, filter };
+    return { create, update, remove, getAll, getById, filter };
 }

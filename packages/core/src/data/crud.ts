@@ -29,7 +29,6 @@ export interface IDataCrud<TEntity extends BaseEntity> {
     /** Null when no record has that id. */
     getById(id: string): Promise<TEntity | null>;
     getAll(): Promise<TEntity[]>;
-    getList(options: PaginationOptions): Promise<Paginated<TEntity>>;
     filter(group: FilterGroup<TEntity>, options: PaginationOptions): Promise<Paginated<TEntity>>;
 }
 

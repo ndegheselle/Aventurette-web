@@ -16,7 +16,7 @@ import { type IDataCrud, type PaginationOptions, type Paginated, SortDirection }
 
 ```ts
 create(data)      update(id, data)     remove(id)
-getById(id)       getAll()             getList(options)      filter(group, options)
+getById(id)       getAll()             filter(group, options)
 ```
 
 `CrudFactory` is how an app gets one — an adapter supplies the implementation, the app wires
