@@ -149,7 +149,7 @@ defineExpose({ show });
                         {{ $t('activities.constraints.picture') }}
                     </template>
                 </FilesInput>
-                <FilesList :files="visual" />
+                <FilesList v-model:files="visual" />
             </div>
 
             <div v-for="(files, index) in stepFiles" :key="files.id" class="flex flex-col gap-1">

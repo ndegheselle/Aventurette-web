@@ -6,7 +6,7 @@
     <FilesInput accept="image/*" @change="update">
       <template #constraints>JPG or PNG, max 2 MB</template>
     </FilesInput>
-    <FilesList :files />
+    <FilesList v-model:files="files" />
 -->
 <script setup lang="ts">
 import { useAlert } from '@chapelure/ui/alerts/useAlert';

@@ -248,7 +248,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                 {{ $t('activities.constraints.picture') }}
                             </template>
                         </FilesInput>
-                        <FilesList :files />
+                        <FilesList v-model:files="files" />
                     </Field>
                 </Panel>
 

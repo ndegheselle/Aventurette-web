@@ -5,7 +5,7 @@ import { ref } from 'vue';
  *
  *     const { files, update } = useOneFile();
  *     <FilesInput @change="update" />
- *     <FilesList :files />
+ *     <FilesList v-model:files="files" />
  */
 export function useOneFile() {
     const files = ref<File[]>([]);
