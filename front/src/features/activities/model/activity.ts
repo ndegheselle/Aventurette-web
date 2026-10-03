@@ -105,6 +105,22 @@ export function rangeEndOf(value: number | null | undefined): RangeEnd {
     return value ? value : null;
 }
 
+/** An audience's bounds on one side and the other, as a range reads them. */
+export interface AudienceRange {
+    min: RangeEnd;
+    max: RangeEnd;
+}
+
+/** The ages the activity is for. */
+export function ageRangeOf(audience: ActivityAudience | null | undefined): AudienceRange {
+    return { min: rangeEndOf(audience?.ageMin), max: rangeEndOf(audience?.ageMax) };
+}
+
+/** How many may take part. */
+export function participantsRangeOf(audience: ActivityAudience | null | undefined): AudienceRange {
+    return { min: rangeEndOf(audience?.participantsMin), max: rangeEndOf(audience?.participantsMax) };
+}
+
 /** And back: an unset end is stored as the 0 PocketBase would store anyway. */
 export function columnOf(value: RangeEnd | undefined): number {
     return value ?? 0;

@@ -1,7 +1,8 @@
 import { createSearchFilter, type Paginated } from '@chapelure/core';
+import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import type { ActivityData } from '@features/activities/model/activity';
-import { onMounted, ref } from 'vue';
+import { ageRangeOf, totalMinutesOf, type ActivityData } from '@features/activities/model/activity';
+import { computed, onMounted, ref } from 'vue';
 
 // One of <Pagination>'s page sizes, or its selector shows blank.
 const DEFAULT_PER_PAGE = 25;
@@ -24,7 +25,13 @@ export function useActivitiesList() {
         );
     }
 
+    /** What each card shows beside the activity: the ages it is for and how long it takes. */
+    const cards = computed(() => paginated.value.items.map(activity => {
+        const ages = ageRangeOf(activity.audience);
+        return { activity, ageLabel: rangeLabel(ages.min, ages.max), totalMinutes: totalMinutesOf(activity) };
+    }));
+
     onMounted(refresh);
 
-    return { paginated, search, refresh };
+    return { paginated, cards, search, refresh };
 }
