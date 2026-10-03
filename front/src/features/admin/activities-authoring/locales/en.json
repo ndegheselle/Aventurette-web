@@ -1,6 +1,5 @@
 {
     "activities": {
-        "untitled": "New activity",
         "state": {
             "DRAFT": "Draft",
             "PUBLISHED": "Published"
@@ -26,7 +25,6 @@
             },
             "publish": "Publish",
             "unpublish": "Back to draft",
-            "remove": "Delete",
             "removed": "Activity deleted.",
             "notFound": "This activity does not exist, or no longer does.",
             "materials": {

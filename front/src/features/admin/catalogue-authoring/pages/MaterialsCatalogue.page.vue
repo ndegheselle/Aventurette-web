@@ -59,7 +59,7 @@ async function remove(material: MaterialData) {
                    v-model="item.name"
                    @change="() => renameMaterial(item)" />
             <button class="btn btn-soft btn-square btn-error my-auto"
-                    :title="$t('catalogue.materials.remove')"
+                    :title="$t('catalogue.remove')"
                     @click="() => remove(item)">
                 <TrashIcon class="icon-sm" />
             </button>

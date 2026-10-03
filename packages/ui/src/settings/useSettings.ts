@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 export enum EnumTheme {
@@ -12,8 +11,6 @@ export const SETTINGS_STORAGE_KEYS = {
     theme: 'theme',
     language: 'language',
 } as const;
-
-const currentTheme = ref<EnumTheme>(EnumTheme.auto);
 
 function applyTheme(theme: EnumTheme) {
     const html = document.documentElement;
@@ -33,14 +30,13 @@ export function useSettings() {
     const { locale } = useI18n({ useScope: 'global' });
 
     const storedTheme = localStorage.getItem(SETTINGS_STORAGE_KEYS.theme);
-    currentTheme.value = storedTheme
+    const theme = storedTheme
         ? EnumTheme[storedTheme as keyof typeof EnumTheme] ?? EnumTheme.auto
         : EnumTheme.auto;
 
-    applyTheme(currentTheme.value);
+    applyTheme(theme);
 
     function changeTheme(newTheme: EnumTheme) {
-        currentTheme.value = newTheme;
         localStorage.setItem(SETTINGS_STORAGE_KEYS.theme, EnumTheme[newTheme]);
         applyTheme(newTheme);
     }
@@ -52,7 +48,6 @@ export function useSettings() {
 
     return {
         currentLanguage: locale,
-        currentTheme,
         changeLang,
         changeTheme
     };

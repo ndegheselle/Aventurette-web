@@ -11,7 +11,6 @@
             "title": "Materials",
             "name": "Material name",
             "add": "Add to the catalogue",
-            "remove": "Delete from the catalogue",
             "created": "Material added.",
             "removed": "Material deleted.",
             "createRefused": "This name is already in the catalogue.",

@@ -18,26 +18,28 @@ beforeEach(() => {
 describe('useSettings', () => {
     describe('on load', () => {
         it('starts on auto when nothing was stored', () => {
-            const [settings] = withSetup(() => useSettings());
+            prefersDark(true);
 
-            expect(settings.currentTheme.value).toBe(EnumTheme.auto);
+            withSetup(() => useSettings());
+
+            expect(themeAttribute()).toBe('dark');
         });
 
         it('adopts the stored theme', () => {
             localStorage.setItem(SETTINGS_STORAGE_KEYS.theme, 'dark');
 
-            const [settings] = withSetup(() => useSettings());
+            withSetup(() => useSettings());
 
-            expect(settings.currentTheme.value).toBe(EnumTheme.dark);
             expect(themeAttribute()).toBe('dark');
         });
 
         it('falls back to auto for a stored value that no longer names a theme', () => {
             localStorage.setItem(SETTINGS_STORAGE_KEYS.theme, 'solarized');
+            prefersDark(true);
 
-            const [settings] = withSetup(() => useSettings());
+            withSetup(() => useSettings());
 
-            expect(settings.currentTheme.value).toBe(EnumTheme.auto);
+            expect(themeAttribute()).toBe('dark');
         });
 
         it('resolves auto against what the OS prefers, rather than leaving it unset', () => {

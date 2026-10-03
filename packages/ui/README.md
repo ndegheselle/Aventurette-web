@@ -57,7 +57,7 @@ the composable driving them together, the way `settings/` holds `SettingsMenu` n
 |---|---|
 | `modals/` | Modal, ConfirmationModal, `useModal`, `useConfirmation`, `useEditModal`, `useDraftModal` |
 | `alerts/` | AlertsContainer, `useAlert` |
-| `dropdown/` | Dropdown, DropdownTrigger, `vClickOutside` |
+| `dropdown/` | Dropdown, `vClickOutside` |
 | `data/` | List, Pagination, SearchInput |
 | `files/` | FilesInput, FilesList, `useOneFile` |
 | `forms/` | Field, FieldError, PasswordInput, TextEditor, `useSubmit`, `useValidationErrors` |

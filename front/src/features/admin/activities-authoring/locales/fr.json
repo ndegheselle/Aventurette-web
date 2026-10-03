@@ -1,6 +1,5 @@
 {
     "activities": {
-        "untitled": "Nouvelle activité",
         "state": {
             "DRAFT": "Brouillon",
             "PUBLISHED": "Publiée"
@@ -26,7 +25,6 @@
             },
             "publish": "Publier",
             "unpublish": "Repasser en brouillon",
-            "remove": "Supprimer",
             "removed": "Activité supprimée.",
             "notFound": "Cette activité n'existe pas ou plus.",
             "materials": {
