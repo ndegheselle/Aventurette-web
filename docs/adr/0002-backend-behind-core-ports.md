@@ -21,9 +21,10 @@ dependency of its own: `IDataCrud` and its `CrudFactory`, `IAuthProvider`, `IFil
 `front/src/backend/index.ts` wires the two together and is the only file in the app that names
 the adapter. Features reach it through their own `api/` folder and nothing else.
 
-Errors cross the seam normalised: the adapter turns an SDK rejection into `ValidationError`
-with per-field codes, and returns `undefined` for anything that is not one — so a network
-failure is rethrown rather than mislabelled as a validation error.
+Errors cross the seam normalised: the adapter turns a refusal (PocketBase's 400) into
+`ValidationError` with per-field codes, and returns `undefined` for anything that is not one —
+so a missing record, a forbidden call, a server error or a network failure is rethrown rather
+than mislabelled as a validation error.
 
 ## Consequences
 
