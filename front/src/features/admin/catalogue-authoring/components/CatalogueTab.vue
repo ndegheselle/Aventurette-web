@@ -5,7 +5,7 @@
 
   Deleting asks first: the confirmation is the screen's, the write is the tab's `@remove`.
 -->
-<script setup lang="ts" generic="T extends { id: string, name: string }">
+<script setup vapor lang="ts" generic="T extends { id: string, name: string }">
 import type { Paginated } from '@chapelure/core';
 import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
@@ -62,7 +62,7 @@ async function confirmRemove(entry: T) {
                              v-model="search" />
                 <button class="btn btn-primary btn-square"
                         :disabled="!canAdd"
-                        :title="$t(addLabel)"
+                        :title="t(addLabel)"
                         @click="() => emit('add')">
                     <PlusIcon />
                 </button>
@@ -75,13 +75,13 @@ async function confirmRemove(entry: T) {
             <slot :item="item" />
             <div class="my-auto flex gap-2">
                 <button class="btn btn-soft btn-square btn-error"
-                        :title="$t('catalogue.remove')"
+                        :title="t('catalogue.remove')"
                         @click="() => confirmRemove(item)">
                     <TrashIcon class="icon-sm" />
                 </button>
                 <button v-if="editable"
                         class="btn btn-soft btn-square"
-                        :title="$t('actions.update')"
+                        :title="t('actions.update')"
                         @click="() => emit('edit', item)">
                     <PenIcon class="icon-sm" />
                 </button>

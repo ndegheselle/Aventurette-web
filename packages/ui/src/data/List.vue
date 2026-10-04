@@ -1,7 +1,11 @@
 <!-- Example : <List :items="list" v-slot="{ item, index }"></List> -->
-<script setup lang="ts" generic="T extends BaseEntity">
+<script setup vapor lang="ts" generic="T extends BaseEntity">
 import type { BaseEntity } from '@chapelure/core';
 import { CircleQuestionMarkIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 defineProps<{
     items?: T[];
 }>();
@@ -16,7 +20,7 @@ defineSlots<{
         <li class="p-4 opacity-30 tracking-wide my-auto mx-auto" v-if="!items?.length">
             <div class="flex ">
                 <CircleQuestionMarkIcon class="mr-2 my-auto" />
-                <span>{{ $t('data.noData') }}</span>
+                <span>{{ t('data.noData') }}</span>
             </div>
         </li>
 

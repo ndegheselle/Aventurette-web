@@ -1,14 +1,17 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { HouseIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 </script>
 
 <template>
     <div class="flex flex-col min-h-dvh">
         <nav class="navbar bg-base-300 min-h-0 p-1">
-            <RouterLink to="/" class="btn btn-square btn-ghost" :aria-label="$t('home')">
+            <RouterLink to="/" class="btn btn-square btn-ghost" :aria-label="t('home')">
                 <HouseIcon />
             </RouterLink>
 

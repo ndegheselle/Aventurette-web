@@ -8,11 +8,11 @@
     </FilesInput>
     <FilesList v-model:files="files" />
 -->
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { formatBytes, matchesAccept } from '@chapelure/ui/files/useFiles';
 import { FolderOpenIcon, UploadIcon } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, useSlots } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -25,6 +25,8 @@ const { accept = 'image/*', maxMbSize = 2, multiple = false } = defineProps<{
 const emit = defineEmits<{
   change: [files: File[]]
 }>()
+
+const slots = useSlots();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const isDragging = ref(false);
@@ -89,13 +91,13 @@ function takeFiles(files: ArrayLike<File>) {
         :class="{ 'border-primary bg-base-200': isDragging, 'hover:border-primary': !isDragging }"
         @click="triggerFileSelect" @dragover="onDragOver" @dragleave="isDragging = false" @drop="onDrop">
         <UploadIcon class="icon-lg opacity-50" />
-        <b>{{ $t('inputs.file.upload.label') }}</b>
-        <div v-if="$slots.constraints" class="text-center text-sm opacity-60 wrap-break-word">
+        <b>{{ t('inputs.file.upload.label') }}</b>
+        <div v-if="slots.constraints" class="text-center text-sm opacity-60 wrap-break-word">
             <slot name="constraints" />
         </div>
         <button class="btn btn-sm mt-1">
             <FolderOpenIcon />
-            {{ $t('inputs.file.upload.browse') }}
+            {{ t('inputs.file.upload.browse') }}
         </button>
     </div>
     <input @change="onChange" ref="fileInput" type="file" :accept="accept" class="hidden"

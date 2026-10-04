@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import { useModal } from '@chapelure/ui/modals/useModal';

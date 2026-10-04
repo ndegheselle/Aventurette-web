@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import type { SafetyInstructionData } from '@features/activities/model/activity';
 import CatalogueTab from '@features/admin/catalogue-authoring/components/CatalogueTab.vue';
 import SafetyInstructionEditModal from '@features/admin/catalogue-authoring/components/SafetyInstructionEdit.modal.vue';

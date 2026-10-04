@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount } from '@tests';
 import { describe, expect, it } from 'vitest';
 import Pagination from './Pagination.vue';
 

@@ -1,8 +1,11 @@
 <!-- Driven by a useModal controller: <Modal :controller /> -->
-<script setup lang="ts" generic="T = boolean">
+<script setup vapor lang="ts" generic="T = boolean">
 import { useModal, type IModalController } from '@chapelure/ui/modals/useModal';
 import { CheckIcon, XIcon } from 'lucide-vue-next';
 import { useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { controller = useModal(), withActions = true } = defineProps<{
     withActions?: boolean,
@@ -50,20 +53,20 @@ defineSlots<{
                     <button class="btn"
                             @click="() => controller.cancel()">
                         <XIcon />
-                        {{ $t("actions.cancel") }}
+                        {{ t("actions.cancel") }}
                     </button>
                     <!-- The default actions are a yes or no: a modal answering anything else brings its own. -->
                     <button class="btn btn-primary"
                             @click="() => controller.confirm(true as T)">
                         <CheckIcon />
-                        {{ $t("actions.confirm") }}
+                        {{ t("actions.confirm") }}
                     </button>
                 </slot>
             </div>
         </div>
 
         <div class="modal-backdrop">
-            <button @click="() => controller.cancel()">{{ $t('actions.close') }}</button>
+            <button @click="() => controller.cancel()">{{ t('actions.close') }}</button>
         </div>
     </dialog>
 </template>

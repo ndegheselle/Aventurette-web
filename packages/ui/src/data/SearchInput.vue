@@ -1,6 +1,9 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { debounce } from '@chapelure/core';
 import { SearchIcon, XIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 /** Long enough that typing a word searches once, at its end. */
 const SEARCH_DELAY_MS = 300;
@@ -27,7 +30,7 @@ function clear() {
 <template>
     <label class="input w-full p-0 ps-2 pe-0.5">
         <SearchIcon class="opacity-50" />
-        <input type="text" :placeholder="$t('actions.search')" v-model="model" @input="onInput" />
+        <input type="text" :placeholder="t('actions.search')" v-model="model" @input="onInput" />
         <button v-if="model" class="btn btn-sm btn-ghost btn-square" @click="clear">
             <XIcon />
         </button>

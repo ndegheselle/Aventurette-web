@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import FilesList from '@chapelure/ui/files/FilesList.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
@@ -17,6 +17,9 @@ import {
     TriangleAlertIcon,
     XIcon,
 } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 // Opened from the authoring list; on success the composable has already left for the editor.
 const controller = useModal();
@@ -57,30 +60,30 @@ defineExpose({ show });
 <template>
     <Modal :controller>
         <template #title>
-            {{ $t('activities.authoring.import.title') }}
+            {{ t('activities.authoring.import.title') }}
         </template>
 
         <ul class="steps w-full my-4">
             <li v-for="(name, index) in IMPORT_STAGES" :key="name" class="step"
                 :class="{ 'step-primary': index <= IMPORT_STAGES.indexOf(stage) }">
-                {{ $t(`activities.authoring.import.stages.${name}`) }}
+                {{ t(`activities.authoring.import.stages.${name}`) }}
             </li>
         </ul>
 
         <div v-if="stage === 'sheet'" class="flex flex-col gap-2">
             <FilesInput accept=".json,application/json" @change="readSheet">
                 <template #constraints>
-                    {{ $t('activities.authoring.import.sheet.constraints') }}
+                    {{ t('activities.authoring.import.sheet.constraints') }}
                 </template>
             </FilesInput>
 
             <div v-if="problems.length" role="alert" class="alert alert-error alert-soft items-start">
                 <TriangleAlertIcon />
                 <div>
-                    <b>{{ $t('activities.authoring.import.problems.title', { file: fileName }) }}</b>
+                    <b>{{ t('activities.authoring.import.problems.title', { file: fileName }) }}</b>
                     <ul class="list-disc ms-4 text-sm">
                         <li v-for="(problem, index) in problems" :key="index">
-                            {{ $t(`activities.authoring.import.problems.${problem.code}`, { path: problem.path, value: problem.value }) }}
+                            {{ t(`activities.authoring.import.problems.${problem.code}`, { path: problem.path, value: problem.value }) }}
                         </li>
                     </ul>
                 </div>
@@ -92,7 +95,7 @@ defineExpose({ show });
                     <b>{{ sheet.name }}</b>
                     <span class="text-xs opacity-60 ms-2">{{ fileName }}</span>
                     <p class="text-sm">
-                        {{ $t('activities.authoring.import.sheet.summary', {
+                        {{ t('activities.authoring.import.sheet.summary', {
                             steps: sheet.steps.length,
                             materials: sheet.materials.length,
                             workshops: sheet.workshops.length,
@@ -107,15 +110,15 @@ defineExpose({ show });
             <div v-if="preview?.unknown.length" class="flex flex-col gap-2">
                 <div role="alert" class="alert alert-warning alert-soft">
                     <TagIcon />
-                    <span>{{ $t('activities.authoring.import.unknown') }}</span>
+                    <span>{{ t('activities.authoring.import.unknown') }}</span>
                 </div>
                 <label v-for="reference in preview.unknown" :key="referenceKey(reference)"
                        class="flex flex-wrap items-center gap-2">
                     <span class="grow text-sm">
-                        <span class="opacity-60">{{ $t(reference.label) }} :</span> {{ reference.name }}
+                        <span class="opacity-60">{{ t(reference.label) }} :</span> {{ reference.name }}
                     </span>
                     <select v-model="picks[referenceKey(reference)]" class="select select-sm w-64">
-                        <option :value="undefined">{{ $t('activities.authoring.import.leaveOff') }}</option>
+                        <option :value="undefined">{{ t('activities.authoring.import.leaveOff') }}</option>
                         <option v-for="candidate in candidates(reference.kind)" :key="candidate.id" :value="candidate.id">
                             {{ candidate.name }}
                         </option>
@@ -126,10 +129,10 @@ defineExpose({ show });
             <div v-if="unset.length" role="status" class="alert alert-info alert-soft items-start">
                 <ListTodoIcon />
                 <div>
-                    <b>{{ $t('activities.authoring.import.unset.title') }}</b>
+                    <b>{{ t('activities.authoring.import.unset.title') }}</b>
                     <ul class="list-disc ms-4 text-sm">
                         <li v-for="field in unset" :key="field.label">
-                            {{ $t(field.label) }}<template v-if="field.steps"> : {{ field.steps.join(', ') }}</template>
+                            {{ t(field.label) }}<template v-if="field.steps"> : {{ field.steps.join(', ') }}</template>
                         </li>
                     </ul>
                 </div>
@@ -137,27 +140,27 @@ defineExpose({ show });
 
             <div v-if="!preview?.unknown.length && !unset.length" role="status" class="alert alert-success alert-soft">
                 <CircleCheckIcon />
-                <span>{{ $t('activities.authoring.import.complete') }}</span>
+                <span>{{ t('activities.authoring.import.complete') }}</span>
             </div>
         </div>
 
         <div v-else class="flex flex-col gap-4">
             <div class="flex flex-col gap-2">
-                <b>{{ $t('activities.fields.picture') }}</b>
+                <b>{{ t('activities.fields.picture') }}</b>
                 <FilesInput accept="image/*" @change="pickVisual">
                     <template #constraints>
-                        {{ $t('activities.constraints.picture') }}
+                        {{ t('activities.constraints.picture') }}
                     </template>
                 </FilesInput>
                 <FilesList v-model:files="visual" />
             </div>
 
             <div v-for="(files, index) in stepFiles" :key="files.id" class="flex flex-col gap-1">
-                <b>{{ $t('activities.authoring.import.stepResources', { title: sheet?.steps[index]?.title }) }}</b>
+                <b>{{ t('activities.authoring.import.stepResources', { title: sheet?.steps[index]?.title }) }}</b>
                 <ResourcesSelection v-model="files.resources" :step-id="files.id" />
             </div>
 
-            <p class="text-sm opacity-60">{{ $t('activities.authoring.import.files.optional') }}</p>
+            <p class="text-sm opacity-60">{{ t('activities.authoring.import.files.optional') }}</p>
         </div>
 
         <FieldError :error="errors.global.value" />
@@ -165,27 +168,27 @@ defineExpose({ show });
         <template #actions>
             <button class="btn" @click="() => controller.cancel()">
                 <XIcon />
-                {{ $t('actions.cancel') }}
+                {{ t('actions.cancel') }}
             </button>
             <template v-if="stage !== 'files'">
                 <button v-if="stage !== 'sheet'" class="btn" @click="back">
                     <ArrowLeftIcon />
-                    {{ $t('activities.authoring.import.back') }}
+                    {{ t('activities.authoring.import.back') }}
                 </button>
                 <button class="btn btn-primary" :disabled="!sheet" @click="next">
-                    {{ $t('activities.authoring.import.next') }}
+                    {{ t('activities.authoring.import.next') }}
                     <ArrowRightIcon />
                 </button>
             </template>
             <template v-else>
                 <button class="btn" :disabled="isImporting" @click="back">
                     <ArrowLeftIcon />
-                    {{ $t('activities.authoring.import.back') }}
+                    {{ t('activities.authoring.import.back') }}
                 </button>
                 <button class="btn btn-primary" :disabled="isImporting" @click="confirm">
                     <span v-if="isImporting" class="loading loading-spinner loading-sm"></span>
                     <ImportIcon v-else />
-                    {{ $t('activities.authoring.import.confirm') }}
+                    {{ t('activities.authoring.import.confirm') }}
                 </button>
             </template>
         </template>

@@ -1,9 +1,12 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { LogOutIcon } from 'lucide-vue-next';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as authRoutesNames } from '@features/auth/routes';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { isLoggedIn, current, logout } = useAuth();
 const router = useRouter();
@@ -29,11 +32,11 @@ function logoutToLogin() {
         <ul class="menu p-2 w-40">
             <li class="menu-title">{{ current?.email }}</li>
             <a @click="logoutToLogin" class="btn">
-                <LogOutIcon /> {{ $t('auth.logout') }}
+                <LogOutIcon /> {{ t('auth.logout') }}
             </a>
         </ul>
     </Dropdown>
     <RouterLink class="btn btn-primary btn-sm" v-else :to="{ name: authRoutesNames.login }">
-        {{ $t('auth.login.title') }}
+        {{ t('auth.login.title') }}
     </RouterLink>
 </template>

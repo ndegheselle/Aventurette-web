@@ -1,5 +1,5 @@
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import { mount } from '@vue/test-utils';
+import { mount } from '@tests';
 import { beforeEach, describe, expect, it } from 'vitest';
 import FilesInput from './FilesInput.vue';
 

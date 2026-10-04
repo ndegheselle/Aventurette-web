@@ -1,7 +1,10 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import { EnumTheme, useSettings } from '@chapelure/ui/settings/useSettings';
 import { PaletteIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { currentLanguage, changeTheme, changeLang } = useSettings();
 </script>
@@ -14,7 +17,7 @@ const { currentLanguage, changeTheme, changeLang } = useSettings();
             </summary>
         </template>
         <ul class="menu p-2">
-            <li class="menu-title">{{ $t("settings.theme") }}</li>
+            <li class="menu-title">{{ t("settings.theme") }}</li>
             <li>
                 <a @click="changeTheme(EnumTheme.auto)">
                     <span class="w-4 h-4 rounded border border-base-content/5 overflow-hidden relative">
@@ -25,15 +28,15 @@ const { currentLanguage, changeTheme, changeLang } = useSettings();
                             style="clip-path: polygon(100% 0, 100% 100%, 0 100%)">
                         </span>
                     </span>
-                    {{ $t("settings.themes.auto") }}
+                    {{ t("settings.themes.auto") }}
                 </a>
             </li>
             <li><a @click="changeTheme(EnumTheme.light)"><span data-theme="light"
                         class="w-4 h-4 bg-base rounded border border-base-content/5"></span> {{
-                            $t("settings.themes.light") }}</a></li>
+                            t("settings.themes.light") }}</a></li>
             <li><a @click="changeTheme(EnumTheme.dark)"><span data-theme="dark"
                         class="w-4 h-4 bg-base rounded border border-base-content/5"></span> {{
-                            $t("settings.themes.dark")
+                            t("settings.themes.dark")
                         }}</a></li>
 
         </ul>
@@ -45,7 +48,7 @@ const { currentLanguage, changeTheme, changeLang } = useSettings();
             </summary>
         </template>
         <ul class="menu p-2 w-40">
-            <li class="menu-title">{{ $t("settings.language") }}</li>
+            <li class="menu-title">{{ t("settings.language") }}</li>
             <li>
                 <a @click="changeLang('fr')">Français (France)</a>
             </li>

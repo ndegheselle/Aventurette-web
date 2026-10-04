@@ -1,9 +1,12 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import type { ActivityResourceData } from '@features/activities/model/step';
 import { useStepResources } from '@features/admin/activities-authoring/composables/useStepResources';
 import { ACCEPTED_RESOURCE_TYPES, resourcePreviewOf } from '@features/admin/activities-authoring/model/step.edit';
 import { CircleOffIcon, FileIcon, FileTextIcon, TrashIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 /** A picked file is stored against this step when the activity is saved. */
 const props = defineProps<{ stepId: string }>();
@@ -17,7 +20,7 @@ const { add, remove } = useStepResources(selected, () => props.stepId);
 <template>
     <FilesInput :accept="ACCEPTED_RESOURCE_TYPES" multiple @change="add">
         <template #constraints>
-            {{ $t('activities.steps.fields.resources.constraints') }}
+            {{ t('activities.steps.fields.resources.constraints') }}
         </template>
     </FilesInput>
     <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
@@ -37,7 +40,7 @@ const { add, remove } = useStepResources(selected, () => props.stepId);
         </div>
         <div v-if="!selected.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
             <CircleOffIcon />
-            <span>{{ $t('activities.steps.fields.resources.empty') }}</span>
+            <span>{{ t('activities.steps.fields.resources.empty') }}</span>
         </div>
     </div>
 </template>

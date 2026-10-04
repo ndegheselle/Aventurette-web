@@ -1,10 +1,11 @@
 import { config } from '@vue/test-utils';
 import { afterEach, beforeEach, expect, vi } from 'vitest';
-import { h } from 'vue';
+import { h, vaporInteropPlugin } from 'vue';
 import { TEST_LOCALE, testI18n } from './i18n';
 
 // Every mounted component gets the app's real translations. See tests/i18n.ts.
-config.global.plugins = [testI18n];
+// Test-utils mounts into a VDOM root; the interop plugin lets it render the Vapor components.
+config.global.plugins = [vaporInteropPlugin, testI18n];
 
 /**
  * `<RouterLink>` without a router: an anchor carrying its destination as `data-to`. In place

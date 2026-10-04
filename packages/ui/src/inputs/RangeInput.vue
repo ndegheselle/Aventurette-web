@@ -3,9 +3,12 @@
   other. An unset (`null`) end sits at its edge, and an end dragged to its edge is unset. Colour follows `currentColor`: put a
   `text-primary` on it at the call site.
 -->
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { clampHigh, clampLow, highOf, highValue, isLowOnTop, lowOf, lowValue, percentOf } from '@chapelure/ui/inputs/range';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = withDefaults(defineProps<{
     floor?: number;
@@ -52,11 +55,11 @@ function onHigh(event: Event) {
         <input type="range" class="range range-sm absolute inset-0"
                :class="{ 'z-10': isLowOnTop(bounds, low) }"
                :min="floor" :max="ceiling" :step :disabled
-               :value="low" :aria-label="$t('data.minimum')"
+               :value="low" :aria-label="t('data.minimum')"
                @input="onLow" />
         <input type="range" class="range range-sm absolute inset-0"
                :min="floor" :max="ceiling" :step :disabled
-               :value="high" :aria-label="$t('data.maximum')"
+               :value="high" :aria-label="t('data.maximum')"
                @input="onHigh" />
     </div>
 </template>

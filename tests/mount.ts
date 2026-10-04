@@ -1,18 +1,40 @@
 /**
- * Mount helpers for the two cases plain `mount` does not cover: a subject that navigates or
- * reads a route param, and a composable that needs a component instance.
+ * Mount helpers: `mount` for a Vapor component, `mountWithRouter` for a subject that navigates or
+ * reads a route param, and `withSetup` for a composable that needs a component instance.
  *
- * Everything else can use `mount` directly — tests/setup.ts already gives it i18n and a
- * `<RouterLink>` stand-in.
+ * tests/setup.ts already gives every mount i18n and a `<RouterLink>` stand-in.
  */
-import { mount, type MountingOptions } from '@vue/test-utils';
-import { defineComponent, type Component } from 'vue';
+import { mount as vtuMount, VueWrapper, type MountingOptions } from '@vue/test-utils';
+import { defineComponent, h, type Component, type VNode } from 'vue';
 import {
     createMemoryHistory,
     createRouter,
     type RouteRecordRaw,
     type Router,
 } from 'vue-router';
+
+/**
+ * Test-utils' `mount`, for a Vapor component. Test-utils cannot take one as its root, so it renders
+ * inside a VDOM host; `emitted` and `props` are redirected from the host to the component.
+ */
+// `component` is untyped: vue-tsc types a generic Vapor SFC as a function, not a `Component`.
+export function mount(component: unknown, options: MountingOptions<any> = {}): VueWrapper<any> {
+    const host = defineComponent({
+        inheritAttrs: false,
+        setup(_, { attrs, slots }) {
+            // In a custom element: test-utils finds root nodes through the VNode tree, which stops
+            // at a Vapor component, and an element no spec selects keeps `find('div')` meaning theirs.
+            return () => h('test-host', [h(component as Component, attrs, slots)]);
+        },
+    });
+
+    const wrapper: VueWrapper<any> = vtuMount(host, options as any);
+    // Test-utils records every component's emits by instance; read the subject's.
+    const subject = { vm: { $: (wrapper.vm.$.subTree.children as VNode[])[0]!.component } };
+    wrapper.emitted = (name => VueWrapper.prototype.emitted.call(subject, name!)) as typeof wrapper.emitted;
+    wrapper.props = ((key?: string) => key ? wrapper.vm.$attrs[key] : wrapper.vm.$attrs) as typeof wrapper.props;
+    return wrapper;
+}
 
 const BLANK = defineComponent({ template: '<div data-test="route-target" />' });
 
@@ -45,13 +67,13 @@ export type RouterMountOptions<Props> = MountingOptions<Props> & RouterOptions;
  * navigate with `router.push`.
  */
 export async function mountWithRouter<Props>(
-    component: Component,
+    component: unknown,
     options: RouterMountOptions<Props> = {},
-): Promise<{ wrapper: ReturnType<typeof mount>; router: Router }> {
+): Promise<{ wrapper: VueWrapper<any>; router: Router }> {
     const { routes, initialRoute, ...mountOptions } = options;
     const router = await createTestRouter({ routes, initialRoute });
 
-    const wrapper = mount(component as any, {
+    const wrapper = mount(component, {
         ...mountOptions,
         global: {
             ...mountOptions.global,
@@ -71,12 +93,12 @@ export async function mountWithRouter<Props>(
  * Pass a router for a composable that uses `useRouter` or `useRoute`; it comes back third, to
  * assert on where it navigated. Unmount the wrapper when the test is about teardown.
  */
-export function withSetup<T>(composable: () => T): [T, ReturnType<typeof mount>];
-export function withSetup<T>(composable: () => T, router: Router): [T, ReturnType<typeof mount>, Router];
+export function withSetup<T>(composable: () => T): [T, ReturnType<typeof vtuMount>];
+export function withSetup<T>(composable: () => T, router: Router): [T, ReturnType<typeof vtuMount>, Router];
 export function withSetup<T>(composable: () => T, router?: Router) {
     let result!: T;
 
-    const wrapper = mount(
+    const wrapper = vtuMount(
         defineComponent({
             setup() {
                 result = composable();

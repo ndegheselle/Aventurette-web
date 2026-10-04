@@ -1,7 +1,10 @@
 <!-- Password field with a reveal toggle. -->
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import { EyeClosedIcon, EyeIcon, KeyRoundIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps<{
     error?: boolean;
@@ -19,7 +22,7 @@ const isRevealed = ref(false);
                :type="isRevealed ? 'text' : 'password'"
                v-model="model" />
         <button class="btn btn-ghost btn-sm btn-circle absolute right-1"
-                :aria-label="$t('inputs.password.reveal')"
+                :aria-label="t('inputs.password.reveal')"
                 @click="isRevealed = !isRevealed">
             <EyeIcon v-if="isRevealed" />
             <EyeClosedIcon v-else />

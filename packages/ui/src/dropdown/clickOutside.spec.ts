@@ -1,19 +1,13 @@
-import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { defineComponent } from 'vue';
 import { vClickOutside } from './clickOutside';
 
-/** A component with the directive actually applied, which is what is under test. */
+/** The directive applied to `.inside`; returns what stops it. */
 function mountWithDirective(handler: (event: MouseEvent) => void) {
-    return mount(defineComponent({
-        props: { onOutside: { type: Function, required: true } },
-        directives: { clickOutside: vClickOutside },
-        template: `
-            <div>
-                <div class="inside" v-click-outside="onOutside"><span class="child">child</span></div>
-                <div class="outside">outside</div>
-            </div>`,
-    }), { props: { onOutside: handler }, attachTo: document.body });
+    document.body.innerHTML = `
+        <div class="inside"><span class="child">child</span></div>
+        <div class="outside">outside</div>`;
+    const cleanup = vClickOutside(document.querySelector<HTMLElement>('.inside')!, () => handler);
+    return { unmount: () => cleanup?.() };
 }
 
 function clickOn(selector: string) {

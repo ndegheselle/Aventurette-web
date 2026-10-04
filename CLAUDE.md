@@ -56,7 +56,8 @@ decisions are in [docs/adr/](docs/adr/README.md), and each feature is documented
   for multi-step orchestration with an ordering or rollback rule
   ([ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)).
 - Prefer a pure test over a mounted one. Mount only to test the wiring.
-- Import builders, fakes and mount helpers from `@tests`.
+- Import builders, fakes and mount helpers from `@tests` — `mount` included, which hosts a Vapor
+  component.
 - Fake the **port**, never the SDK: `vi.mock` the feature's `api/` module with a `fakeCrud`.
 - Use `mountWithRouter` when the subject navigates or reads a route param.
 
@@ -76,6 +77,8 @@ app's real catalogue, so assertions are on the copy a user would read.
 - **Every user-facing string is a translation key**, in the feature's `locales/`. Add it to
   both `en.json` and `fr.json` where you can — but this is a convention, not a gate, and a
   locale is allowed to lag. `fr` is the fallback, so a key missing from `en` renders in French.
+- **Components are `<script setup vapor>`** ([ADR 0020](docs/adr/0020-components-render-in-vapor-mode.md)).
+  No `$t` in a template: take `const { t } = useI18n()`. A custom directive is a function.
 - **Destructure a composable** in `<script setup>` — a ref reached through an object is not
   unwrapped in a template.
 - Follow the global

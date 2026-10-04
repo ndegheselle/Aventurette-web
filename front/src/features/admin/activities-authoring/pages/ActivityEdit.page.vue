@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import List from '@chapelure/ui/data/List.vue';
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
 import FilesList from '@chapelure/ui/files/FilesList.vue';
@@ -100,7 +100,7 @@ const { t } = useI18n();
 const confirm = useConfirmation();
 const stepModal = useTemplateRef<IEditModal<ActivityStepData>>('stepModal');
 const workshopModal = useTemplateRef<IEditModal<ActivityWorkshopData>>('workshopModal');
-const sectionsModal = useTemplateRef<InstanceType<typeof SectionsMenuModal>>('sectionsModal');
+const sectionsModal = useTemplateRef('sectionsModal');
 
 const familyTab = ref('classification');
 const preparationTab = ref('safety');
@@ -197,9 +197,9 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
     <Container>
         <div class="sticky top-0 flex gap-2 py-2 bg-base-100 z-10">
             <RouterLink class="btn btn-ghost" :to="{ name: routesNames.all }">
-                <ArrowLeftIcon class="opacity-50" /> {{ $t('actions.back') }}
+                <ArrowLeftIcon class="opacity-50" /> {{ t('actions.back') }}
             </RouterLink>
-            <button class="btn btn-ghost btn-square lg:hidden" :aria-label="$t('activities.authoring.navigation.title')"
+            <button class="btn btn-ghost btn-square lg:hidden" :aria-label="t('activities.authoring.navigation.title')"
                 @click="openSections">
                 <TableOfContentsIcon class="opacity-50" />
             </button>
@@ -207,20 +207,20 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
             <!-- Its own write: stores the state and leaves the form as it is. A new activity has
                  no record to write it to until its first save. -->
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden ms-auto"
-                :data-tip="$t(transition.label)">
+                :data-tip="t(transition.label)">
                 <button class="btn" :disabled="isChangingState || isNew" @click="changeState">
                     <span v-if="isChangingState" class="loading loading-spinner loading-sm"></span>
                     <BadgeCheckIcon v-if="transition.to === ActivityState.PUBLISHED" />
                     <UndoIcon v-else />
-                    <span class="sr-only sm:not-sr-only">{{ $t(transition.label) }}</span>
+                    <span class="sr-only sm:not-sr-only">{{ t(transition.label) }}</span>
                 </button>
             </div>
 
-            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden" :data-tip="$t('actions.save')">
+            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden" :data-tip="t('actions.save')">
                 <button class="btn btn-primary" :disabled="isLoading" @click="save">
                     <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
                     <SaveIcon class="opacity-50" />
-                    <span class="sr-only sm:not-sr-only">{{ $t('actions.save') }}</span>
+                    <span class="sr-only sm:not-sr-only">{{ t('actions.save') }}</span>
                 </button>
             </div>
         </div>
@@ -234,7 +234,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
             <div class="flex flex-col gap-2">
                 <Panel id="section-informations" class="scroll-mt-16">
                     <h2 class="text-2xl flex items-center gap-2">
-                        <LibraryIcon class="opacity-50" /> {{ $t('activities.families.informations') }}
+                        <LibraryIcon class="opacity-50" /> {{ t('activities.families.informations') }}
                     </h2>
                     <Field label="activities.fields.name" :error="errors.get('name')">
                         <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
@@ -243,7 +243,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <Field label="activities.fields.picture">
                         <FilesInput accept="image/*" @change="updateImage">
                             <template #constraints>
-                                {{ $t('activities.constraints.picture') }}
+                                {{ t('activities.constraints.picture') }}
                             </template>
                         </FilesInput>
                         <FilesList v-model:files="files" />
@@ -252,7 +252,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                 <Panel id="section-description" class="scroll-mt-16">
                     <h2 class="text-2xl flex items-center gap-2">
-                        <ScrollTextIcon class="opacity-50" /> {{ $t('activities.authoring.description') }}
+                        <ScrollTextIcon class="opacity-50" /> {{ t('activities.authoring.description') }}
                     </h2>
                     <TextEditor v-model="activity.description" class="min-h-64" />
                     <FieldError :error="errors.get('description')" />
@@ -262,18 +262,18 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                 <Panel id="section-families" class="scroll-mt-16">
                     <div class="tabs tabs-box">
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.classification')">
+                            :data-tip="t('activities.families.classification')">
                             <input type="radio" name="activity-families" value="classification" v-model="familyTab" />
                             <ShapesIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.classification') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.families.classification') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                                 <Field label="activities.fields.format" :error="errors.get('format')">
                                     <select class="select w-full" v-model="activity.classification.format">
-                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ t('activities.fields.unset') }}</option>
                                         <option v-for="value in formats" :key="value" :value="value">
-                                            {{ $t(`activities.format.${value}`) }}
+                                            {{ t(`activities.format.${value}`) }}
                                         </option>
                                     </select>
                                 </Field>
@@ -289,18 +289,18 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </div>
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.imaginary')">
+                            :data-tip="t('activities.families.imaginary')">
                             <input type="radio" name="activity-families" value="imaginary" v-model="familyTab" />
                             <SparklesIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.imaginary') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.families.imaginary') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                                 <Field label="activities.fields.imaginaryRule" :error="errors.get('imaginary_rule')">
                                     <select class="select w-full" v-model="activity.imaginary.rule">
-                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ t('activities.fields.unset') }}</option>
                                         <option v-for="value in imaginaryRules" :key="value" :value="value">
-                                            {{ $t(`activities.imaginaryRule.${value}`) }}
+                                            {{ t(`activities.imaginaryRule.${value}`) }}
                                         </option>
                                     </select>
                                 </Field>
@@ -312,17 +312,17 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </div>
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.audience')">
+                            :data-tip="t('activities.families.audience')">
                             <input type="radio" name="activity-families" value="audience" v-model="familyTab" />
                             <UsersIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.audience') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.families.audience') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                                 <Field :error="errors.get('age_min') || errors.get('age_max')">
                                     <template #label>
-                                        {{ $t('activities.fields.age') }}
-                                        <span class="font-normal opacity-60">{{ $t(ageLabel.key, ageLabel.params)
+                                        {{ t('activities.fields.age') }}
+                                        <span class="font-normal opacity-60">{{ t(ageLabel.key, ageLabel.params)
                                             }}</span>
                                     </template>
                                     <RangeInput class="text-primary" v-bind="AGE_BOUNDS" v-model:min="ageMin"
@@ -330,8 +330,8 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                 </Field>
                                 <Field :error="errors.get('participants_min') || errors.get('participants_max')">
                                     <template #label>
-                                        {{ $t('activities.fields.participants') }}
-                                        <span class="font-normal opacity-60">{{ $t(participantsLabel.key,
+                                        {{ t('activities.fields.participants') }}
+                                        <span class="font-normal opacity-60">{{ t(participantsLabel.key,
                                             participantsLabel.params)
                                         }}</span>
                                     </template>
@@ -340,9 +340,9 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                 </Field>
                                 <Field label="activities.fields.childrenPace" :error="errors.get('children_pace')">
                                     <select class="select w-full" v-model="activity.audience.childrenPace">
-                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ t('activities.fields.unset') }}</option>
                                         <option v-for="value in childrenPaces" :key="value" :value="value">
-                                            {{ $t(`activities.childrenPace.${value}`) }}
+                                            {{ t(`activities.childrenPace.${value}`) }}
                                         </option>
                                     </select>
                                 </Field>
@@ -353,18 +353,18 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </div>
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.supervision')">
+                            :data-tip="t('activities.families.supervision')">
                             <input type="radio" name="activity-families" value="supervision" v-model="familyTab" />
                             <UserCheckIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.supervision') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.families.supervision') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                                 <Field label="activities.fields.hostEffort" :error="errors.get('host_effort')">
                                     <select class="select w-full" v-model="activity.supervision.hostEffort">
-                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
+                                        <option :value="null">{{ t('activities.fields.unset') }}</option>
                                         <option v-for="value in hostEfforts" :key="value" :value="value">
-                                            {{ $t(`activities.hostEffort.${value}`) }}
+                                            {{ t(`activities.hostEffort.${value}`) }}
                                         </option>
                                     </select>
                                 </Field>
@@ -377,7 +377,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                             <label class="label mt-2">
                                 <input type="checkbox" class="checkbox checkbox-sm"
                                     v-model="activity.supervision.crossSupervision" />
-                                {{ $t('activities.fields.crossSupervision') }}
+                                {{ t('activities.fields.crossSupervision') }}
                             </label>
                             <Field label="activities.fields.supervisionNotes" :error="errors.get('supervision_notes')">
                                 <TextEditor v-model="activity.supervision.notes" class="min-h-24" />
@@ -385,22 +385,22 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </div>
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.place')">
+                            :data-tip="t('activities.families.place')">
                             <input type="radio" name="activity-families" value="place" v-model="familyTab" />
                             <MapPinIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.place') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.families.place') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <div class="flex gap-4">
                                 <label class="label">
                                     <input type="checkbox" class="checkbox checkbox-sm"
                                         v-model="activity.place.indoor" />
-                                    {{ $t('activities.fields.indoor') }}
+                                    {{ t('activities.fields.indoor') }}
                                 </label>
                                 <label class="label">
                                     <input type="checkbox" class="checkbox checkbox-sm"
                                         v-model="activity.place.outdoor" />
-                                    {{ $t('activities.fields.outdoor') }}
+                                    {{ t('activities.fields.outdoor') }}
                                 </label>
                             </div>
                             <Field label="activities.fields.seasons" :error="errors.get('seasons')">
@@ -417,10 +417,10 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </div>
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.pedagogy')">
+                            :data-tip="t('activities.families.pedagogy')">
                             <input type="radio" name="activity-families" value="pedagogy" v-model="familyTab" />
                             <GraduationCapIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.pedagogy') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.families.pedagogy') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
@@ -447,10 +447,10 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                 <Panel id="section-preparation" class="scroll-mt-16">
                     <div class="tabs tabs-box">
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.safety')">
+                            :data-tip="t('activities.families.safety')">
                             <input type="radio" name="activity-preparation" value="safety" v-model="preparationTab" />
                             <ShieldAlertIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.safety') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.families.safety') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <TagSelect :items="safetyInstructions" class="w-full" displayKey="name" keyBy="id"
@@ -459,10 +459,10 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </div>
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.materials.title')">
+                            :data-tip="t('activities.materials.title')">
                             <input type="radio" name="activity-preparation" value="materials" v-model="preparationTab" />
                             <PackageOpenIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.materials.title') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.materials.title') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <MaterialsSelection v-model="activity.materials" @add="addMaterial" @create="createMaterial"
@@ -471,10 +471,10 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                         </div>
 
                         <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.tips.title')">
+                            :data-tip="t('activities.tips.title')">
                             <input type="radio" name="activity-preparation" value="tips" v-model="preparationTab" />
                             <LightbulbIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.tips.title') }}</span>
+                            <span class="sr-only sm:not-sr-only">{{ t('activities.tips.title') }}</span>
                         </label>
                         <div class="tab-content p-3">
                             <TagSelect :items="tips" displayKey="name" keyBy="id" class="w-full"
@@ -486,11 +486,11 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                 <Panel id="section-workshops" class="scroll-mt-16">
                     <h2 class="text-2xl flex items-center gap-2">
-                        <BookOpenIcon class="opacity-50" /> {{ $t('activities.workshops.title') }}
+                        <BookOpenIcon class="opacity-50" /> {{ t('activities.workshops.title') }}
                     </h2>
                     <button class="btn btn-primary" @click="() => editWorkshop(newWorkshop())">
                         <PlusIcon class="opacity-50" />
-                        {{ $t('actions.add') }}
+                        {{ t('actions.add') }}
                     </button>
                     <FieldError :error="errors.get('workshops')" />
                     <List :items="activity.workshops" v-slot="{ item }">
@@ -499,7 +499,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                 <b>{{ item.name }}</b>
                                 <span v-if="item.theme" class="my-auto text-sm opacity-60">{{ item.theme }}</span>
                                 <span v-if="item.adults_required" class="badge my-auto">
-                                    {{ $t('activities.workshops.adults', { count: item.adults_required }) }}
+                                    {{ t('activities.workshops.adults', { count: item.adults_required }) }}
                                 </span>
                             </div>
                             <span v-if="item.challenges" v-html="item.challenges">
@@ -520,21 +520,21 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 
                 <Panel id="section-steps" class="scroll-mt-16">
                     <h2 class="text-2xl flex items-center gap-2">
-                        <ListOrderedIcon class="opacity-50" /> {{ $t('activities.authoring.steps.title') }}
+                        <ListOrderedIcon class="opacity-50" /> {{ t('activities.authoring.steps.title') }}
                         <span class="ms-auto text-sm font-normal opacity-60">
-                            {{ $t('activities.fields.preparationTime') }} {{ $t('activities.minutes', {
+                            {{ t('activities.fields.preparationTime') }} {{ t('activities.minutes', {
                                 minutes:
                                     timing.preparation
                             })
                             }}
-                            · {{ $t('activities.fields.playTime') }} {{ $t('activities.minutes', {
+                            · {{ t('activities.fields.playTime') }} {{ t('activities.minutes', {
                                 minutes: timing.play
                             }) }}
                         </span>
                     </h2>
                     <button class="btn btn-primary" @click="() => editStep(newStep())">
                         <PlusIcon class="opacity-50" />
-                        {{ $t('actions.add') }}
+                        {{ t('actions.add') }}
                     </button>
                     <FieldError :error="errors.get('steps')" />
                     <List :items="activity.steps" v-slot="{ item, index }">

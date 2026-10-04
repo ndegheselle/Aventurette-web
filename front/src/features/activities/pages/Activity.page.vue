@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import List from '@chapelure/ui/data/List.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
@@ -7,6 +7,9 @@ import StepSummary from '@features/activities/components/StepSummary.vue';
 import { useActivity } from '@features/activities/composables/useActivity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, CakeIcon, CalendarIcon, ClockIcon, CloudSunIcon, FileTextIcon, GaugeIcon, HeartIcon, HourglassIcon, ListOrderedIcon, MapPinIcon, MonitorPlayIcon, PackageOpenIcon, ScrollTextIcon, SparklesIcon, UserCheckIcon, UsersIcon, ZapIcon } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { activity, resources, timing, ageLabel, participantsLabel } = useActivity();
 </script>
@@ -14,11 +17,11 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
     <Container>
         <div class="sticky top-0 flex gap-1 sm:gap-2 py-1 bg-base-100 z-10">
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
-                 :data-tip="$t('actions.back')">
+                 :data-tip="t('actions.back')">
                 <RouterLink class="btn btn-ghost"
                             :to="{ name: activitiesRoutesNames.all }">
                     <ArrowLeftIcon />
-                    <span class="sr-only sm:not-sr-only">{{ $t('actions.back') }}</span>
+                    <span class="sr-only sm:not-sr-only">{{ t('actions.back') }}</span>
                 </RouterLink>
             </div>
             <ActivityNotices v-if="activity"
@@ -26,34 +29,34 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                              :tips="activity.tips" />
 
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden ms-auto"
-                 :data-tip="$t('activities.actions.favorite')">
+                 :data-tip="t('activities.actions.favorite')">
                 <button class="btn"
                         disabled>
                     <HeartIcon />
-                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.favorite') }}</span>
+                    <span class="sr-only sm:not-sr-only">{{ t('activities.actions.favorite') }}</span>
                 </button>
             </div>
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
-                 :data-tip="$t('activities.actions.addToPlanning')">
+                 :data-tip="t('activities.actions.addToPlanning')">
                 <button class="btn"
                         disabled>
                     <CalendarIcon />
-                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.addToPlanning') }}</span>
+                    <span class="sr-only sm:not-sr-only">{{ t('activities.actions.addToPlanning') }}</span>
                 </button>
             </div>
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden"
-                 :data-tip="$t('activities.actions.start')">
+                 :data-tip="t('activities.actions.start')">
                 <RouterLink v-if="activity"
                             class="btn btn-primary"
                             :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
                     <MonitorPlayIcon />
-                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.start') }}</span>
+                    <span class="sr-only sm:not-sr-only">{{ t('activities.actions.start') }}</span>
                 </RouterLink>
                 <button v-else
                         class="btn btn-primary"
                         disabled>
                     <MonitorPlayIcon />
-                    <span class="sr-only sm:not-sr-only">{{ $t('activities.actions.start') }}</span>
+                    <span class="sr-only sm:not-sr-only">{{ t('activities.actions.start') }}</span>
                 </button>
             </div>
         </div>
@@ -67,7 +70,7 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                         <div class="flex flex-wrap gap-1">
                             <span v-if="activity.classification.format"
                                   class="badge badge-primary">
-                                {{ $t(`activities.format.${activity.classification.format}`) }}
+                                {{ t(`activities.format.${activity.classification.format}`) }}
                             </span>
                             <span v-for="theme in activity.classification.themes"
                                   :key="theme.id"
@@ -81,54 +84,54 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                     <dl class="list">
                         <div class="list-row p-2">
                             <dt class="text-sm opacity-60 flex items-center gap-1">
-                                <CakeIcon class="size-4" /> {{ $t('activities.fields.age') }}
+                                <CakeIcon class="size-4" /> {{ t('activities.fields.age') }}
                             </dt>
-                            <dd class="ms-auto">{{ $t(ageLabel.key, ageLabel.params) }}</dd>
+                            <dd class="ms-auto">{{ t(ageLabel.key, ageLabel.params) }}</dd>
                         </div>
                         <div class="list-row p-2">
                             <dt class="text-sm opacity-60 flex items-center gap-1">
-                                <UsersIcon class="size-4" /> {{ $t('activities.fields.participants') }}
+                                <UsersIcon class="size-4" /> {{ t('activities.fields.participants') }}
                             </dt>
-                            <dd class="ms-auto">{{ $t(participantsLabel.key, participantsLabel.params) }}</dd>
+                            <dd class="ms-auto">{{ t(participantsLabel.key, participantsLabel.params) }}</dd>
                         </div>
                         <div class="list-row p-2">
                             <dt class="text-sm opacity-60 flex items-center gap-1">
-                                <HourglassIcon class="size-4" /> {{ $t('activities.fields.preparationTime') }}
+                                <HourglassIcon class="size-4" /> {{ t('activities.fields.preparationTime') }}
                             </dt>
-                            <dd class="ms-auto">{{ $t('activities.minutes', { minutes: timing.preparation }) }}</dd>
+                            <dd class="ms-auto">{{ t('activities.minutes', { minutes: timing.preparation }) }}</dd>
                         </div>
                         <div class="list-row p-2">
                             <dt class="text-sm opacity-60 flex items-center gap-1">
-                                <ClockIcon class="size-4" /> {{ $t('activities.fields.playTime') }}
+                                <ClockIcon class="size-4" /> {{ t('activities.fields.playTime') }}
                             </dt>
-                            <dd class="ms-auto">{{ $t('activities.minutes', { minutes: timing.play }) }}</dd>
+                            <dd class="ms-auto">{{ t('activities.minutes', { minutes: timing.play }) }}</dd>
                         </div>
                         <div class="list-row p-2">
                             <dt class="text-sm opacity-60 flex items-center gap-1">
-                                <MapPinIcon class="size-4" /> {{ $t('activities.families.place') }}
+                                <MapPinIcon class="size-4" /> {{ t('activities.families.place') }}
                             </dt>
                             <dd class="flex flex-wrap gap-1 ms-auto">
                                 <span v-if="activity.place.indoor"
-                                      class="badge">{{ $t('activities.fields.indoor') }}</span>
+                                      class="badge">{{ t('activities.fields.indoor') }}</span>
                                 <span v-if="activity.place.outdoor"
-                                      class="badge">{{ $t('activities.fields.outdoor') }}</span>
+                                      class="badge">{{ t('activities.fields.outdoor') }}</span>
                             </dd>
                         </div>
                         <div v-if="activity.audience.childrenPace" class="list-row p-2">
                             <dt class="text-sm opacity-60 flex items-center gap-1">
-                                <GaugeIcon class="size-4" /> {{ $t('activities.fields.childrenPace') }}
+                                <GaugeIcon class="size-4" /> {{ t('activities.fields.childrenPace') }}
                             </dt>
-                            <dd class="ms-auto">{{ $t(`activities.childrenPace.${activity.audience.childrenPace}`) }}</dd>
+                            <dd class="ms-auto">{{ t(`activities.childrenPace.${activity.audience.childrenPace}`) }}</dd>
                         </div>
                         <div v-if="activity.supervision.hostEffort" class="list-row p-2">
                             <dt class="text-sm opacity-60 flex items-center gap-1">
-                                <ZapIcon class="size-4" /> {{ $t('activities.fields.hostEffort') }}
+                                <ZapIcon class="size-4" /> {{ t('activities.fields.hostEffort') }}
                             </dt>
-                            <dd class="ms-auto">{{ $t(`activities.hostEffort.${activity.supervision.hostEffort}`) }}</dd>
+                            <dd class="ms-auto">{{ t(`activities.hostEffort.${activity.supervision.hostEffort}`) }}</dd>
                         </div>
                         <div v-if="activity.supervision.hostsRequired" class="list-row p-2">
                             <dt class="text-sm opacity-60 flex items-center gap-1">
-                                <UserCheckIcon class="size-4" /> {{ $t('activities.fields.hosts') }}
+                                <UserCheckIcon class="size-4" /> {{ t('activities.fields.hosts') }}
                             </dt>
                             <dd class="ms-auto">{{ activity.supervision.hostsRequired }}</dd>
                         </div>
@@ -136,7 +139,7 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                     <div v-if="activity.pedagogy.idealFor.length"
                          class="flex flex-wrap items-center gap-1">
                         <span class="text-sm opacity-60 flex items-center gap-1">
-                            <SparklesIcon class="size-4" /> {{ $t('activities.tagType.IDEAL_FOR') }}
+                            <SparklesIcon class="size-4" /> {{ t('activities.tagType.IDEAL_FOR') }}
                         </span>
                         <span v-for="tag in activity.pedagogy.idealFor"
                               :key="tag.id"
@@ -144,7 +147,7 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                     </div>
                     <div v-if="activity.place.conditions">
                         <h3 class="text-sm opacity-60 flex items-center gap-1">
-                            <CloudSunIcon class="size-4" /> {{ $t('activities.fields.conditions') }}
+                            <CloudSunIcon class="size-4" /> {{ t('activities.fields.conditions') }}
                         </h3>
                         <div v-html="activity.place.conditions" class="ms-auto"></div>
                     </div>
@@ -153,7 +156,7 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
 
             <Panel v-if="activity.materials.length">
                 <h2 class="text-2xl flex items-center gap-2">
-                    <PackageOpenIcon /> {{ $t('activities.materials.title') }}
+                    <PackageOpenIcon /> {{ t('activities.materials.title') }}
                 </h2>
                 <div class="flex flex-wrap gap-2">
                     <div class="text-center"
@@ -169,7 +172,7 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
             </Panel>
             <Panel v-if="resources.length">
                 <h2 class="text-2xl flex items-center gap-2">
-                    <FileTextIcon /> {{ $t('activities.steps.fields.resources.title') }}
+                    <FileTextIcon /> {{ t('activities.steps.fields.resources.title') }}
                 </h2>
                 <div class="flex gap-2">
                     <div class="text-center"
@@ -183,13 +186,13 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
             </Panel>
             <Panel>
                 <h2 class="text-2xl flex items-center gap-2">
-                    <ScrollTextIcon class="opacity-50" /> {{ $t('activities.description') }}
+                    <ScrollTextIcon class="opacity-50" /> {{ t('activities.description') }}
                 </h2>
                 <p v-html="activity.description"></p>
             </Panel>
             <Panel v-if="activity.workshops.length">
                 <h2 class="text-2xl flex items-center gap-2">
-                    <UsersIcon class="opacity-50" /> {{ $t('activities.workshops.title') }}
+                    <UsersIcon class="opacity-50" /> {{ t('activities.workshops.title') }}
                 </h2>
                 <List :items="activity.workshops"
                       v-slot="{ item }">
@@ -202,13 +205,13 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                     </div>
                     <span v-if="item.adults_required"
                           class="badge">
-                        {{ $t('activities.workshops.adults', { count: item.adults_required }) }}
+                        {{ t('activities.workshops.adults', { count: item.adults_required }) }}
                     </span>
                 </List>
             </Panel>
             <Panel>
                 <h2 class="text-2xl flex items-center gap-2">
-                    <ListOrderedIcon class="opacity-50" /> {{ $t('activities.steps.title') }}
+                    <ListOrderedIcon class="opacity-50" /> {{ t('activities.steps.title') }}
                 </h2>
                 <List :items="activity.steps"
                       v-slot="{ item, index }">

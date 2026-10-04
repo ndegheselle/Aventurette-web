@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup vapor lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { routesNames } from '@features/admin/catalogue-authoring/routes';
@@ -26,7 +26,7 @@ useNavbar(t('catalogue.title'));
                         class="tab"
                         active-class="tab-active"
                         :to="{ name: tab.to }">
-                {{ $t(tab.label) }}
+                {{ t(tab.label) }}
             </RouterLink>
         </div>
 
