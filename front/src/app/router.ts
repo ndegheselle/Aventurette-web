@@ -1,5 +1,5 @@
 import Auth from '@/app/Auth.layout.vue';
-import Default from '@/app/Default.layout.vue';
+import Responsive from '@/app/Responsive.layout.vue';
 import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import authoringRoutes from '@features/admin/activities-authoring/routes';
 import catalogueRoutes from '@features/admin/catalogue-authoring/routes';
@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
     { path: '', redirect: { name: activitiesRoutesNames.all } },
     {
         path: '',
-        component: Default,
+        component: Responsive,
         children: [
 
             ...dashboardRoutes,

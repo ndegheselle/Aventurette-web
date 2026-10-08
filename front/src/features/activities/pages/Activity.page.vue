@@ -155,15 +155,17 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                 <h2 class="text-2xl flex items-center gap-2">
                     <PackageOpenIcon /> {{ $t('activities.materials.title') }}
                 </h2>
-                <div class="flex flex-wrap gap-2">
-                    <div class="text-center"
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-3"
                          v-for="material in activity.materials"
                          :key="material.id">
-                        <img class="size-24 rounded-box"
+                        <img class="size-10 rounded-box"
                              src="https://placeholder.pagebee.io/api/plain/128/128" />
-                        <span>{{ material.name }}</span>
-                        <span v-if="material.quantity"
-                              class="block text-xs opacity-60">{{ material.quantity }}</span>
+                        <div>
+                            <span>{{ material.name }}</span>
+                            <span v-if="material.quantity"
+                                  class="block text-xs opacity-60">{{ material.quantity }}</span>
+                        </div>
                     </div>
                 </div>
             </Panel>

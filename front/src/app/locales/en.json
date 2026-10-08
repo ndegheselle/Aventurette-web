@@ -1,5 +1,11 @@
 {
     "home": "Home",
+    "back": "Back",
+    "dock": {
+        "ludotech": "Ludotech",
+        "search": "Search",
+        "tips": "Tips"
+    },
     "admin": {
         "title": "Administration"
     },

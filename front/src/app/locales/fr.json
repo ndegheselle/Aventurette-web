@@ -1,5 +1,11 @@
 {
     "home": "Accueil",
+    "back": "Retour",
+    "dock": {
+        "ludotech": "Ludothèque",
+        "search": "Rechercher",
+        "tips": "Astuces"
+    },
     "admin": {
         "title": "Administration"
     },
