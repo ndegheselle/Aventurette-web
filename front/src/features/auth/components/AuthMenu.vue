@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { LogOutIcon } from 'lucide-vue-next';
+import { routesNames as userRoutesNames } from '@features/user/routes';
+import { LogOutIcon, SettingsIcon } from 'lucide-vue-next';
 import { useAuth } from '@features/auth/composables/useAuth';
 import { routesNames as authRoutesNames } from '@features/auth/routes';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
@@ -28,6 +29,9 @@ function logoutToLogin() {
         </template>
         <ul class="menu p-2 w-40">
             <li class="menu-title">{{ current?.email }}</li>
+            <RouterLink class="btn btn-ghost mb-1" :to="{ name: userRoutesNames.settings }">
+                <SettingsIcon /> {{ $t('user.settings.title') }}
+            </RouterLink>
             <a @click="logoutToLogin" class="btn">
                 <LogOutIcon /> {{ $t('auth.logout') }}
             </a>

@@ -9,6 +9,7 @@ it owns, the shape of its data, the rules that hold, and what is not finished.
 | [activities-authoring](activities-authoring.md) | Authoring: the author's own activities, and the form behind them |
 | [catalogue-authoring](catalogue-authoring.md) | The catalogues every activity picks from: materials, tags, safety instructions, tips |
 | [auth](auth.md) | Signing in, signing up, roles, and guarding the rest of the app |
+| [user](user.md) | A signed-in user's own settings: the profile page |
 | [dashboard](dashboard.md) | The signed-in user's landing page — empty for now |
 
 A feature's own layout, and the rules every feature follows, are in

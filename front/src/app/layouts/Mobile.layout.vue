@@ -2,12 +2,11 @@
 import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
-import SettingsMenu from '@chapelure/ui/settings/SettingsMenu.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import AuthMenu from '@features/auth/components/AuthMenu.vue';
-import { ArrowLeftIcon, LibraryIcon, LightbulbIcon, SearchIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, LibraryIcon, LightbulbIcon, SearchIcon, UserIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { routesNames as usersRoutesNames } from '@features/user/routes';
 
 const { title } = useNavbar();
 const route = useRoute();
@@ -28,17 +27,18 @@ function goBack() {
 
 <template>
     <div class="flex flex-col min-h-dvh">
-        <nav class="navbar bg-base-300 min-h-0 p-1 sticky top-0 z-10">
+        <nav class="navbar min-h-0 p-1 sticky top-0 z-10">
             <div class="w-12">
-                <button v-if="canGoBack" type="button" class="btn btn-square btn-ghost"
-                    :aria-label="$t('back')" @click="goBack">
+                <button v-if="canGoBack" type="button" class="btn btn-square btn-ghost" :aria-label="$t('back')"
+                    @click="goBack">
                     <ArrowLeftIcon />
                 </button>
             </div>
-            <span class="flex-1 text-center text-lg truncate">{{ title }}</span>
+            <span class="flex-1 text-lg truncate">{{ title }}</span>
             <ul class="flex">
-                <SettingsMenu />
-                <AuthMenu />
+                <RouterLink class="btn btn-circle" :to="{ name: usersRoutesNames.settings }">
+                    <UserIcon />
+                </RouterLink>
             </ul>
         </nav>
 

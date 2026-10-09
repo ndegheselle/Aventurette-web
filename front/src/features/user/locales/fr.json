@@ -1,0 +1,11 @@
+{
+    "user": {
+        "settings": {
+            "title": "Paramètres",
+            "profile": "Profil",
+            "email": "E-mail",
+            "name": "Nom affiché",
+            "save": "Enregistrer"
+        }
+    }
+}

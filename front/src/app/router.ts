@@ -1,10 +1,11 @@
-import Auth from '@/app/Auth.layout.vue';
-import Responsive from '@/app/Responsive.layout.vue';
+import Empty from '@/app/layouts/Empty.layout.vue';
+import Mobile from '@/app/layouts/Mobile.layout.vue';
 import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import authoringRoutes from '@features/admin/activities-authoring/routes';
 import catalogueRoutes from '@features/admin/catalogue-authoring/routes';
 import authRoutes from '@features/auth/routes';
 import dashboardRoutes from '@features/dashboard/routes';
+import userRoutes from '@features/user/routes';
 import type { RouteRecordRaw } from 'vue-router';
 
 // Each feature owns its route module; the app only picks the layout they hang under.
@@ -13,18 +14,19 @@ const routes: RouteRecordRaw[] = [
     { path: '', redirect: { name: activitiesRoutesNames.all } },
     {
         path: '',
-        component: Responsive,
+        component: Mobile,
         children: [
 
             ...dashboardRoutes,
             ...activitiesRoutes,
             ...authoringRoutes,
             ...catalogueRoutes,
+            ...userRoutes,
         ]
     },
     {
         path: '',
-        component: Auth,
+        component: Empty,
         children: [
             ...authRoutes,
         ]
