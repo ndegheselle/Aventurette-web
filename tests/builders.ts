@@ -30,7 +30,7 @@ import type { ActivityTagPayload } from '@features/activities/api/tag.mapper';
 import type { ActivityTipPayload } from '@features/activities/api/tip.mapper';
 import type { ActivityWorkshopPayload } from '@features/activities/api/workshop.mapper';
 import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
-import type { UserData } from '@features/auth/model/user';
+import type { UserData } from '@features/user/model/user';
 
 let sequence = 0;
 const nextId = (prefix: string) => `${prefix}${(++sequence).toString().padStart(12, '0')}`;

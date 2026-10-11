@@ -22,7 +22,7 @@ the activity's editor in [activities-authoring](activities-authoring.md).
 The four are children of `Catalogue.page.vue`, which holds the tabs and the navbar title.
 Admin-only: the parent's `meta.roles` is `[Role.ADMIN]`, which vue-router merges into each
 child, so the auth guard sends anyone else home, and the sidebar hides the link
-([auth](auth.md#roles)).
+([auth](user.md#roles)).
 
 The backend checks it too for tags, safety instructions and tips: their create, update and
 delete rules ask for `@request.auth.role = "ADMIN"`

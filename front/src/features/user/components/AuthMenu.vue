@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { routesNames as userRoutesNames } from '@features/user/routes';
 import { LogOutIcon, SettingsIcon } from 'lucide-vue-next';
-import { useAuth } from '@features/auth/composables/useAuth';
-import { routesNames as authRoutesNames } from '@features/auth/routes';
+import { useAuth } from '@features/user/composables/useAuth';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import { useRouter } from 'vue-router';
 
@@ -11,7 +10,7 @@ const router = useRouter();
 
 function logoutToLogin() {
     logout();
-    router.push({ name: authRoutesNames.login });
+    router.push({ name: userRoutesNames.login });
 }
 </script>
 
@@ -37,7 +36,7 @@ function logoutToLogin() {
             </a>
         </ul>
     </Dropdown>
-    <RouterLink class="btn btn-primary btn-sm" v-else :to="{ name: authRoutesNames.login }">
+    <RouterLink class="btn btn-primary btn-sm" v-else :to="{ name: userRoutesNames.login }">
         {{ $t('auth.login.title') }}
     </RouterLink>
 </template>

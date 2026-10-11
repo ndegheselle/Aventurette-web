@@ -18,7 +18,7 @@ import {
     type SheetStepFiles,
 } from '@features/admin/activities-authoring/model/activity.import';
 import { routesNames } from '@features/admin/activities-authoring/routes';
-import { useAuth } from '@features/auth/composables/useAuth';
+import { useAuth } from '@features/user/composables/useAuth';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 

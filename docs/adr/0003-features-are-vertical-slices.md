@@ -30,6 +30,6 @@ Specs sat next to what they cover when this was written. They live in the featur
 
 - A feature is deletable: remove the folder and its line in the router.
 - The layout of a feature never has to be explained; it is the layout of every other feature.
-- Cross-feature imports are possible and not forbidden — `activities-authoring` reads the session from `auth`.
+- Cross-feature imports are possible and not forbidden — `activities-authoring` reads the session from `user`.
   What keeps this honest is that features import each other's `model/`, `composables/` and
   `components/`, never each other's `pages/`.

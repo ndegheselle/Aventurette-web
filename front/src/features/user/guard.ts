@@ -1,6 +1,6 @@
-import { useAuth } from '@features/auth/composables/useAuth';
-import type { Role } from '@features/auth/model/user';
-import { routesNames } from '@features/auth/routes';
+import { useAuth } from '@features/user/composables/useAuth';
+import type { Role } from '@features/user/model/user';
+import { routesNames } from '@features/user/routes';
 import type { RouteLocationNormalized } from 'vue-router';
 
 declare module 'vue-router' {

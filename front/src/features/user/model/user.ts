@@ -18,3 +18,17 @@ export function hasRole(user: UserData | null, roles: readonly Role[] = []): boo
     if (roles.length === 0) return true;
     return user !== null && roles.includes(roleOf(user));
 }
+
+/** What the settings page edits of a user. */
+export type ProfileForm = {
+    name: string;
+};
+
+export function toProfileForm(user: UserData | null): ProfileForm {
+    return { name: user?.name ?? '' };
+}
+
+/** What a save sends: a name of spaces only is no name. */
+export function toProfilePatch(form: ProfileForm): Partial<UserData> {
+    return { name: form.name.trim() };
+}

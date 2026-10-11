@@ -91,7 +91,7 @@ app's real catalogue, so assertions are on the copy a user would read.
   `lint:arch` fails if they drift.
 - Tailwind does not scan `node_modules`, so `front/src/app/styles/index.css` declares
   `@source` for `packages/ui/src`. Removing it silently drops every class used only there.
-- A new route is private by default — `features/auth/guard.ts` whitelists login and register
+- A new route is private by default — `features/user/guard.ts` whitelists login and register
   only.
 
 ## Scope
