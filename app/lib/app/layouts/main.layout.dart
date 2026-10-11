@@ -25,7 +25,7 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // The dock's home: nothing to go back to from there.
-    final canGoBack = state.name != activities.routesNames.all;
+    final canGoBack = state.topRoute?.name != activities.routesNames.all;
 
     return Scaffold(
       appBar: AppBar(

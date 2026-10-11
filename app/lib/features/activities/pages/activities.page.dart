@@ -88,8 +88,8 @@ class _ActivityGrid extends StatelessWidget {
     return GridView.builder(
       padding: const EdgeInsets.all(8),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 320,
-        mainAxisExtent: 260,
+        maxCrossAxisExtent: 480,
+        mainAxisExtent: 190,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
