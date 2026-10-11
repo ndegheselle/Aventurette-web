@@ -1,0 +1,74 @@
+{
+    "settings": {
+        "theme": "Thème",
+        "language": "Langue",
+        "themes": {
+            "auto": "Automatique",
+            "dark": "Sombre",
+            "light": "Clair"
+        }
+    },
+    "validation": {
+        "errors": {
+            "default": "Une erreur est survenue.",
+            "validation_values_mismatch": "Les valeurs ne correspondent pas.",
+            "validation_required": "Valeur obligatoire.",
+            "validation_invalid_email": "Email invalide ou déjà utilisé.",
+            "validation_not_unique": "Cette valeur est déjà utilisée.",
+            "validation_invalid_format": "Cette valeur n'est pas au format attendu."
+        }
+    },
+    "actions": {
+        "select": "Sélectionner",
+        "search": "Rechercher ...",
+        "add": "Ajouter",
+        "save": "Sauvegarder",
+        "cancel": "Annuler",
+        "update": "Modifier",
+        "confirm": "Confirmer",
+        "back": "Retour",
+        "close": "Fermer"
+    },
+    "inputs": {
+        "file": {
+            "upload": {
+                "label": "Choisir un fichier ou glisser-déposer ici",
+                "browse": "Parcourir",
+                "unsuported": "'{name}' a un format non supporté.",
+                "exceedSize": "'{name}' dépasse la limite de {maxSize} MB ({size})",
+                "exceedNumber": "Maximum {number} fichiers."
+            }
+        },
+        "password": {
+            "reveal": "Afficher le mot de passe"
+        },
+        "range": {
+            "any": "Tous",
+            "from": "{min} et plus",
+            "upTo": "Jusqu'à {max}",
+            "between": "De {min} à {max}",
+            "exactly": "{min}"
+        }
+    },
+    "confirmation": {
+        "remove": {
+            "title": "Confirmer la suppression",
+            "message": "Êtes-vous sûr de vouloir supprimer {name} ?",
+            "messageSimple": "Êtes-vous sûr de vouloir supprimer cet élément ?"
+        }
+    },
+    "data": {
+        "noData": "Aucune donnée",
+        "minimum": "Minimum",
+        "maximum": "Maximum",
+        "created": "Créé avec succès !",
+        "updated": "Mis à jour avec succès !",
+        "pagination": {
+            "first": "Première page",
+            "last": "Dernière page",
+            "previous": "Page précédente",
+            "next": "Page suivante",
+            "of": "de"
+        }
+    }
+}
