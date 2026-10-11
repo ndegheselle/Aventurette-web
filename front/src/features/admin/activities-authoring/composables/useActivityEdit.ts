@@ -39,7 +39,7 @@ import {
 import { createEmptyStep } from '@features/admin/activities-authoring/model/step.edit';
 import { createEmptyWorkshop } from '@features/admin/activities-authoring/model/workshop.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';
-import { useAuth } from '@features/auth/composables/useAuth';
+import { useAuth } from '@features/user/composables/useAuth';
 import { computed, onMounted, ref, shallowRef, toRaw, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';

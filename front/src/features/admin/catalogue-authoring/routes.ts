@@ -1,4 +1,4 @@
-import { Role } from '@features/auth/model/user';
+import { Role } from '@features/user/model/user';
 import type { RouteRecordRaw } from 'vue-router';
 
 import CataloguePage from '@features/admin/catalogue-authoring/pages/Catalogue.page.vue';

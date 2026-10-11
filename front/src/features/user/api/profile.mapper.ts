@@ -1,6 +1,6 @@
 import type { UsersResponse } from '@/backend/schema.g';
 import { plainMapper, type EntityMapper } from '@chapelure/core';
-import type { UserData } from '@features/auth/model/user';
+import type { UserData } from '@features/user/model/user';
 
 /** A user as the backend stores it. */
 export type UserPayload = UsersResponse;

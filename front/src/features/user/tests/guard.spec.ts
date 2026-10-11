@@ -1,14 +1,14 @@
 import { aUser, fakeAuthProvider } from '@tests';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
-import { useAuth } from '@features/auth/composables/useAuth';
-import { authGuard } from '@features/auth/guard';
-import { Role } from '@features/auth/model/user';
-import { routesNames } from '@features/auth/routes';
+import { useAuth } from '@features/user/composables/useAuth';
+import { authGuard } from '@features/user/guard';
+import { Role } from '@features/user/model/user';
+import { routesNames } from '@features/user/routes';
 
 const provider = fakeAuthProvider(aUser());
 
-vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => provider }));
+vi.mock('@features/user/api/session', () => ({ sessionProvider: () => provider }));
 
 /** Only the fields the guard reads; the rest of a route location does not matter. */
 const going = (name: string, roles?: Role[]) => ({ name, meta: { roles } } as RouteLocationNormalized);

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { NotImplementedError } from '@chapelure/core';
 import Field from '@chapelure/ui/forms/Field.vue';
+import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import PasswordInput from '@chapelure/ui/forms/PasswordInput.vue';
-import LoginProviders from '@features/auth/components/LoginProviders.vue';
-import { useRegisterForm } from '@features/auth/composables/useRegisterForm';
-import { routesNames } from '@features/auth/routes';
+import LoginProviders from '@features/user/components/LoginProviders.vue';
+import { useLoginForm } from '@features/user/composables/useLoginForm';
+import { routesNames } from '@features/user/routes';
 import { MailIcon } from 'lucide-vue-next';
 
-const { credentials, isLoading, errors, submit } = useRegisterForm();
+const { credentials, rememberMe, isLoading, errors, submit } = useLoginForm();
 
 function signInWith(_provider: string) {
     throw new NotImplementedError();
@@ -17,7 +18,7 @@ function signInWith(_provider: string) {
 <template>
     <div class="flex flex-1 my-2">
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
-            <legend class="fieldset-legend">{{ $t('auth.register') }}</legend>
+            <legend class="fieldset-legend">{{ $t('auth.login.title') }}</legend>
 
             <Field label="auth.form.email"
                    :error="errors.get('email')">
@@ -34,11 +35,13 @@ function signInWith(_provider: string) {
                 <PasswordInput v-model="credentials.password"
                                :error="!!errors.get('password')" />
             </Field>
-            <Field label="auth.form.confirmPassword"
-                   :error="errors.get('passwordConfirm')">
-                <PasswordInput v-model="credentials.passwordConfirm"
-                               :error="!!errors.get('passwordConfirm')" />
-            </Field>
+
+            <FieldError :error="errors.global.value" />
+
+            <label class="label">
+                <input type="checkbox" class="checkbox" v-model="rememberMe" />
+                {{ $t('auth.form.rememberMe') }}
+            </label>
 
             <div class="divider">{{ $t('auth.form.withOauth2') }}</div>
             <LoginProviders @provider-selected="signInWith" />
@@ -47,11 +50,11 @@ function signInWith(_provider: string) {
                     :disabled="isLoading"
                     @click="submit">
                 <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
-                {{ $t('auth.register') }}
+                {{ $t('auth.login.title') }}
             </button>
             <RouterLink class="btn btn-ghost"
-                        :to="{ name: routesNames.login }">
-                {{ $t('auth.form.accountAlready') }}
+                        :to="{ name: routesNames.register }">
+                {{ $t('auth.form.accountNew') }}
             </RouterLink>
         </fieldset>
     </div>

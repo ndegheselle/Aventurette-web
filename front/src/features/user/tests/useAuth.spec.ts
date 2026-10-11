@@ -1,13 +1,13 @@
 import { NotAuthenticatedError } from '@chapelure/core';
 import { aUser, fakeAuthProvider, withSetup } from '@tests';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { UserData } from '@features/auth/model/user';
-import { useAuth } from '@features/auth/composables/useAuth';
+import type { UserData } from '@features/user/model/user';
+import { useAuth } from '@features/user/composables/useAuth';
 
 const user = aUser({ email: 'parent@example.com' });
 const provider = fakeAuthProvider<UserData>(user);
 
-vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => provider }));
+vi.mock('@features/user/api/session', () => ({ sessionProvider: () => provider }));
 
 async function setup() {
     const [auth] = withSetup(() => useAuth());

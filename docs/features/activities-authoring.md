@@ -16,7 +16,7 @@ a mode.
 | `activities.authoring.page` | `/activities/authoring/:id` | Authoring, one form |
 
 All three are admin-only: `meta.roles` is `[Role.ADMIN]`, so the auth guard sends anyone else home,
-and the sidebar hides their links ([auth](auth.md#roles)).
+and the sidebar hides their links ([auth](user.md#roles)).
 
 ## The list
 

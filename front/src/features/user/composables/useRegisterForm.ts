@@ -1,5 +1,5 @@
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
-import { useAuth } from '@features/auth/composables/useAuth';
+import { useAuth } from '@features/user/composables/useAuth';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 

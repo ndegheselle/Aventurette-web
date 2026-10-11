@@ -1,12 +1,12 @@
 import { aUser, fakeAuthProvider, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import RegisterPage from '@features/auth/pages/Register.page.vue';
+import RegisterPage from '@features/user/pages/Register.page.vue';
 
 const user = aUser();
 const auth = fakeAuthProvider(user);
 
-vi.mock('@features/auth/api/session', () => ({ sessionProvider: () => auth }));
+vi.mock('@features/user/api/session', () => ({ sessionProvider: () => auth }));
 
 async function mountForm() {
     return mountWithRouter(RegisterPage, {

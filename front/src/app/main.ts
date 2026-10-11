@@ -5,7 +5,7 @@ import '@/backend';
 
 import { i18n } from '@/app/i18n';
 import { applyStoredTheme } from '@chapelure/ui/settings/useSettings';
-import { authGuard } from '@features/auth/guard';
+import { authGuard } from '@features/user/guard';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';

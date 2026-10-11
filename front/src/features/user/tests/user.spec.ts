@@ -1,6 +1,6 @@
 import { aUser } from '@tests';
 import { describe, expect, it } from 'vitest';
-import { hasRole, Role, roleOf, type UserData } from '@features/auth/model/user';
+import { hasRole, Role, roleOf, type UserData } from '@features/user/model/user';
 
 describe('roleOf', () => {
     it('reads an empty role as a plain user', () => {
