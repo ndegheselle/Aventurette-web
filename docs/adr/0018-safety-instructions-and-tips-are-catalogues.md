@@ -27,11 +27,9 @@ its safety instructions.
 An activity links them through `safety_instructions`, which the model reads into
 `activity.safety.instructions`.
 
-**`tips`** holds advice, as a `name` and the advice itself in `description`. An activity links
-the tips it gives through `tips`, which the model reads into `activity.tips`. They sit beside
-`steps`, `materials` and `workshops` rather than in a family
-([ADR 0015](0015-activity-attributes-grouped-by-family.md)): the template wrote them under the
-steps, and none of its families holds them.
+**`tips`** holds advice, as a `name` and the advice itself in `description`. A step links the
+tips it gives through `activities_steps.tips`, which the model reads into `step.tips`: the
+template writes a tip under the step it helps with, and the run screen shows it there.
 
 Both are reference data, like the tags: anyone may read them and a superuser writes them, from
 the Dashboard. The editor picks among them and creates none.
@@ -61,14 +59,19 @@ step has no title, and linked to the activity in the order of its steps. Then it
 `activities_steps.tip`. Its rollback puts every tip an activity links back on its first step,
 since which step a tip came from is not kept.
 
+Migration `1791000000_tips_on_steps.go` then moves the link from the activity to its steps:
+`activities.tips` goes, and every tip an activity linked goes on its first step, since which step
+it was for is not kept. An activity with no step keeps none, the tips staying in the catalogue.
+
 ## Consequences
 
 - `tags` is uniform again: `type`, `slug`, `name`. The tag-kind hook checks one relation fewer.
-- **A tip belongs to the activity, not to a step.** The run screen no longer shows advice at the
-  step it was written for.
+- **A tip belongs to a step.** The run screen shows a step's tips at that step, and the detail
+  screen no longer has a tips button.
 - **Tips are picked, not written.** An author cannot add one from the editor. The catalogue
   starts with one row per tip the steps held, named after their step, so near-duplicates are
   merged by hand.
-- The import matches safety instructions by name or slug, and tips by name, the way it matches
-  tags. The sheet format went to version 2, so a version 1 file, which named safety tags and
-  gave each step a tip, is refused rather than read with those parts silently lost.
+- The import matches safety instructions by name or slug, and each step's tips by name, the way
+  it matches tags. The sheet format is version 3: a version 1 file named safety tags and gave
+  each step a tip, a version 2 one named the tips on the activity, and both are refused rather
+  than read with those parts silently lost.

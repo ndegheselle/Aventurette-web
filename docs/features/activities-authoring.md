@@ -58,11 +58,12 @@ through it and checks the schema's enum codes against the app's, so the three ca
 or `null` reads as unset. `name` is required, and so is a title or a description on each step.
 The sheet reads as `ActivityData` does, family by family, except that **tags, safety
 instructions, tips and materials are names**: the file is written before anything exists to
-point at. The format is version 2; version 1 named safety tags and gave each step a tip, a visual
-brief and end criteria, and is refused.
+point at. The format is version 3; version 1 named safety tags and gave each step a tip, a visual
+brief and end criteria, and version 2 named the tips on the activity. Both are refused.
 
 - **Tags, safety instructions and tips are matched, never created.** A name links the one of the
-  same kind whose name or slug it is, whatever the case — a tip has no slug, so by name. One that
+  same kind whose name or slug it is, whatever the case — a tip has no slug, so by name, and
+  it is a step's: each step names its own. One that
   matches nothing is listed in the modal, each name once, with a pick of the existing ones of
   its kind: it links the one picked, or is left off.
 - **What the draft still lacks is recapped** (`unsetFields`), for the author to fill in the
@@ -98,7 +99,7 @@ update a record that is not there.
 The form is **one panel per family**, in the template's order: information (name, picture,
 visual brief), description, classification, imaginary, audience, supervision, place and
 conditions, pedagogy, then preparation, workshops and steps. Characteristics and preparation
-are tabbed panels — the families in one, safety, materials and tips in the other — and their
+are tabbed panels — the families in one, safety and materials in the other — and their
 menu entries open the tab before scrolling to the panel. The optional selects
 offer an empty choice, which is how PocketBase stores none. Multi-valued choices (practices,
 seasons, locations) are a `MultiSelect` over translated options, which `useActivityEdit` maps
@@ -117,10 +118,10 @@ every tag, safety instruction and tip once, through the read-only `references.ap
 uses too, and `tagOptions` groups the tags by kind. Each is a `TagSelect` bound straight
 to the family's list, for example `activity.pedagogy.goals`, in a `Field` showing the error the
 backend keys by that relation (the development axes share one, shown under all six). The
-safety tab picks `activity.safety.instructions` the same way, and the tips tab
-`activity.tips`. The activity's links are its own copies, not the options, so every picker
-passes `keyBy="id"`. Nothing is written until save, which sends the ids with the rest of the
-form.
+safety tab picks `activity.safety.instructions` the same way, and the step modal
+`step.tips`, from the options handed to it. The activity's links are its own copies, not the
+options, so every picker passes `keyBy="id"`. Nothing is written until save, which sends the ids
+with the rest of the form.
 
 **Materials are picked from the catalogue.** `MaterialsSelection` suggests the catalogue
 materials the activity does not list yet (`useMaterialCatalogue`), and offers to add a name the
@@ -240,11 +241,12 @@ composable ends in one call to `saveApi.send`.
   any signed-in user can still write through the API.
 - **No per-kind limit on tags.** Each relation could now carry its own `maxSelect` and
   `required` (ADR 0014), but none is set.
-- **The form shows safety instructions and tips by name only.** Their text is on the detail
-  screen.
+- **The form shows safety instructions and tips by name only.** The safety text is on the detail
+  screen, a step's tips on the run screen.
 - **A tip cannot be added from the editor.** The catalogue is the Dashboard's, as the tags are.
   The migration filled it with one tip per step that had one, named after the step, so it holds
-  near-duplicates to merge by hand.
+  near-duplicates to merge by hand. A tip an activity linked before they moved to steps is on its
+  first step.
 - **A range has no "exactly 0" and no open top above the ceiling.** 0 is unset, and an end at
   the slider's edge is unset too, so "18 and up" is as high as age can say.
 - **Nothing checks that a range's minimum is below its maximum**, for age or participants.

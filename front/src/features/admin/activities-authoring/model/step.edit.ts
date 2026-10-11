@@ -1,6 +1,6 @@
 import type { FieldErrors } from "@chapelure/core";
 import type { ActivityMaterialData } from "@features/activities/model/material";
-import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/model/step";
+import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/model/step";
 
 /**
  * The step seen from its author's side: the blank one offered on add, what the collection would
@@ -22,6 +22,7 @@ export function createEmptyStep(id: string, activity: string): ActivityStepData 
         actions: [] as string[],
         materials: [] as ActivityMaterialData[],
         resources: [] as ActivityResourceData[],
+        tips: [] as ActivityTipData[],
     } as ActivityStepData;
 }
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Fiche d'activité — import",
-  "description": "The JSON file the authoring screen imports, written from a fiche d'activité made from the Confluence template. Version 2. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the file is written before anything exists to point at. `readActivitySheet` in front/src/features/admin/activities-authoring/model/activity.import.ts is what the app actually reads; it only requires `name` and ignores unknown keys. This schema is stricter on purpose: every key is written, its empty value when unset, so the file stays readable for the next person who edits it.",
+  "description": "The JSON file the authoring screen imports, written from a fiche d'activité made from the Confluence template. Version 3. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the file is written before anything exists to point at. `readActivitySheet` in front/src/features/admin/activities-authoring/model/activity.import.ts is what the app actually reads; it only requires `name` and ignores unknown keys. This schema is stricter on purpose: every key is written, its empty value when unset, so the file stays readable for the next person who edits it.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -16,15 +16,14 @@
     "place",
     "safety",
     "pedagogy",
-    "tips",
     "materials",
     "workshops",
     "steps"
   ],
   "properties": {
     "version": {
-      "const": 2,
-      "description": "Format version. Always 2."
+      "const": 3,
+      "description": "Format version. Always 3."
     },
     "name": {
       "type": "string",
@@ -225,10 +224,6 @@
         }
       }
     },
-    "tips": {
-      "$ref": "#/$defs/names",
-      "description": "Names from the tips catalogue (conseils d'animation). A fiche's `#### Conseil` is free text, not a name: leave this empty unless the user gives names."
-    },
     "materials": {
       "type": "array",
       "description": "`## Matériel`, one entry per bullet. Whether the activity needs material is derived from this list.",
@@ -374,13 +369,17 @@
         "materials": {
           "$ref": "#/$defs/names",
           "description": "Column « Matériel »: names from `materials`. A name missing there is added to the activity."
+        },
+        "tips": {
+          "$ref": "#/$defs/names",
+          "description": "Names from the tips catalogue (conseils d'animation) for this step. A step's `#### Conseil` is free text, not a name: leave this empty unless the user gives names."
         }
       }
     },
     "step": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "title", "duration", "description", "actions", "materials"],
+      "required": ["kind", "title", "duration", "description", "actions", "materials", "tips"],
       "properties": {
         "kind": {
           "$ref": "#/$defs/stepKind",
@@ -407,6 +406,10 @@
         "materials": {
           "$ref": "#/$defs/names",
           "description": "`#### Matériel` of the step: names from `materials`. A name missing there is added to the activity."
+        },
+        "tips": {
+          "$ref": "#/$defs/names",
+          "description": "Names from the tips catalogue (conseils d'animation) for this step. A step's `#### Conseil` is free text, not a name: leave this empty unless the user gives names."
         }
       }
     }

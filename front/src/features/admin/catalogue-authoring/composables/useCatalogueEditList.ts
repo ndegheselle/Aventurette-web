@@ -1,6 +1,7 @@
 import { createSearchFilter, SortDirection, type FilterGroup, type IDataCrud, type Paginated } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import type { SafetyInstructionData, ActivityTipData } from '@features/activities/model/activity';
+import type { SafetyInstructionData } from '@features/activities/model/activity';
+import type { ActivityTipData } from '@features/activities/model/step';
 import type { ActivityTagData, ActivityTagType } from '@features/activities/model/tag';
 import { safetyInstructionsApi } from '@features/admin/catalogue-authoring/api/safety.api';
 import { tagsApi } from '@features/admin/catalogue-authoring/api/tags.api';

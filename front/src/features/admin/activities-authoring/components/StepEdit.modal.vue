@@ -7,14 +7,20 @@ import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useDraftModal } from '@chapelure/ui/modals/useDraftModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
 import type { ActivityMaterialData } from '@features/activities/model/material';
-import { StepKind, type ActivityStepData } from '@features/activities/model/step';
+import { StepKind, type ActivityStepData, type ActivityTipData } from '@features/activities/model/step';
 import ResourcesSelection from '@features/admin/activities-authoring/components/ResourcesSelection.vue';
 import { joinDuration, splitDuration, stepProblems } from '@features/admin/activities-authoring/model/step.edit';
 import { CheckIcon, PlusIcon, TrashIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 
-/** The activity's materials: a step recalls the ones it uses, it does not own any. */
-const { materials = [] } = defineProps<{ materials?: ActivityMaterialData[] }>();
+/**
+ * The activity's materials, which a step recalls rather than owns, and the catalogue of tips it
+ * may link.
+ */
+const { materials = [], tips = [] } = defineProps<{
+    materials?: ActivityMaterialData[];
+    tips?: ActivityTipData[];
+}>();
 
 // Writes nothing: confirming hands the edited copy back, and the activity's save writes it with
 // its files. A new step and an existing one open the same way.
@@ -89,6 +95,9 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
                         <PlusIcon class="icon-sm" /> {{ $t('activities.authoring.steps.addAction') }}
                     </button>
                 </div>
+            </Field>
+            <Field label="activities.tips.title">
+                <TagSelect :items="tips" displayKey="name" keyBy="id" v-model="step.tips" />
             </Field>
             <Field label="activities.steps.fields.materials.title">
                 <TagSelect :items="materials" displayKey="name" keyBy="id" v-model="step.materials" />

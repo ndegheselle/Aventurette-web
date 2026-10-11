@@ -40,7 +40,6 @@ import {
     ClipboardListIcon,
     GraduationCapIcon,
     LibraryIcon,
-    LightbulbIcon,
     ListOrderedIcon,
     MapPinIcon,
     PackageOpenIcon,
@@ -143,7 +142,6 @@ const sections: SectionEntry[] = [
         children: [
             preparationEntry('safety', 'activities.families.safety', ShieldAlertIcon),
             preparationEntry('materials', 'activities.materials.title', PackageOpenIcon),
-            preparationEntry('tips', 'activities.tips.title', LightbulbIcon),
         ],
     },
     { key: 'workshops', label: 'activities.workshops.title', icon: BookOpenIcon, anchor: 'section-workshops' },
@@ -470,17 +468,6 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                             <FieldError :error="errors.get('materials')" />
                         </div>
 
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.tips.title')">
-                            <input type="radio" name="activity-preparation" value="tips" v-model="preparationTab" />
-                            <LightbulbIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.tips.title') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <TagSelect :items="tips" displayKey="name" keyBy="id" class="w-full"
-                                v-model="activity.tips" />
-                            <FieldError :error="errors.get('tips')" />
-                        </div>
                     </div>
                 </Panel>
 
@@ -553,7 +540,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
             </div>
         </div>
     </Container>
-    <StepEditModal ref="stepModal" :materials="activity.materials" />
+    <StepEditModal ref="stepModal" :materials="activity.materials" :tips="tips" />
     <WorkshopEditModal ref="workshopModal" :materials="activity.materials" />
     <SectionsMenuModal ref="sectionsModal" :entries="sections" />
 </template>

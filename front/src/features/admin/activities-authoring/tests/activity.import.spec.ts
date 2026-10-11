@@ -172,20 +172,20 @@ describe('activityFromSheet', () => {
         expect(activityFromSheet(sheet, { ...nothingKnown, tags: [chalk] }).activity.classification.themes).toEqual([chalk]);
     });
 
-    it('links safety instructions by name or slug, and tips by name, reporting the rest', () => {
+    it('links safety instructions by name or slug, and each step\'s tips by name, reporting the rest', () => {
         const fire = aSafetyInstruction({ name: 'Feu', slug: 'feu' });
         const water = aSafetyInstruction({ name: 'Eau (baignade)', slug: 'eau' });
         const pace = aTip({ name: 'Garder le rythme' });
         const sheet = sheetOf({
             name: 'Tag',
             safety: { instructions: ['FEU', 'eau', 'Froid'] },
-            tips: ['garder le rythme', 'Chanter'],
+            steps: [{ title: 'Jeu', tips: ['garder le rythme', 'Chanter'] }],
         });
 
-        const { activity, unknown } = activityFromSheet(sheet, { tags: [], safetyInstructions: [fire, water], tips: [pace] });
+        const { activity, stepTips, unknown } = activityFromSheet(sheet, { tags: [], safetyInstructions: [fire, water], tips: [pace] });
 
         expect(activity.safety.instructions).toEqual([fire, water]);
-        expect(activity.tips).toEqual([pace]);
+        expect(stepTips).toEqual([[pace]]);
         expect(unknown).toEqual([
             { kind: 'SAFETY', label: 'activities.fields.safetyInstructions', name: 'Froid' },
             { kind: 'TIP', label: 'activities.tips.title', name: 'Chanter' },

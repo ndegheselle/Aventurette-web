@@ -10,7 +10,6 @@ import {
     type ActivitiesResponse,
     type HTMLString,
     type CatalogSafetyInstructionsResponse,
-    type CatalogTipsResponse,
 } from "@/backend/schema.g";
 import { distinctById, type Entity } from "@chapelure/core";
 import type { ActivityMaterialData } from "@features/activities/model/material";
@@ -26,7 +25,7 @@ import type { ActivityWorkshopData } from "@features/activities/model/workshop";
  * sheet template reads. `api/activity.mapper.ts` is what flattens the families back into
  * columns (ADR 0015).
  *
- * `steps`, `materials`, `workshops` and `tips` are the records themselves, not their ids.
+ * `steps`, `materials` and `workshops` are the records themselves, not their ids.
  */
 export type ActivityData = Pick<ActivitiesResponse,
     'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'
@@ -45,7 +44,6 @@ export type ActivityData = Pick<ActivitiesResponse,
     steps: ActivityStepData[];
     materials: ActivityMaterialData[];
     workshops: ActivityWorkshopData[];
-    tips: ActivityTipData[];
 };
 
 export const ActivityState = ActivitiesStateOptions;
@@ -198,14 +196,6 @@ export function emptyDevelopment(): Record<DevelopmentAxis, ActivityTagData[]> {
         DEVELOPMENT_AXES.map(axis => [axis, [] as ActivityTagData[]]),
     ) as Record<DevelopmentAxis, ActivityTagData[]>;
 }
-
-// ── Tips ────────────────────────────────────────────────────────────────────────────────────
-
-/**
- * A piece of advice for running an activity. Tips are a catalogue every activity draws from, as
- * safety instructions are: an activity links the ones it gives, it never writes them.
- */
-export type ActivityTipData = Entity<CatalogTipsResponse>;
 
 // ── What the steps add up to ────────────────────────────────────────────────────────────────
 

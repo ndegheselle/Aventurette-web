@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "name": "La chasse aux couleurs",
   "description": "<p>Les enfants partent à la recherche d'objets de la couleur annoncée par l'animateur et les rapportent au camp de base. Un jeu <strong>simple et rapide</strong>, idéal pour faire bouger un petit groupe.</p>",
   "visualBrief": "Un groupe d'enfants courant vers un cerceau rempli d'objets colorés.",
@@ -48,7 +48,6 @@
       "DEVELOP_SPIRITUAL": []
     }
   },
-  "tips": [],
   "materials": [
     { "name": "Cerceau", "quantity": "1" },
     { "name": "Craie", "quantity": "" }
@@ -64,7 +63,8 @@
         "Délimiter l'espace de jeu à la craie.",
         "Poser le cerceau au centre : c'est le camp de base."
       ],
-      "materials": ["Craie", "Cerceau"]
+      "materials": ["Craie", "Cerceau"],
+      "tips": []
     },
     {
       "kind": "CUSTOM",
@@ -75,7 +75,8 @@
         "Annoncer une couleur.",
         "Montrer un exemple d'objet de cette couleur."
       ],
-      "materials": []
+      "materials": [],
+      "tips": []
     },
     {
       "kind": "CUSTOM",
@@ -86,7 +87,8 @@
         "Annoncer la couleur et donner le départ.",
         "Vérifier les objets rapportés au camp de base."
       ],
-      "materials": []
+      "materials": [],
+      "tips": []
     },
     {
       "kind": "CUSTOM",
@@ -96,7 +98,8 @@
       "actions": [
         "Prévenir les enfants avant l'arrêt effectif plutôt que de couper l'activité net."
       ],
-      "materials": []
+      "materials": [],
+      "tips": []
     },
     {
       "kind": "CONCLUSION",
@@ -104,7 +107,8 @@
       "duration": 2,
       "description": "",
       "actions": ["Féliciter l'ensemble des participants."],
-      "materials": []
+      "materials": [],
+      "tips": []
     }
   ]
 }

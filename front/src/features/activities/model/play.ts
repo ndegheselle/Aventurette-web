@@ -1,7 +1,7 @@
 import type { HTMLString } from "@/backend/schema.g";
 import type { ActivityData } from "@features/activities/model/activity";
 import type { ActivityMaterialData } from "@features/activities/model/material";
-import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/model/step";
+import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/model/step";
 
 // ── The steps of a run ──────────────────────────────────────────────────────────────────────
 
@@ -30,6 +30,7 @@ export interface PlayStep {
     actions: string[];
     materials: ActivityMaterialData[];
     resources: ActivityResourceData[];
+    tips: ActivityTipData[];
 }
 
 /** Whether the app produced the step, rather than the author writing it. */
@@ -52,6 +53,7 @@ function generatedStep(kind: GeneratedStepKind, actions: string[] = []): PlaySte
         actions,
         materials: [],
         resources: [],
+        tips: [],
     };
 }
 
@@ -65,6 +67,7 @@ function authoredStep(step: ActivityStepData): PlayStep {
         actions: step.actions,
         materials: step.materials,
         resources: step.resources,
+        tips: step.tips,
     };
 }
 

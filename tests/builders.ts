@@ -9,7 +9,6 @@ import {
     ActivityState,
     emptyDevelopment,
     type ActivityData,
-    type ActivityTipData,
     type SafetyInstructionData,
 } from '@features/activities/model/activity';
 import type { ActivityPayload } from '@features/activities/api/activity.mapper';
@@ -18,6 +17,7 @@ import {
     StepKind,
     type ActivityResourceData,
     type ActivityStepData,
+    type ActivityTipData,
 } from '@features/activities/model/step';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import type { ActivityMaterialPayload, MaterialPayload } from '@features/activities/api/material.mapper';
@@ -83,6 +83,7 @@ export function aStep(overrides: Partial<ActivityStepData> = {}): ActivityStepDa
         actions: [],
         materials: [],
         resources: [],
+        tips: [],
         ...overrides,
     } as ActivityStepData;
 }
@@ -158,7 +159,6 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
         steps: [],
         materials: [],
         workshops: [],
-        tips: [],
         ...overrides,
     } as ActivityData;
 }
@@ -233,6 +233,7 @@ export function aStepPayload(overrides: Partial<ActivityStepPayload> = {}): Acti
         end_criteria_other: '',
         materials: [],
         resources: [],
+        tips: [],
         ...overrides,
     } as ActivityStepPayload;
 }
@@ -320,7 +321,6 @@ export function anActivityPayload(overrides: Partial<ActivityPayload> = {}): Act
         ideal_for_tags: [],
         development_tags: [],
         safety_instructions: [],
-        tips: [],
         ...overrides,
     } as ActivityPayload;
 }

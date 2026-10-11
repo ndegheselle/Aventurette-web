@@ -12,12 +12,11 @@ import {
     timingOf,
     type ActivityAudience,
     type ActivityData,
-    type ActivityTipData,
     type RangeEnd,
     type SafetyInstructionData,
 } from '@features/activities/model/activity';
 import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
-import type { ActivityStepData } from '@features/activities/model/step';
+import type { ActivityStepData, ActivityTipData } from '@features/activities/model/step';
 import { tagOptions, type ActivityTagData } from '@features/activities/model/tag';
 import type { ActivityWorkshopData } from '@features/activities/model/workshop';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';

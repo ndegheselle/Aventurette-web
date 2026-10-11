@@ -1,5 +1,6 @@
 import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/core';
-import type { ActivityTipData, SafetyInstructionData } from '@features/activities/model/activity';
+import type { SafetyInstructionData } from '@features/activities/model/activity';
+import type { ActivityTipData } from '@features/activities/model/step';
 import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
 
 /**

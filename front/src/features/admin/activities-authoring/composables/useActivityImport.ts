@@ -99,7 +99,7 @@ export function useActivityImport() {
 
         const activity = { ...preview.value.activity, id: saveApi.newId(), user: currentId() };
         const catalogue = await materialCatalogueApi.getAll();
-        const draft = draftFromSheet(sheet.value, activity, catalogue, saveApi.newId, stepFiles.value);
+        const draft = draftFromSheet(sheet.value, activity, catalogue, saveApi.newId, stepFiles.value, preview.value.stepTips);
         const writes = activityWrites(null, draft.activity, draft.newMaterials, visual.value[0]);
         await saveApi.send(writes);
 

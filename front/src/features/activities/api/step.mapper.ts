@@ -1,6 +1,7 @@
 import type { ActivitiesStepsResponse, StepsResourcesResponse } from "@/backend/schema.g";
 import { toEntities, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
+import { tipMapper, type ActivityTipPayload } from "@features/activities/api/tip.mapper";
 import type { ActivityResourceData, ActivityStepData } from "@features/activities/model/step";
 
 /**
@@ -22,6 +23,7 @@ export const resourceMapper: EntityMapper<ActivityResourcePayload, ActivityResou
 export type ActivityStepPayload = ActivitiesStepsResponse<string[], {
     materials?: ActivityMaterialPayload[];
     resources?: ActivityResourcePayload[];
+    tips?: ActivityTipPayload[];
 }>;
 
 /**
@@ -34,6 +36,7 @@ export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
         "materials",
         ...activityMaterialMapper.relations.map(relation => `materials.${relation}`),
         "resources",
+        "tips",
     ],
     toEntity: ({
         expand, actions,
@@ -44,11 +47,13 @@ export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
         actions: actions ?? [],
         materials: toEntities(expand?.materials, activityMaterialMapper, files),
         resources: toEntities(expand?.resources, resourceMapper, files),
+        tips: toEntities(expand?.tips, tipMapper, files),
     }),
-    toPayload: ({ materials, resources, actions, ...step }) => ({
+    toPayload: ({ materials, resources, tips, actions, ...step }) => ({
         ...step,
         ...(actions && { actions: actions.map(action => action.trim()).filter(Boolean) }),
         ...(materials && { materials: toIds(materials) }),
         ...(resources && { resources: toIds(resources) }),
+        ...(tips && { tips: toIds(tips) }),
     }),
 };
