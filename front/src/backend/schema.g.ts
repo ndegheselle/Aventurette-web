@@ -201,7 +201,6 @@ export type ActivitiesRecord = {
 	steps?: RecordIdString[]
 	supervision_notes?: HTMLString
 	theme_tags?: RecordIdString[]
-	tips?: RecordIdString[]
 	updated: IsoAutoDateString
 	user: RecordIdString
 	visual?: FileNameString
@@ -244,6 +243,7 @@ export type ActivitiesStepsRecord<Tactions = unknown> = {
 	kind: ActivitiesStepsKindOptions
 	materials?: RecordIdString[]
 	resources?: RecordIdString[]
+	tips?: RecordIdString[]
 	title?: string
 	updated: IsoAutoDateString
 	visual_brief?: string

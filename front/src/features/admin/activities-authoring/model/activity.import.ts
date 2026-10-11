@@ -13,12 +13,11 @@ import {
     type ActivityData,
     type ActivityPlace,
     type ActivitySupervision,
-    type ActivityTipData,
     type DevelopmentAxis,
     type SafetyInstructionData,
 } from "@features/activities/model/activity";
 import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
-import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/model/step";
+import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/model/step";
 import { ActivityTagType, type ActivityTagData } from "@features/activities/model/tag";
 import type { ActivityWorkshopData } from "@features/activities/model/workshop";
 import { createEmptyActivity } from "@features/admin/activities-authoring/model/activity.edit";
@@ -42,9 +41,9 @@ import { createEmptyWorkshop } from "@features/admin/activities-authoring/model/
 
 /**
  * The one format read. The skill writes it into `version`. Version 1 named safety tags, and gave
- * each step a tip, a visual brief and end criteria.
+ * each step a tip, a visual brief and end criteria. Version 2 named the tips on the activity.
  */
-export const SHEET_VERSION = 2;
+export const SHEET_VERSION = 3;
 
 export interface ActivitySheet {
     name: string;
@@ -68,7 +67,6 @@ export interface ActivitySheet {
         idealFor: string[];
         development: Record<DevelopmentAxis, string[]>;
     };
-    tips: string[];
     materials: SheetMaterial[];
     workshops: SheetWorkshop[];
     steps: SheetStep[];
@@ -96,6 +94,8 @@ export interface SheetStep {
     actions: string[];
     /** Names from the sheet's materials. */
     materials: string[];
+    /** Names from the tips catalogue. */
+    tips: string[];
 }
 
 // ── Reading one ─────────────────────────────────────────────────────────────────────────────
@@ -192,7 +192,6 @@ export function readActivitySheet(text: string): SheetReading {
                 [axis, read.texts(development[axis], `pedagogy.development.${axis}`)],
             )) as Record<DevelopmentAxis, string[]>,
         },
-        tips: read.texts(root.tips, "tips"),
         materials: read.list(root.materials, "materials", (value, path) => {
             const material = read.object(value, path);
             return {
@@ -230,6 +229,7 @@ export function readActivitySheet(text: string): SheetReading {
                 description,
                 actions: read.texts(step.actions, `${path}.actions`),
                 materials: read.texts(step.materials, `${path}.materials`),
+                tips: read.texts(step.tips, `${path}.tips`),
             };
         }),
     };
@@ -355,13 +355,15 @@ export function referenceCandidates(known: SheetReferences, kind: ReferenceKind)
 export interface SheetActivity {
     /** The activity, its references resolved. Its materials, steps and workshops are `draftFromSheet`'s. */
     activity: ActivityData;
+    /** The tips each step of the sheet links, by its position. */
+    stepTips: ActivityTipData[][];
     /** What the sheet named that does not exist, each once — picked or not, so a pick can change. */
     unknown: UnknownReference[];
 }
 
 /**
- * The activity a sheet describes. Tags, safety instructions and tips are reference data, so a name
- * matches an existing one of the same kind by name or slug, whatever the case. One that matches
+ * The activity a sheet describes, and the tips of each step. Tags, safety instructions and tips
+ * are reference data, so a name matches an existing one of the same kind by name or slug, whatever the case. One that matches
  * nothing is reported, and links what the author picked for it, or nothing: it is never created.
  */
 export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences, picks: ReferencePicks = {}): SheetActivity {
@@ -421,10 +423,11 @@ export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences, 
             idealFor: tags(ActivityTagType.IDEAL_FOR, sheet.pedagogy.idealFor),
             development,
         },
-        tips: matching('TIP', 'activities.tips.title', known.tips, sheet.tips),
     };
 
-    return { activity, unknown };
+    const stepTips = sheet.steps.map(step => matching('TIP', 'activities.tips.title', known.tips, step.tips));
+
+    return { activity, stepTips, unknown };
 }
 
 /** A field the import leaves empty, for the author to fill in the editor. */
@@ -468,7 +471,6 @@ export function unsetFields(activity: ActivityData, steps: Pick<SheetStep, 'titl
         [!pedagogy.goals.length, 'activities.tagType.GOAL'],
         [!pedagogy.idealFor.length, 'activities.tagType.IDEAL_FOR'],
         [DEVELOPMENT_AXES.every(axis => !pedagogy.development[axis].length), 'activities.families.development'],
-        [!activity.tips.length, 'activities.tips.title'],
         [!steps.length, 'activities.steps.title'],
     ];
 
@@ -529,6 +531,7 @@ export interface SheetStepFiles {
  * @param activity the sheet's activity, with its id and author
  * @param catalogue every catalogue material
  * @param stepFiles the files picked for each step, by the step's position in the sheet
+ * @param stepTips the tips each step links, by its position in the sheet
  */
 export function draftFromSheet(
     sheet: ActivitySheet,
@@ -536,6 +539,7 @@ export function draftFromSheet(
     catalogue: MaterialData[],
     newId: IdFactory,
     stepFiles: SheetStepFiles[] = [],
+    stepTips: ActivityTipData[][] = [],
 ): SheetDraft {
     const newMaterials: MaterialData[] = [];
 
@@ -550,7 +554,7 @@ export function draftFromSheet(
 
     const steps = sheet.steps.map((step, index) => {
         const files = stepFiles[index];
-        const created = stepFromSheet(step, files?.id ?? newId(), activity.id, materials);
+        const created = stepFromSheet(step, files?.id ?? newId(), activity.id, materials, stepTips[index]);
         return { ...created, resources: files?.resources ?? [] };
     });
     const workshops = sheet.workshops.map(workshop => workshopFromSheet(workshop, newId(), activity.id, materials));
@@ -567,6 +571,7 @@ export function stepFromSheet(
     id: string,
     activity: string,
     materials: ActivityMaterialData[],
+    tips: ActivityTipData[] = [],
 ): ActivityStepData {
     const description = step.description.trim() ? step.description : `<p>${escapeHtml(step.title)}</p>`;
 
@@ -578,6 +583,7 @@ export function stepFromSheet(
         description,
         actions: step.actions,
         materials: recalledMaterials(materials, step.materials),
+        tips,
     };
 }
 

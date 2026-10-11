@@ -1,6 +1,7 @@
 import {
     ActivitiesStepsKindOptions,
     type ActivitiesStepsResponse,
+    type CatalogTipsResponse,
     type StepsResourcesResponse,
 } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
@@ -10,11 +11,12 @@ import type { ActivityMaterialData } from "@features/activities/model/material";
 
 /**
  * One step of the activity: what the animator does, as short actions to tick, and how long it
- * takes. `materials` are the activity's own, recalled here.
+ * takes. `materials` are the activity's own, recalled here; `tips` are the catalogue's, linked.
  */
 export type ActivityStepData = Entity<Omit<ActivitiesStepsResponse<string[]>, StepColumnSetAside>, {
     materials: ActivityMaterialData[];
     resources: ActivityResourceData[];
+    tips: ActivityTipData[];
     actions: string[];
 }>;
 
@@ -31,6 +33,14 @@ export type StepKind = ActivitiesStepsKindOptions;
 export function stepNumber(index: number): string {
     return String(index + 1).padStart(2, '0');
 }
+
+// ── Its tips ────────────────────────────────────────────────────────────────────────────────
+
+/**
+ * A piece of advice for running a step. Tips are a catalogue every step draws from, as safety
+ * instructions are for activities: a step links the ones it gives, it never writes them.
+ */
+export type ActivityTipData = Entity<CatalogTipsResponse>;
 
 // ── Its resources ───────────────────────────────────────────────────────────────────────────
 

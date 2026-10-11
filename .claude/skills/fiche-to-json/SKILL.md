@@ -60,7 +60,7 @@ schema's codes are the app's. If the schema and that file still disagree, the fi
 - **Durations are per step.** "Temps de jeu" and "Temps de préparation" are computed by the app.
   If the steps have no durations but the table has totals, leave the steps at `0` and report it.
 - "Matériel (sans / avec)" is derived from `materials`, and is not written.
-- `tips` stays `[]` unless the user gives names from the tips catalogue.
+- A step's `tips` stays `[]` unless the user gives names from the tips catalogue.
 - The automatic steps ("Rassembler le matériel", "Regrouper les enfants") are never written. A
   step the fiche marks "à supprimer" and that holds only placeholders is left out.
 

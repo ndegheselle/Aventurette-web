@@ -4,7 +4,6 @@ import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/
 import { safetyInstructionMapper, type SafetyInstructionPayload } from "@features/activities/api/safety.mapper";
 import { stepMapper, type ActivityStepPayload } from "@features/activities/api/step.mapper";
 import { tagMapper, type ActivityTagPayload } from "@features/activities/api/tag.mapper";
-import { tipMapper, type ActivityTipPayload } from "@features/activities/api/tip.mapper";
 import { workshopMapper, type ActivityWorkshopPayload } from "@features/activities/api/workshop.mapper";
 import { DEVELOPMENT_AXES, type ActivityData, type DevelopmentAxis } from "@features/activities/model/activity";
 import type { ActivityTagData } from "@features/activities/model/tag";
@@ -20,7 +19,6 @@ export type ActivityPayload = ActivitiesResponse<{
     ideal_for_tags?: ActivityTagPayload[];
     development_tags?: ActivityTagPayload[];
     safety_instructions?: SafetyInstructionPayload[];
-    tips?: ActivityTipPayload[];
 }>;
 
 /** The tag relations, one per place a tag goes in the families. */
@@ -43,7 +41,6 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
         ...workshopMapper.relations.map(relation => `workshops.${relation}`),
         ...TAG_RELATIONS,
         "safety_instructions",
-        "tips",
     ],
     toEntity: (activity, files) => {
         const { expand } = activity;
@@ -108,13 +105,12 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             steps: toEntities(expand?.steps, stepMapper, files),
             materials: toEntities(expand?.materials, activityMaterialMapper, files),
             workshops: toEntities(expand?.workshops, workshopMapper, files),
-            tips: toEntities(expand?.tips, tipMapper, files),
         };
     },
     toPayload: (activity) => {
         const {
             visualBrief, classification, imaginary, audience, supervision, place, safety, pedagogy,
-            steps, materials, workshops, tips,
+            steps, materials, workshops,
             ...columns
         } = activity;
 
@@ -160,7 +156,6 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             ...(steps && { steps: toIds(steps) }),
             ...(materials && { materials: toIds(materials) }),
             ...(workshops && { workshops: toIds(workshops) }),
-            ...(tips && { tips: toIds(tips) }),
         };
     },
 };

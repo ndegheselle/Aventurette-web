@@ -6,7 +6,7 @@ import { useActivityPlay } from '@features/activities/composables/useActivityPla
 import { isGenerated } from '@features/activities/model/play';
 import { stepNumber } from '@features/activities/model/step';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, ArrowRightIcon, CircleQuestionMarkIcon, ClockIcon, FileTextIcon, FlagIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ArrowRightIcon, CircleQuestionMarkIcon, ClockIcon, FileTextIcon, FlagIcon, InfoIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
 
 const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, isTicked, toggle, headingOf } = useActivityPlay();
 </script>
@@ -26,8 +26,7 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
                   class="ms-auto text-sm opacity-60 tabular-nums whitespace-nowrap">
                 {{ $t('activities.play.progress', { current: index + 1, total: steps.length }) }}
             </span>
-            <ActivityNotices :safety="activity.safety.instructions"
-                             :tips="activity.tips" />
+            <ActivityNotices :safety="activity.safety.instructions" />
         </div>
 
         <div v-if="!current"
@@ -101,6 +100,22 @@ const { activity, steps, index, current, isFirst, isLast, goTo, previous, next, 
                                 </label>
                             </li>
                         </ul>
+                    </div>
+
+                    <div v-if="current.tips.length"
+                         class="flex flex-col gap-2">
+                        <h3 class="text-sm opacity-60 flex items-center gap-1">
+                            <InfoIcon class="size-4" /> {{ $t('activities.tips.title') }}
+                        </h3>
+                        <div v-for="tip in current.tips"
+                             :key="tip.id"
+                             role="alert"
+                             class="alert alert-info alert-soft items-start">
+                            <div>
+                                <b>{{ tip.name }}</b>
+                                <div v-html="tip.description"></div>
+                            </div>
+                        </div>
                     </div>
 
                     <div v-if="current.materials.length">

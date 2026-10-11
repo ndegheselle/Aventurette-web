@@ -5,7 +5,7 @@ import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useEditModal } from '@chapelure/ui/modals/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
-import type { ActivityTipData } from '@features/activities/model/activity';
+import type { ActivityTipData } from '@features/activities/model/step';
 import { tipsApi } from '@features/admin/catalogue-authoring/api/tips.api';
 import { CheckIcon, XIcon } from 'lucide-vue-next';
 

@@ -6,6 +6,8 @@ import {
     aResource,
     aResourcePayload,
     aStepPayload,
+    aTip,
+    aTipPayload,
     fakeFileUrls,
 } from '@tests';
 import { describe, expect, it } from 'vitest';
@@ -17,11 +19,16 @@ describe('stepMapper', () => {
         const rope = aMaterialPayload({ id: 'mat1', name: 'Rope' });
 
         const step = stepMapper.toEntity(
-            aStepPayload({ materials: ['mat1'], expand: { materials: [rope] } }),
+            aStepPayload({
+                materials: ['mat1'],
+                tips: ['tip1'],
+                expand: { materials: [rope], tips: [aTipPayload({ id: 'tip1' })] },
+            }),
             files,
         );
 
         expect(step.materials.map(material => material.name)).toEqual(['Rope']);
+        expect(step.tips.map(tip => tip.id)).toEqual(['tip1']);
         expect(step).not.toHaveProperty('expand');
     });
 
@@ -32,6 +39,7 @@ describe('stepMapper', () => {
 
         expect(step.materials).toEqual([]);
         expect(step.resources).toEqual([]);
+        expect(step.tips).toEqual([]);
     });
 
     it('writes relations back as ids — saving a step links its materials, it does not save them', () => {
@@ -39,12 +47,14 @@ describe('stepMapper', () => {
             description: '<p>Hide.</p>',
             materials: [aMaterial({ id: 'mat1' })],
             resources: [aResource({ id: 'res1' })],
+            tips: [aTip({ id: 'tip1' })],
         });
 
         expect(payload).toEqual({
             description: '<p>Hide.</p>',
             materials: ['mat1'],
             resources: ['res1'],
+            tips: ['tip1'],
         });
     });
 

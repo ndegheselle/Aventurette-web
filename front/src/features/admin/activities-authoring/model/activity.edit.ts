@@ -52,7 +52,6 @@ export function createEmptyActivity(): ActivityData {
         steps: [],
         materials: [],
         workshops: [],
-        tips: [],
     };
 
     return blank as ActivityData;

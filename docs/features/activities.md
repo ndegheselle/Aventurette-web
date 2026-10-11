@@ -4,8 +4,8 @@ Browsing the public activity catalogue.
 
 Read-only. Writing an activity is [activities-authoring](activities-authoring.md), which owns the
 editor, the step and workshop modals, the author's own list and the rules for writing. What
-stays here is the **shape**: `model/activity.ts` (safety instructions and tips included),
-`model/step.ts`, `model/material.ts`, `model/workshop.ts` and `model/tag.ts`, their mappers in
+stays here is the **shape**: `model/activity.ts` (safety instructions included),
+`model/step.ts` (tips included), `model/material.ts`, `model/workshop.ts` and `model/tag.ts`, their mappers in
 `api/`, and `api/activities.api.ts`
 describe what an activity is — which both halves need — and the
 dependency runs one way: nothing here imports `activities-authoring`.
@@ -55,8 +55,7 @@ template reads. What identifies it sits at the top: `name`, `description`, `stat
 families on read and flattens them on write. An unset single choice is `null`; the mapper
 reads and writes it as the empty string PocketBase stores.
 
-`activity.steps`, `activity.materials`, `activity.workshops` and `activity.tips` hold the
-records themselves.
+`activity.steps`, `activity.materials` and `activity.workshops` hold the records themselves.
 `activityMapper.relations` lists what is fetched alongside an activity. The nested halves are
 derived from `stepMapper.relations` and `workshopMapper.relations`, so a step arrives the same
 way whether it is read on its own or under an activity. A relation the read did not expand maps
@@ -92,12 +91,12 @@ showing. `tagOptions` in `model/tag.ts` groups every tag by kind for the editor'
 ([ADR 0018](../adr/0018-safety-instructions-and-tips-are-catalogues.md)). `catalog_safety_instructions`
 holds a slug, a name and the precautions as rich text; an activity links them through
 `safety_instructions`, read into `safety.instructions`. `catalog_tips` holds a name and the advice; an
-activity links them through `tips`, read into `activity.tips`. Both are reference data, like
-the tags: an activity links them, and an admin writes them from
-[catalogue-authoring](catalogue-authoring.md). The detail and run screens show them as two
-icon buttons beside the back button, a warning for the safety instructions and an info for the
-tips, each with its count and only when there is one (`ActivityNotices`). Each opens a modal
-with every entry, its name and its text in full.
+step links them through `tips`, read into `step.tips`. Both are reference data, like
+the tags: an activity or a step links them, and an admin writes them from
+[catalogue-authoring](catalogue-authoring.md). The detail and run screens show the safety
+instructions as a warning icon button beside the back button, with its count and only when there
+is one (`ActivityNotices`); it opens a modal with every entry, its name and its text in full.
+The run screen shows a step's tips in that step's panel.
 
 A resource is always a record: a picked file is uploaded the moment it is chosen. On the wire
 `file` is the upload going up and the stored name coming back, and `resourceMapper` turns that
@@ -174,14 +173,14 @@ or an api wrapper does not earn one — see
 *`tests/activity.spec.ts`* — the mapper, the durations and the range bounds
 
 - `activityMapper` asks for the nested relations steps, material links and workshops need,
-  every tag relation, the safety instructions and the tips. It
+  every tag relation and the safety instructions, and its steps ask for their tips. It
   inlines them down to the file urls, and reads a relation the request did not expand as empty
   rather than as ids.
 - Columns are grouped by family on read and flattened back on write. Each tag relation is read
   into its family; the development axes are sorted apart by kind, and every one written back.
-  The safety instructions go into the safety family, and the tips beside the steps.
-- Relations are written back as ids: saving an activity links its steps, tags, safety
-  instructions and tips, it does not save them. An update leaves out what it does not mention,
+  The safety instructions go into the safety family.
+- Relations are written back as ids: saving an activity links its steps, tags and safety
+  instructions, it does not save them. An update leaves out what it does not mention,
   and a family's links are written with that family alone.
 - Resources shown for an activity are gathered from the steps that own them, deduplicated by id.
 - Preparation time is the steps preparing the game, and play is every other step. A step with no
@@ -250,8 +249,7 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
 - **A step has no visual.** Its brief is still in the collection, set aside by the mapper, and
   comes back once visuals are handled properly. The activity's own picture input goes nowhere
   either (below).
-- **A tip is not tied to a step.** Tips moved from the steps to the activity, so the run screen
-  offers all of them at every step rather than the one written for it.
+- **The detail screen does not show tips.** Only the run screen does, at the step they belong to.
 - **End criteria are no longer read.** The kind that showed them is gone; the columns keep what
   they held.
 - **The picture input goes nowhere.** The `activities` collection has a `visual` file field,

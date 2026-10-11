@@ -22,8 +22,7 @@ const { activity, resources, timing, ageLabel, participantsLabel } = useActivity
                 </RouterLink>
             </div>
             <ActivityNotices v-if="activity"
-                             :safety="activity.safety.instructions"
-                             :tips="activity.tips" />
+                             :safety="activity.safety.instructions" />
 
             <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden ms-auto"
                  :data-tip="$t('activities.actions.favorite')">
