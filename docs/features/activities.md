@@ -4,8 +4,8 @@ Browsing the public activity catalogue.
 
 Read-only. Writing an activity is [activities-authoring](activities-authoring.md), which owns the
 editor, the step and workshop modals, the author's own list and the rules for writing. What
-stays here is the **shape**: `model/activity.ts` (safety instructions included),
-`model/step.ts` (tips included), `model/material.ts`, `model/workshop.ts` and `model/tag.ts`, their mappers in
+stays here is the **shape**: `models/activity.ts` (safety instructions included),
+`models/step.ts` (tips included), `models/material.ts`, `models/workshop.ts` and `models/tag.ts`, their mappers in
 `api/`, and `api/activities.api.ts`
 describe what an activity is — which both halves need — and the
 dependency runs one way: nothing here imports `activities-authoring`.
@@ -29,7 +29,7 @@ The detail screen's *Start* opens the run: the steps one at a time, a progress b
 list to jump around in, and the actions to tick as they are done. A step shows its description,
 its actions, and the materials and resources it uses.
 
-`playStepsOf` in `model/play.ts` turns the activity into the run's steps, as `PlayStep` — one
+`playStepsOf` in `models/play.ts` turns the activity into the run's steps, as `PlayStep` — one
 shape for a step the author wrote and one the app generates. The template has the app produce
 two steps that are never stored:
 
@@ -42,7 +42,7 @@ A run lives in memory: ticks and position are lost on leaving the screen or relo
 
 ## Data
 
-Two types to an entity: `ActivityData` in `model/activity.ts` is what the app uses,
+Two types to an entity: `ActivityData` in `models/activity.ts` is what the app uses,
 `ActivityPayload` in `api/activity.mapper.ts` is what the backend sends, and `activityMapper`
 beside it is the only thing that holds both — see
 [ADR 0007](../adr/0007-models-map-their-own-payloads.md).
@@ -85,7 +85,7 @@ Tags all live in `catalog_tags`, and an activity links them through one relation
 `ideal_for_tags` and `development_tags` into `pedagogy`. The six development axes share their
 relation, and the mapper sorts them apart by kind. A backend hook refuses a tag linked in a
 relation not meant for its kind. `name` is in one language, French, whatever locale the app is
-showing. `tagOptions` in `model/tag.ts` groups every tag by kind for the editor's pickers.
+showing. `tagOptions` in `models/tag.ts` groups every tag by kind for the editor's pickers.
 
 **Safety instructions and tips are catalogues of their own**
 ([ADR 0018](../adr/0018-safety-instructions-and-tips-are-catalogues.md)). `catalog_safety_instructions`

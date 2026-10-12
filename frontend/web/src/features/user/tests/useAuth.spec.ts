@@ -1,7 +1,7 @@
 import { NotAuthenticatedError } from '@chapelure/core';
 import { aUser, fakeAuthProvider, withSetup } from '@tests';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { UserData } from '@features/user/model/user';
+import type { UserData } from '@features/user/models/user';
 import { useAuth } from '@features/user/composables/useAuth';
 
 const user = aUser({ email: 'parent@example.com' });

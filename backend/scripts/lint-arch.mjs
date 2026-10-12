@@ -92,9 +92,9 @@ const RULES = [
             && /from ['"]@\/app\//.test(f.text),
     },
     {
-        name: 'feature model/ and api/ are framework-free',
+        name: 'feature models/ and api/ are framework-free',
         why: 'Domain types and repositories should outlive the view layer.',
-        check: f => inFeatureLayer(f.path, 'model|api')
+        check: f => inFeatureLayer(f.path, 'models|api')
             && /from ['"](vue|vue-i18n|vue-router|@chapelure\/ui)/.test(f.text),
     },
     {

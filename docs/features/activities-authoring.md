@@ -50,7 +50,7 @@ The **import** button beside add opens `ActivityImport.modal`, in three stages: 
 what it lacks; then its files — an optional cover visual and each step's resources, which a JSON
 file cannot carry. The JSON is what the `fiche-to-json` skill (`.claude/skills/`) writes
 from the Confluence activity sheet template, against the skill's `fiche-activite.schema.json`.
-`model/activity.import.ts` is what defines the format; a spec reads the skill's `example.json`
+`models/activity.import.ts` is what defines the format; a spec reads the skill's `example.json`
 through it and checks the schema's enum codes against the app's, so the three cannot drift.
 
 `readActivitySheet` reads the file's text. It collects **every** problem with where it is
@@ -108,7 +108,7 @@ back to the stored values.
 **Age and participants are two-thumb sliders**, `RangeInput` from @chapelure/ui, over
 `AGE_BOUNDS` (0–18) and `PARTICIPANTS_BOUNDS` (1–30). The slider's unset end is `null`. The
 field's unset end is 0, which is what PocketBase stores for an empty number. `rangeEndOf` and
-`columnOf`, in `activities/model/activity.ts` since the detail screen reads bounds too, translate
+`columnOf`, in `activities/models/activity.ts` since the detail screen reads bounds too, translate
 between the two. Without them a new activity's `ageMax: 0` would pin the upper thumb to the
 floor. `useActivityEdit` binds each end through a writable `computed`. `rangeLabel`, from the
 same package, says what the range reads as beside its label ("3 to 10", "up to 10", "any").
@@ -157,8 +157,8 @@ It is disabled on a new activity, which has no record to write the state to unti
 
 The types are not this feature's. `ActivityData`, `ActivityStepData` and their mappers stay in
 `activities/`, and this feature imports them: it writes activities, it does not redefine them.
-What is its own is the writing side, in `model/activity.edit.ts`, `model/step.edit.ts`,
-`model/material.edit.ts` and `model/workshop.edit.ts`. That covers the blank records offered on
+What is its own is the writing side, in `models/activity.edit.ts`, `models/step.edit.ts`,
+`models/material.edit.ts` and `models/workshop.edit.ts`. That covers the blank records offered on
 add and what the collection would refuse in them, the tabs and the state toggle, picking among
 records, the material suggestions, what removing a material leaves behind, the file limit, and
 the writes a save comes down to (`activityWrites`, `saveErrors`). The dependency runs one way — `activities` imports nothing from here.

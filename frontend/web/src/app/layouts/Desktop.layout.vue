@@ -8,7 +8,7 @@ import { routesNames as authoringRoutesNames } from '@features/admin/activities-
 import { routesNames as catalogueRoutesNames } from '@features/admin/catalogue-authoring/routes';
 import AuthMenu from '@features/user/components/AuthMenu.vue';
 import { useAuth } from '@features/user/composables/useAuth';
-import { Role } from '@features/user/model/user';
+import { Role } from '@features/user/models/user';
 import { routesNames as dashboardRoutesNames } from '@features/dashboard/routes';
 import { LibraryBigIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, PencilLineIcon, TreesIcon } from 'lucide-vue-next';
 import { ref } from 'vue';

@@ -14,11 +14,11 @@ import {
     type ActivityData,
     type RangeEnd,
     type SafetyInstructionData,
-} from '@features/activities/model/activity';
-import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
-import type { ActivityStepData, ActivityTipData } from '@features/activities/model/step';
-import { tagOptions, type ActivityTagData } from '@features/activities/model/tag';
-import type { ActivityWorkshopData } from '@features/activities/model/workshop';
+} from '@features/activities/models/activity';
+import type { ActivityMaterialData, MaterialData } from '@features/activities/models/material';
+import type { ActivityStepData, ActivityTipData } from '@features/activities/models/step';
+import { tagOptions, type ActivityTagData } from '@features/activities/models/tag';
+import type { ActivityWorkshopData } from '@features/activities/models/workshop';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { materialCatalogueApi } from '@features/admin/activities-authoring/api/materials.api';
 import { referencesApi } from '@features/admin/activities-authoring/api/references.api';
@@ -28,16 +28,16 @@ import {
     createEmptyActivity,
     putById,
     stateTransition,
-} from '@features/admin/activities-authoring/model/activity.edit';
+} from '@features/admin/activities-authoring/models/activity.edit';
 import {
     canCreateMaterial,
     createCatalogueMaterial,
     createMaterialLink,
     materialSuggestions,
     withoutMaterial,
-} from '@features/admin/activities-authoring/model/material.edit';
-import { createEmptyStep } from '@features/admin/activities-authoring/model/step.edit';
-import { createEmptyWorkshop } from '@features/admin/activities-authoring/model/workshop.edit';
+} from '@features/admin/activities-authoring/models/material.edit';
+import { createEmptyStep } from '@features/admin/activities-authoring/models/step.edit';
+import { createEmptyWorkshop } from '@features/admin/activities-authoring/models/workshop.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';
 import { useAuth } from '@features/user/composables/useAuth';
 import { computed, onMounted, ref, shallowRef, toRaw, watch, type Ref } from 'vue';

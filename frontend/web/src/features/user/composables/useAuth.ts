@@ -1,6 +1,6 @@
 import { NotAuthenticatedError } from '@chapelure/core';
 import { sessionProvider } from '@features/user/api/session';
-import { hasRole as userHasRole, type Role, type UserData } from '@features/user/model/user';
+import { hasRole as userHasRole, type Role, type UserData } from '@features/user/models/user';
 import { computed, readonly, ref } from 'vue';
 
 // Module state: one session, shared by every caller.

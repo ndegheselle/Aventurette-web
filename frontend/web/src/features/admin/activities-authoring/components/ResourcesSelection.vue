@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
-import type { ActivityResourceData } from '@features/activities/model/step';
+import type { ActivityResourceData } from '@features/activities/models/step';
 import { useStepResources } from '@features/admin/activities-authoring/composables/useStepResources';
-import { ACCEPTED_RESOURCE_TYPES, resourcePreviewOf } from '@features/admin/activities-authoring/model/step.edit';
+import { ACCEPTED_RESOURCE_TYPES, resourcePreviewOf } from '@features/admin/activities-authoring/models/step.edit';
 import { CircleOffIcon, FileIcon, FileTextIcon, TrashIcon } from 'lucide-vue-next';
 
 /** A picked file is stored against this step when the activity is saved. */

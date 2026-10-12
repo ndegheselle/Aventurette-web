@@ -6,7 +6,7 @@ import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
 import ResourcesSelection from '@features/admin/activities-authoring/components/ResourcesSelection.vue';
 import { IMPORT_STAGES, useActivityImport } from '@features/admin/activities-authoring/composables/useActivityImport';
-import { referenceKey } from '@features/admin/activities-authoring/model/activity.import';
+import { referenceKey } from '@features/admin/activities-authoring/models/activity.import';
 import {
     ArrowLeftIcon,
     ArrowRightIcon,

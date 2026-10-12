@@ -1,12 +1,12 @@
 import { createSearchFilter, SortDirection, type FilterGroup, type IDataCrud, type Paginated } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import type { SafetyInstructionData } from '@features/activities/model/activity';
-import type { ActivityTipData } from '@features/activities/model/step';
-import type { ActivityTagData, ActivityTagType } from '@features/activities/model/tag';
+import type { SafetyInstructionData } from '@features/activities/models/activity';
+import type { ActivityTipData } from '@features/activities/models/step';
+import type { ActivityTagData, ActivityTagType } from '@features/activities/models/tag';
 import { safetyInstructionsApi } from '@features/admin/catalogue-authoring/api/safety.api';
 import { tagsApi } from '@features/admin/catalogue-authoring/api/tags.api';
 import { tipsApi } from '@features/admin/catalogue-authoring/api/tips.api';
-import { tagsFilter } from '@features/admin/catalogue-authoring/model/catalogue.edit';
+import { tagsFilter } from '@features/admin/catalogue-authoring/models/catalogue.edit';
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

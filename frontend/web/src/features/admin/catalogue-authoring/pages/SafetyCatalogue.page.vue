@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { SafetyInstructionData } from '@features/activities/model/activity';
+import type { SafetyInstructionData } from '@features/activities/models/activity';
 import CatalogueTab from '@features/admin/catalogue-authoring/components/CatalogueTab.vue';
 import SafetyInstructionEditModal from '@features/admin/catalogue-authoring/components/SafetyInstructionEdit.modal.vue';
 import { useSafetyInstructionsEditList } from '@features/admin/catalogue-authoring/composables/useCatalogueEditList';
-import { newSafetyInstruction } from '@features/admin/catalogue-authoring/model/catalogue.edit';
+import { newSafetyInstruction } from '@features/admin/catalogue-authoring/models/catalogue.edit';
 import { useTemplateRef } from 'vue';
 
 const { paginated, search, refresh, remove } = useSafetyInstructionsEditList();

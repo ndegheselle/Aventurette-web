@@ -20,7 +20,7 @@ cover.
 
 Three kinds of test, in the order they should be reached for:
 
-1. **Pure** — `model/`, `@chapelure/core`, the adapter's query building and relation mapping.
+1. **Pure** — `models/`, `@chapelure/core`, the adapter's query building and relation mapping.
    No mounting, no mocks, microseconds each.
 2. **Composable** — mounted with `withSetup`, with the feature's `api/` module faked. Covers
    state transitions: applied versus draft criteria, what is loaded on mount, retry after

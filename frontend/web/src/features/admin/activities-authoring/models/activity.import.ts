@@ -15,20 +15,20 @@ import {
     type ActivitySupervision,
     type DevelopmentAxis,
     type SafetyInstructionData,
-} from "@features/activities/model/activity";
-import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
-import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/model/step";
-import { ActivityTagType, type ActivityTagData } from "@features/activities/model/tag";
-import type { ActivityWorkshopData } from "@features/activities/model/workshop";
-import { createEmptyActivity } from "@features/admin/activities-authoring/model/activity.edit";
+} from "@features/activities/models/activity";
+import type { ActivityMaterialData, MaterialData } from "@features/activities/models/material";
+import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/models/step";
+import { ActivityTagType, type ActivityTagData } from "@features/activities/models/tag";
+import type { ActivityWorkshopData } from "@features/activities/models/workshop";
+import { createEmptyActivity } from "@features/admin/activities-authoring/models/activity.edit";
 import {
     createCatalogueMaterial,
     createMaterialLink,
     materialNamed,
     nameKey,
-} from "@features/admin/activities-authoring/model/material.edit";
-import { createEmptyStep, isBlankHtml } from "@features/admin/activities-authoring/model/step.edit";
-import { createEmptyWorkshop } from "@features/admin/activities-authoring/model/workshop.edit";
+} from "@features/admin/activities-authoring/models/material.edit";
+import { createEmptyStep, isBlankHtml } from "@features/admin/activities-authoring/models/step.edit";
+import { createEmptyWorkshop } from "@features/admin/activities-authoring/models/workshop.edit";
 
 /**
  * An activity sheet brought in as JSON — what the `fiche-to-json` skill writes from the Confluence

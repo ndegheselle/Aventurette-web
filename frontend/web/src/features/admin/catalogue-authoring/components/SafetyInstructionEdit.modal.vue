@@ -4,7 +4,7 @@ import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
-import type { SafetyInstructionData } from '@features/activities/model/activity';
+import type { SafetyInstructionData } from '@features/activities/models/activity';
 import { safetyInstructionsApi } from '@features/admin/catalogue-authoring/api/safety.api';
 import { useSluggedEditModal } from '@features/admin/catalogue-authoring/composables/useSluggedEditModal';
 import { CheckIcon, XIcon } from 'lucide-vue-next';

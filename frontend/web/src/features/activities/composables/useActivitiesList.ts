@@ -1,7 +1,7 @@
 import { createSearchFilter, type Paginated } from '@chapelure/core';
 import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { ageRangeOf, totalMinutesOf, type ActivityData } from '@features/activities/model/activity';
+import { ageRangeOf, totalMinutesOf, type ActivityData } from '@features/activities/models/activity';
 import { computed, onMounted, ref } from 'vue';
 
 // One of <Pagination>'s page sizes, or its selector shows blank.

@@ -1,4 +1,4 @@
-import { Role } from '@features/user/model/user';
+import { Role } from '@features/user/models/user';
 import type { RouteRecordRaw } from 'vue-router';
 
 import ActivitiesEditPage from '@features/admin/activities-authoring/pages/ActivitiesEdit.page.vue';

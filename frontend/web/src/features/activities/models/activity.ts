@@ -12,10 +12,10 @@ import {
     type CatalogSafetyInstructionsResponse,
 } from "@/backend/schema.g";
 import { distinctById, type Entity } from "@chapelure/core";
-import type { ActivityMaterialData } from "@features/activities/model/material";
-import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/model/step";
-import { ActivityTagType, type ActivityTagData } from "@features/activities/model/tag";
-import type { ActivityWorkshopData } from "@features/activities/model/workshop";
+import type { ActivityMaterialData } from "@features/activities/models/material";
+import { StepKind, type ActivityResourceData, type ActivityStepData } from "@features/activities/models/step";
+import { ActivityTagType, type ActivityTagData } from "@features/activities/models/tag";
+import type { ActivityWorkshopData } from "@features/activities/models/workshop";
 
 // ── The activity ────────────────────────────────────────────────────────────────────────────
 

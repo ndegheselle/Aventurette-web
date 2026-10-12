@@ -35,7 +35,7 @@ when they are added. That is what lets one batch create a step and, further down
 listing it, and lets a step's materials recall a link created in the same save.
 
 **What to write is a pure function**, `activityWrites(original, edited)` in
-`model/activity.edit.ts`. It compares the activity as it was read with the activity as the form
+`models/activity.edit.ts`. It compares the activity as it was read with the activity as the form
 holds it, by id: what `original` lacks is created, what `edited` lacks is deleted, what changed
 is updated. It also fixes the order:
 

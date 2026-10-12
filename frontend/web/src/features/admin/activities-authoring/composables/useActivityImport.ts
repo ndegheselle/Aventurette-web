@@ -3,7 +3,7 @@ import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { materialCatalogueApi } from '@features/admin/activities-authoring/api/materials.api';
 import { referencesApi } from '@features/admin/activities-authoring/api/references.api';
 import { saveApi } from '@features/admin/activities-authoring/api/save.api';
-import { activityWrites } from '@features/admin/activities-authoring/model/activity.edit';
+import { activityWrites } from '@features/admin/activities-authoring/models/activity.edit';
 import {
     activityFromSheet,
     draftFromSheet,
@@ -16,7 +16,7 @@ import {
     type SheetProblem,
     type SheetReferences,
     type SheetStepFiles,
-} from '@features/admin/activities-authoring/model/activity.import';
+} from '@features/admin/activities-authoring/models/activity.import';
 import { routesNames } from '@features/admin/activities-authoring/routes';
 import { useAuth } from '@features/user/composables/useAuth';
 import { computed, ref } from 'vue';

@@ -20,19 +20,19 @@ down, which is what makes it testable without mounting anything.
 
 | Layer | Holds | May import |
 |---|---|---|
-| `features/<name>/model/` | rules that hold whatever renders them — pure functions over plain data | `@chapelure/core`, other models. **No `vue`.** |
-| `features/<name>/api/` | the feature's backend calls, and `<entity>.mapper.ts` — the payload type and the translation to the model | `@/backend`, the feature's `model/`. **No `vue`.** |
-| `features/<name>/composables/` | reactive state and orchestration | `vue`, the feature's `api/` and `model/` |
+| `features/<name>/models/` | rules that hold whatever renders them — pure functions over plain data | `@chapelure/core`, other models. **No `vue`.** |
+| `features/<name>/api/` | the feature's backend calls, and `<entity>.mapper.ts` — the payload type and the translation to the model | `@/backend`, the feature's `models/`. **No `vue`.** |
+| `features/<name>/composables/` | reactive state and orchestration | `vue`, the feature's `api/` and `models/` |
 | `features/<name>/components/` | markup and bindings | anything above |
 | `features/<name>/pages/` | route targets, `Name.page.vue` | anything above |
 | `features/<name>/tests/` | the feature's specs — and the only place they may live | anything |
 
-Adding behaviour usually means: a pure function in `model/`, then a line in a composable, then
+Adding behaviour usually means: a pure function in `models/`, then a line in a composable, then
 a binding in the template. If you find yourself writing a `computed` that makes a decision
-inside `<script setup>`, it belongs in `model/`.
+inside `<script setup>`, it belongs in `models/`.
 
-**One file per entity or screen, not per concept.** `model/activity.ts` holds the activity's
-types, its factory, its enums and its formatters together; `model/step.ts` does the same for a
+**One file per entity or screen, not per concept.** `models/activity.ts` holds the activity's
+types, its factory, its enums and its formatters together; `models/step.ts` does the same for a
 step and the materials and resources hanging off it. What the backend sends is not part of that:
 an entity's payload type and its `EntityMapper` live in `api/<entity>.mapper.ts`, with the rest
 of the code that knows a backend exists. A three-line type alias is not a file.

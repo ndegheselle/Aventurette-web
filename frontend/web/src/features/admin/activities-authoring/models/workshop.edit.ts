@@ -1,6 +1,6 @@
 import type { FieldErrors } from "@chapelure/core";
-import type { ActivityMaterialData } from "@features/activities/model/material";
-import type { ActivityWorkshopData } from "@features/activities/model/workshop";
+import type { ActivityMaterialData } from "@features/activities/models/material";
+import type { ActivityWorkshopData } from "@features/activities/models/workshop";
 
 /**
  * A blank workshop, for the modal to fill in. Like a step's, its id is chosen here so the activity

@@ -1,7 +1,7 @@
 import { createFilter, createGroup, createSearchFilter, FilterOperator, removeEmptyFilters, type FilterGroup } from '@chapelure/core';
-import type { SafetyInstructionData } from '@features/activities/model/activity';
-import type { ActivityTipData } from '@features/activities/model/step';
-import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
+import type { SafetyInstructionData } from '@features/activities/models/activity';
+import type { ActivityTipData } from '@features/activities/models/step';
+import { ActivityTagType, type ActivityTagData } from '@features/activities/models/tag';
 
 /**
  * The catalogues seen from the screens that write them: materials, tags, safety instructions

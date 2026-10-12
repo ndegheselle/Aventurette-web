@@ -39,7 +39,7 @@ Within a feature, the same applies one level down:
 
 ```
 pages/ ──► components/ ──► composables/ ──► api/ ──► @/backend
-                                 └────────► model/
+                                 └────────► models/
 ```
 
 Nothing points left. `core` imports nothing of ours; `ui` never learns which backend exists;
@@ -59,7 +59,7 @@ Every feature has the same shape, so you never have to guess:
 
 | | |
 |---|---|
-| `model/` | types, factories, domain rules — **no framework imports** |
+| `models/` | types, factories, domain rules — **no framework imports** |
 | `api/` | `*.api.ts` — the only place `@/backend` may be imported — and `*.mapper.ts` |
 | `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
 | `components/` | feature components |
@@ -69,14 +69,14 @@ Every feature has the same shape, so you never have to guess:
 | `routes.ts` | the route records plus a `routesNames` map |
 
 Where behaviour goes between these is the one thing worth reading before writing any:
-`model/` holds rules that hold whatever renders them, `composables/` holds reactive state, and
+`models/` holds rules that hold whatever renders them, `composables/` holds reactive state, and
 a component is wiring and markup. [ADR 0009](docs/adr/0009-logic-lives-outside-components.md)
 has the reasoning; a feature with no logic needs no composable.
 
-Within a folder the unit is an **entity or a screen, not a concept**: `model/activity.ts` holds
+Within a folder the unit is an **entity or a screen, not a concept**: `models/activity.ts` holds
 the activity's types, its state enum and what the read screens derive from it, and
 `useActivitiesList` owns the list screen — its results and its search. Splitting finer than
-that was tried and produced `model/benefit.ts`, three lines long. The exception is the backend
+that was tried and produced `models/benefit.ts`, three lines long. The exception is the backend
 seam: an entity's payload type and mapper sit in `api/<entity>.mapper.ts`, so the model reads
 as the domain alone.
 
@@ -134,7 +134,7 @@ import { XIcon } from 'lucide-vue-next';
 | `@/backend` is imported only from `features/*/api/**` | Components never hold a backend client |
 | `features/*/composables` never import `@/backend` | A composable is Vue, but still not where a client belongs |
 | `frontend/packages/core` imports no `vue`, no SDK, no app | Contracts survive any framework or backend change |
-| `features/*/model` and `features/*/api` import no framework | Domain and data survive a framework change |
+| `features/*/models` and `features/*/api` import no framework | Domain and data survive a framework change |
 | `frontend/packages/ui` imports neither the app nor the adapter | The design system stays reusable |
 | `features/*` never import `@/app` | The app composes features, never the other way round |
 | Nothing that ships imports `@tests` or the SDK test double | Builders and fakes stay out of the bundle |
@@ -156,7 +156,7 @@ Three deliberate compromises:
   icon is findable by its own name, in this codebase and in lucide's documentation alike.
   Swapping icon sets is a find-and-replace over the import lines.
 - **The view layer is Vue, and stays Vue.** The achievable goal is that `core/`,
-  `features/*/model` and `features/*/api` are framework-free — roughly the part of a
+  `features/*/models` and `features/*/api` are framework-free — roughly the part of a
   framework migration that is worth protecting. Components would be rewritten either way.
 
 ## Mechanics worth knowing

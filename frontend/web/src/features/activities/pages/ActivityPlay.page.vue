@@ -3,8 +3,8 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import ActivityNotices from '@features/activities/components/ActivityNotices.vue';
 import { useActivityPlay } from '@features/activities/composables/useActivityPlay';
-import { isGenerated } from '@features/activities/model/play';
-import { stepNumber } from '@features/activities/model/step';
+import { isGenerated } from '@features/activities/models/play';
+import { stepNumber } from '@features/activities/models/step';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { ArrowLeftIcon, ArrowRightIcon, CircleQuestionMarkIcon, ClockIcon, FileTextIcon, FlagIcon, InfoIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
 

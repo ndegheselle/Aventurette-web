@@ -1,7 +1,7 @@
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import type { ActivityResourceData } from '@features/activities/model/step';
+import type { ActivityResourceData } from '@features/activities/models/step';
 import { saveApi } from '@features/admin/activities-authoring/api/save.api';
-import { createResource, filesWithinLimit, MAX_STEP_RESOURCES } from '@features/admin/activities-authoring/model/step.edit';
+import { createResource, filesWithinLimit, MAX_STEP_RESOURCES } from '@features/admin/activities-authoring/models/step.edit';
 import { type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

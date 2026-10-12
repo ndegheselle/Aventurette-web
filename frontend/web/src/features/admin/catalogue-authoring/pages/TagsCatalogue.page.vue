@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
+import { ActivityTagType, type ActivityTagData } from '@features/activities/models/tag';
 import CatalogueTab from '@features/admin/catalogue-authoring/components/CatalogueTab.vue';
 import TagEditModal from '@features/admin/catalogue-authoring/components/TagEdit.modal.vue';
 import { useTagsEditList } from '@features/admin/catalogue-authoring/composables/useCatalogueEditList';
-import { newTag } from '@features/admin/catalogue-authoring/model/catalogue.edit';
+import { newTag } from '@features/admin/catalogue-authoring/models/catalogue.edit';
 import { useTemplateRef } from 'vue';
 
 const { paginated, search, type, refresh, selectType, remove } = useTagsEditList();

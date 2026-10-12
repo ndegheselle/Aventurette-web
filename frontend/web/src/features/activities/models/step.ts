@@ -5,7 +5,7 @@ import {
     type StepsResourcesResponse,
 } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
-import type { ActivityMaterialData } from "@features/activities/model/material";
+import type { ActivityMaterialData } from "@features/activities/models/material";
 
 // ── The step ────────────────────────────────────────────────────────────────────────────────
 

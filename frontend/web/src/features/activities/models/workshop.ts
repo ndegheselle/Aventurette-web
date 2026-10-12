@@ -1,6 +1,6 @@
 import type { ActivitiesWorkshopsResponse } from "@/backend/schema.g";
 import type { Entity } from "@chapelure/core";
-import type { ActivityMaterialData } from "@features/activities/model/material";
+import type { ActivityMaterialData } from "@features/activities/models/material";
 
 /**
  * One of the stations an activity runs in parallel, and how many adults it takes to hold it.

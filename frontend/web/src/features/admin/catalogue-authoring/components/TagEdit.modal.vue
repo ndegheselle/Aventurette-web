@@ -3,7 +3,7 @@ import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
-import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
+import { ActivityTagType, type ActivityTagData } from '@features/activities/models/tag';
 import { tagsApi } from '@features/admin/catalogue-authoring/api/tags.api';
 import { useSluggedEditModal } from '@features/admin/catalogue-authoring/composables/useSluggedEditModal';
 import { CheckIcon, XIcon } from 'lucide-vue-next';

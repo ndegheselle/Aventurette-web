@@ -1,9 +1,9 @@
 import { createSearchFilter } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import type { MaterialData } from '@features/activities/model/material';
+import type { MaterialData } from '@features/activities/models/material';
 import { materialsApi as materials } from '@features/admin/catalogue-authoring/api/materials.api';
 import { useCatalogueEditList } from '@features/admin/catalogue-authoring/composables/useCatalogueEditList';
-import { renamedTo } from '@features/admin/catalogue-authoring/model/catalogue.edit';
+import { renamedTo } from '@features/admin/catalogue-authoring/models/catalogue.edit';
 import { useI18n } from 'vue-i18n';
 
 /**

@@ -5,8 +5,8 @@ import { safetyInstructionMapper, type SafetyInstructionPayload } from "@feature
 import { stepMapper, type ActivityStepPayload } from "@features/activities/api/step.mapper";
 import { tagMapper, type ActivityTagPayload } from "@features/activities/api/tag.mapper";
 import { workshopMapper, type ActivityWorkshopPayload } from "@features/activities/api/workshop.mapper";
-import { DEVELOPMENT_AXES, type ActivityData, type DevelopmentAxis } from "@features/activities/model/activity";
-import type { ActivityTagData } from "@features/activities/model/tag";
+import { DEVELOPMENT_AXES, type ActivityData, type DevelopmentAxis } from "@features/activities/models/activity";
+import type { ActivityTagData } from "@features/activities/models/tag";
 
 /** An activity as the backend stores it, with what an expanded read carries alongside. */
 export type ActivityPayload = ActivitiesResponse<{

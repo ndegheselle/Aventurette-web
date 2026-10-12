@@ -6,9 +6,9 @@ import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useDraftModal } from '@chapelure/ui/modals/useDraftModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
-import type { ActivityMaterialData } from '@features/activities/model/material';
-import type { ActivityWorkshopData } from '@features/activities/model/workshop';
-import { workshopProblems } from '@features/admin/activities-authoring/model/workshop.edit';
+import type { ActivityMaterialData } from '@features/activities/models/material';
+import type { ActivityWorkshopData } from '@features/activities/models/workshop';
+import { workshopProblems } from '@features/admin/activities-authoring/models/workshop.edit';
 import { CheckIcon, XIcon } from 'lucide-vue-next';
 
 /** The activity's materials: a workshop recalls the ones it uses. */

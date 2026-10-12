@@ -1,4 +1,4 @@
-import { ActivityTagType, tagOptions, type ActivityTagData } from '@features/activities/model/tag';
+import { ActivityTagType, tagOptions, type ActivityTagData } from '@features/activities/models/tag';
 import { aTag } from '@tests';
 import { describe, expect, it } from 'vitest';
 

@@ -1,6 +1,6 @@
 import type { ActivitiesMaterialsResponse, CatalogMaterialsResponse } from "@/backend/schema.g";
 import { omit, plainMapper, type EntityMapper } from "@chapelure/core";
-import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
+import type { ActivityMaterialData, MaterialData } from "@features/activities/models/material";
 
 /** A catalogue material as the backend stores it. */
 export type MaterialPayload = CatalogMaterialsResponse;
