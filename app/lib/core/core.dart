@@ -1,9 +1,0 @@
-export 'package:aventurette/core/auth/provider.dart';
-export 'package:aventurette/core/data/crud.dart';
-export 'package:aventurette/core/data/entity.dart';
-export 'package:aventurette/core/data/filters.dart';
-export 'package:aventurette/core/data/json.dart';
-export 'package:aventurette/core/data/mapper.dart';
-export 'package:aventurette/core/data/wire_enum.dart';
-export 'package:aventurette/core/errors.dart';
-export 'package:aventurette/core/files/resolver.dart';
