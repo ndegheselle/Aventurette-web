@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
 import { useAuth } from '@features/user/composables/useAuth';
 import { authGuard } from '@features/user/guard';
-import { Role } from '@features/user/model/user';
+import { Role } from '@features/user/models/user';
 import { routesNames } from '@features/user/routes';
 
 const provider = fakeAuthProvider(aUser());

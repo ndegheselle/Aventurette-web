@@ -8,7 +8,7 @@ npm run check           # boundaries, typecheck and build, then tests — what C
 ```
 
 Specs live in their feature's `tests/` folder — `features/activities-authoring/tests/step.edit.spec.ts`
-covers `features/activities-authoring/model/step.edit.ts`. They import through aliases like everything else,
+covers `features/activities-authoring/models/step.edit.ts`. They import through aliases like everything else,
 and `npm run lint:arch` fails on a `.spec.ts` found anywhere else under a feature. They are
 typechecked with the app, so a spec that no longer compiles fails `npm run build`.
 
@@ -45,7 +45,7 @@ Once something has earned a spec: reach for the cheapest kind that can express t
 behaviour should be testable without mounting anything — that is what
 [ADR 0009](adr/0009-logic-lives-outside-components.md) is for.
 
-**Pure** — `model/`, `@chapelure/core`, the adapter. Import the function, call it, assert.
+**Pure** — `models/`, `@chapelure/core`, the adapter. Import the function, call it, assert.
 No mounting, no mocks.
 
 ```ts

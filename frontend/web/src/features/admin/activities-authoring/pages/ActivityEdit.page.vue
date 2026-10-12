@@ -21,16 +21,16 @@ import {
     DEVELOPMENT_AXES,
     HostEffort,
     ImaginaryRule,
-} from '@features/activities/model/activity';
-import { type ActivityStepData } from '@features/activities/model/step';
-import { type ActivityWorkshopData } from '@features/activities/model/workshop';
+} from '@features/activities/models/activity';
+import { type ActivityStepData } from '@features/activities/models/step';
+import { type ActivityWorkshopData } from '@features/activities/models/workshop';
 import MaterialsSelection from '@features/admin/activities-authoring/components/MaterialsSelection.vue';
 import SectionsMenuModal from '@features/admin/activities-authoring/components/SectionsMenu.modal.vue';
 import SectionsMenu, { type SectionEntry } from '@features/admin/activities-authoring/components/SectionsMenu.vue';
 import StepEditModal from '@features/admin/activities-authoring/components/StepEdit.modal.vue';
 import WorkshopEditModal from '@features/admin/activities-authoring/components/WorkshopEdit.modal.vue';
 import { useActivityEdit, useReferenceOptions } from '@features/admin/activities-authoring/composables/useActivityEdit';
-import { AGE_BOUNDS, PARTICIPANTS_BOUNDS } from '@features/admin/activities-authoring/model/activity.edit';
+import { AGE_BOUNDS, PARTICIPANTS_BOUNDS } from '@features/admin/activities-authoring/models/activity.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';
 import {
     ArrowLeftIcon,

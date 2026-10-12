@@ -6,10 +6,10 @@ import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useDraftModal } from '@chapelure/ui/modals/useDraftModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
-import type { ActivityMaterialData } from '@features/activities/model/material';
-import { StepKind, type ActivityStepData, type ActivityTipData } from '@features/activities/model/step';
+import type { ActivityMaterialData } from '@features/activities/models/material';
+import { StepKind, type ActivityStepData, type ActivityTipData } from '@features/activities/models/step';
 import ResourcesSelection from '@features/admin/activities-authoring/components/ResourcesSelection.vue';
-import { joinDuration, splitDuration, stepProblems } from '@features/admin/activities-authoring/model/step.edit';
+import { joinDuration, splitDuration, stepProblems } from '@features/admin/activities-authoring/models/step.edit';
 import { CheckIcon, PlusIcon, TrashIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 

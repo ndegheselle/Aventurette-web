@@ -1,4 +1,4 @@
-import { filesWithinLimit, joinDuration, resourcePreviewOf, splitDuration, stepProblems } from '@features/admin/activities-authoring/model/step.edit';
+import { filesWithinLimit, joinDuration, resourcePreviewOf, splitDuration, stepProblems } from '@features/admin/activities-authoring/models/step.edit';
 import { aPickedFile, aResource } from '@tests';
 import { describe, expect, it } from 'vitest';
 

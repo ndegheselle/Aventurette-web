@@ -1,5 +1,5 @@
 import { isFilterGroup, type Filter } from '@chapelure/core';
-import { ActivityState, type ActivityData } from '@features/activities/model/activity';
+import { ActivityState, type ActivityData } from '@features/activities/models/activity';
 import {
     activityWrites,
     buildAuthoredFilters,
@@ -7,7 +7,7 @@ import {
     saveErrors,
     stateTransition,
     type ActivityWrite,
-} from '@features/admin/activities-authoring/model/activity.edit';
+} from '@features/admin/activities-authoring/models/activity.edit';
 import { aCatalogueMaterial, aMaterial, anActivity, aPickedFile, aResource, aStep, aWorkshop } from '@tests';
 import { describe, expect, it } from 'vitest';
 

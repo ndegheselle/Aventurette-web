@@ -1,5 +1,5 @@
-import { GeneratedStepKind, playStepsOf } from '@features/activities/model/play';
-import { StepKind } from '@features/activities/model/step';
+import { GeneratedStepKind, playStepsOf } from '@features/activities/models/play';
+import { StepKind } from '@features/activities/models/step';
 import { aMaterial, aStep, anActivity } from '@tests';
 import { describe, expect, it } from 'vitest';
 

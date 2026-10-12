@@ -1,7 +1,7 @@
 import type { BaseEntity, IDataCrud } from '@chapelure/core';
 import { useEditModal } from '@chapelure/ui/modals/useEditModal';
 import type { IModalController } from '@chapelure/ui/modals/useModal';
-import { slugFollowing } from '@features/admin/catalogue-authoring/model/catalogue.edit';
+import { slugFollowing } from '@features/admin/catalogue-authoring/models/catalogue.edit';
 import { watch } from 'vue';
 
 /**

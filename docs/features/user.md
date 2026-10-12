@@ -17,7 +17,7 @@ reached from the account menu in the navbar (`AuthMenu`).
 ## The session
 
 `useAuth` is the session, and there is exactly one: `current` is module-level state, shared by
-every caller, so signing in anywhere signs in everywhere. `UserData` in `model/user.ts` is this
+every caller, so signing in anywhere signs in everywhere. `UserData` in `models/user.ts` is this
 app's user record, and what `useAuth().current` holds.
 
 `AuthMenu` is the session's corner of the navbar: the signed-in user's email and a logout, or a
@@ -44,7 +44,7 @@ Past the session it reads the route's `meta.roles`: a user holding none of them 
 
 ## Roles
 
-A user's `role` is `USER` or `ADMIN`, in `model/user.ts` as `Role`. The backend stores no role as
+A user's `role` is `USER` or `ADMIN`, in `models/user.ts` as `Role`. The backend stores no role as
 an empty string, and `roleOf` reads that as `USER` — every account that existed before roles is
 a plain user.
 

@@ -1,5 +1,5 @@
 import { useActivity } from '@features/activities/composables/useActivity';
-import { actionKey, playStepsOf, type PlayStep } from '@features/activities/model/play';
+import { actionKey, playStepsOf, type PlayStep } from '@features/activities/models/play';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

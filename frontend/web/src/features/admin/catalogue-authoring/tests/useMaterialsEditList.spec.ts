@@ -1,4 +1,4 @@
-import type { MaterialData } from '@features/activities/model/material';
+import type { MaterialData } from '@features/activities/models/material';
 import { useMaterialsEditList } from '@features/admin/catalogue-authoring/composables/useMaterialsEditList';
 import { aCatalogueMaterial, fakeCrud, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';

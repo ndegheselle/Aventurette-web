@@ -5,12 +5,12 @@ import { activityMapper } from "@features/activities/api/activity.mapper";
 import { activityMaterialMapper, materialMapper } from "@features/activities/api/material.mapper";
 import { resourceMapper, stepMapper } from "@features/activities/api/step.mapper";
 import { workshopMapper } from "@features/activities/api/workshop.mapper";
-import type { ActivityData } from "@features/activities/model/activity";
+import type { ActivityData } from "@features/activities/models/activity";
 import {
     saveErrors,
     type ActivityRecords,
     type ActivityWrite,
-} from "@features/admin/activities-authoring/model/activity.edit";
+} from "@features/admin/activities-authoring/models/activity.edit";
 
 /** Each record a save writes, as the collection it is written to. */
 function collectionsOf(pending: IDataBatch): Record<keyof ActivityRecords, IBatchCollection<BaseEntity>> {

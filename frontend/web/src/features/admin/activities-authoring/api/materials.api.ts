@@ -1,7 +1,7 @@
 import { crud } from "@/backend";
 import { Collections } from "@/backend/schema.g";
 import { materialMapper } from "@features/activities/api/material.mapper";
-import type { MaterialData } from "@features/activities/model/material";
+import type { MaterialData } from "@features/activities/models/material";
 
 const catalogue = crud(Collections.CatalogMaterials, materialMapper);
 

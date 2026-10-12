@@ -1,4 +1,4 @@
-# 0009 — Logic lives in `model/` and `composables/`, not in components
+# 0009 — Logic lives in `models/` and `composables/`, not in components
 
 **Status:** Accepted
 
@@ -16,7 +16,7 @@ change is wrong.
 
 Three layers, and a component is the last of them.
 
-**`model/` — framework-free.** Rules that hold whatever renders them. Pure functions over
+**`models/` — framework-free.** Rules that hold whatever renders them. Pure functions over
 plain data: `buildAuthoredFilters` turning a tab into a query, `filesWithinLimit` enforcing a
 step's capacity, `materialSuggestions` choosing which materials to offer. No `vue` import,
 checked by `lint:arch`.

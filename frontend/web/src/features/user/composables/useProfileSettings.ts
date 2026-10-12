@@ -2,7 +2,7 @@ import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useSubmit } from '@chapelure/ui/forms/useSubmit';
 import { useAuth } from '@features/user/composables/useAuth';
 import { profileApi } from '@features/user/api/profile.api';
-import { toProfileForm, toProfilePatch } from '@features/user/model/user';
+import { toProfileForm, toProfilePatch } from '@features/user/models/user';
 import { reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import List from '@chapelure/ui/data/List.vue';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
+import type { ActivityMaterialData, MaterialData } from '@features/activities/models/material';
 import { useMaterialCatalogue } from '@features/admin/activities-authoring/composables/useActivityEdit';
 import { CircleOffIcon, CircleQuestionMarkIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-vue-next';
 import { ref } from 'vue';

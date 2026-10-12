@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
-import type { SafetyInstructionData } from '@features/activities/model/activity';
+import type { SafetyInstructionData } from '@features/activities/models/activity';
 import { TriangleAlertIcon } from 'lucide-vue-next';
 
 defineProps<{

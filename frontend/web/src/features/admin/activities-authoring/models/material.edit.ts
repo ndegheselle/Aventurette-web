@@ -1,5 +1,5 @@
-import type { ActivityData } from "@features/activities/model/activity";
-import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
+import type { ActivityData } from "@features/activities/models/activity";
+import type { ActivityMaterialData, MaterialData } from "@features/activities/models/material";
 
 /**
  * The activity's material list seen from its author's side: which catalogue materials to offer,

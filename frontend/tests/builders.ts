@@ -10,16 +10,16 @@ import {
     emptyDevelopment,
     type ActivityData,
     type SafetyInstructionData,
-} from '@features/activities/model/activity';
+} from '@features/activities/models/activity';
 import type { ActivityPayload } from '@features/activities/api/activity.mapper';
-import type { ActivityMaterialData, MaterialData } from '@features/activities/model/material';
+import type { ActivityMaterialData, MaterialData } from '@features/activities/models/material';
 import {
     StepKind,
     type ActivityResourceData,
     type ActivityStepData,
     type ActivityTipData,
-} from '@features/activities/model/step';
-import type { ActivityWorkshopData } from '@features/activities/model/workshop';
+} from '@features/activities/models/step';
+import type { ActivityWorkshopData } from '@features/activities/models/workshop';
 import type { ActivityMaterialPayload, MaterialPayload } from '@features/activities/api/material.mapper';
 import type {
     ActivityResourcePayload,
@@ -29,8 +29,8 @@ import type { SafetyInstructionPayload } from '@features/activities/api/safety.m
 import type { ActivityTagPayload } from '@features/activities/api/tag.mapper';
 import type { ActivityTipPayload } from '@features/activities/api/tip.mapper';
 import type { ActivityWorkshopPayload } from '@features/activities/api/workshop.mapper';
-import { ActivityTagType, type ActivityTagData } from '@features/activities/model/tag';
-import type { UserData } from '@features/user/model/user';
+import { ActivityTagType, type ActivityTagData } from '@features/activities/models/tag';
+import type { UserData } from '@features/user/models/user';
 
 let sequence = 0;
 const nextId = (prefix: string) => `${prefix}${(++sequence).toString().padStart(12, '0')}`;

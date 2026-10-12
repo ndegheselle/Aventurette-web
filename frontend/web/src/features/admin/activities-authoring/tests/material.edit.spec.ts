@@ -3,7 +3,7 @@ import {
     materialNamed,
     materialSuggestions,
     withoutMaterial,
-} from '@features/admin/activities-authoring/model/material.edit';
+} from '@features/admin/activities-authoring/models/material.edit';
 import { aCatalogueMaterial, aMaterial, aStep, aWorkshop, anActivity } from '@tests';
 import { describe, expect, it } from 'vitest';
 

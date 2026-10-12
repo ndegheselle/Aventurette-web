@@ -1,6 +1,6 @@
 import { FilterOperator, isFilterGroup } from '@chapelure/core';
-import { ActivityTagType } from '@features/activities/model/tag';
-import { renamedTo, slugFollowing, slugify, tagsFilter } from '@features/admin/catalogue-authoring/model/catalogue.edit';
+import { ActivityTagType } from '@features/activities/models/tag';
+import { renamedTo, slugFollowing, slugify, tagsFilter } from '@features/admin/catalogue-authoring/models/catalogue.edit';
 import { describe, expect, it } from 'vitest';
 
 describe('renamedTo', () => {

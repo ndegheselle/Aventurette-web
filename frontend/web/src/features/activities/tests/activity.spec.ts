@@ -1,7 +1,7 @@
-import { columnOf, rangeEndOf, resourcesOf, timingOf } from '@features/activities/model/activity';
+import { columnOf, rangeEndOf, resourcesOf, timingOf } from '@features/activities/models/activity';
 import { activityMapper } from '@features/activities/api/activity.mapper';
-import { StepKind } from '@features/activities/model/step';
-import { ActivityTagType } from '@features/activities/model/tag';
+import { StepKind } from '@features/activities/models/step';
+import { ActivityTagType } from '@features/activities/models/tag';
 import {
     aMaterialPayload,
     aResource,

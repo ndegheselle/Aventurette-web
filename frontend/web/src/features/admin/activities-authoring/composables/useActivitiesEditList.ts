@@ -1,11 +1,11 @@
 import type { Paginated } from '@chapelure/core';
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import type { ActivityData } from '@features/activities/model/activity';
+import type { ActivityData } from '@features/activities/models/activity';
 import {
     buildAuthoredFilters,
     type ActivityStateFilter,
-} from '@features/admin/activities-authoring/model/activity.edit';
+} from '@features/admin/activities-authoring/models/activity.edit';
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -9,8 +9,8 @@ The activities feature reached 24 files across five folders, ten of them specs, 
 unpleasant to work in. The costs were specific, and all four are visible in the diff of the
 commit that deleted them:
 
-- **Files too small to justify a file.** `model/benefit.ts` was three lines — a type alias.
-  `model/environment.ts` was thirteen. Opening the feature meant reading a directory rather
+- **Files too small to justify a file.** `models/benefit.ts` was three lines — a type alias.
+  `models/environment.ts` was thirteen. Opening the feature meant reading a directory rather
   than a file.
 - **Specs for code with no decision in it.** `age.spec.ts` was 24 lines establishing that a
   four-branch formatter picks the right translation key. `activity.spec.ts` asserted that a
@@ -30,9 +30,9 @@ in. That is the thing being traded away.
 
 ## Decision
 
-**Specs live in `frontend/web/src/features/<name>/tests/`.** `model/`, `api/`, `composables/`,
+**Specs live in `frontend/web/src/features/<name>/tests/`.** `models/`, `api/`, `composables/`,
 `components/` and `pages/` hold production code and nothing else. Specs import through aliases
-(`@features/activities/model/step`) like everything else in the codebase, not relative paths.
+(`@features/activities/models/step`) like everything else in the codebase, not relative paths.
 `npm run lint:arch` fails on a `.spec.ts` found anywhere else under a feature.
 
 This applies to `frontend/web/src/features/`. `frontend/packages/` keeps co-located specs for now — they cover

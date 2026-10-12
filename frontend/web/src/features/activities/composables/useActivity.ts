@@ -1,6 +1,6 @@
 import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { activitiesApi as activities } from '@features/activities/api/activities.api';
-import { ageRangeOf, participantsRangeOf, resourcesOf, timingOf, type ActivityData } from '@features/activities/model/activity';
+import { ageRangeOf, participantsRangeOf, resourcesOf, timingOf, type ActivityData } from '@features/activities/models/activity';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 

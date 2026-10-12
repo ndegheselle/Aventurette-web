@@ -1,6 +1,6 @@
 import type { FieldErrors } from "@chapelure/core";
-import type { ActivityMaterialData } from "@features/activities/model/material";
-import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/model/step";
+import type { ActivityMaterialData } from "@features/activities/models/material";
+import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/models/step";
 
 /**
  * The step seen from its author's side: the blank one offered on add, what the collection would

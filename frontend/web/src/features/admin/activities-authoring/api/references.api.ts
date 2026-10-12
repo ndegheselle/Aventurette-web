@@ -3,7 +3,7 @@ import { Collections } from "@/backend/schema.g";
 import { safetyInstructionMapper } from "@features/activities/api/safety.mapper";
 import { tagMapper } from "@features/activities/api/tag.mapper";
 import { tipMapper } from "@features/activities/api/tip.mapper";
-import type { SheetReferences } from "@features/admin/activities-authoring/model/activity.import";
+import type { SheetReferences } from "@features/admin/activities-authoring/models/activity.import";
 
 const tags = crud(Collections.CatalogTags, tagMapper);
 const safetyInstructions = crud(Collections.CatalogSafetyInstructions, safetyInstructionMapper);

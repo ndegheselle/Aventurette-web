@@ -7,10 +7,10 @@ import {
     type FieldErrors,
     type FilterGroup,
 } from "@chapelure/core";
-import { ActivityState, emptyDevelopment, type ActivityData } from "@features/activities/model/activity";
-import type { ActivityMaterialData, MaterialData } from "@features/activities/model/material";
-import type { ActivityResourceData, ActivityStepData } from "@features/activities/model/step";
-import type { ActivityWorkshopData } from "@features/activities/model/workshop";
+import { ActivityState, emptyDevelopment, type ActivityData } from "@features/activities/models/activity";
+import type { ActivityMaterialData, MaterialData } from "@features/activities/models/material";
+import type { ActivityResourceData, ActivityStepData } from "@features/activities/models/step";
+import type { ActivityWorkshopData } from "@features/activities/models/workshop";
 
 /**
  * The activity seen from its author's side: the blank one a new activity starts from, what the

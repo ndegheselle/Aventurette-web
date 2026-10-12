@@ -1,7 +1,7 @@
 import type { ActivitiesWorkshopsResponse } from "@/backend/schema.g";
 import { toEntities, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
-import type { ActivityWorkshopData } from "@features/activities/model/workshop";
+import type { ActivityWorkshopData } from "@features/activities/models/workshop";
 
 /** A workshop as the backend stores it, with what an expanded read carries alongside. */
 export type ActivityWorkshopPayload = ActivitiesWorkshopsResponse<{

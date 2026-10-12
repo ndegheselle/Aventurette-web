@@ -2,7 +2,7 @@ import type { ActivitiesStepsResponse, StepsResourcesResponse } from "@/backend/
 import { toEntities, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import { tipMapper, type ActivityTipPayload } from "@features/activities/api/tip.mapper";
-import type { ActivityResourceData, ActivityStepData } from "@features/activities/model/step";
+import type { ActivityResourceData, ActivityStepData } from "@features/activities/models/step";
 
 /**
  * A resource as the backend stores it. `file` is the stored file's name coming back and the

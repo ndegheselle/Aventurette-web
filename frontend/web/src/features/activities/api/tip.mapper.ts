@@ -1,6 +1,6 @@
 import type { CatalogTipsResponse } from "@/backend/schema.g";
 import { plainMapper, type EntityMapper } from "@chapelure/core";
-import type { ActivityTipData } from "@features/activities/model/step";
+import type { ActivityTipData } from "@features/activities/models/step";
 
 /** A tip as the backend stores it. */
 export type ActivityTipPayload = CatalogTipsResponse;

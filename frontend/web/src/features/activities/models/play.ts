@@ -1,7 +1,7 @@
 import type { HTMLString } from "@/backend/schema.g";
-import type { ActivityData } from "@features/activities/model/activity";
-import type { ActivityMaterialData } from "@features/activities/model/material";
-import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/model/step";
+import type { ActivityData } from "@features/activities/models/activity";
+import type { ActivityMaterialData } from "@features/activities/models/material";
+import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/models/step";
 
 // ── The steps of a run ──────────────────────────────────────────────────────────────────────
 

@@ -7,9 +7,9 @@ import {
     DEVELOPMENT_AXES,
     HostEffort,
     ImaginaryRule,
-} from '@features/activities/model/activity';
-import { StepKind } from '@features/activities/model/step';
-import { ActivityTagType } from '@features/activities/model/tag';
+} from '@features/activities/models/activity';
+import { StepKind } from '@features/activities/models/step';
+import { ActivityTagType } from '@features/activities/models/tag';
 import {
     activityFromSheet,
     draftFromSheet,
@@ -20,7 +20,7 @@ import {
     stepFromSheet,
     unsetFields,
     type ActivitySheet,
-} from '@features/admin/activities-authoring/model/activity.import';
+} from '@features/admin/activities-authoring/models/activity.import';
 import { aCatalogueMaterial, aMaterial, anActivity, aResource, aSafetyInstruction, aTag, aTip } from '@tests';
 import { describe, expect, it } from 'vitest';
 // Relative: no alias reaches the skills folder, and this is the one file that needs to.
