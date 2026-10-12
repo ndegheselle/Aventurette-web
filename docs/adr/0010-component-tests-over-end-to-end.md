@@ -14,7 +14,7 @@ to make a second attempt.
 
 ## Decision
 
-Vitest, on happy-dom, with Vue Test Utils. One config at the root, sharing the app's own alias
+Vitest, on happy-dom, with Vue Test Utils. One config in `frontend/`, sharing the app's own alias
 map so a test resolves an import exactly as the browser will. Specs live beside what they
 cover.
 
@@ -38,7 +38,7 @@ No end-to-end suite for now.
 - Specs are typechecked with the app: a spec that no longer compiles fails `npm run build`.
 - Nothing covers the wiring between real screens — the router, the guard against real
   navigation, the actual PocketBase schema. A route that is never registered, or a collection
-  renamed in `back/`, is not caught here. That is the known gap, and where a small end-to-end
+  renamed in `backend/api/`, is not caught here. That is the known gap, and where a small end-to-end
   suite should go first if this is revisited.
 - happy-dom is not a browser. Layout, real drag-and-drop, and `<dialog>`'s modal semantics are
   approximations; `Modal.spec.ts` asserts that `show()` and `close()` are called, not that

@@ -1,6 +1,6 @@
 # Features
 
-One document per feature in `front/src/features/`. Each says what the feature does, the routes
+One document per feature in `frontend/web/src/features/`. Each says what the feature does, the routes
 it owns, the shape of its data, the rules that hold, and what is not finished.
 
 | Feature | What it is |

@@ -18,7 +18,7 @@ dependency of its own: `IDataCrud` and its `CrudFactory`, `IAuthProvider`, `IFil
 
 `@chapelure/pocketbase` implements them. It is the only place the `pocketbase` SDK is imported.
 
-`front/src/backend/index.ts` wires the two together and is the only file in the app that names
+`frontend/web/src/backend/index.ts` wires the two together and is the only file in the app that names
 the adapter. Features reach it through their own `api/` folder and nothing else.
 
 Errors cross the seam normalised: the adapter turns a refusal (PocketBase's 400) into
@@ -28,7 +28,7 @@ than mislabelled as a validation error.
 
 ## Consequences
 
-- Changing backend means rewriting `front/src/backend/index.ts` and writing one new adapter
+- Changing backend means rewriting `frontend/web/src/backend/index.ts` and writing one new adapter
   package. Nothing else in the app has an opinion about which backend exists.
 - Tests fake the port rather than the SDK — see [0012](0012-fakes-at-the-port-not-the-sdk.md).
 - Some of the SDK's abilities are not reachable without widening a port first. That is the

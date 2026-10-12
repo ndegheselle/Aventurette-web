@@ -151,7 +151,7 @@ one-step case is not a special case.
 
 **Taking a material off** is `withoutMaterial`: off the activity's list and off every step and
 workshop recalling it, so their updates drop it before the link is deleted. A file taken off a
-step is only unlinked; `back/hooks` reclaims a resource no step lists once the step is updated.
+step is only unlinked; `backend/api/hooks` reclaims a resource no step lists once the step is updated.
 
 A blank record is a valid one once filled in: `createEmptyActivity` fills in every family and
 the `state` the collection requires — a new activity starts as `DRAFT` — and `useActivityEdit`

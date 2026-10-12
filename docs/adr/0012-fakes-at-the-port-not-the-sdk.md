@@ -22,7 +22,7 @@ vi.mock('@features/activities/api/activities.api', () => ({
 }));
 ```
 
-The adapter itself is tested separately, against `packages/pocketbase/src/testing.ts` — a fake
+The adapter itself is tested separately, against `frontend/packages/pocketbase/src/testing.ts` — a fake
 written to the SDK's real method names, so those specs exercise the options the adapter
 actually passes.
 
@@ -30,7 +30,7 @@ actually passes.
 
 - Feature tests are written in the app's own vocabulary. `crud.failNextWith({ email: { code:
   'validation_invalid_email' } })` says what happened; a stubbed HTTP 400 does not.
-- Nothing outside `packages/pocketbase` would change if the backend did.
+- Nothing outside `frontend/packages/pocketbase` would change if the backend did.
 - The fakes are shallow by design. `fakeCrud.filter` records the group it was given and returns
   everything — it is not a filter engine, because the query language is the adapter's
   responsibility and is tested there. A test asserts *what was asked for*, not what a

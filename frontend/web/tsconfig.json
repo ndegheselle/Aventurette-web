@@ -1,0 +1,41 @@
+{
+    "extends": "@vue/tsconfig/tsconfig.dom.json",
+    "compilerOptions": {
+        "lib": ["es2024", "DOM"],
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+        "types": [
+            "vite/client",
+            // Vitest globals (describe/it/expect) — specs are typechecked with the app, so a
+            // broken test fails `npm run build` too.
+            "vitest/globals"
+        ],
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "erasableSyntaxOnly": false,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedSideEffectImports": true,
+        /* Workspace packages resolve to source, so `vue-tsc -b` typechecks them too and
+           Vite gives cross-package HMR. TypeScript cannot read backend/scripts/aliases.mjs, so this
+           list repeats it; `npm run lint:arch` fails if the two ever disagree. */
+        "paths": {
+            "@chapelure/core": [ "../packages/core/src/index.ts" ],
+            "@chapelure/core/*": [ "../packages/core/src/*" ],
+            "@chapelure/pocketbase": [ "../packages/pocketbase/src/index.ts" ],
+            "@chapelure/pocketbase/*": [ "../packages/pocketbase/src/*" ],
+            "@chapelure/ui/*": [ "../packages/ui/src/*" ],
+            "@features/*": [ "./src/features/*" ],
+            "@/*": [ "./src/*" ],
+            "@tests": [ "../tests/index.ts" ],
+            "@tests/*": [ "../tests/*" ]
+        }
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue",
+        "../tests/**/*.ts",
+        "../packages/*/src/**/*.spec.ts"
+    ]
+}

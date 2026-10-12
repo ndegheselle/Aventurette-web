@@ -1,0 +1,13 @@
+# The front image is built from the repository root (see web/Dockerfile), and BuildKit reads
+# this file, next to the Dockerfile, in place of a root .dockerignore.
+**/node_modules
+**/dist
+.git
+.gitignore
+.vscode
+backend/api
+backend/nginx
+# The dev server's API URL. VITE_API_URL is passed as a build arg instead, so keeping this
+# out of the image also keeps a local value from ever reaching a production bundle.
+frontend/web/.env
+**/*.log

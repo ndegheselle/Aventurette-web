@@ -12,7 +12,7 @@ covers `features/activities-authoring/model/step.edit.ts`. They import through a
 and `npm run lint:arch` fails on a `.spec.ts` found anywhere else under a feature. They are
 typechecked with the app, so a spec that no longer compiles fails `npm run build`.
 
-`packages/` is the exception and keeps co-located specs: there the spec is the documentation of
+`frontend/packages/` is the exception and keeps co-located specs: there the spec is the documentation of
 a contract, and the folders are not ones anyone navigates daily.
 
 ## Which tests to write
@@ -145,7 +145,7 @@ mismatch, not as a missing translation.
   nothing to render.
 - A ref reached through an object is not unwrapped in a template. Destructure a composable in
   `<script setup>`.
-- `front/src/backend/index.ts` refuses to load without `VITE_API_URL`, and a deep component
+- `frontend/web/src/backend/index.ts` refuses to load without `VITE_API_URL`, and a deep component
   tree pulls it in through some feature's api module. `vitest.config.ts` sets a fake one. A
   client that is constructed but never called is harmless; anything that would actually reach
   the network fails loudly, which is the reminder to mock that feature's api module.
@@ -154,5 +154,5 @@ mismatch, not as a missing translation.
 
 No end-to-end suite. Nothing exercises the real router against real screens, the guard against
 real navigation, or the actual PocketBase schema — so a route that is never registered, or a
-collection renamed in `back/`, is not caught here. That is the known gap, and where a small
+collection renamed in `backend/api/`, is not caught here. That is the known gap, and where a small
 Playwright suite should go first if this is revisited.

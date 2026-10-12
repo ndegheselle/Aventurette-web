@@ -10,7 +10,7 @@ distant folders, and nothing says which parts belong to each other.
 
 ## Decision
 
-`front/src/features/<name>/` holds everything one feature is, and every feature has the same
+`frontend/web/src/features/<name>/` holds everything one feature is, and every feature has the same
 shape, so there is never a question of where something goes:
 
 | Folder | Holds | Constraint |

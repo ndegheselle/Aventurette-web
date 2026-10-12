@@ -42,7 +42,7 @@ it ([ADR 0018](0018-safety-instructions-and-tips-are-catalogues.md)).
 | `ideal_for_tags` | IDEAL_FOR |
 | `development_tags` | the six DEVELOP_* kinds |
 
-PocketBase cannot restrict a relation to the records of one type, so `back/hooks/tag_kinds.go`
+PocketBase cannot restrict a relation to the records of one type, so `backend/api/hooks/tag_kinds.go`
 checks it: an activity linking a tag in a relation not meant for its kind is refused, with the
 error keyed by that relation.
 

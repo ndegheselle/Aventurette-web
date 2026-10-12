@@ -30,12 +30,12 @@ in. That is the thing being traded away.
 
 ## Decision
 
-**Specs live in `front/src/features/<name>/tests/`.** `model/`, `api/`, `composables/`,
+**Specs live in `frontend/web/src/features/<name>/tests/`.** `model/`, `api/`, `composables/`,
 `components/` and `pages/` hold production code and nothing else. Specs import through aliases
 (`@features/activities/model/step`) like everything else in the codebase, not relative paths.
 `npm run lint:arch` fails on a `.spec.ts` found anywhere else under a feature.
 
-This applies to `front/src/features/`. `packages/` keeps co-located specs for now — they cover
+This applies to `frontend/web/src/features/`. `frontend/packages/` keeps co-located specs for now — they cover
 library code where the spec *is* the documentation of the contract, and where the folders are
 not the ones anyone navigates daily.
 

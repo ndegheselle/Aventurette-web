@@ -1,7 +1,8 @@
 # Architecture
 
-An npm workspace: one app (`front/`) on top of three packages (`packages/`).
-`npm run lint:arch` checks the rules below on every build.
+An npm workspace rooted in `frontend/`: one app (`frontend/web/`) on top of three packages
+(`frontend/packages/`), next to a PocketBase backend in `backend/`. The npm commands below run
+from `frontend/`. `npm run lint:arch` checks the rules below on every build.
 
 This describes the code as it stands. *Why* it is this way is in
 [docs/adr/](docs/adr/README.md) — one file per decision, including the costs each one accepts.
@@ -10,23 +11,28 @@ it is in [docs/testing.md](docs/testing.md).
 
 ```
 Aventurette-web/
-├── packages/
-│   ├── core/          @chapelure/core        contracts. no framework, no backend, no deps
-│   ├── pocketbase/    @chapelure/pocketbase  the backend adapter
-│   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, forms
-├── front/             @aventurette/front     the app
-├── tests/                                    the test toolkit: builders, fakes, mount helpers
+├── frontend/                                 the npm workspace root (package.json, vitest.config.ts)
+│   ├── web/           @aventurette/front     the app
+│   ├── packages/
+│   │   ├── core/          @chapelure/core        contracts. no framework, no backend, no deps
+│   │   ├── pocketbase/    @chapelure/pocketbase  the backend adapter
+│   │   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, forms
+│   └── tests/                                the test toolkit: builders, fakes, mount helpers
+├── backend/
+│   ├── api/                                  PocketBase data and migrations
+│   ├── nginx/                                TLS termination and API proxy
+│   ├── scripts/                              alias map, architecture lint, certificate script
+│   └── compose.yml                           the production stack (+ compose.local.yml, .env)
 ├── docs/                                     ADRs, feature docs, testing guide
-├── back/                                     PocketBase data and migrations
-└── nginx/                                    TLS termination and API proxy
+└── ARCHITECTURE.md, CLAUDE.md, readme.md
 ```
 
 ## Dependency direction
 
 ```
-front/app  ──►  front/features  ──►  @chapelure/ui  ──►  @chapelure/core
+web/app  ──►  web/features  ──►  @chapelure/ui  ──►  @chapelure/core
                       │                                        ▲
-                      └──► front/backend ──► @chapelure/pocketbase
+                      └──► web/backend ──► @chapelure/pocketbase
 ```
 
 Within a feature, the same applies one level down:
@@ -41,7 +47,7 @@ the app's `backend/` folder is the only thing that does.
 
 ## Where things live
 
-### `front/src`
+### `frontend/web/src`
 
 | Folder | Holds | Notes |
 |---|---|---|
@@ -85,7 +91,7 @@ A route target is `Name.page.vue`, and that is the whole convention: `routes.ts`
 form is `Login.page.vue`, not a page holding a `<LoginForm>`. Anything else is in
 `components/`, one level deep.
 
-### `packages/ui`
+### `frontend/packages/ui`
 
 `modals/`, `alerts/`, `dropdown/`, `data/`, `files/`, `forms/`, `settings/`, `layout/`,
 `styles/` and `locales/`. There is no barrel: components and composables are deep-imported
@@ -123,28 +129,28 @@ import { XIcon } from 'lucide-vue-next';
 
 | Rule | Migration it enables |
 |---|---|
-| `@chapelure/pocketbase` is imported only by `front/src/backend/index.ts` | Change backend = rewrite one file plus one package |
-| The `pocketbase` SDK appears only inside `packages/pocketbase` | ditto |
+| `@chapelure/pocketbase` is imported only by `frontend/web/src/backend/index.ts` | Change backend = rewrite one file plus one package |
+| The `pocketbase` SDK appears only inside `frontend/packages/pocketbase` | ditto |
 | `@/backend` is imported only from `features/*/api/**` | Components never hold a backend client |
 | `features/*/composables` never import `@/backend` | A composable is Vue, but still not where a client belongs |
-| `packages/core` imports no `vue`, no SDK, no app | Contracts survive any framework or backend change |
+| `frontend/packages/core` imports no `vue`, no SDK, no app | Contracts survive any framework or backend change |
 | `features/*/model` and `features/*/api` import no framework | Domain and data survive a framework change |
-| `packages/ui` imports neither the app nor the adapter | The design system stays reusable |
+| `frontend/packages/ui` imports neither the app nor the adapter | The design system stays reusable |
 | `features/*` never import `@/app` | The app composes features, never the other way round |
 | Nothing that ships imports `@tests` or the SDK test double | Builders and fakes stay out of the bundle |
 | A feature's `.spec.ts` files are all under its `tests/` | Source folders list source, not half tests |
-| `scripts/aliases.mjs` and the `paths` in `front/tsconfig.json` agree | The two resolvers cannot drift apart |
+| `backend/scripts/aliases.mjs` and the `paths` in `frontend/web/tsconfig.json` agree | The two resolvers cannot drift apart |
 
 Three deliberate compromises:
 
 - **daisyUI classes are written where they are used**, component classes (`btn`, `modal`,
-  `card`…) included. Confining them to `packages/ui` was a lint rule once, and it held — by
+  `card`…) included. Confining them to `frontend/packages/ui` was a lint rule once, and it held — by
   breeding wrapper components that existed only to hold the class being hidden. Twenty of them
   were deleted and their classes inlined, `<Button>` and its 50 call sites included. The cost
   is real: a variant is a class you have to know rather than a prop autocomplete offers you,
   and swapping the CSS library became a find-and-replace across the app instead of a
-  `packages/ui` job. The gain is that a component reads as the markup it produces, and that
-  `packages/ui` now holds only behaviour — which is what it is actually good at.
+  `frontend/packages/ui` job. The gain is that a component reads as the markup it produces, and that
+  `frontend/packages/ui` now holds only behaviour — which is what it is actually good at.
 - **`lucide-vue-next` is imported wherever an icon is used.** A re-export barrel would confine
   it to one file, but it also hides which icons exist: with the real names in the imports, an
   icon is findable by its own name, in this codebase and in lucide's documentation alike.
@@ -157,9 +163,9 @@ Three deliberate compromises:
 
 - **Packages are source-only.** No per-package build step: `exports` and the aliases point at
   `src/`, so `vue-tsc` typechecks them with the app and HMR works across package boundaries.
-  The alias map lives in `scripts/aliases.mjs` and is imported by `front/vite.config.ts` and
-  `vitest.config.ts`. TypeScript cannot read a JS module for its `paths`, so
-  `front/tsconfig.json` repeats it — and `lint:arch` fails if the two disagree.
+  The alias map lives in `backend/scripts/aliases.mjs` and is imported by `frontend/web/vite.config.ts` and
+  `frontend/vitest.config.ts`. TypeScript cannot read a JS module for its `paths`, so
+  `frontend/web/tsconfig.json` repeats it — and `lint:arch` fails if the two disagree.
 - **Each entity maps its own payload.** The backend's shape stops inside the api layer:
   `api/<entity>.mapper.ts` declares an `EntityMapper<Payload, Data>` holding the relations to
   fetch, a `toEntity` that
@@ -169,14 +175,15 @@ Three deliberate compromises:
   persists ids only — see [ADR 0007](docs/adr/0007-models-map-their-own-payloads.md).
 
 - **Tailwind v4 ignores `node_modules`,** and workspace packages are symlinked there. So
-  `front/src/app/styles/index.css` declares `@source "../../../../packages/ui/src"`. Remove
+  `frontend/web/src/app/styles/index.css` declares `@source "../../../../packages/ui/src"`. Remove
   it and every class used only inside the design system silently vanishes from the bundle.
-  Check with `grep modal-box front/dist/assets/*.css`.
-- **i18n**: the design system ships `packages/ui/src/locales/*.json` and the app imports it
+  Check with `grep modal-box frontend/web/dist/assets/*.css`.
+- **i18n**: the design system ships `frontend/packages/ui/src/locales/*.json` and the app imports it
   explicitly; the app's own and every feature's translations are globbed from `src/**/locales/*.json`. The merge
   is recursive, so two files sharing a top-level key do not clobber each other.
-- **Docker builds from the repository root**, not `front/`, because the app needs
-  `packages/`: `docker build -f front/Dockerfile .`
+- **Docker builds the front from the repository root**, not `frontend/web/`, because the app
+  needs `frontend/packages/` and `backend/scripts/aliases.mjs`:
+  `docker build -f frontend/web/Dockerfile .`
 
 ## Tests
 
@@ -198,10 +205,12 @@ Three things about it are unusual enough to mention here, all deliberate:
   ([ADR 0011](docs/adr/0011-tests-fail-on-vue-warnings.md)).
 
 The toolkit — builders, in-memory fakes for the `@chapelure/core` ports, and the mount
-helpers — is in `tests/`, imported as `@tests`, and cannot reach the bundle.
+helpers — is in `frontend/tests/`, imported as `@tests`, and cannot reach the bundle.
 [docs/testing.md](docs/testing.md) is the guide.
 
 ## Commands
+
+From `frontend/`:
 
 ```bash
 npm run dev            # dev server

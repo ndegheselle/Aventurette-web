@@ -6,7 +6,7 @@ inline relations generically
 ## Context
 
 Relations used to be folded in by the adapter: PocketBase answers with the related records in a
-separate `expand` object, `packages/pocketbase/src/relations.ts` folded them into the record on
+separate `expand` object, `frontend/packages/pocketbase/src/relations.ts` folded them into the record on
 read and turned them back into ids on write, and models declared the result with
 `Expanded<Response, { … }>`. That kept `expand` out of the app, but it left the two shapes —
 what the backend sends and what the app uses — as one type with a wrapper around it:

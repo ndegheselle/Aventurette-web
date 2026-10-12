@@ -15,7 +15,7 @@ which part of the fiche fills it. Read it before writing anything.
 [example.json](example.json) is a complete fiche converted against it.
 
 What the app actually reads is `readActivitySheet` in
-`front/src/features/admin/activities-authoring/model/activity.import.ts`. A spec checks that the
+`frontend/web/src/features/admin/activities-authoring/model/activity.import.ts`. A spec checks that the
 schema's codes are the app's. If the schema and that file still disagree, the file wins.
 
 ## Procedure

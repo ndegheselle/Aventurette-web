@@ -1,13 +1,13 @@
 # Working in this repository
 
-An npm workspace: the `front/` Vue app on three packages in `packages/`, with a PocketBase
-backend in `back/`. Read [ARCHITECTURE.md](ARCHITECTURE.md) first — it is short, and the
+An npm workspace rooted in `frontend/`: the `frontend/web/` Vue app on three packages in
+`frontend/packages/`, with a PocketBase backend in `backend/api/`. Read [ARCHITECTURE.md](ARCHITECTURE.md) first — it is short, and the
 boundaries it describes are enforced.
 
 ## Before you finish
 
 ```bash
-npm run check     # lint:arch + build (typecheck) + test
+cd frontend && npm run check     # lint:arch + build (typecheck) + test
 ```
 
 All three must pass. `npm run build` typechecks the specs along with the app, so a spec that no
@@ -87,10 +87,10 @@ app's real catalogue, so assertions are on the copy a user would read.
   cannot drift — but nothing checks the mapper against the payload type it claims to read
   ([ADR 0007](docs/adr/0007-models-map-their-own-payloads.md)).
 - Relations read as entities but **write as ids**. Saving a parent does not save its children.
-- Adding an alias means adding it in `scripts/aliases.mjs` *and* `front/tsconfig.json`;
+- Adding an alias means adding it in `backend/scripts/aliases.mjs` *and* `frontend/web/tsconfig.json`;
   `lint:arch` fails if they drift.
-- Tailwind does not scan `node_modules`, so `front/src/app/styles/index.css` declares
-  `@source` for `packages/ui/src`. Removing it silently drops every class used only there.
+- Tailwind does not scan `node_modules`, so `frontend/web/src/app/styles/index.css` declares
+  `@source` for `frontend/packages/ui/src`. Removing it silently drops every class used only there.
 - A new route is private by default — `features/user/guard.ts` whitelists login and register
   only.
 

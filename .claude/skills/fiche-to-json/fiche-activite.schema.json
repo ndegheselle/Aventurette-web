@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Fiche d'activité — import",
-  "description": "The JSON file the authoring screen imports, written from a fiche d'activité made from the Confluence template. Version 3. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the file is written before anything exists to point at. `readActivitySheet` in front/src/features/admin/activities-authoring/model/activity.import.ts is what the app actually reads; it only requires `name` and ignores unknown keys. This schema is stricter on purpose: every key is written, its empty value when unset, so the file stays readable for the next person who edits it.",
+  "description": "The JSON file the authoring screen imports, written from a fiche d'activité made from the Confluence template. Version 3. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the file is written before anything exists to point at. `readActivitySheet` in frontend/web/src/features/admin/activities-authoring/model/activity.import.ts is what the app actually reads; it only requires `name` and ignores unknown keys. This schema is stricter on purpose: every key is written, its empty value when unset, so the file stays readable for the next person who edits it.",
   "type": "object",
   "additionalProperties": false,
   "required": [

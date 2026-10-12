@@ -12,6 +12,10 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # The workspace root, with the lockfile, is frontend/.
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v5
 
@@ -19,8 +23,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
-      # The workspace root owns the lockfile; packages resolve to source, so this is the
+      # The workspace root (frontend/) owns the lockfile; packages resolve to source, so this is the
       # only install the repository needs.
       - run: npm ci
 

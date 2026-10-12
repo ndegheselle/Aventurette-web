@@ -39,7 +39,7 @@ some rich text. One collection told apart by a `type` was considered, as the tag
 turned down:
 
 - PocketBase cannot restrict a relation to the records of one `type`. One collection would need
-  a hook like `back/hooks/tag_kinds.go` to keep a tip out of the safety relation, and a record
+  a hook like `backend/api/hooks/tag_kinds.go` to keep a tip out of the safety relation, and a record
   saved without validation skips a hook. Two collections are restricted by the relation itself.
 - They are not the same data. A safety instruction is identified by its slug, and the
   referential is short and closed. A tip has no identifier and the catalogue grows with every
