@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "api",
+      "type": "shell",
+      "command": "go run . serve",
+      "options": { "cwd": "${workspaceFolder}/backend/api" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "group": "dev", "reveal": "always" }
+    },
+    {
+      "label": "web",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      // Lets VS Code know when Vite is ready, so a launch config can wait for it.
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "VITE v",
+          "endsPattern": "Local:"
+        }
+      },
+      "presentation": { "panel": "dedicated", "group": "dev", "reveal": "always" }
+    },
+    {
+      "label": "start",
+      "dependsOn": ["api", "web"],
+      "dependsOrder": "parallel",
+      "problemMatcher": [],
+      "runOptions": { "runOn": "folderOpen" }
+    }
+  ]
+}
