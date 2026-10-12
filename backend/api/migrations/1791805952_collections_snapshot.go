@@ -616,7 +616,7 @@ func init() {
 					"body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>",
 					"subject": "Confirm your {APP_NAME} new email address"
 				},
-				"createRule": "",
+				"createRule": "@request.body.role:isset = false",
 				"deleteRule": "id = @request.auth.id",
 				"emailChangeToken": {
 					"duration": 1800
@@ -733,6 +733,57 @@ func init() {
 						"presentable": false,
 						"system": false,
 						"type": "autodate"
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
+						"id": "text1579384326",
+						"max": 255,
+						"min": 0,
+						"name": "name",
+						"pattern": "",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "file376926767",
+						"maxSelect": 1,
+						"maxSize": 0,
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/svg+xml",
+							"image/gif",
+							"image/webp"
+						],
+						"name": "avatar",
+						"presentable": false,
+						"protected": false,
+						"required": false,
+						"system": false,
+						"thumbs": [],
+						"type": "file"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select1466534506",
+						"maxSelect": 1,
+						"name": "role",
+						"presentable": false,
+						"required": true,
+						"system": false,
+						"type": "select",
+						"values": [
+							"USER",
+							"ADMIN"
+						]
 					}
 				],
 				"fileToken": {
@@ -784,7 +835,7 @@ func init() {
 				},
 				"system": false,
 				"type": "auth",
-				"updateRule": "id = @request.auth.id",
+				"updateRule": "id = @request.auth.id && @request.body.role:isset = false",
 				"verificationTemplate": {
 					"body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>",
 					"subject": "Verify your {APP_NAME} email"
@@ -850,7 +901,7 @@ func init() {
 						"maxSize": 0,
 						"name": "description",
 						"presentable": false,
-						"required": true,
+						"required": false,
 						"system": false,
 						"type": "editor"
 					},
@@ -887,40 +938,13 @@ func init() {
 					{
 						"help": "",
 						"hidden": false,
-						"id": "select2731739681",
-						"maxSelect": 0,
-						"name": "environnement",
-						"presentable": false,
-						"required": true,
-						"system": false,
-						"type": "select",
-						"values": [
-							"PARK",
-							"HOUSE",
-							"BALCONY",
-							"CAR",
-							"OUTDOOR",
-							"CITY",
-							"CAMPAIGN",
-							"FOREST",
-							"MOUTAIN",
-							"POOL",
-							"LAKE",
-							"RIVER",
-							"BATH",
-							"MEAL"
-						]
-					},
-					{
-						"help": "",
-						"hidden": false,
 						"id": "number970622150",
 						"max": null,
 						"min": null,
 						"name": "age_min",
 						"onlyInt": false,
 						"presentable": false,
-						"required": true,
+						"required": false,
 						"system": false,
 						"type": "number"
 					},
@@ -933,7 +957,7 @@ func init() {
 						"name": "age_max",
 						"onlyInt": false,
 						"presentable": false,
-						"required": true,
+						"required": false,
 						"system": false,
 						"type": "number"
 					},
@@ -946,7 +970,7 @@ func init() {
 						"name": "participants_min",
 						"onlyInt": false,
 						"presentable": false,
-						"required": true,
+						"required": false,
 						"system": false,
 						"type": "number"
 					},
@@ -959,7 +983,7 @@ func init() {
 						"name": "participants_max",
 						"onlyInt": false,
 						"presentable": false,
-						"required": true,
+						"required": false,
 						"system": false,
 						"type": "number"
 					},
@@ -979,48 +1003,9 @@ func init() {
 					{
 						"help": "",
 						"hidden": false,
-						"id": "select4041497513",
-						"maxSelect": 0,
-						"name": "season",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "select",
-						"values": [
-							"AUTUMN",
-							"WINTER",
-							"SPRING",
-							"SUMMER",
-							"CHRISTMAS",
-							"NEW YEAR",
-							"HALLOWEEN",
-							"EASTER",
-							"VALENTINE"
-						]
-					},
-					{
-						"help": "",
-						"hidden": false,
-						"id": "select1288754030",
-						"maxSelect": 0,
-						"name": "weather",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "select",
-						"values": [
-							"RAIN",
-							"SNOW",
-							"SUNNY",
-							"WINDY"
-						]
-					},
-					{
-						"help": "",
-						"hidden": false,
 						"id": "select584317272",
 						"maxSelect": 0,
-						"name": "energy_level",
+						"name": "host_effort",
 						"presentable": false,
 						"required": false,
 						"system": false,
@@ -1033,20 +1018,6 @@ func init() {
 					},
 					{
 						"cascadeDelete": false,
-						"collectionId": "pbc_539767812",
-						"help": "",
-						"hidden": false,
-						"id": "relation3315324353",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "security",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
 						"collectionId": "pbc_3921975076",
 						"help": "",
 						"hidden": false,
@@ -1054,118 +1025,6 @@ func init() {
 						"maxSelect": 999,
 						"minSelect": 0,
 						"name": "steps",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
-						"collectionId": "pbc_4231066068",
-						"help": "",
-						"hidden": false,
-						"id": "relation2128995208",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "fields",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
-						"collectionId": "pbc_3168962977",
-						"help": "",
-						"hidden": false,
-						"id": "relation1460209791",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "imaginary",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
-						"collectionId": "pbc_932243895",
-						"help": "",
-						"hidden": false,
-						"id": "relation270393044",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "develop_affect",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
-						"collectionId": "pbc_4254783606",
-						"help": "",
-						"hidden": false,
-						"id": "relation3823845521",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "develop_emotional",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
-						"collectionId": "pbc_2556553961",
-						"help": "",
-						"hidden": false,
-						"id": "relation2857790826",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "develop_intellectual",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
-						"collectionId": "pbc_870588848",
-						"help": "",
-						"hidden": false,
-						"id": "relation2680852346",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "develop_moral",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
-						"collectionId": "pbc_112511032",
-						"help": "",
-						"hidden": false,
-						"id": "relation1994278826",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "develop_physical",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"cascadeDelete": false,
-						"collectionId": "pbc_3877408095",
-						"help": "",
-						"hidden": false,
-						"id": "relation1445969280",
-						"maxSelect": 10,
-						"minSelect": 0,
-						"name": "develop_spritual",
 						"presentable": false,
 						"required": false,
 						"system": false,
@@ -1190,6 +1049,322 @@ func init() {
 						"presentable": false,
 						"system": false,
 						"type": "autodate"
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
+						"id": "text1214720331",
+						"max": 0,
+						"min": 0,
+						"name": "visual_brief",
+						"pattern": "",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select3736761055",
+						"maxSelect": 1,
+						"name": "format",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "select",
+						"values": [
+							"SMALL_GAME",
+							"BIG_GAME",
+							"WORKSHOP"
+						]
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select2316652456",
+						"maxSelect": 6,
+						"name": "practices",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "select",
+						"values": [
+							"MANUAL_CREATION",
+							"EXPRESSION",
+							"COOKING",
+							"OBSERVATION",
+							"MUSIC",
+							"EXPERIMENTATION"
+						]
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select1608545082",
+						"maxSelect": 1,
+						"name": "imaginary_rule",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "select",
+						"values": [
+							"NONE",
+							"ADAPTABLE",
+							"REQUIRED"
+						]
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select2646219176",
+						"maxSelect": 1,
+						"name": "children_pace",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "select",
+						"values": [
+							"CALM",
+							"DYNAMIC"
+						]
+					},
+					{
+						"convertURLs": false,
+						"help": "",
+						"hidden": false,
+						"id": "editor4250052776",
+						"maxSize": 0,
+						"name": "age_variants",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "editor"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "bool595216310",
+						"name": "cross_supervision",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "bool"
+					},
+					{
+						"convertURLs": false,
+						"help": "",
+						"hidden": false,
+						"id": "editor1787237299",
+						"maxSize": 0,
+						"name": "supervision_notes",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "editor"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "bool328908076",
+						"name": "indoor",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "bool"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "bool479113790",
+						"name": "outdoor",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "bool"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select400968378",
+						"maxSelect": 13,
+						"name": "locations",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "select",
+						"values": [
+							"PARK",
+							"HOUSE",
+							"BALCONY",
+							"CAR",
+							"CITY",
+							"CAMPAIGN",
+							"FOREST",
+							"MOUNTAIN",
+							"POOL",
+							"LAKE",
+							"RIVER",
+							"BATH",
+							"MEAL"
+						]
+					},
+					{
+						"convertURLs": false,
+						"help": "",
+						"hidden": false,
+						"id": "editor4100327849",
+						"maxSize": 0,
+						"name": "conditions",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "editor"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select3035901980",
+						"maxSelect": 4,
+						"name": "seasons",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "select",
+						"values": [
+							"AUTUMN",
+							"WINTER",
+							"SPRING",
+							"SUMMER"
+						]
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_1819748222",
+						"help": "",
+						"hidden": false,
+						"id": "relation2275190432",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "workshops",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_2220690249",
+						"help": "",
+						"hidden": false,
+						"id": "relation628842523",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "theme_tags",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_2220690249",
+						"help": "",
+						"hidden": false,
+						"id": "relation1988381648",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "imaginary_tags",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_2220690249",
+						"help": "",
+						"hidden": false,
+						"id": "relation1168181168",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "safety_tags",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_2220690249",
+						"help": "",
+						"hidden": false,
+						"id": "relation1905054084",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "goal_tags",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_2220690249",
+						"help": "",
+						"hidden": false,
+						"id": "relation2747968261",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "ideal_for_tags",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_2220690249",
+						"help": "",
+						"hidden": false,
+						"id": "relation3818423567",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "development_tags",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_1895602027",
+						"help": "",
+						"hidden": false,
+						"id": "relation2601981621",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "materials",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_3661516950",
+						"help": "",
+						"hidden": false,
+						"id": "relation2592831004",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "safety_instructions",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
 					}
 				],
 				"id": "pbc_1262591861",
@@ -1249,20 +1424,6 @@ func init() {
 						"type": "relation"
 					},
 					{
-						"cascadeDelete": true,
-						"collectionId": "pbc_1895602027",
-						"help": "",
-						"hidden": false,
-						"id": "relation2601981621",
-						"maxSelect": 999,
-						"minSelect": 0,
-						"name": "materials",
-						"presentable": false,
-						"required": false,
-						"system": false,
-						"type": "relation"
-					},
-					{
 						"convertURLs": false,
 						"help": "",
 						"hidden": false,
@@ -1293,6 +1454,152 @@ func init() {
 						"presentable": false,
 						"system": false,
 						"type": "autodate"
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
+						"id": "text724990059",
+						"max": 0,
+						"min": 0,
+						"name": "title",
+						"pattern": "",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select1002749145",
+						"maxSelect": 1,
+						"name": "kind",
+						"presentable": false,
+						"required": true,
+						"system": false,
+						"type": "select",
+						"values": [
+							"PREPARE",
+							"EXPLAIN",
+							"TEAMS",
+							"LAUNCH",
+							"CUSTOM",
+							"ANNOUNCE_END",
+							"CONCLUSION"
+						]
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "number2254405824",
+						"max": null,
+						"min": 0,
+						"name": "duration",
+						"onlyInt": true,
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "number"
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
+						"id": "text1214720331",
+						"max": 0,
+						"min": 0,
+						"name": "visual_brief",
+						"pattern": "",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "json88666607",
+						"maxSize": 0,
+						"name": "actions",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "json"
+					},
+					{
+						"convertURLs": false,
+						"help": "",
+						"hidden": false,
+						"id": "editor1216591948",
+						"maxSize": 0,
+						"name": "tip",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "editor"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "select1868303884",
+						"maxSelect": 4,
+						"name": "end_criteria",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "select",
+						"values": [
+							"TIME_UP",
+							"ENOUGH_DONE",
+							"ATTENTION_DROPS",
+							"TEAM_WON"
+						]
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
+						"id": "text1505926049",
+						"max": 0,
+						"min": 0,
+						"name": "end_criteria_other",
+						"pattern": "",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_1895602027",
+						"help": "",
+						"hidden": false,
+						"id": "relation2601981621",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "materials",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_1126246072",
+						"help": "",
+						"hidden": false,
+						"id": "relation1680621832",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "tips",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
 					}
 				],
 				"id": "pbc_3921975076",
@@ -1398,84 +1705,6 @@ func init() {
 				"viewRule": ""
 			},
 			{
-				"createRule": "",
-				"deleteRule": "",
-				"fields": [
-					{
-						"autogeneratePattern": "[a-z0-9]{15}",
-						"help": "",
-						"hidden": false,
-						"id": "text3208210256",
-						"max": 15,
-						"min": 15,
-						"name": "id",
-						"pattern": "^[a-z0-9]+$",
-						"presentable": false,
-						"primaryKey": true,
-						"required": true,
-						"system": true,
-						"type": "text"
-					},
-					{
-						"cascadeDelete": true,
-						"collectionId": "pbc_3921975076",
-						"help": "",
-						"hidden": false,
-						"id": "relation1136262716",
-						"maxSelect": 0,
-						"minSelect": 0,
-						"name": "step",
-						"presentable": false,
-						"required": true,
-						"system": false,
-						"type": "relation"
-					},
-					{
-						"autogeneratePattern": "",
-						"help": "",
-						"hidden": false,
-						"id": "text1579384326",
-						"max": 0,
-						"min": 0,
-						"name": "name",
-						"pattern": "",
-						"presentable": false,
-						"primaryKey": false,
-						"required": true,
-						"system": false,
-						"type": "text"
-					},
-					{
-						"hidden": false,
-						"id": "autodate2990389176",
-						"name": "created",
-						"onCreate": true,
-						"onUpdate": false,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					},
-					{
-						"hidden": false,
-						"id": "autodate3332085495",
-						"name": "updated",
-						"onCreate": true,
-						"onUpdate": true,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					}
-				],
-				"id": "pbc_1895602027",
-				"indexes": [],
-				"listRule": "",
-				"name": "steps_materials",
-				"system": false,
-				"type": "base",
-				"updateRule": "",
-				"viewRule": ""
-			},
-			{
 				"createRule": null,
 				"deleteRule": null,
 				"fields": [
@@ -1495,131 +1724,42 @@ func init() {
 						"type": "text"
 					},
 					{
-						"autogeneratePattern": "",
 						"help": "",
 						"hidden": false,
-						"id": "text1579384326",
-						"max": 0,
-						"min": 0,
-						"name": "name",
-						"pattern": "",
+						"id": "select2363381545",
+						"maxSelect": 1,
+						"name": "type",
 						"presentable": false,
-						"primaryKey": false,
-						"required": false,
-						"system": false,
-						"type": "text"
-					},
-					{
-						"hidden": false,
-						"id": "autodate2990389176",
-						"name": "created",
-						"onCreate": true,
-						"onUpdate": false,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					},
-					{
-						"hidden": false,
-						"id": "autodate3332085495",
-						"name": "updated",
-						"onCreate": true,
-						"onUpdate": true,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					}
-				],
-				"id": "pbc_4231066068",
-				"indexes": [],
-				"listRule": null,
-				"name": "activities_fields",
-				"system": false,
-				"type": "base",
-				"updateRule": null,
-				"viewRule": null
-			},
-			{
-				"createRule": null,
-				"deleteRule": null,
-				"fields": [
-					{
-						"autogeneratePattern": "[a-z0-9]{15}",
-						"help": "",
-						"hidden": false,
-						"id": "text3208210256",
-						"max": 15,
-						"min": 15,
-						"name": "id",
-						"pattern": "^[a-z0-9]+$",
-						"presentable": false,
-						"primaryKey": true,
 						"required": true,
-						"system": true,
-						"type": "text"
+						"system": false,
+						"type": "select",
+						"values": [
+							"THEME",
+							"IMAGINARY",
+							"GOAL",
+							"IDEAL_FOR",
+							"SECURITY",
+							"DEVELOP_PHYSICAL",
+							"DEVELOP_INTELLECTUAL",
+							"DEVELOP_AFFECT",
+							"DEVELOP_SOCIAL",
+							"DEVELOP_MORAL",
+							"DEVELOP_SPIRITUAL"
+						]
 					},
 					{
 						"autogeneratePattern": "",
 						"help": "",
 						"hidden": false,
-						"id": "text1579384326",
+						"id": "text2560465762",
 						"max": 0,
 						"min": 0,
-						"name": "name",
-						"pattern": "",
+						"name": "slug",
+						"pattern": "^[a-z0-9-]+$",
 						"presentable": false,
 						"primaryKey": false,
 						"required": true,
 						"system": false,
-						"type": "text"
-					},
-					{
-						"hidden": false,
-						"id": "autodate2990389176",
-						"name": "created",
-						"onCreate": true,
-						"onUpdate": false,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					},
-					{
-						"hidden": false,
-						"id": "autodate3332085495",
-						"name": "updated",
-						"onCreate": true,
-						"onUpdate": true,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					}
-				],
-				"id": "pbc_3168962977",
-				"indexes": [],
-				"listRule": null,
-				"name": "activities_imaginary",
-				"system": false,
-				"type": "base",
-				"updateRule": null,
-				"viewRule": null
-			},
-			{
-				"createRule": null,
-				"deleteRule": null,
-				"fields": [
-					{
-						"autogeneratePattern": "[a-z0-9]{15}",
-						"help": "",
-						"hidden": false,
-						"id": "text3208210256",
-						"max": 15,
-						"min": 15,
-						"name": "id",
-						"pattern": "^[a-z0-9]+$",
-						"presentable": false,
-						"primaryKey": true,
-						"required": true,
-						"system": true,
 						"type": "text"
 					},
 					{
@@ -1670,18 +1810,20 @@ func init() {
 						"type": "autodate"
 					}
 				],
-				"id": "pbc_539767812",
-				"indexes": [],
-				"listRule": null,
-				"name": "activities_security",
+				"id": "pbc_2220690249",
+				"indexes": [
+					"CREATE UNIQUE INDEX ` + "`" + `idx_tags_type_slug` + "`" + ` ON ` + "`" + `tags` + "`" + ` (` + "`" + `type` + "`" + `, ` + "`" + `slug` + "`" + `)"
+				],
+				"listRule": "",
+				"name": "tags",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
-				"createRule": null,
-				"deleteRule": null,
+				"createRule": "",
+				"deleteRule": "",
 				"fields": [
 					{
 						"autogeneratePattern": "[a-z0-9]{15}",
@@ -1734,18 +1876,20 @@ func init() {
 						"type": "autodate"
 					}
 				],
-				"id": "pbc_112511032",
-				"indexes": [],
-				"listRule": null,
-				"name": "activities_develop_physical",
+				"id": "pbc_18956020272",
+				"indexes": [
+					"CREATE UNIQUE INDEX ` + "`" + `idx_materials_name` + "`" + ` ON ` + "`" + `materials` + "`" + ` (` + "`" + `name` + "`" + ` COLLATE NOCASE)"
+				],
+				"listRule": "",
+				"name": "materials",
 				"system": false,
 				"type": "base",
-				"updateRule": null,
-				"viewRule": null
+				"updateRule": "",
+				"viewRule": ""
 			},
 			{
-				"createRule": null,
-				"deleteRule": null,
+				"createRule": "",
+				"deleteRule": "",
 				"fields": [
 					{
 						"autogeneratePattern": "[a-z0-9]{15}",
@@ -1763,6 +1907,20 @@ func init() {
 						"type": "text"
 					},
 					{
+						"cascadeDelete": true,
+						"collectionId": "pbc_1262591861",
+						"help": "",
+						"hidden": false,
+						"id": "relation2893285722",
+						"maxSelect": 1,
+						"minSelect": 0,
+						"name": "activity",
+						"presentable": false,
+						"required": true,
+						"system": false,
+						"type": "relation"
+					},
+					{
 						"autogeneratePattern": "",
 						"help": "",
 						"hidden": false,
@@ -1774,6 +1932,152 @@ func init() {
 						"presentable": false,
 						"primaryKey": false,
 						"required": true,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
+						"id": "text2541086472",
+						"max": 0,
+						"min": 0,
+						"name": "theme",
+						"pattern": "",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"convertURLs": false,
+						"help": "",
+						"hidden": false,
+						"id": "editor129345504",
+						"maxSize": 0,
+						"name": "challenges",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "editor"
+					},
+					{
+						"help": "",
+						"hidden": false,
+						"id": "number1211341037",
+						"max": null,
+						"min": 0,
+						"name": "adults_required",
+						"onlyInt": true,
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "number"
+					},
+					{
+						"hidden": false,
+						"id": "autodate2990389176",
+						"name": "created",
+						"onCreate": true,
+						"onUpdate": false,
+						"presentable": false,
+						"system": false,
+						"type": "autodate"
+					},
+					{
+						"hidden": false,
+						"id": "autodate3332085495",
+						"name": "updated",
+						"onCreate": true,
+						"onUpdate": true,
+						"presentable": false,
+						"system": false,
+						"type": "autodate"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_1895602027",
+						"help": "",
+						"hidden": false,
+						"id": "relation2601981621",
+						"maxSelect": 999,
+						"minSelect": 0,
+						"name": "materials",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "relation"
+					}
+				],
+				"id": "pbc_1819748222",
+				"indexes": [],
+				"listRule": "",
+				"name": "activities_workshops",
+				"system": false,
+				"type": "base",
+				"updateRule": "",
+				"viewRule": ""
+			},
+			{
+				"createRule": "",
+				"deleteRule": "",
+				"fields": [
+					{
+						"autogeneratePattern": "[a-z0-9]{15}",
+						"help": "",
+						"hidden": false,
+						"id": "text3208210256",
+						"max": 15,
+						"min": 15,
+						"name": "id",
+						"pattern": "^[a-z0-9]+$",
+						"presentable": false,
+						"primaryKey": true,
+						"required": true,
+						"system": true,
+						"type": "text"
+					},
+					{
+						"cascadeDelete": true,
+						"collectionId": "pbc_1262591861",
+						"help": "",
+						"hidden": false,
+						"id": "relation2893285722",
+						"maxSelect": 1,
+						"minSelect": 0,
+						"name": "activity",
+						"presentable": false,
+						"required": true,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": true,
+						"collectionId": "pbc_18956020272",
+						"help": "",
+						"hidden": false,
+						"id": "relation2092856725",
+						"maxSelect": 1,
+						"minSelect": 0,
+						"name": "material",
+						"presentable": false,
+						"required": true,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
+						"id": "text2683508278",
+						"max": 0,
+						"min": 0,
+						"name": "quantity",
+						"pattern": "",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
 						"system": false,
 						"type": "text"
 					},
@@ -1798,18 +2102,18 @@ func init() {
 						"type": "autodate"
 					}
 				],
-				"id": "pbc_2556553961",
+				"id": "pbc_1895602027",
 				"indexes": [],
-				"listRule": null,
-				"name": "activities_develop_intellectual",
+				"listRule": "",
+				"name": "activities_materials",
 				"system": false,
 				"type": "base",
-				"updateRule": null,
-				"viewRule": null
+				"updateRule": "",
+				"viewRule": ""
 			},
 			{
-				"createRule": null,
-				"deleteRule": null,
+				"createRule": "@request.auth.role = \"ADMIN\"",
+				"deleteRule": "@request.auth.role = \"ADMIN\"",
 				"fields": [
 					{
 						"autogeneratePattern": "[a-z0-9]{15}",
@@ -1830,6 +2134,21 @@ func init() {
 						"autogeneratePattern": "",
 						"help": "",
 						"hidden": false,
+						"id": "text2560465762",
+						"max": 0,
+						"min": 0,
+						"name": "slug",
+						"pattern": "^[a-z0-9-]+$",
+						"presentable": false,
+						"primaryKey": false,
+						"required": true,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
 						"id": "text1579384326",
 						"max": 0,
 						"min": 0,
@@ -1840,6 +2159,18 @@ func init() {
 						"required": true,
 						"system": false,
 						"type": "text"
+					},
+					{
+						"convertURLs": false,
+						"help": "",
+						"hidden": false,
+						"id": "editor1843675174",
+						"maxSize": 0,
+						"name": "description",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "editor"
 					},
 					{
 						"hidden": false,
@@ -1862,18 +2193,20 @@ func init() {
 						"type": "autodate"
 					}
 				],
-				"id": "pbc_4254783606",
-				"indexes": [],
-				"listRule": null,
-				"name": "activities_develop_emotional",
+				"id": "pbc_3661516950",
+				"indexes": [
+					"CREATE UNIQUE INDEX ` + "`" + `idx_catalog_safety_instructions_slug` + "`" + ` ON ` + "`" + `catalog_safety_instructions` + "`" + ` (` + "`" + `slug` + "`" + `)"
+				],
+				"listRule": "",
+				"name": "catalog_safety_instructions",
 				"system": false,
 				"type": "base",
-				"updateRule": null,
-				"viewRule": null
+				"updateRule": "@request.auth.role = \"ADMIN\"",
+				"viewRule": ""
 			},
 			{
-				"createRule": null,
-				"deleteRule": null,
+				"createRule": "@request.auth.role = \"ADMIN\"",
+				"deleteRule": "@request.auth.role = \"ADMIN\"",
 				"fields": [
 					{
 						"autogeneratePattern": "[a-z0-9]{15}",
@@ -1894,6 +2227,21 @@ func init() {
 						"autogeneratePattern": "",
 						"help": "",
 						"hidden": false,
+						"id": "text2560465762",
+						"max": 0,
+						"min": 0,
+						"name": "slug",
+						"pattern": "^[a-z0-9-]+$",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"autogeneratePattern": "",
+						"help": "",
+						"hidden": false,
 						"id": "text1579384326",
 						"max": 0,
 						"min": 0,
@@ -1904,6 +2252,18 @@ func init() {
 						"required": true,
 						"system": false,
 						"type": "text"
+					},
+					{
+						"convertURLs": false,
+						"help": "",
+						"hidden": false,
+						"id": "editor1843675174",
+						"maxSize": 0,
+						"name": "description",
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "editor"
 					},
 					{
 						"hidden": false,
@@ -1926,142 +2286,16 @@ func init() {
 						"type": "autodate"
 					}
 				],
-				"id": "pbc_932243895",
-				"indexes": [],
-				"listRule": null,
-				"name": "activities_develop_affect",
-				"system": false,
-				"type": "base",
-				"updateRule": null,
-				"viewRule": null
-			},
-			{
-				"createRule": null,
-				"deleteRule": null,
-				"fields": [
-					{
-						"autogeneratePattern": "[a-z0-9]{15}",
-						"help": "",
-						"hidden": false,
-						"id": "text3208210256",
-						"max": 15,
-						"min": 15,
-						"name": "id",
-						"pattern": "^[a-z0-9]+$",
-						"presentable": false,
-						"primaryKey": true,
-						"required": true,
-						"system": true,
-						"type": "text"
-					},
-					{
-						"autogeneratePattern": "",
-						"help": "",
-						"hidden": false,
-						"id": "text1579384326",
-						"max": 0,
-						"min": 0,
-						"name": "name",
-						"pattern": "",
-						"presentable": false,
-						"primaryKey": false,
-						"required": true,
-						"system": false,
-						"type": "text"
-					},
-					{
-						"hidden": false,
-						"id": "autodate2990389176",
-						"name": "created",
-						"onCreate": true,
-						"onUpdate": false,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					},
-					{
-						"hidden": false,
-						"id": "autodate3332085495",
-						"name": "updated",
-						"onCreate": true,
-						"onUpdate": true,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					}
+				"id": "pbc_1126246072",
+				"indexes": [
+					"CREATE UNIQUE INDEX ` + "`" + `idx_catalog_tips_slug` + "`" + ` ON ` + "`" + `catalog_tips` + "`" + ` (` + "`" + `slug` + "`" + `) WHERE ` + "`" + `slug` + "`" + ` != ''"
 				],
-				"id": "pbc_870588848",
-				"indexes": [],
-				"listRule": null,
-				"name": "activities_develop_moral",
+				"listRule": "",
+				"name": "catalog_tips",
 				"system": false,
 				"type": "base",
-				"updateRule": null,
-				"viewRule": null
-			},
-			{
-				"createRule": null,
-				"deleteRule": null,
-				"fields": [
-					{
-						"autogeneratePattern": "[a-z0-9]{15}",
-						"help": "",
-						"hidden": false,
-						"id": "text3208210256",
-						"max": 15,
-						"min": 15,
-						"name": "id",
-						"pattern": "^[a-z0-9]+$",
-						"presentable": false,
-						"primaryKey": true,
-						"required": true,
-						"system": true,
-						"type": "text"
-					},
-					{
-						"autogeneratePattern": "",
-						"help": "",
-						"hidden": false,
-						"id": "text1579384326",
-						"max": 0,
-						"min": 0,
-						"name": "name",
-						"pattern": "",
-						"presentable": false,
-						"primaryKey": false,
-						"required": true,
-						"system": false,
-						"type": "text"
-					},
-					{
-						"hidden": false,
-						"id": "autodate2990389176",
-						"name": "created",
-						"onCreate": true,
-						"onUpdate": false,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					},
-					{
-						"hidden": false,
-						"id": "autodate3332085495",
-						"name": "updated",
-						"onCreate": true,
-						"onUpdate": true,
-						"presentable": false,
-						"system": false,
-						"type": "autodate"
-					}
-				],
-				"id": "pbc_3877408095",
-				"indexes": [],
-				"listRule": null,
-				"name": "activities_develop_spiritual",
-				"system": false,
-				"type": "base",
-				"updateRule": null,
-				"viewRule": null
+				"updateRule": "@request.auth.role = \"ADMIN\"",
+				"viewRule": ""
 			}
 		]`
 
