@@ -3,15 +3,10 @@ import { routesNames as userRoutesNames } from '@features/user/routes';
 import { LogOutIcon, SettingsIcon } from 'lucide-vue-next';
 import { useAuth } from '@features/user/composables/useAuth';
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import { useRouter } from 'vue-router';
+import { useLogout } from '@features/user/composables/useLogout';
 
-const { isLoggedIn, current, logout } = useAuth();
-const router = useRouter();
-
-function logoutToLogin() {
-    logout();
-    router.push({ name: userRoutesNames.login });
-}
+const { isLoggedIn, current } = useAuth();
+const { logoutToLogin } = useLogout();
 </script>
 
 <template>

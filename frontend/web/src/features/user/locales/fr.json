@@ -1,6 +1,10 @@
 {
     "auth": {
         "logout": "Déconnexion",
+        "logoutConfirm": {
+            "title": "Déconnexion ?",
+            "message": "Voulez-vous vraiment vous déconnecter ?"
+        },
         "login": {
             "title": "Se connecter",
             "defaultError": "Mauvais identifiants."
@@ -19,6 +23,9 @@
     "user": {
         "settings": {
             "title": "Paramètres",
+            "preferences": "Préfèrences",
+            "theme": "Thème",
+            "language": "Langue",
             "profile": "Profil",
             "email": "E-mail",
             "name": "Nom affiché",

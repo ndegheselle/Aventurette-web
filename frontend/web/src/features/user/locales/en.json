@@ -1,6 +1,10 @@
 {
     "auth": {
         "logout": "Log out",
+        "logoutConfirm": {
+            "title": "Log out?",
+            "message": "Are you sure you want to log out?"
+        },
         "login": {
             "title": "Log in",
             "defaultError": "Wrong credentials."
@@ -19,6 +23,9 @@
     "user": {
         "settings": {
             "title": "Settings",
+            "preferences": "Preferences",
+            "theme": "Theme",
+            "language": "Language",
             "profile": "Profile",
             "email": "Email",
             "name": "Display name",

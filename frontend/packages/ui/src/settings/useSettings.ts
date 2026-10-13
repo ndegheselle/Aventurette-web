@@ -1,3 +1,4 @@
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 export enum EnumTheme {
@@ -25,14 +26,20 @@ function applyTheme(theme: EnumTheme) {
     }
 }
 
-/** Apply the theme stored by `changeTheme`, or auto. Call once, as the app starts. */
-export function applyStoredTheme() {
+function readStoredTheme(): EnumTheme {
     const storedTheme = localStorage.getItem(SETTINGS_STORAGE_KEYS.theme);
-    const theme = storedTheme
+    return storedTheme
         ? EnumTheme[storedTheme as keyof typeof EnumTheme] ?? EnumTheme.auto
         : EnumTheme.auto;
+}
 
-    applyTheme(theme);
+// Module state: one theme, shared by every caller.
+const currentTheme = ref<EnumTheme>(readStoredTheme());
+
+/** Apply the theme stored by `changeTheme`, or auto. Call once, as the app starts. */
+export function applyStoredTheme() {
+    currentTheme.value = readStoredTheme();
+    applyTheme(currentTheme.value);
 }
 
 export function useSettings() {
@@ -40,6 +47,7 @@ export function useSettings() {
     const { locale } = useI18n({ useScope: 'global' });
 
     function changeTheme(newTheme: EnumTheme) {
+        currentTheme.value = newTheme;
         localStorage.setItem(SETTINGS_STORAGE_KEYS.theme, EnumTheme[newTheme]);
         applyTheme(newTheme);
     }
@@ -51,6 +59,7 @@ export function useSettings() {
 
     return {
         currentLanguage: locale,
+        currentTheme,
         changeLang,
         changeTheme
     };
