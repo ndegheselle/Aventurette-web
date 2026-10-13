@@ -4,7 +4,8 @@
     "dock": {
         "ludotech": "Ludothèque",
         "search": "Rechercher",
-        "tips": "Astuces"
+        "tips": "Astuces",
+        "profil": "Profil"
     },
     "admin": {
         "title": "Administration"

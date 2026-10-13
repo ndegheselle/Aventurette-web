@@ -36,9 +36,6 @@ function goBack() {
             </div>
             <span class="flex-1 text-lg truncate">{{ title }}</span>
             <ul class="flex">
-                <RouterLink class="btn btn-circle" :to="{ name: usersRoutesNames.settings }">
-                    <UserIcon />
-                </RouterLink>
             </ul>
         </nav>
 
@@ -61,6 +58,10 @@ function goBack() {
                 <LightbulbIcon />
                 <span class="dock-label">{{ $t('dock.tips') }}</span>
             </button>
+            <RouterLink :to="{ name: usersRoutesNames.settings }">
+                <UserIcon />
+                <span class="dock-label">{{ $t('dock.profil') }}</span>
+            </RouterLink>
         </div>
     </div>
 
