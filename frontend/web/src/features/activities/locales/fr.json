@@ -167,6 +167,13 @@
                 "GATHER_MATERIAL": "Réunissez tout ce dont l'activité a besoin avant de l'installer. Cochez chaque élément une fois rassemblé.",
                 "GATHER_CHILDREN": "Le jeu est prêt : regroupez les enfants avant de leur présenter l'activité."
             }
+        },
+        "library": {
+            "tabs": {
+                "catalogue": "Catalogue",
+                "favorites": "Favoris",
+                "history": "Historique"
+            }
         }
     }
 }

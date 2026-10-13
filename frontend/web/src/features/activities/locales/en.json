@@ -167,6 +167,13 @@
                 "GATHER_MATERIAL": "Bring together everything the activity needs before setting it up. Tick each item once it is gathered.",
                 "GATHER_CHILDREN": "The game is ready: gather the children before introducing the activity."
             }
+        },
+        "library": {
+            "tabs": {
+                "catalogue": "Catalogue",
+                "favorites": "Favorites",
+                "history": "History"
+            }
         }
     }
 }
