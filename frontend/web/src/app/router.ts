@@ -10,7 +10,7 @@ import type { RouteRecordRaw } from 'vue-router';
 // Each feature owns its route module; the app only picks the layout they hang under.
 const routes: RouteRecordRaw[] = [
     // XXX : until the dashboard has something to show.
-    { path: '', redirect: { name: activitiesRoutesNames.all } },
+    { path: '', redirect: { name: activitiesRoutesNames.library } },
     {
         path: '',
         component: Mobile,

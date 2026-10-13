@@ -1,30 +1,23 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import ActivitiesPage from '@features/activities/pages/Activities.page.vue';
-import ActivityPage from '@features/activities/pages/Activity.page.vue';
-import ActivityPlayPage from '@features/activities/pages/ActivityPlay.page.vue';
+import Library from '@features/activities/pages/library.page.vue';
+import Search from '@features/activities/pages/search.page.vue';
 
 export const routesNames = {
-    page: 'activities.page',
-    play: 'activities.play',
-    all: 'activities',
+    library: 'activities.library',
+    search: 'activities.search',
 } as const;
 
 const routes: RouteRecordRaw[] = [
     {
-        path: '/activities',
-        name: routesNames.all,
-        component: ActivitiesPage,
-    },
-        {
-        path: '/activities/:id',
-        name: routesNames.page,
-        component: ActivityPage,
+        path: '/activities/library',
+        name: routesNames.library,
+        component: Library,
     },
     {
-        path: '/activities/:id/play',
-        name: routesNames.play,
-        component: ActivityPlayPage,
+        path: '/activities/search',
+        name: routesNames.search,
+        component: Search,
     },
 ];
 
