@@ -24,6 +24,8 @@
         "settings": {
             "title": "Paramètres",
             "preferences": "Préfèrences",
+            "account": "Compte",
+            "children": "Enfants",
             "theme": "Thème",
             "language": "Langue",
             "profile": "Profil",

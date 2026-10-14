@@ -6,7 +6,7 @@ import { useModal } from '@chapelure/ui/modals/useModal';
 import { EnumTheme, useSettings } from '@chapelure/ui/settings/useSettings';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ChevronRightIcon, PaletteIcon, LanguagesIcon, LogOutIcon } from 'lucide-vue-next';
+import { ChevronRightIcon, PaletteIcon, LanguagesIcon, LogOutIcon, UserIcon, UsersIcon } from 'lucide-vue-next';
 import { useLogout } from '@features/user/composables/useLogout';
 
 const { t } = useI18n();
@@ -43,15 +43,16 @@ useNavbar(t('user.settings.title'));
 </script>
 
 <template>
-    <Container>
-        <ul class="menu w-full border border-base-200 bg-base-100 rounded-box p-3 shadow">
+    <Container class="p-2">
+        <h1 class="font-title text-2xl md:text-3xl lg:text-4xl font-bold mb-2">{{ t('user.settings.title') }}</h1>
+        <ul class="menu w-full border border-base-300 bg-base-100 rounded-box p-3 shadow">
             <li class="menu-title">{{ t('user.settings.preferences') }}</li>
             <li>
                 <a @click="() => themeSheet.show()">
                     <PaletteIcon />
                     <span>{{ t('user.settings.theme') }}</span>
                     <span v-if="currentThemeLabel"
-                        class="font-bold opacity-50">{{ t(currentThemeLabel) }}</span>
+                        class="opacity-50">{{ t(currentThemeLabel) }}</span>
                     <ChevronRightIcon />
                 </a>
             </li>
@@ -59,18 +60,35 @@ useNavbar(t('user.settings.title'));
                 <a @click="() => languageSheet.show()">
                     <LanguagesIcon />
                     <span>{{ t('user.settings.language') }}</span>
-                    <span class="font-bold uppercase opacity-50">{{ currentLanguage }}</span>
+                    <span class="uppercase opacity-50">{{ currentLanguage }}</span>
                     <ChevronRightIcon />
                 </a>
             </li>
         </ul>
-        <button @click="logoutToLogin" class="btn mt-auto flex justify-between">
-            <div class="flex gap-2">
-                <LogOutIcon />
-                <span>{{ t('auth.logout') }}</span>
-            </div>
-            <ChevronRightIcon />
-        </button>
+        <ul class="menu w-full border border-base-300 bg-base-100 rounded-box p-3 shadow mt-2">
+            <li class="menu-title">{{ t('user.settings.account') }}</li>
+            <li class="menu-disabled">
+                <a>
+                    <UserIcon />
+                    <span>{{ t('user.settings.profile') }}</span>
+                    <ChevronRightIcon />
+                </a>
+            </li>
+            <li class="menu-disabled">
+                <a>
+                    <UsersIcon />
+                    <span>{{ t('user.settings.children') }}</span>
+                    <ChevronRightIcon />
+                </a>
+            </li>
+            <li>
+                <a @click="logoutToLogin">
+                    <LogOutIcon />
+                    <span>{{ t('auth.logout') }}</span>
+                    <ChevronRightIcon />
+                </a>
+            </li>
+        </ul>
 
         <BottomSheet :controller="themeSheet">
             <template #title>{{ t('user.settings.theme') }}</template>

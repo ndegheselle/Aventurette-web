@@ -14,7 +14,7 @@ export function useLibraryFeed() {
     async function loadMore() {
         if (loading.value || done.value) return;
         loading.value = true;
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         count.value += LIBRARY_PAGE_SIZE;
         loading.value = false;
     }

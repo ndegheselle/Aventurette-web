@@ -10,21 +10,20 @@ const { items, loading, done, loadMore } = useLibraryFeed();
 
 <template>
     <Container>
-
         <div class="flex flex-col gap-2 sticky top-0 z-10 bg-base-100 p-2">
             <SearchInput />
             <div class="flex gap-2">
                 <div class="flex-1 grid grid-cols-3 gap-2 opacity-50">
                     <div class="flex flex-col mx-auto">
-                        <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
+                        <img class="mask mask-circle" src="https://placeholder.pagebee.io/api/plain/64/64" />
                         <span class="text-sm text-center">{{ $t('activities.searchPage.quickFilters.age') }}</span>
                     </div>
                     <div class="flex flex-col mx-auto">
-                        <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
+                        <img class="mask mask-circle" src="https://placeholder.pagebee.io/api/plain/64/64" />
                         <span class="text-sm text-center">{{ $t('activities.searchPage.quickFilters.duration') }}</span>
                     </div>
                     <div class="flex flex-col mx-auto">
-                        <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
+                        <img class="mask mask-circle" src="https://placeholder.pagebee.io/api/plain/64/64" />
                         <span class="text-sm text-center">{{ $t('activities.searchPage.quickFilters.location') }}</span>
                     </div>
                 </div>
@@ -41,10 +40,10 @@ const { items, loading, done, loadMore } = useLibraryFeed();
                 <div v-for="column in 2"
                      :key="column"
                      class="flex flex-col gap-2">
-                    <div v-for="item in items.filter((i) => i % 2 === column - 1)"
+                     <img  v-for="item in items.filter((i) => i % 2 === column - 1)"
                          :key="item"
-                         class="skeleton w-full"
-                         :class="column === 2 && item === 1 ? 'h-52' : 'h-64'"></div>
+                         class="rounded-box w-full object-cover"
+                         :class="column === 2 && item === 1 ? 'h-52' : 'h-64'" src="https://placeholder.pagebee.io/api/plain/256/512" />
                 </div>
             </div>
         </InfiniteScroll>

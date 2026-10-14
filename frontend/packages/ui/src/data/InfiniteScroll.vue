@@ -1,5 +1,5 @@
 <!-- Example : <InfiniteScroll :loading="loading" :done="!hasMore" @load="loadMore"> ...items... </InfiniteScroll>
-     Emits `load` when the bottom comes into view. The caller owns `loading` (true until the page
+     Emits `load` when the bottom is about to come into view (`margin` px early). The caller owns `loading` (true until the page
      has been appended) and `done` (nothing left to fetch: stops the events and hides the spinner). -->
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -7,6 +7,8 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 const props = defineProps<{
     loading?: boolean;
     done?: boolean;
+    /** How many px before the bottom comes into view `load` is emitted. Defaults to 400. */
+    margin?: number;
 }>();
 
 const emit = defineEmits<{
@@ -25,7 +27,7 @@ function onIntersect([entry]: IntersectionObserverEntry[]) {
 function observe() {
     if (!sentinel.value) return;
     observer?.disconnect();
-    observer = new IntersectionObserver(onIntersect);
+    observer = new IntersectionObserver(onIntersect, { rootMargin: `0px 0px ${props.margin ?? 400}px 0px` });
     observer.observe(sentinel.value);
 }
 
