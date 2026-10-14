@@ -16,7 +16,7 @@ watchEffect(() => {
 
 <template>
     <dialog ref="dialogRef" class="z-9999"> 
-        <TransitionGroup name="alert" tag="div" class="toast stack stack-top">
+        <TransitionGroup name="alert" tag="div" class="toast stack stack-top" v-if="alerts.length > 0">
             <div role="alert" class="alert" 
                 v-for="alert in alerts.toReversed()" :key="alert.id" 
                 :class="{
