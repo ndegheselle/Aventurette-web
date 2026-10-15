@@ -168,6 +168,9 @@
                 "GATHER_CHILDREN": "The game is ready: gather the children before introducing the activity."
             }
         },
+        "card": {
+            "more": "More options"
+        },
         "library": {
             "tabs": {
                 "catalogue": "Catalogue",

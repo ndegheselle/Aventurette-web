@@ -22,6 +22,7 @@ func main() {
 	})
 
 	hooks.Register(app)
+	registerSeedCommand(app)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)

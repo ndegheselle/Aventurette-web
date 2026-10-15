@@ -168,6 +168,9 @@
                 "GATHER_CHILDREN": "Le jeu est prêt : regroupez les enfants avant de leur présenter l'activité."
             }
         },
+        "card": {
+            "more": "Plus d'options"
+        },
         "library": {
             "tabs": {
                 "catalogue": "Catalogue",

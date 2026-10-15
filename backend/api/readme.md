@@ -10,6 +10,12 @@ admin@test.local
 test1234admin
 ```
 
+Fill the dev database with fake activities (`seed.go`). It owns them as `seed@test.local`, replaces the
+ones a previous run made, and refuses to run on a built binary :
+```bash
+go run . seed --count 20
+```
+
 Update the version of pocketbase :
 ```
 go get -u github.com/pocketbase/pocketbase@latest
