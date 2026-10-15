@@ -3,7 +3,7 @@ import { NotImplementedError } from '@chapelure/core';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import PasswordInput from '@chapelure/ui/forms/PasswordInput.vue';
-import LoginProviders from '@features/user/components/LoginProviders.vue';
+import LoginProviders from '@features/user/ui/LoginProviders.vue';
 import { useLoginForm } from '@features/user/composables/useLoginForm';
 import { routesNames } from '@features/user/routes';
 import { MailIcon } from 'lucide-vue-next';

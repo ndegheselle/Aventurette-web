@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
-import type { SectionEntry } from '@features/admin/activities-authoring/components/SectionsMenu.vue';
+import type { SectionEntry } from '@features/admin/activities-authoring/ui/SectionsMenu.vue';
 import { ArrowLeftIcon, ChevronRightIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 

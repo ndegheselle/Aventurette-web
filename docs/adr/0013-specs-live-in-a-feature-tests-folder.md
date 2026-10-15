@@ -30,8 +30,8 @@ in. That is the thing being traded away.
 
 ## Decision
 
-**Specs live in `frontend/web/src/features/<name>/tests/`.** `models/`, `api/`, `composables/`,
-`components/` and `pages/` hold production code and nothing else. Specs import through aliases
+**Specs live in `frontend/web/src/features/<name>/tests/`.** `models/`, `api/`, `composables/`
+and `ui/` hold production code and nothing else. Specs import through aliases
 (`@features/activities/models/step`) like everything else in the codebase, not relative paths.
 `npm run lint:arch` fails on a `.spec.ts` found anywhere else under a feature.
 

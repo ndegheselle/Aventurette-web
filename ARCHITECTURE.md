@@ -38,8 +38,8 @@ web/app  ──►  web/features  ──►  @chapelure/ui  ──►  @chapelur
 Within a feature, the same applies one level down:
 
 ```
-pages/ ──► components/ ──► composables/ ──► api/ ──► @/backend
-                                 └────────► models/
+ui/ ──► composables/ ──► api/ ──► @/backend
+              └────────► models/
 ```
 
 Nothing points left. `core` imports nothing of ours; `ui` never learns which backend exists;
@@ -62,8 +62,7 @@ Every feature has the same shape, so you never have to guess:
 | `models/` | types, factories, domain rules — **no framework imports** |
 | `api/` | `*.api.ts` — the only place `@/backend` may be imported — and `*.mapper.ts` |
 | `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
-| `components/` | feature components |
-| `pages/` | route targets, named `Name.page.vue` |
+| `ui/` | the feature's Vue files: route targets (`Name.page.vue`) and the components they use |
 | `tests/` | the feature's specs, and the only place they may live |
 | `locales/` | translations, and nothing else |
 | `routes.ts` | the route records plus a `routesNames` map |
@@ -84,12 +83,16 @@ Specs do **not** sit beside what they cover. They live in the feature's `tests/`
 fewer of them than there were — [ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)
 says which code earns one.
 
-#### `pages/`
+#### `ui/`
 
-A route target is `Name.page.vue`, and that is the whole convention: `routes.ts` names it as a
-`component`. A page that is only a wrapper around one component is that component — the login
-form is `Login.page.vue`, not a page holding a `<LoginForm>`. Anything else is in
-`components/`, one level deep.
+Every `.vue` file of a feature is in `ui/`, pages and components together, so the files that
+make up one screen sit side by side. A route target is `Name.page.vue`, and that is the whole
+convention: `routes.ts` names it as a `component`. A page that is only a wrapper around one
+component is that component — the login form is `Login.page.vue`, not a page holding a
+`<LoginForm>`. A subfolder groups the components of one entity when there are several:
+`activities/ui/activity/card.vue`.
+
+A feature may import another feature's `ui/`, as it may its `models/` and `composables/`.
 
 ### `frontend/packages/ui`
 

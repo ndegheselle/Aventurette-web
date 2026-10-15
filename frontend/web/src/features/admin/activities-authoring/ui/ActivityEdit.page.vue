@@ -13,7 +13,7 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import type { IEditModal } from '@chapelure/ui/modals/useModal';
-import StepSummary from '@features/activities/components/StepSummary.vue';
+import StepSummary from '@features/activities/ui/StepSummary.vue';
 import {
     ActivityFormat,
     ActivityState,
@@ -24,11 +24,11 @@ import {
 } from '@features/activities/models/activity';
 import { type ActivityStepData } from '@features/activities/models/step';
 import { type ActivityWorkshopData } from '@features/activities/models/workshop';
-import MaterialsSelection from '@features/admin/activities-authoring/components/MaterialsSelection.vue';
-import SectionsMenuModal from '@features/admin/activities-authoring/components/SectionsMenu.modal.vue';
-import SectionsMenu, { type SectionEntry } from '@features/admin/activities-authoring/components/SectionsMenu.vue';
-import StepEditModal from '@features/admin/activities-authoring/components/StepEdit.modal.vue';
-import WorkshopEditModal from '@features/admin/activities-authoring/components/WorkshopEdit.modal.vue';
+import MaterialsSelection from '@features/admin/activities-authoring/ui/MaterialsSelection.vue';
+import SectionsMenuModal from '@features/admin/activities-authoring/ui/SectionsMenu.modal.vue';
+import SectionsMenu, { type SectionEntry } from '@features/admin/activities-authoring/ui/SectionsMenu.vue';
+import StepEditModal from '@features/admin/activities-authoring/ui/StepEdit.modal.vue';
+import WorkshopEditModal from '@features/admin/activities-authoring/ui/WorkshopEdit.modal.vue';
 import { useActivityEdit, useReferenceOptions } from '@features/admin/activities-authoring/composables/useActivityEdit';
 import { AGE_BOUNDS, PARTICIPANTS_BOUNDS } from '@features/admin/activities-authoring/models/activity.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';

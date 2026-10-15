@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CatalogueTab from '@features/admin/catalogue-authoring/components/CatalogueTab.vue';
+import CatalogueTab from '@features/admin/catalogue-authoring/ui/CatalogueTab.vue';
 import { useMaterialsEditList } from '@features/admin/catalogue-authoring/composables/useMaterialsEditList';
 
 const {

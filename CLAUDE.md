@@ -23,8 +23,7 @@ down, which is what makes it testable without mounting anything.
 | `features/<name>/models/` | rules that hold whatever renders them — pure functions over plain data | `@chapelure/core`, other models. **No `vue`.** |
 | `features/<name>/api/` | the feature's backend calls, and `<entity>.mapper.ts` — the payload type and the translation to the model | `@/backend`, the feature's `models/`. **No `vue`.** |
 | `features/<name>/composables/` | reactive state and orchestration | `vue`, the feature's `api/` and `models/` |
-| `features/<name>/components/` | markup and bindings | anything above |
-| `features/<name>/pages/` | route targets, `Name.page.vue` | anything above |
+| `features/<name>/ui/` | markup and bindings: route targets (`Name.page.vue`) and the components beside them | anything above, and other features' `ui/` |
 | `features/<name>/tests/` | the feature's specs — and the only place they may live | anything |
 
 Adding behaviour usually means: a pure function in `models/`, then a line in a composable, then

@@ -1,8 +1,8 @@
 import { Role } from '@features/user/models/user';
 import type { RouteRecordRaw } from 'vue-router';
 
-import ActivitiesEditPage from '@features/admin/activities-authoring/pages/ActivitiesEdit.page.vue';
-import ActivityEditPage from '@features/admin/activities-authoring/pages/ActivityEdit.page.vue';
+import ActivitiesEditPage from '@features/admin/activities-authoring/ui/ActivitiesEdit.page.vue';
+import ActivityEditPage from '@features/admin/activities-authoring/ui/ActivityEdit.page.vue';
 
 /**
  * Authoring has a path of its own: `/activities` is somebody reading an activity, these two

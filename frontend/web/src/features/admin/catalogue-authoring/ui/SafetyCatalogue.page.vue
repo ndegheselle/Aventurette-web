@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SafetyInstructionData } from '@features/activities/models/activity';
-import CatalogueTab from '@features/admin/catalogue-authoring/components/CatalogueTab.vue';
-import SafetyInstructionEditModal from '@features/admin/catalogue-authoring/components/SafetyInstructionEdit.modal.vue';
+import CatalogueTab from '@features/admin/catalogue-authoring/ui/CatalogueTab.vue';
+import SafetyInstructionEditModal from '@features/admin/catalogue-authoring/ui/SafetyInstructionEdit.modal.vue';
 import { useSafetyInstructionsEditList } from '@features/admin/catalogue-authoring/composables/useCatalogueEditList';
 import { newSafetyInstruction } from '@features/admin/catalogue-authoring/models/catalogue.edit';
 import { useTemplateRef } from 'vue';

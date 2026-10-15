@@ -3,8 +3,8 @@ import InfiniteScroll from '@chapelure/ui/data/InfiniteScroll.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useLibraryFeed } from '@features/activities/composables/useLibraryFeed';
 
-import ActivityCard from '@features/activities/pages/activity/card.vue';
-import ActivityCardOptions from '@features/activities/pages/activity/cardOptions.vue';
+import ActivityCard from '@features/activities/ui/activity/card.vue';
+import ActivityCardOptions from '@features/activities/ui/activity/cardOptions.vue';
 import { useTemplateRef } from 'vue';
 
 const { items, loading, done, loadMore } = useLibraryFeed();

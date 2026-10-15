@@ -5,7 +5,7 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import { ActivityState, type ActivityData } from '@features/activities/models/activity';
-import ActivityImportModal from '@features/admin/activities-authoring/components/ActivityImport.modal.vue';
+import ActivityImportModal from '@features/admin/activities-authoring/ui/ActivityImport.modal.vue';
 import { useActivitiesEditList } from '@features/admin/activities-authoring/composables/useActivitiesEditList';
 import { authoredStateTabs } from '@features/admin/activities-authoring/models/activity.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';

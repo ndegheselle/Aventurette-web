@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ActivityTipData } from '@features/activities/models/step';
-import CatalogueTab from '@features/admin/catalogue-authoring/components/CatalogueTab.vue';
-import TipEditModal from '@features/admin/catalogue-authoring/components/TipEdit.modal.vue';
+import CatalogueTab from '@features/admin/catalogue-authoring/ui/CatalogueTab.vue';
+import TipEditModal from '@features/admin/catalogue-authoring/ui/TipEdit.modal.vue';
 import { useTipsEditList } from '@features/admin/catalogue-authoring/composables/useCatalogueEditList';
 import { newTip } from '@features/admin/catalogue-authoring/models/catalogue.edit';
 import { useTemplateRef } from 'vue';

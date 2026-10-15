@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import Library from '@features/activities/pages/library.page.vue';
-import Search from '@features/activities/pages/search.page.vue';
+import Library from '@features/activities/ui/library.page.vue';
+import Search from '@features/activities/ui/search.page.vue';
 
 export const routesNames = {
     library: 'activities.library',

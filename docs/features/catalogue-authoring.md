@@ -50,7 +50,7 @@ holds what they share with the materials tab: the page, the search and the delet
 `useSafetyInstructionsEditList` and `useTipsEditList` give it its catalogue and its search. The
 modals save through `useEditModal`, and the tab re-queries once one is confirmed.
 
-Every tab, materials included, renders through `components/CatalogueTab.vue`: the search and
+Every tab, materials included, renders through `ui/CatalogueTab.vue`: the search and
 its add button, each row's delete (and edit) button, the delete's confirmation and the pages.
 A page gives it the row's content and, for tags, the kind selector.
 

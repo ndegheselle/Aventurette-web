@@ -1,4 +1,4 @@
-import DashboardPage from '@features/dashboard/pages/Dashboard.page.vue';
+import DashboardPage from '@features/dashboard/ui/Dashboard.page.vue';
 import type { RouteRecordRaw } from 'vue-router';
 
 export const routesNames = {

@@ -1,11 +1,11 @@
 import { Role } from '@features/user/models/user';
 import type { RouteRecordRaw } from 'vue-router';
 
-import CataloguePage from '@features/admin/catalogue-authoring/pages/Catalogue.page.vue';
-import MaterialsCataloguePage from '@features/admin/catalogue-authoring/pages/MaterialsCatalogue.page.vue';
-import SafetyCataloguePage from '@features/admin/catalogue-authoring/pages/SafetyCatalogue.page.vue';
-import TagsCataloguePage from '@features/admin/catalogue-authoring/pages/TagsCatalogue.page.vue';
-import TipsCataloguePage from '@features/admin/catalogue-authoring/pages/TipsCatalogue.page.vue';
+import CataloguePage from '@features/admin/catalogue-authoring/ui/Catalogue.page.vue';
+import MaterialsCataloguePage from '@features/admin/catalogue-authoring/ui/MaterialsCatalogue.page.vue';
+import SafetyCataloguePage from '@features/admin/catalogue-authoring/ui/SafetyCatalogue.page.vue';
+import TagsCataloguePage from '@features/admin/catalogue-authoring/ui/TagsCatalogue.page.vue';
+import TipsCataloguePage from '@features/admin/catalogue-authoring/ui/TipsCatalogue.page.vue';
 
 /**
  * The catalogues every activity picks from, one tab each under one screen, beside the

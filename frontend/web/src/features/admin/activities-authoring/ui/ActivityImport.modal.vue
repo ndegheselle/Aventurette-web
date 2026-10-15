@@ -4,7 +4,7 @@ import FilesList from '@chapelure/ui/files/FilesList.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
-import ResourcesSelection from '@features/admin/activities-authoring/components/ResourcesSelection.vue';
+import ResourcesSelection from '@features/admin/activities-authoring/ui/ResourcesSelection.vue';
 import { IMPORT_STAGES, useActivityImport } from '@features/admin/activities-authoring/composables/useActivityImport';
 import { referenceKey } from '@features/admin/activities-authoring/models/activity.import';
 import {

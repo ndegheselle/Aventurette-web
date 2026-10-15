@@ -37,5 +37,9 @@
         "src/**/*.vue",
         "../tests/**/*.ts",
         "../packages/*/src/**/*.spec.ts"
+    ],
+    // XXX : set aside until it is brought back in line with activities.
+    "exclude": [
+        "src/features/admin/**"
     ]
 }

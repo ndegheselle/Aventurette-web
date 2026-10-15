@@ -1,7 +1,7 @@
 import { aUser, fakeAuthProvider, mountWithRouter } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import RegisterPage from '@features/user/pages/Register.page.vue';
+import RegisterPage from '@features/user/ui/Register.page.vue';
 
 const user = aUser();
 const auth = fakeAuthProvider(user);

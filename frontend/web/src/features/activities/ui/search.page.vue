@@ -3,8 +3,8 @@ import InfiniteScroll from '@chapelure/ui/data/InfiniteScroll.vue';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useLibraryFeed } from '@features/activities/composables/useLibraryFeed';
-import ActivityCard from '@features/activities/pages/activity/card.vue';
-import ActivityCardOptions from '@features/activities/pages/activity/cardOptions.vue';
+import ActivityCard from '@features/activities/ui/activity/card.vue';
+import ActivityCardOptions from '@features/activities/ui/activity/cardOptions.vue';
 import { ChevronRightIcon } from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
 
