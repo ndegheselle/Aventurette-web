@@ -1,11 +1,13 @@
 import type { RouteRecordRaw } from 'vue-router';
 
+import Activity from '@features/activities/ui/activity.page.vue';
 import Library from '@features/activities/ui/library.page.vue';
 import Search from '@features/activities/ui/search.page.vue';
 
 export const routesNames = {
     library: 'activities.library',
     search: 'activities.search',
+    activity: 'activities.activity',
 } as const;
 
 const routes: RouteRecordRaw[] = [
@@ -18,6 +20,11 @@ const routes: RouteRecordRaw[] = [
         path: '/activities/search',
         name: routesNames.search,
         component: Search,
+    },
+    {
+        path: '/activities/:id',
+        name: routesNames.activity,
+        component: Activity,
     },
 ];
 
