@@ -45,144 +45,144 @@ function back() {
             <div class="mx-2 flex flex-col gap-2">
                 <ul class="list bg-base-200 rounded-box border border-base-content/5">
                     <li v-if="activity.place.indoor || activity.place.outdoor" class="list-row flex justify-between">
-                        <dt class="text-sm opacity-60 flex items-center gap-1">
+                        <div class="text-sm opacity-60 flex items-center gap-1">
                             <MapPinIcon class="size-4" /> {{ $t('activities.families.place') }}
-                        </dt>
-                        <dd class="flex flex-wrap gap-1">
+                        </div>
+                        <div class="flex flex-wrap gap-1">
                             <span v-if="activity.place.indoor" class="badge">{{ $t('activities.fields.indoor') }}</span>
                             <span v-if="activity.place.outdoor" class="badge">{{ $t('activities.fields.outdoor')
                                 }}</span>
-                        </dd>
+                        </div>
                     </li>
                     <li class="list-row flex justify-between">
-                        <dt class="text-sm opacity-60 flex items-center gap-1">
+                        <div class="text-sm opacity-60 flex items-center gap-1">
                             <CakeIcon class="size-4" /> {{ $t('activities.fields.age') }}
-                        </dt>
-                        <dd>{{ $t(ageLabel.key, ageLabel.params) }}</dd>
+                        </div>
+                        <div>{{ $t(ageLabel.key, ageLabel.params) }}</div>
                     </li>
                     <li class="list-row flex justify-between">
-                        <dt class="text-sm opacity-60 flex items-center gap-1">
+                        <div class="text-sm opacity-60 flex items-center gap-1">
                             <UsersIcon class="size-4" /> {{ $t('activities.fields.participants') }}
-                        </dt>
-                        <dd>{{ $t(participantsLabel.key, participantsLabel.params) }}</dd>
+                        </div>
+                        <div>{{ $t(participantsLabel.key, participantsLabel.params) }}</div>
                     </li>
                     <li class="list-row flex justify-between">
-                        <dt class="text-sm opacity-60 flex items-center gap-1">
+                        <div class="text-sm opacity-60 flex items-center gap-1">
                             <HourglassIcon class="size-4" /> {{ $t('activities.fields.preparationTime') }}
-                        </dt>
-                        <dd>{{ $t('activities.minutes', { minutes: timing.preparation }) }}</dd>
+                        </div>
+                        <div>{{ $t('activities.minutes', { minutes: timing.preparation }) }}</div>
                     </li>
                     <li class="list-row flex justify-between">
-                        <dt class="text-sm opacity-60 flex items-center gap-1">
+                        <div class="text-sm opacity-60 flex items-center gap-1">
                             <ClockIcon class="size-4" /> {{ $t('activities.fields.playTime') }}
-                        </dt>
-                        <dd>{{ $t('activities.minutes', { minutes: timing.play }) }}</dd>
+                        </div>
+                        <div>{{ $t('activities.minutes', { minutes: timing.play }) }}</div>
                     </li>
 
                     <template v-if="showMore">
                         <li class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <TimerIcon class="size-4" /> {{ $t('activities.fields.totalTime') }}
-                            </dt>
-                            <dd>{{ $t('activities.minutes', { minutes: timing.total }) }}</dd>
+                            </div>
+                            <div>{{ $t('activities.minutes', { minutes: timing.total }) }}</div>
                         </li>
                         <li v-if="activity.classification.format" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <ShapesIcon class="size-4" /> {{ $t('activities.fields.format') }}
-                            </dt>
-                            <dd>{{ $t(`activities.format.${activity.classification.format}`) }}</dd>
+                            </div>
+                            <div>{{ $t(`activities.format.${activity.classification.format}`) }}</div>
                         </li>
                         <li v-if="activity.classification.practices.length" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <PaletteIcon class="size-4" /> {{ $t('activities.fields.practices') }}
-                            </dt>
-                            <dd class="flex flex-wrap justify-end gap-1">
+                            </div>
+                            <div class="flex flex-wrap justify-end gap-1">
                                 <span v-for="practice in activity.classification.practices" :key="practice" class="badge">
                                     {{ $t(`activities.practice.${practice}`) }}
                                 </span>
-                            </dd>
+                            </div>
                         </li>
                         <li v-if="activity.classification.themes.length" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <TagIcon class="size-4" /> {{ $t('activities.tagType.THEME') }}
-                            </dt>
-                            <dd class="flex flex-wrap justify-end gap-1">
+                            </div>
+                            <div class="flex flex-wrap justify-end gap-1">
                                 <span v-for="tag in activity.classification.themes" :key="tag.id" class="badge">{{ tag.name }}</span>
-                            </dd>
+                            </div>
                         </li>
                         <li v-if="activity.imaginary.rule" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <SparklesIcon class="size-4" /> {{ $t('activities.fields.imaginaryRule') }}
-                            </dt>
-                            <dd>{{ $t(`activities.imaginaryRule.${activity.imaginary.rule}`) }}</dd>
+                            </div>
+                            <div>{{ $t(`activities.imaginaryRule.${activity.imaginary.rule}`) }}</div>
                         </li>
                         <li v-if="activity.imaginary.universes.length" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <SparklesIcon class="size-4" /> {{ $t('activities.tagType.IMAGINARY') }}
-                            </dt>
-                            <dd class="flex flex-wrap justify-end gap-1">
+                            </div>
+                            <div class="flex flex-wrap justify-end gap-1">
                                 <span v-for="tag in activity.imaginary.universes" :key="tag.id" class="badge">{{ tag.name }}</span>
-                            </dd>
+                            </div>
                         </li>
                         <li v-if="activity.audience.childrenPace" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <GaugeIcon class="size-4" /> {{ $t('activities.fields.childrenPace') }}
-                            </dt>
-                            <dd>{{ $t(`activities.childrenPace.${activity.audience.childrenPace}`) }}</dd>
+                            </div>
+                            <div>{{ $t(`activities.childrenPace.${activity.audience.childrenPace}`) }}</div>
                         </li>
                         <li v-if="activity.supervision.hostEffort" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <HandIcon class="size-4" /> {{ $t('activities.fields.hostEffort') }}
-                            </dt>
-                            <dd>{{ $t(`activities.hostEffort.${activity.supervision.hostEffort}`) }}</dd>
+                            </div>
+                            <div>{{ $t(`activities.hostEffort.${activity.supervision.hostEffort}`) }}</div>
                         </li>
                         <li v-if="activity.supervision.hostsRequired" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <UserCheckIcon class="size-4" /> {{ $t('activities.fields.hosts') }}
-                            </dt>
-                            <dd>{{ activity.supervision.hostsRequired }}</dd>
+                            </div>
+                            <div>{{ activity.supervision.hostsRequired }}</div>
                         </li>
                         <li v-if="activity.supervision.crossSupervision" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <EyeIcon class="size-4" /> {{ $t('activities.fields.crossSupervision') }}
-                            </dt>
-                            <dd><CheckIcon class="size-4" /></dd>
+                            </div>
+                            <div><CheckIcon class="size-4" /></div>
                         </li>
                         <li v-if="activity.place.locations.length" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <MapIcon class="size-4" /> {{ $t('activities.fields.locations') }}
-                            </dt>
-                            <dd class="flex flex-wrap justify-end gap-1">
+                            </div>
+                            <div class="flex flex-wrap justify-end gap-1">
                                 <span v-for="location in activity.place.locations" :key="location" class="badge">
                                     {{ $t(`activities.location.${location}`) }}
                                 </span>
-                            </dd>
+                            </div>
                         </li>
                         <li v-if="activity.place.seasons.length" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <LeafIcon class="size-4" /> {{ $t('activities.fields.seasons') }}
-                            </dt>
-                            <dd class="flex flex-wrap justify-end gap-1">
+                            </div>
+                            <div class="flex flex-wrap justify-end gap-1">
                                 <span v-for="season in activity.place.seasons" :key="season" class="badge">
                                     {{ $t(`activities.season.${season}`) }}
                                 </span>
-                            </dd>
+                            </div>
                         </li>
                         <li v-if="activity.pedagogy.goals.length" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <TargetIcon class="size-4" /> {{ $t('activities.tagType.GOAL') }}
-                            </dt>
-                            <dd class="flex flex-wrap justify-end gap-1">
+                            </div>
+                            <div class="flex flex-wrap justify-end gap-1">
                                 <span v-for="tag in activity.pedagogy.goals" :key="tag.id" class="badge">{{ tag.name }}</span>
-                            </dd>
+                            </div>
                         </li>
                         <li v-if="activity.pedagogy.idealFor.length" class="list-row flex justify-between">
-                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                            <div class="text-sm opacity-60 flex items-center gap-1">
                                 <StarIcon class="size-4" /> {{ $t('activities.tagType.IDEAL_FOR') }}
-                            </dt>
-                            <dd class="flex flex-wrap justify-end gap-1">
+                            </div>
+                            <div class="flex flex-wrap justify-end gap-1">
                                 <span v-for="tag in activity.pedagogy.idealFor" :key="tag.id" class="badge">{{ tag.name }}</span>
-                            </dd>
+                            </div>
                         </li>
                     </template>
 

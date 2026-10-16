@@ -3,15 +3,14 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useActivityPlay } from '@features/activities/composables/useActivityPlay';
 import { isGenerated } from '@features/activities/models/play';
-import { stepNumber } from '@features/activities/models/step';
-import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, ClockIcon, FileTextIcon, FlagIcon, InfoIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FileTextIcon, FlagIcon, InfoIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
 import { watch } from 'vue';
 
-const { activity, steps, index, current, isFirst, isLast, previous, next, isTicked, toggle, headingOf } = useActivityPlay();
+const { activity, steps, index, current, isFirst, isLast, previous, next, leave, isTicked, toggle, headingOf } = useActivityPlay();
 
 // Each step is a page of its own: open it at its top.
 watch(index, () => window.scrollTo({ top: 0 }));
+
 </script>
 
 <template>
@@ -22,10 +21,10 @@ watch(index, () => window.scrollTo({ top: 0 }));
 
         <template v-else>
             <div class="sticky top-0 z-10 p-2 flex gap-2">
-                <RouterLink class="btn btn-soft btn-square btn-lg" :aria-label="$t('back')"
-                    :to="{ name: activitiesRoutesNames.activity, params: { id: activity.id } }">
+                <button type="button" class="btn btn-soft btn-square btn-lg" :aria-label="$t('back')"
+                    @click="leave">
                     <ArrowLeftIcon />
-                </RouterLink>
+                </button>
 
                 <h1 class="font-bold truncate my-auto">{{ activity.name }}</h1>
             </div>
@@ -110,11 +109,10 @@ watch(index, () => window.scrollTo({ top: 0 }));
                         :aria-label="$t('activities.play.next')" @click="next">
                         <ChevronRightIcon />
                     </button>
-                    <RouterLink v-else class="btn btn-success btn-square btn-lg"
-                        :aria-label="$t('activities.play.finish')"
-                        :to="{ name: activitiesRoutesNames.activity, params: { id: activity.id } }">
+                    <button v-else type="button" class="btn btn-success btn-square btn-lg"
+                        :aria-label="$t('activities.play.finish')" @click="leave">
                         <FlagIcon />
-                    </RouterLink>
+                    </button>
                 </div>
             </template>
         </template>

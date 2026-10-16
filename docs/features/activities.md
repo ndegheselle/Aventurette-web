@@ -27,8 +27,9 @@ One composable to a screen: `useActivitiesList` holds the results and the search
 
 The detail screen's *Start* opens the run: one page to a step, a progress bar, and the actions
 to tick as they are done. The step is the route's 1-based `step` param — none is the first, and
-one past either end is the nearest (`playStepIndexOf`) — so the browser's back goes to the step
-before. A step shows its description,
+one past either end is the nearest (`playStepIndexOf`). Moving between steps replaces the
+history entry, so the whole run is one entry and leaving it pops that entry rather than pushing
+the detail screen on top. A step shows its description,
 its actions, and the materials and resources it uses.
 
 `playStepsOf` in `models/play.ts` turns the activity into the run's steps, as `PlayStep` — one
