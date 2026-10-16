@@ -13,7 +13,7 @@ const timing = computed(() => timingOf(props.activity));
 </script>
 
 <template>
-    <div class="card bg-base-100 shadow-sm h-64 relative">
+    <div class="card bg-base-100 shadow-sm h-64 relative border border-base-200">
         <figure class="px-4 pt-4">
             <img src="https://placeholder.pagebee.io/api/plain/256/256"
                  alt=""
@@ -29,7 +29,8 @@ const timing = computed(() => timingOf(props.activity));
             <div class="card-actions relative justify-between">
                 <span class="badge my-auto">{{ $t('activities.minutes', { minutes: timing.total }) }}</span>
                 <button class="btn btn-ghost btn-circle"
-                        :aria-label="$t('activities.card.more')">
+                        :aria-label="$t('activities.card.more')"
+                        disabled>
                     <HeartIcon />
                 </button>
             </div>
