@@ -1,5 +1,5 @@
 import Empty from '@/app/layouts/Empty.layout.vue';
-import Mobile from '@/app/layouts/Mobile.layout.vue';
+import Responsive from '@/app/layouts/Responsive.layout.vue';
 import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import dashboardRoutes from '@features/dashboard/routes';
 import userRoutes, { publicRoutes as userPublicRoutes } from '@features/user/routes';
@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
     { path: '', redirect: { name: activitiesRoutesNames.library } },
     {
         path: '',
-        component: Mobile,
+        component: Responsive,
         children: [
 
             ...dashboardRoutes,

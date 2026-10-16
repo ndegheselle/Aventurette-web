@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
-import BottomSheet from '@chapelure/ui/modals/BottomSheet.vue';
+import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
 import { EnumTheme, useSettings } from '@chapelure/ui/settings/useSettings';
 import { computed } from 'vue';
@@ -45,7 +45,7 @@ useNavbar(t('user.settings.title'));
 <template>
     <Container class="p-2">
         <h1 class="font-title text-2xl md:text-3xl lg:text-4xl font-bold mb-2">{{ t('user.settings.title') }}</h1>
-        <ul class="menu w-full border border-base-300 bg-base-100 rounded-box p-3 shadow">
+        <ul class="menu w-full border border-base-300 bg-base-200 rounded-box p-3 shadow">
             <li class="menu-title">{{ t('user.settings.preferences') }}</li>
             <li>
                 <a @click="() => themeSheet.show()">
@@ -65,7 +65,7 @@ useNavbar(t('user.settings.title'));
                 </a>
             </li>
         </ul>
-        <ul class="menu w-full border border-base-300 bg-base-100 rounded-box p-3 shadow mt-2">
+        <ul class="menu w-full border border-base-300 bg-base-200 rounded-box p-3 shadow mt-2">
             <li class="menu-title">{{ t('user.settings.account') }}</li>
             <li class="menu-disabled">
                 <a>
@@ -90,7 +90,7 @@ useNavbar(t('user.settings.title'));
             </li>
         </ul>
 
-        <BottomSheet :controller="themeSheet">
+        <ResponsiveModal :controller="themeSheet">
             <template #title>{{ t('user.settings.theme') }}</template>
             <ul class="menu w-full">
                 <li v-for="theme in themes" :key="theme.value">
@@ -113,9 +113,9 @@ useNavbar(t('user.settings.title'));
                     </a>
                 </li>
             </ul>
-        </BottomSheet>
+        </ResponsiveModal>
 
-        <BottomSheet :controller="languageSheet">
+        <ResponsiveModal :controller="languageSheet">
             <template #title>{{ t('user.settings.language') }}</template>
             <ul class="menu w-full">
                 <li v-for="language in languages" :key="language.code">
@@ -123,6 +123,6 @@ useNavbar(t('user.settings.title'));
                         @click="() => pickLanguage(language.code)">{{ language.label }}</a>
                 </li>
             </ul>
-        </BottomSheet>
+        </ResponsiveModal>
     </Container>
 </template>
