@@ -1,19 +1,23 @@
 <!-- A card in a list. The whole card opens the activity; its buttons sit above the link. -->
 <script setup lang="ts">
-import type { ActivityData } from '@features/activities/models/activity';
+import { timingOf, type ActivityData } from '@features/activities/models/activity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { HeartIcon } from 'lucide-vue-next';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
     activity: ActivityData;
 }>();
+
+const timing = computed(() => timingOf(props.activity));
 </script>
 
 <template>
     <div class="card bg-base-100 shadow-sm h-64 relative">
         <figure class="px-4 pt-4">
-            <img src="https://placeholder.pagebee.io/api/plain/256/256" alt=""
-                class="size-full object-cover rounded-box" />
+            <img src="https://placeholder.pagebee.io/api/plain/256/256"
+                 alt=""
+                 class="size-full object-cover rounded-box" />
         </figure>
         <div class="card-body items-center text-center p-2">
             <h2 class="card-title">
@@ -22,8 +26,10 @@ defineProps<{
                     {{ activity.name }}
                 </RouterLink>
             </h2>
-            <div class="card-actions relative">
-                <button class="btn btn-ghost btn-circle" :aria-label="$t('activities.card.more')" disabled>
+            <div class="card-actions relative justify-between">
+                <span class="badge my-auto">{{ $t('activities.minutes', { minutes: timing.total }) }}</span>
+                <button class="btn btn-ghost btn-circle"
+                        :aria-label="$t('activities.card.more')">
                     <HeartIcon />
                 </button>
             </div>

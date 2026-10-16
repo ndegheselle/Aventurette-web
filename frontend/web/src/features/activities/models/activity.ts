@@ -204,12 +204,14 @@ export function resourcesOf(activity: ActivityData | null | undefined): Activity
     return distinctById((activity?.steps ?? []).flatMap(step => step.resources ?? []));
 }
 
-/** The two durations the sheet shows, in minutes. */
+/** The durations the sheet shows, in minutes. */
 export interface ActivityTiming {
     /** Before the children arrive: the steps preparing the game. */
     preparation: number;
     /** Every other step, from gathering the children to the conclusion. */
     play: number;
+    /** How long the activity takes from start to finish, preparation included. */
+    total: number;
 }
 
 /**
@@ -217,7 +219,7 @@ export interface ActivityTiming {
  * app generates, not one the author writes, so it adds nothing.
  */
 export function timingOf(activity: Pick<ActivityData, 'steps'> | null | undefined): ActivityTiming {
-    const timing: ActivityTiming = { preparation: 0, play: 0 };
+    const timing: ActivityTiming = { preparation: 0, play: 0, total: 0 };
 
     for (const step of activity?.steps ?? []) {
         const minutes = step.duration || 0;
@@ -225,11 +227,7 @@ export function timingOf(activity: Pick<ActivityData, 'steps'> | null | undefine
         else timing.play += minutes;
     }
 
-    return timing;
-}
+    timing.total = timing.preparation + timing.play;
 
-/** How long the activity takes from start to finish, preparation included, in minutes. */
-export function totalMinutesOf(activity: Pick<ActivityData, 'steps'> | null | undefined): number {
-    const { preparation, play } = timingOf(activity);
-    return preparation + play;
+    return timing;
 }

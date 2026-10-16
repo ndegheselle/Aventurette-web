@@ -242,12 +242,12 @@ describe('timingOf', () => {
             ],
         });
 
-        expect(timingOf(activity)).toEqual({ preparation: 10, play: 30 });
+        expect(timingOf(activity)).toEqual({ preparation: 10, play: 30, total: 40 });
     });
 
     it('counts a step with no duration as nothing', () => {
-        expect(timingOf(anActivity({ steps: [aStep({ duration: 0 })] }))).toEqual({ preparation: 0, play: 0 });
-        expect(timingOf(null)).toEqual({ preparation: 0, play: 0 });
+        expect(timingOf(anActivity({ steps: [aStep({ duration: 0 })] }))).toEqual({ preparation: 0, play: 0, total: 0 });
+        expect(timingOf(null)).toEqual({ preparation: 0, play: 0, total: 0 });
     });
 });
 
