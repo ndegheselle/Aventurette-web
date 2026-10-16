@@ -5,11 +5,15 @@ import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useActivity } from '@features/activities/composables/useActivity';
 import { stepNumber } from '@features/activities/models/step';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { ArrowLeftIcon, CakeIcon, ClockIcon, HourglassIcon, HeartIcon, MapPinIcon, PackageOpenIcon, ShieldAlertIcon, UsersIcon, PresentationIcon, PlayIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, CakeIcon, CheckIcon, ChevronDownIcon, ChevronUpIcon, ClockIcon, EyeIcon, GaugeIcon, HandIcon, HourglassIcon, HeartIcon, LeafIcon, MapIcon, MapPinIcon, PackageOpenIcon, PaletteIcon, ShapesIcon, ShieldAlertIcon, SparklesIcon, StarIcon, TagIcon, TargetIcon, TimerIcon, UserCheckIcon, UsersIcon, PresentationIcon, PlayIcon } from 'lucide-vue-next';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const { activity, timing, ageLabel, participantsLabel } = useActivity();
+
+// The attributes list shows the essentials; the rest is behind "more".
+const showMore = ref(false);
 
 // Opened from a link straight to the page, there is no previous page: fall back to the library.
 function back() {
@@ -73,6 +77,122 @@ function back() {
                             <ClockIcon class="size-4" /> {{ $t('activities.fields.playTime') }}
                         </dt>
                         <dd>{{ $t('activities.minutes', { minutes: timing.play }) }}</dd>
+                    </li>
+
+                    <template v-if="showMore">
+                        <li class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <TimerIcon class="size-4" /> {{ $t('activities.fields.totalTime') }}
+                            </dt>
+                            <dd>{{ $t('activities.minutes', { minutes: timing.total }) }}</dd>
+                        </li>
+                        <li v-if="activity.classification.format" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <ShapesIcon class="size-4" /> {{ $t('activities.fields.format') }}
+                            </dt>
+                            <dd>{{ $t(`activities.format.${activity.classification.format}`) }}</dd>
+                        </li>
+                        <li v-if="activity.classification.practices.length" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <PaletteIcon class="size-4" /> {{ $t('activities.fields.practices') }}
+                            </dt>
+                            <dd class="flex flex-wrap justify-end gap-1">
+                                <span v-for="practice in activity.classification.practices" :key="practice" class="badge">
+                                    {{ $t(`activities.practice.${practice}`) }}
+                                </span>
+                            </dd>
+                        </li>
+                        <li v-if="activity.classification.themes.length" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <TagIcon class="size-4" /> {{ $t('activities.tagType.THEME') }}
+                            </dt>
+                            <dd class="flex flex-wrap justify-end gap-1">
+                                <span v-for="tag in activity.classification.themes" :key="tag.id" class="badge">{{ tag.name }}</span>
+                            </dd>
+                        </li>
+                        <li v-if="activity.imaginary.rule" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <SparklesIcon class="size-4" /> {{ $t('activities.fields.imaginaryRule') }}
+                            </dt>
+                            <dd>{{ $t(`activities.imaginaryRule.${activity.imaginary.rule}`) }}</dd>
+                        </li>
+                        <li v-if="activity.imaginary.universes.length" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <SparklesIcon class="size-4" /> {{ $t('activities.tagType.IMAGINARY') }}
+                            </dt>
+                            <dd class="flex flex-wrap justify-end gap-1">
+                                <span v-for="tag in activity.imaginary.universes" :key="tag.id" class="badge">{{ tag.name }}</span>
+                            </dd>
+                        </li>
+                        <li v-if="activity.audience.childrenPace" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <GaugeIcon class="size-4" /> {{ $t('activities.fields.childrenPace') }}
+                            </dt>
+                            <dd>{{ $t(`activities.childrenPace.${activity.audience.childrenPace}`) }}</dd>
+                        </li>
+                        <li v-if="activity.supervision.hostEffort" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <HandIcon class="size-4" /> {{ $t('activities.fields.hostEffort') }}
+                            </dt>
+                            <dd>{{ $t(`activities.hostEffort.${activity.supervision.hostEffort}`) }}</dd>
+                        </li>
+                        <li v-if="activity.supervision.hostsRequired" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <UserCheckIcon class="size-4" /> {{ $t('activities.fields.hosts') }}
+                            </dt>
+                            <dd>{{ activity.supervision.hostsRequired }}</dd>
+                        </li>
+                        <li v-if="activity.supervision.crossSupervision" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <EyeIcon class="size-4" /> {{ $t('activities.fields.crossSupervision') }}
+                            </dt>
+                            <dd><CheckIcon class="size-4" /></dd>
+                        </li>
+                        <li v-if="activity.place.locations.length" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <MapIcon class="size-4" /> {{ $t('activities.fields.locations') }}
+                            </dt>
+                            <dd class="flex flex-wrap justify-end gap-1">
+                                <span v-for="location in activity.place.locations" :key="location" class="badge">
+                                    {{ $t(`activities.location.${location}`) }}
+                                </span>
+                            </dd>
+                        </li>
+                        <li v-if="activity.place.seasons.length" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <LeafIcon class="size-4" /> {{ $t('activities.fields.seasons') }}
+                            </dt>
+                            <dd class="flex flex-wrap justify-end gap-1">
+                                <span v-for="season in activity.place.seasons" :key="season" class="badge">
+                                    {{ $t(`activities.season.${season}`) }}
+                                </span>
+                            </dd>
+                        </li>
+                        <li v-if="activity.pedagogy.goals.length" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <TargetIcon class="size-4" /> {{ $t('activities.tagType.GOAL') }}
+                            </dt>
+                            <dd class="flex flex-wrap justify-end gap-1">
+                                <span v-for="tag in activity.pedagogy.goals" :key="tag.id" class="badge">{{ tag.name }}</span>
+                            </dd>
+                        </li>
+                        <li v-if="activity.pedagogy.idealFor.length" class="list-row flex justify-between">
+                            <dt class="text-sm opacity-60 flex items-center gap-1">
+                                <StarIcon class="size-4" /> {{ $t('activities.tagType.IDEAL_FOR') }}
+                            </dt>
+                            <dd class="flex flex-wrap justify-end gap-1">
+                                <span v-for="tag in activity.pedagogy.idealFor" :key="tag.id" class="badge">{{ tag.name }}</span>
+                            </dd>
+                        </li>
+                    </template>
+
+                    <li class="flex justify-center">
+                        <button type="button" class="btn btn-ghost btn-sm" :aria-expanded="showMore"
+                                @click="showMore = !showMore">
+                            {{ showMore ? $t('activities.details.less') : $t('activities.details.more') }}
+                            <ChevronUpIcon v-if="showMore" class="size-4" />
+                            <ChevronDownIcon v-else class="size-4" />
+                        </button>
                     </li>
                 </ul>
 

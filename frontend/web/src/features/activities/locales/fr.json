@@ -171,6 +171,10 @@
         "card": {
             "more": "Plus d'options"
         },
+        "details": {
+            "more": "Voir plus",
+            "less": "Voir moins"
+        },
         "library": {
             "tabs": {
                 "catalogue": "Catalogue",
