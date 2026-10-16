@@ -24,7 +24,7 @@ export type ProfileForm = {
     name: string;
 };
 
-export function toProfileForm(user: UserData | null): ProfileForm {
+export function toProfileForm(user: Pick<UserData, 'name'> | null): ProfileForm {
     return { name: user?.name ?? '' };
 }
 
