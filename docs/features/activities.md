@@ -16,7 +16,7 @@ dependency runs one way: nothing here imports `activities-authoring`.
 |---|---|---|
 | `activities` | `/activities` | The list |
 | `activities.page` | `/activities/:id` | One activity in full |
-| `activities.play` | `/activities/:id/play` | Running the activity, one step at a time |
+| `activities.play` | `/activities/:id/play/:step?` | Running the activity, one step to a page |
 
 `/` redirects to `activities`.
 
@@ -25,8 +25,10 @@ One composable to a screen: `useActivitiesList` holds the results and the search
 
 ## Running an activity
 
-The detail screen's *Start* opens the run: the steps one at a time, a progress bar, the step
-list to jump around in, and the actions to tick as they are done. A step shows its description,
+The detail screen's *Start* opens the run: one page to a step, a progress bar, and the actions
+to tick as they are done. The step is the route's 1-based `step` param — none is the first, and
+one past either end is the nearest (`playStepIndexOf`) — so the browser's back goes to the step
+before. A step shows its description,
 its actions, and the materials and resources it uses.
 
 `playStepsOf` in `models/play.ts` turns the activity into the run's steps, as `PlayStep` — one
@@ -38,7 +40,8 @@ two steps that are never stored:
 - **Gathering the children** comes once the game is ready: before the first step that is not
   preparing it. An activity whose every step prepares it has none.
 
-A run lives in memory: ticks and position are lost on leaving the screen or reloading it.
+A run's ticks live in memory: they are lost on leaving the run or reloading it. Its position is in
+the URL.
 
 ## Data
 

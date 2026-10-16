@@ -43,7 +43,7 @@ function back() {
             </div>
 
             <div class="mx-2 flex flex-col gap-2">
-                <ul class="list bg-base-100 rounded-box border border-base-content/5">
+                <ul class="list bg-base-200 rounded-box border border-base-content/5">
                     <li v-if="activity.place.indoor || activity.place.outdoor" class="list-row flex justify-between">
                         <dt class="text-sm opacity-60 flex items-center gap-1">
                             <MapPinIcon class="size-4" /> {{ $t('activities.families.place') }}
@@ -249,9 +249,10 @@ function back() {
             </div>
 
             <div class="sticky bottom-14 flex gap-4 justify-center p-2">
-                <button type="button" class="btn btn-soft btn-square btn-lg">
+                <RouterLink class="btn btn-soft btn-square btn-lg" :aria-label="$t('activities.actions.start')"
+                            :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
                     <PlayIcon />
-                </button>
+                </RouterLink>
                 <button type="button" class="btn btn-soft btn-square btn-lg" disabled>
                     <PresentationIcon />
                 </button>
