@@ -77,6 +77,17 @@ copy of the user, and this is what keeps the navbar's copy current.
 The backend's `users` update rule (`id = @request.auth.id`, and no `role` in the body) is what
 keeps a user to their own record; nothing here checks it.
 
+## Favorites and history
+
+Stored in the backend, not read by the app yet.
+
+- `users.favorites` is a list of activities. It sits on the user record, so the `users` rules
+  already keep it to its owner. Deleting an activity removes it from every list.
+- `user_activity_history` holds one record per user and activity (a unique index on both):
+  revisiting updates the record, and `updated` is when the activity was last opened. Every rule
+  is `user = @request.auth.id`, and an update cannot move a record to another user or activity.
+  Deleting either side deletes the record.
+
 ## Errors
 
 Nothing in this feature validates credentials. The backend does, and answers with per-field
@@ -116,6 +127,8 @@ One rule, in one place.
 
 ## Not finished
 
+- **Favorites and history have no screen.** The backend stores them; nothing in the app
+  reads or writes them yet.
 - **Both forms are pre-filled with a development account** (`test@example.com` / `1234567890`),
   in `useLoginForm` and `useRegisterForm`. This has to go before real users see it.
 - **"Stay logged in" is not wired to anything.** The checkbox binds to `rememberMe`, which is

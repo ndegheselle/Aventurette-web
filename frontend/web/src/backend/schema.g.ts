@@ -20,6 +20,7 @@ export const Collections = {
 	CatalogTags: "catalog_tags",
 	CatalogTips: "catalog_tips",
 	StepsResources: "steps_resources",
+	UserActivityHistory: "user_activity_history",
 	Users: "users",
 } as const
 export type Collections = typeof Collections[keyof typeof Collections]
@@ -316,6 +317,14 @@ export type StepsResourcesRecord = {
 	updated: IsoAutoDateString
 }
 
+export type UserActivityHistoryRecord = {
+	activity: RecordIdString
+	created: IsoAutoDateString
+	id: string
+	updated: IsoAutoDateString
+	user: RecordIdString
+}
+
 export const UsersTypeOptions = {
 	"PERSONNAL": "PERSONNAL",
 	"ASSOCIATION": "ASSOCIATION",
@@ -333,6 +342,7 @@ export type UsersRecord = {
 	created: IsoAutoDateString
 	email: string
 	emailVisibility?: boolean
+	favorites?: RecordIdString[]
 	id: string
 	name?: string
 	password: string
@@ -358,6 +368,7 @@ export type CatalogSafetyInstructionsResponse<Texpand = unknown> = Required<Cata
 export type CatalogTagsResponse<Texpand = unknown> = Required<CatalogTagsRecord> & BaseSystemFields<Texpand>
 export type CatalogTipsResponse<Texpand = unknown> = Required<CatalogTipsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
+export type UserActivityHistoryResponse<Texpand = unknown> = Required<UserActivityHistoryRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -377,6 +388,7 @@ export type CollectionRecords = {
 	catalog_tags: CatalogTagsRecord
 	catalog_tips: CatalogTipsRecord
 	steps_resources: StepsResourcesRecord
+	user_activity_history: UserActivityHistoryRecord
 	users: UsersRecord
 }
 
@@ -395,6 +407,7 @@ export type CollectionResponses = {
 	catalog_tags: CatalogTagsResponse
 	catalog_tips: CatalogTipsResponse
 	steps_resources: StepsResourcesResponse
+	user_activity_history: UserActivityHistoryResponse
 	users: UsersResponse
 }
 
