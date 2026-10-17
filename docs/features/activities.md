@@ -32,14 +32,8 @@ history entry, so the whole run is one entry and leaving it pops that entry rath
 the detail screen on top. A step shows its description,
 its actions, and the materials and resources it uses.
 
-`playStepsOf` in `models/play.ts` turns the activity into the run's steps, as `PlayStep` — one
-shape for a step the author wrote and one the app generates. The template has the app produce
-two steps that are never stored:
-
-- **Gathering the material** comes first, before anything is set up, with each material and its
-  quantity as an action to tick. An activity needing no material has none.
-- **Gathering the children** comes once the game is ready: before the first step that is not
-  preparing it. An activity whose every step prepares it has none.
+The run plays the steps the author wrote, in their order, and nothing else: the app adds no
+step of its own.
 
 A run's ticks live in memory: they are lost on leaving the run or reloading it. Its position is in
 the URL.
@@ -243,9 +237,8 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
   are ready for increment 1's filters, but a filter key is a column name, not a family path.
 - **The number of leaders needed is typed in.** The template computes it from age, group size
   and the supervision referential, which does not exist yet.
-- **The safety checklist is not generated.** The run produces gathering the material and the
-  children, but not the template's safety checklist. Nothing in the data stands for any of the
-  generated steps, on purpose.
+- **The run adds no step.** The template's gathering of the material and of the children, and
+  its safety checklist, are left to the author to write as steps.
 - **A run is not kept.** Reloading the run screen starts it over, and nothing records that an
   activity was run.
 - **Resources still hang off the steps.** The template has one list for the activity, recalled

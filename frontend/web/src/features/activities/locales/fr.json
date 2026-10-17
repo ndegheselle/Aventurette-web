@@ -19,9 +19,7 @@
             "kind": {
                 "PREPARE": "Préparer le jeu",
                 "CUSTOM": "Étape libre",
-                "CONCLUSION": "Conclusion",
-                "GATHER_MATERIAL": "Rassembler le matériel",
-                "GATHER_CHILDREN": "Regrouper les enfants"
+                "CONCLUSION": "Conclusion"
             },
             "fields": {
                 "title": "Titre",
@@ -162,11 +160,7 @@
             "previous": "Précédente",
             "next": "Suivante",
             "finish": "Terminer",
-            "empty": "Cette activité n'a pas encore d'étape.",
-            "generated": {
-                "GATHER_MATERIAL": "Réunissez tout ce dont l'activité a besoin avant de l'installer. Cochez chaque élément une fois rassemblé.",
-                "GATHER_CHILDREN": "Le jeu est prêt : regroupez les enfants avant de leur présenter l'activité."
-            }
+            "empty": "Cette activité n'a pas encore d'étape."
         },
         "card": {
             "more": "Plus d'options"

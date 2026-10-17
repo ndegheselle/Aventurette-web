@@ -2,9 +2,8 @@
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useActivityPlay } from '@features/activities/composables/useActivityPlay';
-import { isGenerated } from '@features/activities/models/play';
 import StepTips from '@features/activities/ui/activity/_parts/tips.vue';
-import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FileTextIcon, FlagIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FileTextIcon, FlagIcon } from 'lucide-vue-next';
 import { watch } from 'vue';
 
 const { activity, steps, index, current, isFirst, isLast, previous, next, leave, isTicked, toggle, headingOf } = useActivityPlay();
@@ -41,7 +40,6 @@ watch(index, () => window.scrollTo({ top: 0 }));
 
                     <div class="text-center my-auto flex flex-col gap-2">
                         <h2 class="text-2xl opacity-30">{{ headingOf(current) }}</h2>
-                        <p v-if="isGenerated(current)" class="text-4xl">{{ $t(`activities.play.generated.${current.kind}`) }}</p>
                         <div v-if="current.description" v-html="current.description" class="text-4xl"></div>
 
                         <ul v-if="current.actions.length" class="flex flex-col mx-auto">
@@ -77,7 +75,7 @@ watch(index, () => window.scrollTo({ top: 0 }));
                         :aria-label="$t('activities.play.previous')" :disabled="isFirst" @click="previous">
                         <ChevronLeftIcon />
                     </button>
-                    <StepTips :key="current.key" :tips="current.tips" />
+                    <StepTips :key="current.id" :tips="current.tips" />
                     <button v-if="!isLast" type="button" class="btn btn-primary btn-square btn-lg"
                         :aria-label="$t('activities.play.next')" @click="next">
                         <ChevronRightIcon />

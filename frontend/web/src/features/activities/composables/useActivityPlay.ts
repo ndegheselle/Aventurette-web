@@ -1,5 +1,6 @@
 import { useActivity } from '@features/activities/composables/useActivity';
-import { actionKey, playStepIndexOf, playStepsOf, type PlayStep } from '@features/activities/models/play';
+import { actionKey, playStepIndexOf } from '@features/activities/models/play';
+import type { ActivityStepData } from '@features/activities/models/step';
 import { routesNames } from '@features/activities/routes';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -17,7 +18,7 @@ export function useActivityPlay() {
     const route = useRoute();
     const router = useRouter();
 
-    const steps = computed(() => playStepsOf(activity.value));
+    const steps = computed<ActivityStepData[]>(() => activity.value?.steps ?? []);
     const index = computed(() => playStepIndexOf(route.params.step, steps.value.length));
     const ticked = ref(new Set<string>());
 
@@ -42,12 +43,12 @@ export function useActivityPlay() {
         else router.replace(target);
     }
 
-    /** What a step reads as: its own title, or else its kind's name, as a generated step has no title. */
-    function headingOf(step: PlayStep): string {
+    /** What a step reads as: its own title, or else its kind's name. */
+    function headingOf(step: ActivityStepData): string {
         return step.title || t(`activities.steps.kind.${step.kind}`);
     }
 
-    function toggle(step: PlayStep, actionIndex: number) {
+    function toggle(step: ActivityStepData, actionIndex: number) {
         const key = actionKey(step, actionIndex);
         if (ticked.value.has(key)) ticked.value.delete(key);
         else ticked.value.add(key);
@@ -57,14 +58,14 @@ export function useActivityPlay() {
         activity,
         steps,
         index,
-        current: computed<PlayStep | undefined>(() => steps.value[index.value]),
+        current: computed<ActivityStepData | undefined>(() => steps.value[index.value]),
         isFirst: computed(() => index.value === 0),
         isLast: computed(() => index.value >= steps.value.length - 1),
         goTo,
         previous: () => goTo(index.value - 1),
         next: () => goTo(index.value + 1),
         leave,
-        isTicked: (step: PlayStep, actionIndex: number) => ticked.value.has(actionKey(step, actionIndex)),
+        isTicked: (step: ActivityStepData, actionIndex: number) => ticked.value.has(actionKey(step, actionIndex)),
         toggle,
         headingOf,
     };
