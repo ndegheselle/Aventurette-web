@@ -8,9 +8,11 @@ import { routesNames as activitiesRoutesNames } from '@features/activities/route
 import { ArrowLeftIcon, CakeIcon, CheckIcon, ChevronDownIcon, ChevronUpIcon, ClockIcon, EyeIcon, GaugeIcon, HandIcon, HourglassIcon, HeartIcon, LeafIcon, MapIcon, MapPinIcon, PackageOpenIcon, PaletteIcon, ShapesIcon, ShieldAlertIcon, SparklesIcon, StarIcon, TagIcon, TargetIcon, TimerIcon, UserCheckIcon, UsersIcon, PresentationIcon, PlayIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useIsMobile } from '@chapelure/ui/layout/useIsMobile';
 
 const router = useRouter();
 const { activity, timing, ageLabel, participantsLabel } = useActivity();
+const { isMobile } = useIsMobile();
 
 // The attributes list shows the essentials; the rest is behind "more".
 const showMore = ref(false);
@@ -24,7 +26,6 @@ function back() {
 
 <template>
     <Container>
-
         <button type="button" class="btn btn-soft btn-square btn-lg fixed m-4" :aria-label="$t('back')" @click="back">
             <ArrowLeftIcon />
         </button>
@@ -186,8 +187,8 @@ function back() {
                         </li>
                     </template>
 
-                    <li class="flex justify-center">
-                        <button type="button" class="btn btn-ghost btn-sm" :aria-expanded="showMore"
+                    <li class="flex justify-center p-1">
+                        <button type="button" class="btn btn-ghost btn-xs" :aria-expanded="showMore"
                                 @click="showMore = !showMore">
                             {{ showMore ? $t('activities.details.less') : $t('activities.details.more') }}
                             <ChevronUpIcon v-if="showMore" class="size-4" />
@@ -248,7 +249,7 @@ function back() {
                 </List>
             </div>
 
-            <div class="sticky bottom-14 flex gap-4 justify-center p-2">
+            <div class="sticky flex gap-4 justify-center p-2" :class="isMobile ? 'bottom-14' : 'bottom-0'">
                 <RouterLink class="btn btn-soft btn-square btn-lg" :aria-label="$t('activities.actions.start')"
                             :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
                     <PlayIcon />

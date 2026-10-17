@@ -10,7 +10,7 @@ import { routesNames as usersRoutesNames } from '@features/user/routes';
 <template>
     <div class="flex flex-col min-h-dvh">
         <!-- The dock is fixed: leave it room so the last content is not hidden behind it. -->
-        <main class="flex flex-1 overflow-x-clip relative pb-16">
+        <main class="flex flex-1 overflow-x-clip relative pb-14">
             <RouterView />
         </main>
 

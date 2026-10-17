@@ -100,7 +100,7 @@ watch(index, () => window.scrollTo({ top: 0 }));
                     </div>
                 </Panel>
 
-                <div class="sticky bottom-14 flex gap-4 justify-center p-2 mt-auto">
+                <div class="flex gap-4 justify-center p-2">
                     <button type="button" class="btn btn-soft btn-square btn-lg"
                         :aria-label="$t('activities.play.previous')" :disabled="isFirst" @click="previous">
                         <ChevronLeftIcon />

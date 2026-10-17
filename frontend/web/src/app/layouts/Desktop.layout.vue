@@ -4,7 +4,6 @@ import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as usersRoutesNames } from '@features/user/routes';
-import AuthMenu from '@features/user/ui/AuthMenu.vue';
 import { LibraryIcon, LightbulbIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, SearchIcon, UserIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
@@ -26,7 +25,13 @@ const { title } = useNavbar();
                 <span v-if="title" class="ms-2 text-lg truncate">{{ title }}</span>
 
                 <div class="ms-auto flex gap-1">
-                    <AuthMenu />
+                    <RouterLink class="btn btn-circle btn-ghost" :to="{ name: usersRoutesNames.settings }">
+                        <div class="avatar">
+                            <div class="rounded-full">
+                                <img alt="" src="https://placeholder.pagebee.io/api/plain/32/32" />
+                            </div>
+                        </div>
+                    </RouterLink>
                 </div>
             </nav>
 
@@ -39,7 +44,8 @@ const { title } = useNavbar();
             <label for="side-menu-drawer" :aria-label="$t('sidebar.close')" class="drawer-overlay"></label>
             <div class="min-h-full flex flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
                 <RouterLink :to="{ name: activitiesRoutesNames.library }" class="flex my-2 mx-3">
-                    <img class="my-auto" src="https://placeholder.pagebee.io/api/plain/32/32" alt="" style="height: 32px;" />
+                    <img class="my-auto" src="https://placeholder.pagebee.io/api/plain/32/32" alt=""
+                        style="height: 32px;" />
                     <span class="my-auto ms-2 is-drawer-close:hidden">Aventurette</span>
                 </RouterLink>
                 <ul class="menu w-full">
@@ -59,21 +65,12 @@ const { title } = useNavbar();
                             <span class="is-drawer-close:hidden">{{ $t('dock.search') }}</span>
                         </RouterLink>
                     </li>
-                    <!-- XXX : no tips page for the public yet. -->
                     <li class="menu-disabled">
                         <span class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
                             :data-tip="$t('dock.tips')">
                             <LightbulbIcon />
                             <span class="is-drawer-close:hidden">{{ $t('dock.tips') }}</span>
                         </span>
-                    </li>
-                    <li>
-                        <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                            :to="{ name: usersRoutesNames.settings }" active-class="menu-active"
-                            :data-tip="$t('dock.profil')">
-                            <UserIcon />
-                            <span class="is-drawer-close:hidden">{{ $t('dock.profil') }}</span>
-                        </RouterLink>
                     </li>
                 </ul>
             </div>

@@ -38,7 +38,7 @@ const { items, loading, done, loadMore } = useLibraryFeed();
                         :done="done"
                         @load="loadMore">
                 <div 
-                     class="grid grid-cols-2 gap-2 mx-2">
+                     class="grid grid-cols-2 gap-2 mx-2 mb-2">
                      <ActivityCard v-for="activity in items"
                                    :key="activity.id"
                                    :activity="activity" />
