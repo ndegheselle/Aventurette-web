@@ -1,5 +1,5 @@
-<!-- The activity page on a phone: one column, the back button floating top-left, the actions
-     sticking above the dock. -->
+<!-- The activity page on a phone: one column, the back button floating top-left and the
+     safety one top-right, the actions sticking above the dock. -->
 <script setup lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 </script>
@@ -8,6 +8,9 @@ import Container from '@chapelure/ui/layout/Container.vue';
     <Container>
         <div class="fixed z-10 m-4">
             <slot name="back"></slot>
+        </div>
+        <div class="fixed right-0 z-10 m-4">
+            <slot name="safety"></slot>
         </div>
 
         <slot name="image"></slot>

@@ -3,7 +3,8 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useActivityPlay } from '@features/activities/composables/useActivityPlay';
 import { isGenerated } from '@features/activities/models/play';
-import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FileTextIcon, FlagIcon, InfoIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
+import StepTips from '@features/activities/ui/activity/_parts/tips.vue';
+import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FileTextIcon, FlagIcon, ListChecksIcon, PackageOpenIcon } from 'lucide-vue-next';
 import { watch } from 'vue';
 
 const { activity, steps, index, current, isFirst, isLast, previous, next, leave, isTicked, toggle, headingOf } = useActivityPlay();
@@ -62,19 +63,6 @@ watch(index, () => window.scrollTo({ top: 0 }));
                         </ul>
                     </div>
 
-                    <div v-if="current.tips.length" class="flex flex-col gap-2">
-                        <h3 class="text-sm opacity-60 flex items-center gap-1">
-                            <InfoIcon class="size-4" /> {{ $t('activities.tips.title') }}
-                        </h3>
-                        <div v-for="tip in current.tips" :key="tip.id" role="alert"
-                            class="alert alert-info alert-soft items-start">
-                            <div>
-                                <b>{{ tip.name }}</b>
-                                <div v-html="tip.description"></div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div v-if="current.materials.length">
                         <h3 class="text-sm opacity-60 flex items-center gap-1">
                             <PackageOpenIcon class="size-4" /> {{ $t('activities.steps.fields.materials.title') }}
@@ -105,6 +93,7 @@ watch(index, () => window.scrollTo({ top: 0 }));
                         :aria-label="$t('activities.play.previous')" :disabled="isFirst" @click="previous">
                         <ChevronLeftIcon />
                     </button>
+                    <StepTips :key="current.key" :tips="current.tips" />
                     <button v-if="!isLast" type="button" class="btn btn-primary btn-square btn-lg"
                         :aria-label="$t('activities.play.next')" @click="next">
                         <ChevronRightIcon />

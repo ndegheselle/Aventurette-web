@@ -6,6 +6,7 @@ import ActivityActions from '@features/activities/ui/activity/_parts/actions.vue
 import ActivityAttributes from '@features/activities/ui/activity/_parts/attributes.vue';
 import DesktopLayout from '@features/activities/ui/activity/desktop.layout.vue';
 import ActivityDetails from '@features/activities/ui/activity/_parts/details.vue';
+import ActivitySafety from '@features/activities/ui/activity/_parts/safety.vue';
 import MobileLayout from '@features/activities/ui/activity/mobile.layout.vue';
 import { ArrowLeftIcon } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
@@ -28,6 +29,10 @@ function back() {
             <button type="button" class="btn btn-soft btn-square btn-lg" :aria-label="$t('back')" @click="back">
                 <ArrowLeftIcon />
             </button>
+        </template>
+
+        <template #safety>
+            <ActivitySafety :activity="activity" />
         </template>
 
         <template #actions>

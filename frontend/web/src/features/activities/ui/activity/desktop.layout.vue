@@ -1,6 +1,6 @@
-<!-- The activity page on a desktop: a sticky top bar with the back button and the actions, then
-     the image and attributes in a sticky column beside the rest. Stacked below `lg`, where the two
-     columns do not fit beside the sidebar. -->
+<!-- The activity page on a desktop: a sticky top bar with the back button, the actions and the
+     safety button, then the image and attributes in a sticky column beside the rest. Stacked below
+     `lg`, where the two columns do not fit beside the sidebar. -->
 <script setup lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 </script>
@@ -9,7 +9,10 @@ import Container from '@chapelure/ui/layout/Container.vue';
     <Container>
         <div class="sticky top-0 z-10 flex items-center justify-between p-4 bg-base-100">
             <slot name="back"></slot>
-            <slot name="actions"></slot>
+            <div class="flex items-center gap-2">
+                <slot name="actions"></slot>
+                <slot name="safety"></slot>
+            </div>
         </div>
 
         <div class="flex flex-col gap-6 px-4 pb-4 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
