@@ -379,7 +379,7 @@
     "step": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "title", "duration", "description", "actions", "materials", "tips"],
+      "required": ["kind", "title", "duration", "description", "materials", "tips"],
       "properties": {
         "kind": {
           "$ref": "#/$defs/stepKind",
@@ -396,12 +396,7 @@
         },
         "description": {
           "$ref": "#/$defs/html",
-          "description": "Free text under the title, such as « Ce que l'animateur installe… ». HTML."
-        },
-        "actions": {
-          "type": "array",
-          "description": "The actions table, column « Action à cocher », in order, without the 1.1 numbering. One short, concrete action per entry; the app renders each as a checkbox.",
-          "items": { "type": "string", "pattern": "\\S" }
+          "description": "Free text under the title, such as « Ce que l'animateur installe… », then the actions table, column « Action à cocher », as an <ol> in order, without the 1.1 numbering. HTML."
         },
         "materials": {
           "$ref": "#/$defs/names",

@@ -26,10 +26,6 @@
                 "kind": "Kind of step",
                 "duration": "Estimated duration",
                 "description": "Description",
-                "actions": {
-                    "title": "Actions to tick",
-                    "count": "{count} actions"
-                },
                 "resources": {
                     "title": "Resources",
                     "count": "{count} resource(s)",

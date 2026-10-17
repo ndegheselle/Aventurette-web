@@ -6,7 +6,7 @@ import StepTips from '@features/activities/ui/activity/_parts/tips.vue';
 import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FileTextIcon, FlagIcon } from 'lucide-vue-next';
 import { watch } from 'vue';
 
-const { activity, steps, index, current, isFirst, isLast, previous, next, leave, isTicked, toggle, headingOf } = useActivityPlay();
+const { activity, steps, index, current, isFirst, isLast, previous, next, leave, headingOf } = useActivityPlay();
 
 // Each step is a page of its own: open it at its top.
 watch(index, () => window.scrollTo({ top: 0 }));
@@ -41,18 +41,6 @@ watch(index, () => window.scrollTo({ top: 0 }));
                     <div class="text-center my-auto flex flex-col gap-2">
                         <h2 class="text-2xl opacity-30">{{ headingOf(current) }}</h2>
                         <div v-if="current.description" v-html="current.description" class="text-4xl"></div>
-
-                        <ul v-if="current.actions.length" class="flex flex-col mx-auto">
-                            <li v-for="(action, actionIndex) in current.actions" :key="actionIndex">
-                                <label class="flex items-center gap-2 py-1 cursor-pointer">
-                                    <input type="checkbox" class="checkbox" :checked="isTicked(current, actionIndex)"
-                                        @change="toggle(current, actionIndex)" />
-                                    <span :class="{ 'line-through opacity-50': isTicked(current, actionIndex) }">{{
-                                        action }}</span>
-                                </label>
-                            </li>
-                        </ul>
-
                     </div>
 
                     <div v-if="current.materials.length" class="flex flex-wrap gap-1">

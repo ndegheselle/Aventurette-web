@@ -232,8 +232,7 @@ export const ActivitiesStepsEndCriteriaOptions = {
 	"TEAM_WON": "TEAM_WON",
 } as const
 export type ActivitiesStepsEndCriteriaOptions = typeof ActivitiesStepsEndCriteriaOptions[keyof typeof ActivitiesStepsEndCriteriaOptions]
-export type ActivitiesStepsRecord<Tactions = unknown> = {
-	actions?: null | Tactions
+export type ActivitiesStepsRecord = {
 	activity: RecordIdString
 	created: IsoAutoDateString
 	description: HTMLString
@@ -346,7 +345,7 @@ export type UsersRecord = {
 	id: string
 	name?: string
 	password: string
-	role?: UsersRoleOptions
+	role: UsersRoleOptions
 	tokenKey: string
 	type?: UsersTypeOptions
 	updated: IsoAutoDateString
@@ -361,7 +360,7 @@ export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemF
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ActivitiesResponse<Texpand = unknown> = Required<ActivitiesRecord> & BaseSystemFields<Texpand>
 export type ActivitiesMaterialsResponse<Texpand = unknown> = Required<ActivitiesMaterialsRecord> & BaseSystemFields<Texpand>
-export type ActivitiesStepsResponse<Tactions = unknown, Texpand = unknown> = Required<ActivitiesStepsRecord<Tactions>> & BaseSystemFields<Texpand>
+export type ActivitiesStepsResponse<Texpand = unknown> = Required<ActivitiesStepsRecord> & BaseSystemFields<Texpand>
 export type ActivitiesWorkshopsResponse<Texpand = unknown> = Required<ActivitiesWorkshopsRecord> & BaseSystemFields<Texpand>
 export type CatalogMaterialsResponse<Texpand = unknown> = Required<CatalogMaterialsRecord> & BaseSystemFields<Texpand>
 export type CatalogSafetyInstructionsResponse<Texpand = unknown> = Required<CatalogSafetyInstructionsRecord> & BaseSystemFields<Texpand>

@@ -76,5 +76,5 @@ in the import modal's last stage, the rest from the editor once it exists there.
 | A step's **Visuel de l'étape** | a step's visual is not handled yet |
 | A step's `#### Conseil` | tips are a catalogue linked by name, and this is free text: it can be added to the catalogue, then linked |
 | A step's `#### Critère(s) de fin` | not handled yet |
-| A timer on an action, an action's own material or resource | an action is plain text; give the material to the step instead |
+| A timer on an action, an action's own material or resource | actions are a list in the step's description; give the material to the step instead |
 | `Source : …` | no field for it |

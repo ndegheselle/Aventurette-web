@@ -140,7 +140,6 @@ type seedWorkshop struct {
 type seedStep struct {
 	kind, title, description string
 	duration                 int
-	actions                  []string
 	materials                []string
 	tips                     []seedNamed
 	resources                []string
@@ -231,14 +230,12 @@ var completeActivities = []seedActivity{
 			{
 				kind: "PREPARE", title: "Cacher les indices", duration: 30,
 				description: "<p>Disposer les ateliers et cacher le coffre au point d'arrivée.</p>",
-				actions:     []string{"Baliser la zone de jeu", "Installer les trois ateliers", "Cacher le coffre"},
 				materials:   []string{"Coffre", "Pièces en chocolat"},
 				resources:   []string{"Plan des ateliers"},
 			},
 			{
 				kind: "CUSTOM", title: "La légende du capitaine", duration: 10,
 				description: "<p>Raconter l'histoire de Barbe-Grise et former les équipages.</p>",
-				actions:     []string{"Lire la lettre du capitaine", "Former les équipes", "Distribuer les foulards"},
 				materials:   []string{"Foulards de couleur"},
 				tips: []seedNamed{
 					{"", "Entrer dans le personnage", "<p>Un chapeau et une voix rauque suffisent à capter l'attention des enfants.</p>"},
@@ -248,7 +245,6 @@ var completeActivities = []seedActivity{
 			{
 				kind: "CUSTOM", title: "À l'abordage des ateliers", duration: 45,
 				description: "<p>Chaque équipe fait le tour des ateliers pour reconstituer la carte.</p>",
-				actions:     []string{"Lancer la rotation au sifflet", "Changer d'atelier toutes les 15 minutes"},
 				materials:   []string{"Carte au trésor", "Sifflet"},
 				tips: []seedNamed{
 					{"", "Équilibrer les équipes", "<p>Si une équipe prend trop d'avance, donnez un indice bonus aux autres.</p>"},
@@ -258,7 +254,6 @@ var completeActivities = []seedActivity{
 			{
 				kind: "CONCLUSION", title: "Le partage du butin", duration: 15,
 				description: "<p>Ouvrir le coffre ensemble et revenir sur l'aventure.</p>",
-				actions:     []string{"Ouvrir le coffre", "Partager les pièces", "Demander à chacun son moment préféré"},
 				tips: []seedNamed{
 					{"", "Valoriser chaque équipe", "<p>Trouvez une qualité à souligner pour chaque équipage, pas seulement le gagnant.</p>"},
 				},
@@ -312,14 +307,12 @@ var completeActivities = []seedActivity{
 			{
 				kind: "PREPARE", title: "Préparer le plan de travail", duration: 15,
 				description: "<p>Installer les ingrédients et préchauffer le four à 180 °C.</p>",
-				actions:     []string{"Préchauffer le four", "Peser les ingrédients", "Laver les mains"},
 				materials:   []string{"Farine", "Miel", "Épices à pain d'épices"},
 				resources:   []string{"Recette"},
 			},
 			{
 				kind: "CUSTOM", title: "Façonner les biscuits", duration: 25,
 				description: "<p>Étaler la pâte et découper les formes.</p>",
-				actions:     []string{"Étaler la pâte", "Découper les formes", "Enfourner 10 minutes"},
 				materials:   []string{"Emporte-pièces"},
 				tips: []seedNamed{
 					{"", "Pâte collante", "<p>Fariner le rouleau plutôt que la pâte.</p>"},
@@ -464,9 +457,6 @@ func saveSteps(app core.App, activity *core.Record, data []seedStep, materialIds
 		step.Set("title", item.title)
 		step.Set("description", item.description)
 		step.Set("duration", item.duration)
-		if len(item.actions) > 0 {
-			step.Set("actions", item.actions)
-		}
 		step.Set("materials", idsOf(materialIds, item.materials))
 
 		tipIds := []string{}

@@ -10,7 +10,7 @@ import type { ActivityMaterialData } from '@features/activities/models/material'
 import { StepKind, type ActivityStepData, type ActivityTipData } from '@features/activities/models/step';
 import ResourcesSelection from '@features/admin/activities-authoring/ui/ResourcesSelection.vue';
 import { joinDuration, splitDuration, stepProblems } from '@features/admin/activities-authoring/models/step.edit';
-import { CheckIcon, PlusIcon, TrashIcon, XIcon } from 'lucide-vue-next';
+import { CheckIcon, XIcon } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 /**
@@ -37,14 +37,6 @@ const minutes = computed({
     get: () => splitDuration(step.value.duration).minutes,
     set: (value: number | string) => { step.value.duration = joinDuration(hours.value, value); },
 });
-
-function addAction() {
-    step.value.actions = [...step.value.actions, ""];
-}
-
-function removeAction(index: number) {
-    step.value.actions = step.value.actions.filter((_, i) => i !== index);
-}
 
 defineExpose<IEditModal<ActivityStepData>>({ show });
 </script>
@@ -81,20 +73,6 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
             </Field>
             <Field label="activities.steps.fields.description" :error="errors.get('description')">
                 <TextEditor v-model="step.description" class="min-h-32" />
-            </Field>
-            <Field label="activities.steps.fields.actions.title" :error="errors.get('actions')">
-                <div class="flex flex-col gap-1">
-                    <div class="join" v-for="(_, index) in step.actions" :key="index">
-                        <span class="join-item btn btn-sm tabular-nums">{{ index + 1 }}</span>
-                        <input type="text" class="join-item input input-sm w-full" v-model="step.actions[index]" />
-                        <button class="join-item btn btn-sm" @click="() => removeAction(index)">
-                            <TrashIcon class="icon-sm" />
-                        </button>
-                    </div>
-                    <button class="btn btn-sm btn-ghost self-start" @click="addAction">
-                        <PlusIcon class="icon-sm" /> {{ $t('activities.authoring.steps.addAction') }}
-                    </button>
-                </div>
             </Field>
             <Field label="activities.tips.title">
                 <TagSelect :items="tips" displayKey="name" keyBy="id" v-model="step.tips" />

@@ -75,7 +75,7 @@ brief and end criteria, and version 2 named the tips on the activity. Both are r
   new one when the catalogue has none. The activity links each with its quantity, and steps and
   workshops recall the links by name.
 - **A step with no description gets its title as one**: the collection refuses a blank
-  description, and most steps of the template are a title over actions.
+  description, and many steps of the template have none.
 
 `draftFromSheet` builds the whole activity in memory — a draft, by the signed-in user — with
 its material links, steps and workshops, each under the id it will be created with, and the
@@ -132,8 +132,8 @@ material is [catalogue-authoring](catalogue-authoring.md)'s. The step and worksh
 the activity's links as a prop and pick among them with the same `TagSelect`. They never create
 one.
 
-**The step modal** edits a copy of a step — title, duration, kind, description, actions to
-tick, materials and resources — and hands it back on confirm (`useDraftModal`); **Add** opens it
+**The step modal** edits a copy of a step — title, duration, kind, description, tips,
+materials and resources — and hands it back on confirm (`useDraftModal`); **Add** opens it
 on a blank step, which joins the list only then. It writes nothing, and refuses to close on a
 step with no description. A picked file stays in the browser until the save uploads it. The
 steps panel heading shows the preparation and playing time `timingOf` sums from the steps.

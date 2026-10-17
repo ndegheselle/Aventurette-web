@@ -20,16 +20,15 @@ export const resourceMapper: EntityMapper<ActivityResourcePayload, ActivityResou
 };
 
 /** A step as the backend stores it, with what an expanded read carries alongside. */
-export type ActivityStepPayload = ActivitiesStepsResponse<string[], {
+export type ActivityStepPayload = ActivitiesStepsResponse<{
     materials?: ActivityMaterialPayload[];
     resources?: ActivityResourcePayload[];
     tips?: ActivityTipPayload[];
 }>;
 
 /**
- * Reads and writes a step. `actions` is a JSON column: never set reads as no action, and an
- * action left blank in the editor is not written. The columns the app sets aside are dropped on
- * read, so nothing above `api/` holds them and no write sends them back.
+ * Reads and writes a step. The columns the app sets aside are dropped on read, so nothing above
+ * `api/` holds them and no write sends them back.
  */
 export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
     relations: [
@@ -39,19 +38,17 @@ export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
         "tips",
     ],
     toEntity: ({
-        expand, actions,
+        expand,
         visual_brief: _visualBrief, end_criteria: _endCriteria, end_criteria_other: _endCriteriaOther,
         ...step
     }, files) => ({
         ...step,
-        actions: actions ?? [],
         materials: toEntities(expand?.materials, activityMaterialMapper, files),
         resources: toEntities(expand?.resources, resourceMapper, files),
         tips: toEntities(expand?.tips, tipMapper, files),
     }),
-    toPayload: ({ materials, resources, tips, actions, ...step }) => ({
+    toPayload: ({ materials, resources, tips, ...step }) => ({
         ...step,
-        ...(actions && { actions: actions.map(action => action.trim()).filter(Boolean) }),
         ...(materials && { materials: toIds(materials) }),
         ...(resources && { resources: toIds(resources) }),
         ...(tips && { tips: toIds(tips) }),

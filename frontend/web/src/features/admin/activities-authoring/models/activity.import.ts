@@ -91,7 +91,6 @@ export interface SheetStep {
     title: string;
     duration: number;
     description: HTMLString;
-    actions: string[];
     /** Names from the sheet's materials. */
     materials: string[];
     /** Names from the tips catalogue. */
@@ -227,7 +226,6 @@ export function readActivitySheet(text: string): SheetReading {
                 title,
                 duration: read.number(step.duration, `${path}.duration`),
                 description,
-                actions: read.texts(step.actions, `${path}.actions`),
                 materials: read.texts(step.materials, `${path}.materials`),
                 tips: read.texts(step.tips, `${path}.tips`),
             };
@@ -563,8 +561,8 @@ export function draftFromSheet(
 }
 
 /**
- * A sheet's step, under an activity whose materials it recalls. Most steps of the template are a
- * title over actions, but the collection refuses a blank description: the title stands in for one.
+ * A sheet's step, under an activity whose materials it recalls. The collection refuses a blank
+ * description: the title stands in for one.
  */
 export function stepFromSheet(
     step: SheetStep,
@@ -581,7 +579,6 @@ export function stepFromSheet(
         title: step.title,
         duration: step.duration,
         description,
-        actions: step.actions,
         materials: recalledMaterials(materials, step.materials),
         tips,
     };

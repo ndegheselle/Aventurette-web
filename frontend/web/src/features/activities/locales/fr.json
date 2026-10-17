@@ -26,10 +26,6 @@
                 "kind": "Type d'étape",
                 "duration": "Durée estimée",
                 "description": "Description",
-                "actions": {
-                    "title": "Actions à cocher",
-                    "count": "{count} actions"
-                },
                 "resources": {
                     "title": "Ressources",
                     "count": "{count} ressource(s)",

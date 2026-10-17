@@ -10,14 +10,12 @@ import type { ActivityMaterialData } from "@features/activities/models/material"
 // ── The step ────────────────────────────────────────────────────────────────────────────────
 
 /**
- * One step of the activity: what the animator does, as short actions to tick, and how long it
- * takes. `materials` are the activity's own, recalled here; `tips` are the catalogue's, linked.
+ * One step of the activity: what the animator does, and how long it takes. `materials` are the activity's own, recalled here; `tips` are the catalogue's, linked.
  */
-export type ActivityStepData = Entity<Omit<ActivitiesStepsResponse<string[]>, StepColumnSetAside>, {
+export type ActivityStepData = Entity<Omit<ActivitiesStepsResponse, StepColumnSetAside>, {
     materials: ActivityMaterialData[];
     resources: ActivityResourceData[];
     tips: ActivityTipData[];
-    actions: string[];
 }>;
 
 /**

@@ -19,7 +19,6 @@ export function createEmptyStep(id: string, activity: string): ActivityStepData 
         activity,
         kind: StepKind.CUSTOM,
         description: "",
-        actions: [] as string[],
         materials: [] as ActivityMaterialData[],
         resources: [] as ActivityResourceData[],
         tips: [] as ActivityTipData[],

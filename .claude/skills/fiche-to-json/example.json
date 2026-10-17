@@ -58,11 +58,7 @@
       "kind": "PREPARE",
       "title": "Préparer le jeu",
       "duration": 5,
-      "description": "<p>Ce que l'animateur installe avant que les enfants ne commencent.</p>",
-      "actions": [
-        "Délimiter l'espace de jeu à la craie.",
-        "Poser le cerceau au centre : c'est le camp de base."
-      ],
+      "description": "<p>Ce que l'animateur installe avant que les enfants ne commencent.</p><ol><li>Délimiter l'espace de jeu à la craie.</li><li>Poser le cerceau au centre : c'est le camp de base.</li></ol>",
       "materials": ["Craie", "Cerceau"],
       "tips": []
     },
@@ -70,11 +66,7 @@
       "kind": "CUSTOM",
       "title": "Expliquer l'activité",
       "duration": 3,
-      "description": "",
-      "actions": [
-        "Annoncer une couleur.",
-        "Montrer un exemple d'objet de cette couleur."
-      ],
+      "description": "<ol><li>Annoncer une couleur.</li><li>Montrer un exemple d'objet de cette couleur.</li></ol>",
       "materials": [],
       "tips": []
     },
@@ -82,11 +74,7 @@
       "kind": "CUSTOM",
       "title": "Lancer le jeu",
       "duration": 15,
-      "description": "",
-      "actions": [
-        "Annoncer la couleur et donner le départ.",
-        "Vérifier les objets rapportés au camp de base."
-      ],
+      "description": "<ol><li>Annoncer la couleur et donner le départ.</li><li>Vérifier les objets rapportés au camp de base.</li></ol>",
       "materials": [],
       "tips": []
     },
@@ -94,10 +82,7 @@
       "kind": "CUSTOM",
       "title": "Annoncer la fin de l'activité",
       "duration": 2,
-      "description": "",
-      "actions": [
-        "Prévenir les enfants avant l'arrêt effectif plutôt que de couper l'activité net."
-      ],
+      "description": "<ol><li>Prévenir les enfants avant l'arrêt effectif plutôt que de couper l'activité net.</li></ol>",
       "materials": [],
       "tips": []
     },
@@ -105,8 +90,7 @@
       "kind": "CONCLUSION",
       "title": "Conclusion",
       "duration": 2,
-      "description": "",
-      "actions": ["Féliciter l'ensemble des participants."],
+      "description": "<ol><li>Féliciter l'ensemble des participants.</li></ol>",
       "materials": [],
       "tips": []
     }

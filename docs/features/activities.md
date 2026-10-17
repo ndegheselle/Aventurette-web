@@ -25,18 +25,16 @@ One composable to a screen: `useActivitiesList` holds the results and the search
 
 ## Running an activity
 
-The detail screen's *Start* opens the run: one page to a step, a progress bar, and the actions
-to tick as they are done. The step is the route's 1-based `step` param — none is the first, and
+The detail screen's *Start* opens the run: one page to a step, and a progress bar. The step is the route's 1-based `step` param — none is the first, and
 one past either end is the nearest (`playStepIndexOf`). Moving between steps replaces the
 history entry, so the whole run is one entry and leaving it pops that entry rather than pushing
-the detail screen on top. A step shows its description,
-its actions, and the materials and resources it uses.
+the detail screen on top. A step shows its description, the
+materials and resources it uses, and a button opening its tips.
 
 The run plays the steps the author wrote, in their order, and nothing else: the app adds no
 step of its own.
 
-A run's ticks live in memory: they are lost on leaving the run or reloading it. Its position is in
-the URL.
+A run's position is in the URL.
 
 ## Data
 
@@ -68,7 +66,7 @@ of those lists cascades, so deleting a link only drops it from the lists holding
 link's relations do cascade: deleting an activity, or a catalogue material, deletes its links.
 
 **A step** has a `kind`: preparing the game, a free step or the conclusion. It also has a
-`title`, an estimated `duration` in minutes and the `actions` to tick (a JSON list of strings).
+`title` and an estimated `duration` in minutes.
 `timingOf` sums the durations: preparation is the steps preparing the game, play is every other
 step. The collection still holds a step's `visual_brief`, and the `end_criteria` and
 `end_criteria_other` of a kind that is gone. `stepMapper` drops them on read, so nothing above
@@ -201,7 +199,6 @@ or an api wrapper does not earn one — see
 
 - A step reads its relations out of `expand` and leaves no trace of it; an unexpanded relation
   reads as empty. Relations are written back as ids.
-- Actions never set read as none, and a blank action is not written.
 - The columns the app sets aside — the visual brief and the end criteria — are dropped on read,
   so a save never writes them back.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
