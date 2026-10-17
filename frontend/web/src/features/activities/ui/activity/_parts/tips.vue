@@ -22,7 +22,7 @@ const sheet = useModal();
         <ResponsiveModal :controller="sheet">
             <template #title>{{ $t('activities.tips.title') }}</template>
             <div class="flex flex-col gap-2">
-                <div v-for="tip in tips" :key="tip.id" role="alert" class="alert alert-info alert-soft items-start">
+                <div v-for="tip in tips" :key="tip.id" role="alert" class="alert items-start">
                     <div>
                         <b>{{ tip.name }}</b>
                         <div v-html="tip.description"></div>

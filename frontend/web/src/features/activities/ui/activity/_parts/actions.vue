@@ -11,14 +11,14 @@ defineProps<{
 
 <template>
     <div class="flex gap-4">
-        <RouterLink class="btn btn-soft btn-square btn-lg" :aria-label="$t('activities.actions.start')"
+        <RouterLink class="btn btn-square btn-primary btn-lg" :aria-label="$t('activities.actions.start')"
                     :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
             <PlayIcon />
         </RouterLink>
-        <button type="button" class="btn btn-soft btn-square btn-lg" disabled>
+        <button type="button" class="btn btn-square btn-lg" disabled>
             <PresentationIcon />
         </button>
-        <button type="button" class="btn btn-soft btn-square btn-lg" disabled>
+        <button type="button" class="btn btn-square btn-lg" disabled>
             <HeartIcon />
         </button>
     </div>
