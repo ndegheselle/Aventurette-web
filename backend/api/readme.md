@@ -10,8 +10,10 @@ admin@test.local
 test1234admin
 ```
 
-Fill the dev database with fake activities (`seed.go`). It owns them as `seed@test.local`, replaces the
-ones a previous run made, and refuses to run on a built binary :
+Fill the dev database with fake activities (`seed.go`): `--count` simple ones (attributes and steps
+only), plus complete ones filling every field the app shows — tags, safety instructions, materials,
+workshops, and steps with actions, tips and resources. It owns them as `seed@test.local`, replaces the
+ones a previous run made, reuses the catalogue entries it finds, and refuses to run on a built binary :
 ```bash
 go run . seed --count 20
 ```
