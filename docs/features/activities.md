@@ -206,12 +206,10 @@ or an api wrapper does not earn one — see
   so a save never writes them back.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 
-*`tests/play.spec.ts`* — the steps of a run
+*`tests/play.spec.ts`* — where a run is
 
-- Gathering the material comes first, and only when the activity needs some; each material is an
-  action to tick, with its quantity when it has one.
-- Gathering the children comes before the first step not preparing the game — first when nothing
-  is prepared, not at all when everything is. A preparation step written later stays where it is.
+- The route's 1-based step reads as an index; a missing or unreadable one is the first step, and
+  one past either end is the nearest end.
 
 *`activities-authoring/tests/activity.edit.spec.ts`* — the save's order, in the feature that
 owns the editor
