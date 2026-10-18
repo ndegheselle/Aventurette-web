@@ -2,8 +2,9 @@
 import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useActivityPlay } from '@features/activities/composables/useActivityPlay';
+import Supplies from '@features/activities/ui/activity/_parts/supplies.vue';
 import StepTips from '@features/activities/ui/activity/_parts/tips.vue';
-import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FileTextIcon, FlagIcon } from 'lucide-vue-next';
+import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FlagIcon } from 'lucide-vue-next';
 import { watch } from 'vue';
 
 const { activity, steps, index, current, isFirst, isLast, previous, next, leave, headingOf } = useActivityPlay();
@@ -43,19 +44,7 @@ watch(index, () => window.scrollTo({ top: 0 }));
                         <div v-if="current.description" v-html="current.description" class="text-4xl"></div>
                     </div>
 
-                    <div v-if="current.materials.length" class="flex flex-wrap gap-1">
-                        <span v-for="material in current.materials" :key="material.id" class="badge">
-                            {{ material.name }}
-                            <span v-if="material.quantity" class="opacity-60">{{ material.quantity }}</span>
-                        </span>
-                    </div>
-
-                    <div v-if="current.resources.length" class="flex flex-wrap gap-1">
-                        <a v-for="resource in current.resources" :key="resource.id" class="btn btn-sm"
-                            :href="resource.url" target="_blank" rel="noopener">
-                            <FileTextIcon class="size-4" /> {{ resource.name }}
-                        </a>
-                    </div>
+                    <Supplies :materials="current.materials" :resources="current.resources" />
                 </Panel>
 
                 <div class="flex gap-2 justify-center p-2">

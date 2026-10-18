@@ -1,13 +1,16 @@
-<!-- What running the activity takes: safety, materials, workshops and steps. -->
+<!-- What running the activity takes: safety, materials and resources, workshops and steps. -->
 <script setup lang="ts">
 import List from '@chapelure/ui/data/List.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import type { ActivityData } from '@features/activities/models/activity';
-import { stepNumber } from '@features/activities/models/step';
+import { stepNumber, type ActivityResourceData } from '@features/activities/models/step';
+import Supplies from '@features/activities/ui/activity/_parts/supplies.vue';
 import { PackageOpenIcon, ShieldAlertIcon, UsersIcon } from 'lucide-vue-next';
 
 defineProps<{
     activity: ActivityData;
+    /** Gathered from the steps: an activity holds none of its own. */
+    resources: ActivityResourceData[];
 }>();
 </script>
 
@@ -24,17 +27,11 @@ defineProps<{
             </ul>
         </Panel>
 
-        <Panel v-if="activity.materials.length">
+        <Panel v-if="activity.materials.length || resources.length">
             <h2 class="text-lg flex items-center gap-2">
-                <PackageOpenIcon class="opacity-50" /> {{ $t('activities.materials.title') }}
+                <PackageOpenIcon class="opacity-50" /> {{ $t('activities.supplies.title') }}
             </h2>
-            <ul class="flex flex-col gap-1">
-                <li v-for="material in activity.materials" :key="material.id"
-                    class="flex justify-between gap-2">
-                    <span>{{ material.name }}</span>
-                    <span v-if="material.quantity" class="opacity-60">{{ material.quantity }}</span>
-                </li>
-            </ul>
+            <Supplies :materials="activity.materials" :resources="resources" />
         </Panel>
 
         <Panel v-if="activity.workshops.length">
