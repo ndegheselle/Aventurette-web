@@ -44,7 +44,8 @@
             "quantity": "Quantité"
         },
         "supplies": {
-            "title": "Matériel et ressources"
+            "title": "Matériel et ressources",
+            "open": "Ouvrir la ressource"
         },
         "workshops": {
             "title": "Ateliers",
