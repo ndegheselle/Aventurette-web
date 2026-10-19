@@ -1,7 +1,6 @@
 <!-- What an activity or a step uses — materials, then resources — as square tiles on one scrolling
-     line: a picture on top, the name and quantity beside each other below it. The name keeps its
-     room and the quantity gets what is left. Nothing has a picture of its own yet but an image
-     resource, so the rest show an icon in its place. -->
+     line: a picture on top, the name and its quantity centred below it. Nothing has a picture of
+     its own yet but an image resource, so the rest show an icon in its place. -->
 <script setup lang="ts">
 import type { ActivityMaterialData } from '@features/activities/models/material';
 import { pictureOf, type ActivityResourceData } from '@features/activities/models/step';
@@ -20,11 +19,9 @@ defineProps<{
             <div class="flex-1 min-h-0 flex items-center justify-center bg-base-300">
                 <PackageIcon class="size-10 opacity-30" />
             </div>
-            <div class="flex justify-between gap-1 p-2 text-sm">
-                <span class="shrink-0 max-w-full truncate">{{ material.name }}</span>
-                <span v-if="material.quantity" class="min-w-0 truncate opacity-60">
-                    {{ material.quantity }}
-                </span>
+            <div class="p-2 text-sm text-center">
+                <div class="truncate">{{ material.name }}</div>
+                <div v-if="material.quantity" class="truncate text-xs opacity-60">{{ material.quantity }}</div>
             </div>
         </div>
 
@@ -36,7 +33,7 @@ defineProps<{
             <div v-else class="flex-1 min-h-0 flex items-center justify-center bg-base-300">
                 <FileTextIcon class="size-10 opacity-30" />
             </div>
-            <div class="p-2 text-sm truncate">{{ resource.name }}</div>
+            <div class="p-2 text-sm text-center truncate">{{ resource.name }}</div>
         </a>
     </div>
 </template>
