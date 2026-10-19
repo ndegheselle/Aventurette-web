@@ -1,6 +1,7 @@
 <!-- What an activity or a step uses — materials, then resources — as square tiles on one scrolling
-     line: a picture on top, the name and quantity beside each other below it. Nothing has a
-     picture of its own yet but an image resource, so the rest show an icon in its place. -->
+     line: a picture on top, the name and quantity beside each other below it. The name keeps its
+     room and the quantity gets what is left. Nothing has a picture of its own yet but an image
+     resource, so the rest show an icon in its place. -->
 <script setup lang="ts">
 import type { ActivityMaterialData } from '@features/activities/models/material';
 import { pictureOf, type ActivityResourceData } from '@features/activities/models/step';
@@ -20,8 +21,8 @@ defineProps<{
                 <PackageIcon class="size-10 opacity-30" />
             </div>
             <div class="flex justify-between gap-1 p-2 text-sm">
-                <span class="truncate">{{ material.name }}</span>
-                <span v-if="material.quantity" class="max-w-1/2 shrink-0 truncate opacity-60">
+                <span class="shrink-0 max-w-full truncate">{{ material.name }}</span>
+                <span v-if="material.quantity" class="min-w-0 truncate opacity-60">
                     {{ material.quantity }}
                 </span>
             </div>
