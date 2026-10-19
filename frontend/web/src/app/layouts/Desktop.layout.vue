@@ -4,7 +4,7 @@ import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as usersRoutesNames } from '@features/user/routes';
-import { LibraryIcon, LightbulbIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, SearchIcon, UserIcon } from 'lucide-vue-next';
+import { LibraryIcon, LightbulbIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, SearchIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 // The sidebar is always shown; the toggle only widens it to show the labels.

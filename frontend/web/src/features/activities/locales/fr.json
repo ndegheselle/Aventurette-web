@@ -43,6 +43,9 @@
             "notNeeded": "Aucun matériel requis",
             "quantity": "Quantité"
         },
+        "supplies": {
+            "title": "Matériel et ressources"
+        },
         "workshops": {
             "title": "Ateliers",
             "adults": "{count} adulte(s)",

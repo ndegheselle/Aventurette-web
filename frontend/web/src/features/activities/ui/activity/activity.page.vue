@@ -12,7 +12,7 @@ import { ArrowLeftIcon } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { activity, timing, ageLabel, participantsLabel } = useActivity();
+const { activity, resources, timing, ageLabel, participantsLabel } = useActivity();
 const { isMobile } = useIsMobile();
 
 // Opened from a link straight to the page, there is no previous page: fall back to the library.
@@ -54,7 +54,7 @@ function back() {
         </template>
 
         <template #details>
-            <ActivityDetails :activity="activity" />
+            <ActivityDetails :activity="activity" :resources="resources" />
         </template>
     </component>
 

@@ -31,6 +31,10 @@ history entry, so the whole run is one entry and leaving it pops that entry rath
 the detail screen on top. A step shows its description, the
 materials and resources it uses, and a button opening its tips.
 
+Materials and resources show the same way on the detail screen and in the run: square tiles on
+one scrolling line (`_parts/supplies.vue`), a picture on top and the name beside the quantity.
+Only an image resource has a picture (`pictureOf`); the rest show an icon in its place.
+
 The run plays the steps the author wrote, in their order, and nothing else: the app adds no
 step of its own.
 
@@ -202,6 +206,7 @@ or an api wrapper does not earn one — see
 - The columns the app sets aside — the visual brief and the end criteria — are dropped on read,
   so a save never writes them back.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
+- A resource's picture is its url when that is an image, query string or not, and empty otherwise.
 
 *`tests/play.spec.ts`* — where a run is
 

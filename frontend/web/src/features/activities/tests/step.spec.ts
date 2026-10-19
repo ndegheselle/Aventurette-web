@@ -1,4 +1,5 @@
 import { resourceMapper, stepMapper } from '@features/activities/api/step.mapper';
+import { pictureOf } from '@features/activities/models/step';
 import {
     aMaterial,
     aMaterialPayload,
@@ -97,5 +98,17 @@ describe('resourceMapper', () => {
 
         expect(resourceMapper.toPayload({ name: 'map.png', step: 'stp1', file, url: 'https://files.test/x' }))
             .toEqual({ name: 'map.png', step: 'stp1', file });
+    });
+});
+
+describe('pictureOf', () => {
+    it('is the url of an image, query string or not', () => {
+        expect(pictureOf(aResource({ url: 'https://files.test/map.PNG' }))).toBe('https://files.test/map.PNG');
+        expect(pictureOf(aResource({ url: 'https://files.test/map.jpg?token=x' }))).toBe('https://files.test/map.jpg?token=x');
+    });
+
+    it('is empty for anything else, or no file at all', () => {
+        expect(pictureOf(aResource({ url: 'https://files.test/rules.pdf' }))).toBe('');
+        expect(pictureOf(aResource({ url: '' }))).toBe('');
     });
 });

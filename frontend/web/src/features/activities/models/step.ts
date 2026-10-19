@@ -52,3 +52,8 @@ export type ActivityResourceData = Entity<Omit<StepsResourcesResponse, 'file'>, 
     /** The picked file, on its way up. Set on a create and never after. */
     file?: File;
 }>;
+
+/** What a resource shows as its picture: its own url when it is an image, empty otherwise (a PDF). */
+export function pictureOf(resource: ActivityResourceData): string {
+    return /\.(png|jpe?g|gif|webp)(\?|$)/i.test(resource.url) ? resource.url : '';
+}
