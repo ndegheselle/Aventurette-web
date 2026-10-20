@@ -225,7 +225,7 @@ export function useActivityEdit() {
         await saveApi.send(writes);
 
         alert.success(t(isNew.value ? 'data.created' : 'data.updated'));
-        router.push({ name: activitiesRoutesNames.page, params: { id: activity.value.id } });
+        router.push({ name: activitiesRoutesNames.activity, params: { id: activity.value.id } });
     });
 
     return {

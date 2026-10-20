@@ -16,14 +16,20 @@ a mode.
 | `activities.authoring.page` | `/activities/authoring/:id` | Authoring, one form |
 
 All three are admin-only: `meta.roles` is `[Role.ADMIN]`, so the auth guard sends anyone else home,
-and the sidebar hides their links ([auth](user.md#roles)).
+and the sidebar hides their links ([auth](user.md#roles)). The backend checks it too: the
+`activities`, `activities_steps`, `steps_resources`, `activities_workshops` and
+`activities_materials` create, update and delete rules ask for `@request.auth.role = "ADMIN"`
+(`1792500000_admins_write_the_activities.go`). Reading stays open to everyone.
+
+They are **desktop-only**: the router hangs them under `Desktop.layout` rather than
+`Responsive.layout`, and only the desktop sidebar links them — the mobile dock has no entry.
 
 ## The list
 
 `useActivitiesEditList` owns it: the results, the state tab and the delete.
 
 **It is not scoped to the signed-in author yet.** `buildAuthoredFilters` queries by state only,
-so every signed-in user sees — and may delete — every activity. A new one still records its
+so every admin sees — and may delete — every activity. A new one still records its
 author: `currentId()` fills `user` when the editor opens on it, and throws rather than
 returning nothing when there is no session.
 
@@ -217,6 +223,8 @@ The specs, in `tests/`.
   lacks is added once, and linked to what is added.
 - Every record hangs off the activity, and steps and workshops recall the links.
 
+*`tests/routes.spec.ts`* — every route asks for `Role.ADMIN`, its own `meta` or a parent's.
+
 *`tests/ActivitiesEdit.page.spec.ts`* — the list's wiring: a delete waits for the confirmation,
 and a tab re-queries.
 
@@ -237,8 +245,6 @@ composable ends in one call to `saveApi.send`.
   it was on, and a page past the end comes back with nothing rather than stepping back one.
 - **The state button does not save the form.** Deliberate — see above — but a user who edits
   and then publishes has to press save as well, and nothing on screen says so.
-- **Admin-only on the client alone.** The collections' API rules do not check the role, so
-  any signed-in user can still write through the API.
 - **No per-kind limit on tags.** Each relation could now carry its own `maxSelect` and
   `required` (ADR 0014), but none is set.
 - **The form shows safety instructions and tips by name only.** The safety text is on the detail

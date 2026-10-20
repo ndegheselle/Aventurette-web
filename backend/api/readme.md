@@ -18,6 +18,11 @@ ones a previous run made, reuses the catalogue entries it finds, and refuses to 
 go run . seed --count 20
 ```
 
+Run the hooks' tests, each against a fresh database with every migration applied :
+```bash
+go test ./...
+```
+
 Update the version of pocketbase :
 ```
 go get -u github.com/pocketbase/pocketbase@latest
