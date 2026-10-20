@@ -24,9 +24,13 @@ Admin-only: the parent's `meta.roles` is `[Role.ADMIN]`, which vue-router merges
 child, so the auth guard sends anyone else home, and the sidebar hides the link
 ([auth](user.md#roles)).
 
-The backend checks it too for tags, safety instructions and tips: their create, update and
-delete rules ask for `@request.auth.role = "ADMIN"`
-(`1790850400_admins_write_the_catalogues.go`). Reading stays open to everyone.
+Like the rest of authoring, the screen is desktop-only: it hangs under `Desktop.layout`, and
+only the desktop sidebar links it.
+
+The backend checks it too: every catalogue's create, update and delete rules ask for
+`@request.auth.role = "ADMIN"` — safety instructions and tips since the snapshot, tags since
+`1792300000_align_with_front.go`, materials since `1792500000_admins_write_the_activities.go`.
+Reading stays open to everyone.
 
 ## The materials tab
 
@@ -84,6 +88,8 @@ them, and `api/` holds one `crud` per catalogue.
 - A new entry's slug follows its name until the author writes another.
 - The tags' query leaves out an empty search, rather than sending an empty group.
 
+*`tests/routes.spec.ts`*: every route asks for `Role.ADMIN`, its own `meta` or the parent's.
+
 *`tests/useMaterialsEditList.spec.ts`*: a refused rename puts the field back.
 
 - A refusal shows the last saved name, not the one first read.
@@ -96,6 +102,4 @@ them, and `api/` holds one `crud` per catalogue.
   the ones no activity uses.
 - **No merge.** Two entries that are the same thing under different names are fixed by renaming
   one and deleting the other, which loses the deleted one's links.
-- **Roles stop at the client for materials.** `catalog_materials` is still open to everyone, so
-  any signed-in user can rename or delete a material through the API.
 - The material rows reuse the placeholder images the rest of the app does.

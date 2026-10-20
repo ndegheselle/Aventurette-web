@@ -3,13 +3,26 @@ import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
+import { routesNames as authoringRoutesNames } from '@features/admin/activities-authoring/routes';
+import { routesNames as catalogueRoutesNames } from '@features/admin/catalogue-authoring/routes';
+import { useAuth } from '@features/user/composables/useAuth';
+import { Role } from '@features/user/models/user';
 import { routesNames as usersRoutesNames } from '@features/user/routes';
-import { LibraryIcon, LightbulbIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, SearchIcon } from 'lucide-vue-next';
+import {
+    LibraryBigIcon,
+    LibraryIcon,
+    LightbulbIcon,
+    PanelLeftCloseIcon,
+    PanelLeftOpenIcon,
+    PencilLineIcon,
+    SearchIcon,
+} from 'lucide-vue-next';
 import { ref } from 'vue';
 
 // The sidebar is always shown; the toggle only widens it to show the labels.
 const isDrawerOpen = ref(false);
 const { title } = useNavbar();
+const { hasRole } = useAuth();
 </script>
 
 <template>
@@ -72,6 +85,27 @@ const { title } = useNavbar();
                             <span class="is-drawer-close:hidden">{{ $t('dock.tips') }}</span>
                         </span>
                     </li>
+                    <!-- Authoring is desktop-only: the mobile dock has no counterpart. -->
+                    <template v-if="hasRole(Role.ADMIN)">
+                        <div class="divider is-drawer-open:hidden m-0"></div>
+                        <li class="menu-title is-drawer-close:hidden">{{ $t('admin.title') }}</li>
+                        <li>
+                            <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                                :to="{ name: authoringRoutesNames.all }" active-class="menu-active"
+                                :data-tip="$t('activities.authoring.title')">
+                                <PencilLineIcon />
+                                <span class="is-drawer-close:hidden">{{ $t('activities.authoring.title') }}</span>
+                            </RouterLink>
+                        </li>
+                        <li>
+                            <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                                :to="{ name: catalogueRoutesNames.materials }" active-class="menu-active"
+                                :data-tip="$t('catalogue.title')">
+                                <LibraryBigIcon />
+                                <span class="is-drawer-close:hidden">{{ $t('catalogue.title') }}</span>
+                            </RouterLink>
+                        </li>
+                    </template>
                 </ul>
             </div>
         </div>

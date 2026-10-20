@@ -13,7 +13,7 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import type { IEditModal } from '@chapelure/ui/modals/useModal';
-import StepSummary from '@features/activities/ui/StepSummary.vue';
+import StepSummary from '@features/admin/activities-authoring/ui/StepSummary.vue';
 import {
     ActivityFormat,
     ActivityState,

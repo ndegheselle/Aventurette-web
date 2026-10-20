@@ -134,8 +134,6 @@ One rule, in one place.
 - **"Stay logged in" is not wired to anything.** The checkbox binds to `rememberMe`, which is
   never sent; the session's lifetime is whatever the adapter decides.
 - The OAuth2 provider buttons render and throw `NotImplementedError` when clicked.
-- **Roles are enforced by the client only.** Beyond `users` refusing a self-assigned role, no
-  collection's API rule reads `@request.auth.role`, so hiding a screen does not stop its writes.
 - A denied route redirects to `/` silently, with no message. A route that redirects `/` to an
   admin-only screen would loop.
 
