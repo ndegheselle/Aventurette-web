@@ -66,6 +66,8 @@ and a route asks for one in its meta, which the guard checks:
 
 A role is **granted by a superuser**, from the PocketBase Dashboard. The `users` create and update
 rules refuse a body that sets `role`, or anyone could sign up as an admin or promote themselves.
+`role` is required all the same: a user created without one is given `USER` by a hook
+(`backend/api/hooks/users.go`), which is what lets a sign-up through.
 
 ## Settings
 

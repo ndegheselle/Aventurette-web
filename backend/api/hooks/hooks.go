@@ -21,6 +21,7 @@ var stepChildren = map[string]string{
 func Register(app core.App) {
 	registerStepChildrenCleanup(app)
 	registerTagKindsCheck(app)
+	registerDefaultRole(app)
 }
 
 // registerStepChildrenCleanup deletes a step's resources once no step points at them. The editor
