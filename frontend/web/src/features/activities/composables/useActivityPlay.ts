@@ -4,7 +4,7 @@ import type { ActivityStepData } from '@features/activities/models/step';
 import { routesNames } from '@features/activities/routes';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter, type Router } from 'vue-router';
 
 /**
  * Running one activity: its steps one at a time. The current step is the route's 1-based `step`
@@ -25,15 +25,15 @@ export function useActivityPlay() {
         router.replace({ params: { ...route.params, step: String(position) } });
     }
 
-    /**
-     * Back to the activity page, popping the run's entry so its own back does not return here.
-     * Entered from elsewhere, the activity page replaces this one instead.
-     */
     function leave() {
         if (!activity.value) return;
-        const target = router.resolve({ name: routesNames.activity, params: { id: activity.value.id } });
-        if (router.options.history.state.back === target.fullPath) router.back();
-        else router.replace(target);
+        returnToActivity(router, activity.value.id);
+    }
+
+    /** On to the feedback screen, in place of the run: leaving it then goes back past both. */
+    function finish() {
+        if (!activity.value) return;
+        router.replace({ name: routesNames.feedback, params: { id: activity.value.id } });
     }
 
     /** What a step reads as: its own title, or else its kind's name. */
@@ -52,6 +52,17 @@ export function useActivityPlay() {
         previous: () => goTo(index.value - 1),
         next: () => goTo(index.value + 1),
         leave,
+        finish,
         headingOf,
     };
+}
+
+/**
+ * Back to the activity page, popping the current entry so its own back does not return here.
+ * Entered from elsewhere, the activity page replaces this one instead.
+ */
+export function returnToActivity(router: Router, activityId: string) {
+    const target = router.resolve({ name: routesNames.activity, params: { id: activityId } });
+    if (router.options.history.state.back === target.fullPath) router.back();
+    else router.replace(target);
 }

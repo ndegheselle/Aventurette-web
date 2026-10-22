@@ -167,6 +167,15 @@
             "finish": "Terminer",
             "empty": "Cette activité n'a pas encore d'étape."
         },
+        "feedback": {
+            "bravo": "Bravo !",
+            "finished": "Vous avez terminé « {name} ».",
+            "like": "J'aime cette activité",
+            "comment": "Un commentaire ?",
+            "commentPlaceholder": "Ce qui a plu, ce qui a coincé…",
+            "leave": "Quitter",
+            "saveRefused": "Votre avis n'a pas pu être enregistré."
+        },
         "details": {
             "more": "Voir plus",
             "less": "Voir moins"

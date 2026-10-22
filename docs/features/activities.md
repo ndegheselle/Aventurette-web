@@ -18,13 +18,15 @@ dependency runs one way: nothing here imports `activities-authoring`.
 | `activities.favorites` | `/activities/library/favorites` | The library's favorites tab |
 | `activities.page` | `/activities/:id` | One activity in full |
 | `activities.play` | `/activities/:id/play/:step?` | Running the activity, one step to a page |
+| `activities.feedback` | `/activities/:id/feedback` | After a run: well done, and what the user thought |
 
 `/` redirects to `activities.library`. The library's tabs are child routes of
 `/activities/library`, so the sidebar's and the dock's link to the library stays active on
 either tab.
 
 One composable to a screen: `useActivitiesList` holds the results and the search,
-`useActivity` the detail screen, and `useActivityPlay` the run.
+`useActivity` the detail screen, `useActivityPlay` the run and `useActivityFeedback` the screen
+after it.
 
 ## Favorites
 
@@ -61,6 +63,30 @@ The run plays the steps the author wrote, in their order, and nothing else: the 
 step of its own.
 
 A run's position is in the URL.
+
+## After a run
+
+The last step's *Finish* replaces the run with the feedback screen: a *well done*, Noto's
+animated confetti ball, and what the user thought of the activity. *Leave* goes back to the
+activity page the way the run's own back button does (`returnToActivity`), so the run and
+the feedback screen are one history entry between them.
+
+- **A like** is `user_activity_feedback.liked`, written the moment it is toggled.
+- **A favourite** is the same heart as on the cards and the detail screen (`_parts/favorite.vue`),
+  written the moment it is toggled — see [Favorites](#favorites).
+- **A comment** is `user_activity_feedback.comment`, written as the user leaves, and only if
+  it changed (`commentToSave`). Emptying the field takes the comment back. A refused write
+  keeps the user on the screen with what they typed.
+
+`user_activity_feedback` holds one record per user and activity, under a unique index: the
+first write creates it and every later one, on this run or another, updates it. The buttons
+are held until the feedback is read and while a write is in flight, so a quick second tap
+cannot create a second record. The heart is not held: a favourite is its own write. A user reads and writes their own feedback; an admin reads
+everyone's. Deleting the user or the activity deletes it.
+
+The animation is `ui/activity/_parts/confetti.lottie.json`, Noto's `1f38a` as Google publishes
+it (CC BY 4.0), played by `lottie-web`'s light build. Both are loaded only when the screen
+mounts, so they stay out of the main bundle.
 
 ## Data
 
@@ -188,7 +214,7 @@ list holding it — steps, workshops or materials.
 
 ## Rules that hold
 
-Five specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Eight specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
 [ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md).
 
@@ -246,6 +272,14 @@ or an api wrapper does not earn one — see
 - The route's 1-based step reads as an index; a missing or unreadable one is the first step, and
   one past either end is the nearest end.
 
+*`tests/feedback.spec.ts`* — the screen after a run
+
+- A comment is written trimmed, not at all when it is what is saved already, and as empty when
+  the field is emptied.
+- A like and a comment end in one feedback record: the second write updates what the first
+  created, and a feedback from an earlier run is updated too.
+- A refused comment keeps the user on the screen.
+
 *`activities-authoring/tests/activity.edit.spec.ts`* — the save's order, in the feature that
 owns the editor
 
@@ -273,7 +307,9 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
 - **The run adds no step.** The template's gathering of the material and of the children, and
   its safety checklist, are left to the author to write as steps.
 - **A run is not kept.** Reloading the run screen starts it over, and nothing records that an
-  activity was run.
+  activity was run. The feedback screen records what the user thought, not that they ran it.
+- **Nobody reads the feedback yet.** An admin may, through the API; no screen shows the likes or
+  the comments.
 - **Resources still hang off the steps.** The template has one list for the activity, recalled
   by the steps, the way materials now work.
 - **A step has no visual.** Its brief is still in the collection, set aside by the mapper, and
