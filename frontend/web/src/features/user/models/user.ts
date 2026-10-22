@@ -32,3 +32,18 @@ export function toProfileForm(user: Pick<UserData, 'name'> | null): ProfileForm 
 export function toProfilePatch(form: ProfileForm): Partial<UserData> {
     return { name: form.name.trim() };
 }
+
+/** The ids of the activities a user keeps as favorites. A copy: the session's own is read-only. */
+export function favoritesOf(user: { favorites?: readonly string[] } | null): string[] {
+    return [...(user?.favorites ?? [])];
+}
+
+/** Adding an activity already in the list leaves it as it was: the list holds each one once. */
+export function withFavorite(favorites: string[], activityId: string): string[] {
+    if (favorites.includes(activityId)) return favorites;
+    return [...favorites, activityId];
+}
+
+export function withoutFavorite(favorites: string[], activityId: string): string[] {
+    return favorites.filter(id => id !== activityId);
+}

@@ -1,6 +1,6 @@
 import { aUser } from '@tests';
 import { describe, expect, it } from 'vitest';
-import { hasRole, Role, roleOf, type UserData } from '@features/user/models/user';
+import { hasRole, Role, roleOf, withFavorite, type UserData } from '@features/user/models/user';
 
 describe('roleOf', () => {
     it('reads an empty role as a plain user', () => {
@@ -24,5 +24,11 @@ describe('hasRole', () => {
 
     it('refuses a user holding none of them', () => {
         expect(hasRole(aUser({ role: Role.USER }), [Role.ADMIN])).toBe(false);
+    });
+});
+
+describe('withFavorite', () => {
+    it('keeps an activity once when it is added twice', () => {
+        expect(withFavorite(['act-1'], 'act-1')).toEqual(['act-1']);
     });
 });

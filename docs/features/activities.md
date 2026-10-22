@@ -14,14 +14,29 @@ dependency runs one way: nothing here imports `activities-authoring`.
 
 | Name | Path | Screen |
 |---|---|---|
-| `activities` | `/activities` | The list |
+| `activities.library` | `/activities/library` | The library's catalogue tab |
+| `activities.favorites` | `/activities/library/favorites` | The library's favorites tab |
 | `activities.page` | `/activities/:id` | One activity in full |
 | `activities.play` | `/activities/:id/play/:step?` | Running the activity, one step to a page |
 
-`/` redirects to `activities`.
+`/` redirects to `activities.library`. The library's tabs are child routes of
+`/activities/library`, so the sidebar's and the dock's link to the library stays active on
+either tab.
 
 One composable to a screen: `useActivitiesList` holds the results and the search,
 `useActivity` the detail screen, and `useActivityPlay` the run.
+
+## Favorites
+
+A heart on every card and on the detail screen adds the activity to the user's favorites, or
+takes it off (`_parts/favorite.vue`). Either way a toast says so; the one for a removal has a
+*Cancel* button that puts the favorite back, with no toast of its own. The list itself is the
+user's, and so is writing it: `useFavorites` in [user](user.md#favorites-and-history).
+
+The favorites tab (`useFavoritesList`) shows them with the library's card, sorted by name, or a
+message saying there are none yet. It reads them again whenever the list changes, so a heart
+tapped on the tab takes its card off, and cancelling brings it back. With no favorite it asks
+the backend for nothing: a filter with no id in it would match every activity.
 
 ## Running an activity
 
@@ -207,6 +222,10 @@ or an api wrapper does not earn one — see
   so a save never writes them back.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 - A resource's picture is its url when that is an image, query string or not, and empty otherwise.
+
+*`tests/useFavoritesList.spec.ts`* — the favorites tab
+
+- With no favorite, the tab shows no activity and asks the backend for none.
 
 *`tests/play.spec.ts`* — where a run is
 

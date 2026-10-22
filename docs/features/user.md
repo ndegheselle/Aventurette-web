@@ -81,14 +81,21 @@ keeps a user to their own record; nothing here checks it.
 
 ## Favorites and history
 
-Stored in the backend, not read by the app yet.
-
 - `users.favorites` is a list of activities. It sits on the user record, so the `users` rules
   already keep it to its owner. Deleting an activity removes it from every list.
 - `user_activity_history` holds one record per user and activity (a unique index on both):
   revisiting updates the record, and `updated` is when the activity was last opened. Every rule
   is `user = @request.auth.id`, and an update cannot move a record to another user or activity.
-  Deleting either side deletes the record.
+  Deleting either side deletes the record. Nothing in the app reads or writes it yet.
+
+`useFavorites` reads the favorites off the session and writes them. A change sends the whole
+list, then asks `useAuth().refresh()` for the user again, as the settings page does, so every
+heart on screen follows. Changes wait for each other in one queue, shared by every caller: two
+hearts tapped in a row would otherwise each send a list missing the other's change. A removal's
+toast carries a *Cancel* that adds the activity back. A failed write says so in a toast, and
+does not hold up the ones queued behind it.
+
+The screens are the [activities](activities.md#favorites) feature's.
 
 ## Errors
 
@@ -117,6 +124,12 @@ One rule, in one place.
 
 - An empty role is a plain user.
 - No roles asked for lets anyone through; otherwise the user must hold one of them.
+- An activity added twice to the favorites is in the list once.
+
+*`tests/useFavorites.spec.ts`*
+
+- Two favorites added in a row are both kept: the second change starts from the first one's list.
+- Cancelling a removal from its toast puts the favorite back.
 
 *`tests/Login.page.spec.ts`, `tests/Register.page.spec.ts`*
 
@@ -129,8 +142,7 @@ One rule, in one place.
 
 ## Not finished
 
-- **Favorites and history have no screen.** The backend stores them; nothing in the app
-  reads or writes them yet.
+- **History has no screen.** The backend stores it; nothing in the app reads or writes it yet.
 - **Both forms are pre-filled with a development account** (`test@example.com` / `1234567890`),
   in `useLoginForm` and `useRegisterForm`. This has to go before real users see it.
 - **"Stay logged in" is not wired to anything.** The checkbox binds to `rememberMe`, which is

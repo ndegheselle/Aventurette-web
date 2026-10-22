@@ -2,7 +2,8 @@
 <script setup lang="ts">
 import type { ActivityData } from '@features/activities/models/activity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { HeartIcon, PlayIcon, PresentationIcon } from 'lucide-vue-next';
+import FavoriteButton from '@features/activities/ui/activity/_parts/favorite.vue';
+import { PlayIcon, PresentationIcon } from 'lucide-vue-next';
 
 defineProps<{
     activity: ActivityData;
@@ -18,8 +19,6 @@ defineProps<{
         <button type="button" class="btn btn-square btn-lg" disabled>
             <PresentationIcon />
         </button>
-        <button type="button" class="btn btn-square btn-lg" disabled>
-            <HeartIcon />
-        </button>
+        <FavoriteButton :activity-id="activity.id" class="btn btn-square btn-lg" />
     </div>
 </template>

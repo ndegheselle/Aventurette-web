@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { timingOf, type ActivityData } from '@features/activities/models/activity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { HeartIcon } from 'lucide-vue-next';
+import FavoriteButton from '@features/activities/ui/activity/_parts/favorite.vue';
 import { computed } from 'vue';
 
 const props = defineProps<{
@@ -28,11 +28,7 @@ const timing = computed(() => timingOf(props.activity));
             </h2>
             <div class="card-actions relative justify-between">
                 <span class="badge my-auto">{{ $t('activities.minutes', { minutes: timing.total }) }}</span>
-                <button class="btn btn-ghost btn-circle"
-                        :aria-label="$t('activities.card.more')"
-                        disabled>
-                    <HeartIcon />
-                </button>
+                <FavoriteButton :activity-id="activity.id" class="btn btn-ghost btn-circle" />
             </div>
         </div>
     </div>
