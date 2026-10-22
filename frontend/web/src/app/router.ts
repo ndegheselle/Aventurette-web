@@ -5,6 +5,7 @@ import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@feature
 import authoringRoutes from '@features/admin/activities-authoring/routes';
 import catalogueRoutes from '@features/admin/catalogue-authoring/routes';
 import dashboardRoutes from '@features/dashboard/routes';
+import planningRoutes from '@features/planning/routes';
 import userRoutes, { publicRoutes as userPublicRoutes } from '@features/user/routes';
 import type { RouteRecordRaw } from 'vue-router';
 
@@ -19,6 +20,7 @@ const routes: RouteRecordRaw[] = [
 
             ...dashboardRoutes,
             ...activitiesRoutes,
+            ...planningRoutes,
             ...userRoutes,
         ]
     },

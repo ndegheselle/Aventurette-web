@@ -15,6 +15,7 @@ dependency runs one way: nothing here imports `activities-authoring`.
 | Name | Path | Screen |
 |---|---|---|
 | `activities.library` | `/activities/library` | The library's catalogue tab |
+| `activities.search` | `/activities/library/search` | The library's search tab |
 | `activities.favorites` | `/activities/library/favorites` | The library's favorites tab |
 | `activities.page` | `/activities/:id` | One activity in full |
 | `activities.play` | `/activities/:id/play/:step?` | Running the activity, one step to a page |
@@ -22,7 +23,11 @@ dependency runs one way: nothing here imports `activities-authoring`.
 
 `/` redirects to `activities.library`. The library's tabs are child routes of
 `/activities/library`, so the sidebar's and the dock's link to the library stays active on
-either tab.
+any tab. Search is one of them: it has no entry of its own in the dock or the sidebar, whose
+place it held went to the [planning](planning.md).
+
+The detail screen's actions end with the planning's button (`planning/ui/PlanButton.vue`),
+beside the heart.
 
 One composable to a screen: `useActivitiesList` holds the results and the search,
 `useActivity` the detail screen, `useActivityPlay` the run and `useActivityFeedback` the screen

@@ -22,6 +22,7 @@ export const Collections = {
 	StepsResources: "steps_resources",
 	UserActivityFeedback: "user_activity_feedback",
 	UserActivityHistory: "user_activity_history",
+	UserPlannedActivities: "user_planned_activities",
 	Users: "users",
 } as const
 export type Collections = typeof Collections[keyof typeof Collections]
@@ -335,6 +336,15 @@ export type UserActivityHistoryRecord = {
 	user: RecordIdString
 }
 
+export type UserPlannedActivitiesRecord = {
+	activity: RecordIdString
+	created: IsoAutoDateString
+	id: string
+	start: IsoDateString
+	updated: IsoAutoDateString
+	user: RecordIdString
+}
+
 export const UsersTypeOptions = {
 	"PERSONNAL": "PERSONNAL",
 	"ASSOCIATION": "ASSOCIATION",
@@ -380,6 +390,7 @@ export type CatalogTipsResponse<Texpand = unknown> = Required<CatalogTipsRecord>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UserActivityFeedbackResponse<Texpand = unknown> = Required<UserActivityFeedbackRecord> & BaseSystemFields<Texpand>
 export type UserActivityHistoryResponse<Texpand = unknown> = Required<UserActivityHistoryRecord> & BaseSystemFields<Texpand>
+export type UserPlannedActivitiesResponse<Texpand = unknown> = Required<UserPlannedActivitiesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -401,6 +412,7 @@ export type CollectionRecords = {
 	steps_resources: StepsResourcesRecord
 	user_activity_feedback: UserActivityFeedbackRecord
 	user_activity_history: UserActivityHistoryRecord
+	user_planned_activities: UserPlannedActivitiesRecord
 	users: UsersRecord
 }
 
@@ -421,6 +433,7 @@ export type CollectionResponses = {
 	steps_resources: StepsResourcesResponse
 	user_activity_feedback: UserActivityFeedbackResponse
 	user_activity_history: UserActivityHistoryResponse
+	user_planned_activities: UserPlannedActivitiesResponse
 	users: UsersResponse
 }
 
