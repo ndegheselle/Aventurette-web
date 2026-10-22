@@ -28,10 +28,7 @@
             "children": "Enfants",
             "theme": "Thème",
             "language": "Langue",
-            "profile": "Profil",
-            "email": "E-mail",
-            "name": "Nom affiché",
-            "save": "Enregistrer"
+            "profile": "Profil"
         }
     }
 }

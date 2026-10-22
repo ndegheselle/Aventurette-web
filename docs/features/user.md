@@ -74,13 +74,8 @@ rules refuse a body that sets `role`, or anyone could sign up as an admin or pro
 
 ## Settings
 
-
-The settings page shows the account's email, read-only, and edits its display name. Saving
-writes the user's own record, then asks `useAuth().refresh()` for it again: the session holds a
-copy of the user, and this is what keeps the navbar's copy current.
-
-The backend's `users` update rule (`id = @request.auth.id`, and no `role` in the body) is what
-keeps a user to their own record; nothing here checks it.
+The settings page sets the theme and the language, and logs out. Its *Profile* and *Children*
+entries are shown disabled: nothing edits the user record yet.
 
 ## Favorites and history
 
@@ -141,8 +136,7 @@ One rule, in one place.
 - The OAuth2 provider buttons render and throw `NotImplementedError` when clicked.
 - A denied route redirects to `/` silently, with no message. A route that redirects `/` to an
   admin-only screen would loop.
-
-
-- The email and the password cannot be changed here; both go through PocketBase flows
-  (confirmation emails) that nothing in the app drives yet.
-- The avatar the backend can store is not editable; the navbar shows a placeholder.
+- **Nothing edits the user record.** The settings page's *Profile* entry is disabled. The email
+  and the password go through PocketBase flows (confirmation emails) that nothing in the app
+  drives yet, and the avatar the backend can store is not editable; the navbar shows a
+  placeholder.
