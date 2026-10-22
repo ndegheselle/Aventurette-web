@@ -19,6 +19,6 @@ defineProps<{
         <button type="button" class="btn btn-square btn-lg" disabled>
             <PresentationIcon />
         </button>
-        <FavoriteButton :activity-id="activity.id" class="btn btn-square btn-lg" />
+        <FavoriteButton :activity="activity" class="btn btn-square btn-lg" />
     </div>
 </template>

@@ -18,7 +18,10 @@ reached from the account menu in the navbar (`AuthMenu`).
 
 `useAuth` is the session, and there is exactly one: `current` is module-level state, shared by
 every caller, so signing in anywhere signs in everywhere. `UserData` in `models/user.ts` is this
-app's user record, and what `useAuth().current` holds.
+app's user record; `useAuth().current` holds a `SessionUser`, the part of it the session needs —
+id, email, name, avatar and role — and the backend is asked for those fields only
+(`api/session.ts`). The rest of the record, the favorites included, is read by the screen that
+needs it.
 
 `AuthMenu` is the session's corner of the navbar: the signed-in user's email and a logout, or a
 login link. `logout` only drops the session; the menu then goes to the login screen.
@@ -88,14 +91,8 @@ keeps a user to their own record; nothing here checks it.
   is `user = @request.auth.id`, and an update cannot move a record to another user or activity.
   Deleting either side deletes the record. Nothing in the app reads or writes it yet.
 
-`useFavorites` reads the favorites off the session and writes them. A change sends the whole
-list, then asks `useAuth().refresh()` for the user again, as the settings page does, so every
-heart on screen follows. Changes wait for each other in one queue, shared by every caller: two
-hearts tapped in a row would otherwise each send a list missing the other's change. A removal's
-toast carries a *Cancel* that adds the activity back. A failed write says so in a toast, and
-does not hold up the ones queued behind it.
-
-The screens are the [activities](activities.md#favorites) feature's.
+The favorites' screens, and reading and writing them, are the
+[activities](activities.md#favorites) feature's.
 
 ## Errors
 
@@ -124,12 +121,6 @@ One rule, in one place.
 
 - An empty role is a plain user.
 - No roles asked for lets anyone through; otherwise the user must hold one of them.
-- An activity added twice to the favorites is in the list once.
-
-*`tests/useFavorites.spec.ts`*
-
-- Two favorites added in a row are both kept: the second change starts from the first one's list.
-- Cancelling a removal from its toast puts the favorite back.
 
 *`tests/Login.page.spec.ts`, `tests/Register.page.spec.ts`*
 

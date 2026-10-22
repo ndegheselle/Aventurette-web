@@ -67,6 +67,10 @@
             "addToPlanning": "Ajouter au planning",
             "start": "Démarrer"
         },
+        "favorites": {
+            "added": "Activité ajoutée aux favoris",
+            "removed": "Activité retirée des favoris"
+        },
         "fields": {
             "name": "Nom",
             "picture": "Visuel principal",

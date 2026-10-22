@@ -30,13 +30,20 @@ One composable to a screen: `useActivitiesList` holds the results and the search
 
 A heart on every card and on the detail screen adds the activity to the user's favorites, or
 takes it off (`_parts/favorite.vue`). Either way a toast says so; the one for a removal has a
-*Cancel* button that puts the favorite back, with no toast of its own. The list itself is the
-user's, and so is writing it: `useFavorites` in [user](user.md#favorites-and-history).
+*Cancel* button that puts the favorite back, with no toast of its own. The favorites tab shows
+them with the library's card, in the order they were added, or a message saying there are none
+yet.
 
-The favorites tab (`useFavoritesList`) shows them with the library's card, sorted by name, or a
-message saying there are none yet. It reads them again whenever the list changes, so a heart
-tapped on the tab takes its card off, and cancelling brings it back. With no favorite it asks
-the backend for nothing: a filter with no id in it would match every activity.
+`useFavorites` is all of it: the list, and adding or removing one. The list is module state,
+shared by every heart and the tab. It is read once per signed-in user, by id, and kept in step
+with each change after that: `favoritesApi.of` reads the user record with `favorites` expanded,
+each one through `activityMapper`'s relations (`favoritesMapper`), and keeps nothing else of the
+record. The session does not carry the favorites ([user](user.md#the-session)).
+
+**A change sends one activity, never the list** — `favoritesApi.add` and `remove` go through the
+crud port's `link` and `unlink`, PocketBase's `favorites+` and `favorites-`. Two hearts tapped at
+once therefore both land, and no change has to wait for another. The adapter sends them without
+a request key: the SDK would otherwise abort the first when the second goes to the same record.
 
 ## Running an activity
 
@@ -223,9 +230,16 @@ or an api wrapper does not earn one — see
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 - A resource's picture is its url when that is an image, query string or not, and empty otherwise.
 
-*`tests/useFavoritesList.spec.ts`* — the favorites tab
+*`tests/favorites.spec.ts`* — the favorites mapper and list
 
-- With no favorite, the tab shows no activity and asks the backend for none.
+- The favorites are asked for whole: every relation an activity needs, under `favorites`.
+- They read as activities in their stored order, with nothing else of the user record; unexpanded,
+  as none rather than as ids.
+- An activity added twice is in the list once.
+
+*`tests/useFavorites.spec.ts`* — taking a removal back
+
+- Cancelling a removal from its toast writes the favorite back, not only shows it again.
 
 *`tests/play.spec.ts`* — where a run is
 

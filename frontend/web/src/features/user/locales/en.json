@@ -32,10 +32,6 @@
             "email": "Email",
             "name": "Display name",
             "save": "Save"
-        },
-        "favorites": {
-            "added": "Activity added to favorites",
-            "removed": "Activity removed from favorites"
         }
     }
 }

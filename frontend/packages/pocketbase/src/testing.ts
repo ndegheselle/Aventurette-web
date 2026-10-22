@@ -53,12 +53,12 @@ export function fakePocketBase(records: Record<string, unknown>[] = []): FakePoc
     }
 
     const collection = {
-        async authWithPassword(email: string, password: string) {
-            record('authWithPassword', [email, password]);
+        async authWithPassword(email: string, password: string, options?: unknown) {
+            record('authWithPassword', [email, password, options]);
             return { record: fake.records[0] ?? { id: 'usr1', email }, token: 'fake-token' };
         },
-        async authRefresh() {
-            record('authRefresh', []);
+        async authRefresh(options?: unknown) {
+            record('authRefresh', [options]);
             return { record: fake.records[0], token: 'fake-token' };
         },
         async requestVerification(email: string) {

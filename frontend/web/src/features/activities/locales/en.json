@@ -67,6 +67,10 @@
             "addToPlanning": "Add to planner",
             "start": "Start"
         },
+        "favorites": {
+            "added": "Activity added to favorites",
+            "removed": "Activity removed from favorites"
+        },
         "fields": {
             "name": "Name",
             "picture": "Cover visual",

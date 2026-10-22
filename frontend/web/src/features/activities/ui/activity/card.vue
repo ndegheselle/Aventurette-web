@@ -28,7 +28,7 @@ const timing = computed(() => timingOf(props.activity));
             </h2>
             <div class="card-actions relative justify-between">
                 <span class="badge my-auto">{{ $t('activities.minutes', { minutes: timing.total }) }}</span>
-                <FavoriteButton :activity-id="activity.id" class="btn btn-ghost btn-circle" />
+                <FavoriteButton :activity="activity" class="btn btn-ghost btn-circle" />
             </div>
         </div>
     </div>
