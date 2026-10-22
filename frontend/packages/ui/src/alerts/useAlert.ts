@@ -5,10 +5,17 @@ export enum EnumAlertType {
     Error,
 }
 
+/** A button in the alert, such as an undo. Clicking it closes the alert. */
+export interface AlertAction {
+    label: string;
+    run: () => void;
+}
+
 export interface Alert {
     id: number;
     message: string;
     type: EnumAlertType;
+    action?: AlertAction;
 }
 
 const alerts = ref<Alert[]>([]);
@@ -25,16 +32,23 @@ export function useAlert() {
         alerts.value = alerts.value.filter(t => t.id !== id);
     }
 
-    function push(type: EnumAlertType, message: string) {
+    function push(type: EnumAlertType, message: string, action?: AlertAction) {
         const id = ++nextId;
-        alerts.value.push({ id, type, message });
+        alerts.value.push({ id, type, message, action });
         setTimeout(() => close(id), DISMISS_AFTER_MS);
+    }
+
+    /** Run the alert's action, once: the alert closes with it. */
+    function act(alert: Alert) {
+        close(alert.id);
+        alert.action?.run();
     }
 
     return {
         alerts,
         close,
-        success: (msg: string) => push(EnumAlertType.Success, msg),
+        act,
+        success: (msg: string, action?: AlertAction) => push(EnumAlertType.Success, msg, action),
         error: (msg: string) => push(EnumAlertType.Error, msg),
     }
 }

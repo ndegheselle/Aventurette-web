@@ -62,9 +62,14 @@
             "title": "Conseils"
         },
         "actions": {
-            "favorite": "Favoris",
+            "favorite": "Ajouter aux favoris",
+            "unfavorite": "Retirer des favoris",
             "addToPlanning": "Ajouter au planning",
             "start": "Démarrer"
+        },
+        "favorites": {
+            "added": "Activité ajoutée aux favoris",
+            "removed": "Activité retirée des favoris"
         },
         "fields": {
             "name": "Nom",
@@ -162,9 +167,6 @@
             "finish": "Terminer",
             "empty": "Cette activité n'a pas encore d'étape."
         },
-        "card": {
-            "more": "Plus d'options"
-        },
         "details": {
             "more": "Voir plus",
             "less": "Voir moins"
@@ -174,7 +176,8 @@
                 "catalogue": "Catalogue",
                 "favorites": "Favoris",
                 "history": "Historique"
-            }
+            },
+            "favoritesEmpty": "Aucun favori pour l'instant. Touchez le cœur d'une activité pour la retrouver ici."
         },
         "searchPage": {
             "quickFilters": {

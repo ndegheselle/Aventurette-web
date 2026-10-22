@@ -28,10 +28,7 @@
             "children": "Children",
             "theme": "Theme",
             "language": "Language",
-            "profile": "Profile",
-            "email": "Email",
-            "name": "Display name",
-            "save": "Save"
+            "profile": "Profile"
         }
     }
 }

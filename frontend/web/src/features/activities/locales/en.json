@@ -62,9 +62,14 @@
             "title": "Tips"
         },
         "actions": {
-            "favorite": "Favourites",
+            "favorite": "Add to favorites",
+            "unfavorite": "Remove from favorites",
             "addToPlanning": "Add to planner",
             "start": "Start"
+        },
+        "favorites": {
+            "added": "Activity added to favorites",
+            "removed": "Activity removed from favorites"
         },
         "fields": {
             "name": "Name",
@@ -162,9 +167,6 @@
             "finish": "Finish",
             "empty": "This activity has no steps yet."
         },
-        "card": {
-            "more": "More options"
-        },
         "details": {
             "more": "Show more",
             "less": "Show less"
@@ -174,7 +176,8 @@
                 "catalogue": "Catalogue",
                 "favorites": "Favorites",
                 "history": "History"
-            }
+            },
+            "favoritesEmpty": "No favorites yet. Tap the heart on an activity to find it here."
         },
         "searchPage": {
             "quickFilters": {
