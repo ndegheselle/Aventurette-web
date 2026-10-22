@@ -3,7 +3,7 @@ import { commentToSave, type FeedbackData } from '@features/activities/models/fe
 import { useActivityFeedback } from '@features/activities/composables/useActivityFeedback';
 import routes, { routesNames } from '@features/activities/routes';
 import { useAuth } from '@features/user/composables/useAuth';
-import type { UserData } from '@features/user/models/user';
+import type { SessionUser } from '@features/user/models/user';
 import { anActivity, aUser, createTestRouter, fakeAuthProvider, fakeCrud, withSetup } from '@tests';
 import { flushPromises } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -28,7 +28,7 @@ describe('commentToSave', () => {
 const activities = fakeCrud<ActivityData>();
 const feedbacks = fakeCrud<FeedbackData>();
 const user = aUser({ id: 'usr-1' });
-const session = fakeAuthProvider<UserData>(user);
+const session = fakeAuthProvider<SessionUser>(user);
 
 vi.mock('@features/activities/api/activities.api', () => ({
     get activitiesApi() { return activities; },

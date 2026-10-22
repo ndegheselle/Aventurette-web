@@ -3,9 +3,10 @@
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useActivityFeedback } from '@features/activities/composables/useActivityFeedback';
 import Confetti from '@features/activities/ui/activity/_parts/confetti.vue';
-import { HeartIcon, ThumbsUpIcon } from 'lucide-vue-next';
+import FavoriteButton from '@features/activities/ui/activity/_parts/favorite.vue';
+import { ThumbsUpIcon } from 'lucide-vue-next';
 
-const { activity, liked, favorite, comment, isBusy, toggleLike, toggleFavorite, leave } = useActivityFeedback();
+const { activity, liked, comment, isBusy, toggleLike, leave } = useActivityFeedback();
 </script>
 
 <template>
@@ -24,16 +25,12 @@ const { activity, liked, favorite, comment, isBusy, toggleLike, toggleFavorite, 
                 </div>
 
                 <div class="flex gap-4">
-                    <button type="button" class="btn btn-square btn-lg" :class="{ 'btn-primary': liked }"
+                    <button type="button" class="btn btn-square btn-lg"
                             :aria-label="$t('activities.feedback.like')" :aria-pressed="liked" :disabled="isBusy"
                             @click="toggleLike">
-                        <ThumbsUpIcon :class="{ 'fill-current': liked }" />
+                        <ThumbsUpIcon :class="{ 'fill-current text-primary': liked }" />
                     </button>
-                    <button type="button" class="btn btn-square btn-lg" :class="{ 'btn-secondary': favorite }"
-                            :aria-label="$t('activities.feedback.favorite')" :aria-pressed="favorite"
-                            :disabled="isBusy" @click="toggleFavorite">
-                        <HeartIcon :class="{ 'fill-current': favorite }" />
-                    </button>
+                    <FavoriteButton :activity="activity" class="btn btn-square btn-lg" />
                 </div>
 
                 <label class="w-full max-w-md flex flex-col gap-1 text-left">

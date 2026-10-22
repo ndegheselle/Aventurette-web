@@ -80,6 +80,27 @@ describe('createPocketBaseCrud', () => {
         expect(pb.lastCall('create')?.[0]).toEqual({ name: 'Hunt' });
     });
 
+    it('sends only the ids linked or unlinked, through the list modifiers', async () => {
+        const pb = fakePocketBase([{ id: 'usr1', favorites: ['act1'] }]);
+        const crud = createPocketBaseCrud(pb.client, 'users', passthroughMapper<BaseEntity>());
+
+        await crud.link('usr1', 'favorites', ['act2']);
+        expect(pb.lastCall('update')?.slice(0, 2)).toEqual(['usr1', { 'favorites+': ['act2'] }]);
+
+        await crud.unlink('usr1', 'favorites', ['act1']);
+        expect(pb.lastCall('update')?.slice(0, 2)).toEqual(['usr1', { 'favorites-': ['act1'] }]);
+    });
+
+    it('lets a link run beside another one to the same record, rather than aborting it', async () => {
+        // The SDK cancels a pending request when another goes to the same url, unless told not to.
+        const pb = fakePocketBase([{ id: 'usr1', favorites: [] }]);
+        const crud = createPocketBaseCrud(pb.client, 'users', passthroughMapper<BaseEntity>());
+
+        await crud.link('usr1', 'favorites', ['act1']);
+
+        expect(pb.lastCall('update')?.[2]).toMatchObject({ requestKey: null });
+    });
+
     it('reports the server total, not the size of the page', async () => {
         const pb = fakePocketBase(Array.from({ length: 12 }, (_, i) => ({ id: `act${i}` })));
         const crud = createPocketBaseCrud(pb.client, 'activities', passthroughMapper<BaseEntity>());

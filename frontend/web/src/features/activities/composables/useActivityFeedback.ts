@@ -4,19 +4,18 @@ import { useActivity } from '@features/activities/composables/useActivity';
 import { returnToActivity } from '@features/activities/composables/useActivityPlay';
 import { commentToSave, createFeedback, feedbackFilter, type FeedbackData } from '@features/activities/models/feedback';
 import { useAuth } from '@features/user/composables/useAuth';
-import { useFavorites } from '@features/user/composables/useFavorites';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
 /**
- * The screen after a run: what the user thought of the activity. A like and a favourite are
- * written the moment they are toggled; the comment as the user leaves, if it changed.
+ * The screen after a run: what the user thought of the activity. A like is written the moment
+ * it is toggled; the comment as the user leaves, if it changed. The favourite is the shared
+ * heart's, which writes itself.
  */
 export function useActivityFeedback() {
     const { activity } = useActivity();
     const { currentId } = useAuth();
-    const { isFavorite, toggleFavorite: toggleUserFavorite } = useFavorites();
     const alert = useAlert();
     const { t } = useI18n();
     const route = useRoute();
@@ -68,18 +67,11 @@ export function useActivityFeedback() {
     }
 
     const liked = computed(() => feedback.value?.liked ?? false);
-    const favorite = computed(() => activity.value !== null && isFavorite(activity.value.id));
 
     async function toggleLike() {
         const current = activity.value;
         if (!current) return;
         await guarded(() => save(current.id, { liked: !liked.value }));
-    }
-
-    async function toggleFavorite() {
-        const current = activity.value;
-        if (!current) return;
-        await guarded(() => toggleUserFavorite(current.id));
     }
 
     /** Back to the activity, once the comment is saved: a refused one keeps the user here. */
@@ -96,5 +88,5 @@ export function useActivityFeedback() {
         returnToActivity(router, current.id);
     }
 
-    return { activity, liked, favorite, comment, isBusy, toggleLike, toggleFavorite, leave };
+    return { activity, liked, comment, isBusy, toggleLike, leave };
 }

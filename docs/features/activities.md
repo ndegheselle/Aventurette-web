@@ -14,16 +14,38 @@ dependency runs one way: nothing here imports `activities-authoring`.
 
 | Name | Path | Screen |
 |---|---|---|
-| `activities` | `/activities` | The list |
+| `activities.library` | `/activities/library` | The library's catalogue tab |
+| `activities.favorites` | `/activities/library/favorites` | The library's favorites tab |
 | `activities.page` | `/activities/:id` | One activity in full |
 | `activities.play` | `/activities/:id/play/:step?` | Running the activity, one step to a page |
 | `activities.feedback` | `/activities/:id/feedback` | After a run: well done, and what the user thought |
 
-`/` redirects to `activities`.
+`/` redirects to `activities.library`. The library's tabs are child routes of
+`/activities/library`, so the sidebar's and the dock's link to the library stays active on
+either tab.
 
 One composable to a screen: `useActivitiesList` holds the results and the search,
 `useActivity` the detail screen, `useActivityPlay` the run and `useActivityFeedback` the screen
 after it.
+
+## Favorites
+
+A heart on every card and on the detail screen adds the activity to the user's favorites, or
+takes it off (`_parts/favorite.vue`). Either way a toast says so; the one for a removal has a
+*Cancel* button that puts the favorite back, with no toast of its own. The favorites tab shows
+them with the library's card, in the order they were added, or a message saying there are none
+yet.
+
+`useFavorites` is all of it: the list, and adding or removing one. The list is module state,
+shared by every heart and the tab. It is read once per signed-in user, by id, and kept in step
+with each change after that: `favoritesApi.of` reads the user record with `favorites` expanded,
+each one through `activityMapper`'s relations (`favoritesMapper`), and keeps nothing else of the
+record. The session does not carry the favorites ([user](user.md#the-session)).
+
+**A change sends one activity, never the list** — `favoritesApi.add` and `remove` go through the
+crud port's `link` and `unlink`, PocketBase's `favorites+` and `favorites-`. Two hearts tapped at
+once therefore both land, and no change has to wait for another. The adapter sends them without
+a request key: the SDK would otherwise abort the first when the second goes to the same record.
 
 ## Running an activity
 
@@ -50,8 +72,8 @@ activity page the way the run's own back button does (`returnToActivity`), so th
 the feedback screen are one history entry between them.
 
 - **A like** is `user_activity_feedback.liked`, written the moment it is toggled.
-- **A favourite** is the user's `favorites` list, written the moment it is toggled, through
-  `useFavorites` in [user](user.md#favorites-and-history).
+- **A favourite** is the same heart as on the cards and the detail screen (`_parts/favorite.vue`),
+  written the moment it is toggled — see [Favorites](#favorites).
 - **A comment** is `user_activity_feedback.comment`, written as the user leaves, and only if
   it changed (`commentToSave`). Emptying the field takes the comment back. A refused write
   keeps the user on the screen with what they typed.
@@ -59,7 +81,7 @@ the feedback screen are one history entry between them.
 `user_activity_feedback` holds one record per user and activity, under a unique index: the
 first write creates it and every later one, on this run or another, updates it. The buttons
 are held until the feedback is read and while a write is in flight, so a quick second tap
-cannot create a second record. A user reads and writes their own feedback; an admin reads
+cannot create a second record. The heart is not held: a favourite is its own write. A user reads and writes their own feedback; an admin reads
 everyone's. Deleting the user or the activity deletes it.
 
 The animation is `ui/activity/_parts/confetti.lottie.json`, Noto's `1f38a` as Google publishes
@@ -192,7 +214,7 @@ list holding it — steps, workshops or materials.
 
 ## Rules that hold
 
-Six specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
+Eight specs, in `tests/`. What is *not* covered here is not an oversight: a formatter, a factory
 or an api wrapper does not earn one — see
 [ADR 0013](../adr/0013-specs-live-in-a-feature-tests-folder.md).
 
@@ -233,6 +255,17 @@ or an api wrapper does not earn one — see
   so a save never writes them back.
 - A resource's stored file name becomes `url`; a write sends the picked file, never the url.
 - A resource's picture is its url when that is an image, query string or not, and empty otherwise.
+
+*`tests/favorites.spec.ts`* — the favorites mapper and list
+
+- The favorites are asked for whole: every relation an activity needs, under `favorites`.
+- They read as activities in their stored order, with nothing else of the user record; unexpanded,
+  as none rather than as ids.
+- An activity added twice is in the list once.
+
+*`tests/useFavorites.spec.ts`* — taking a removal back
+
+- Cancelling a removal from its toast writes the favorite back, not only shows it again.
 
 *`tests/play.spec.ts`* — where a run is
 

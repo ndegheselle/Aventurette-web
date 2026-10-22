@@ -30,11 +30,10 @@ export const batch: BatchFactory = () => createPocketBaseBatch(client);
 /** An id for a record that a batch creates, so the rest of the batch can point at it. */
 export const newId: IdFactory = pocketBaseId;
 
-const auth = createPocketBaseAuth<BaseEntity>(client, Collections.Users);
-
 /**
- * The auth provider, narrowed to the caller's user type. One instance, so the session is shared.
+ * The auth provider, narrowed to the caller's user type. The session holds `fields` of the user
+ * and nothing more. Every provider shares the client's one session.
  */
-export function authProvider<TUser extends BaseEntity>(): IAuthProvider<TUser> {
-    return auth as unknown as IAuthProvider<TUser>;
+export function authProvider<TUser extends BaseEntity>(fields: (keyof TUser & string)[]): IAuthProvider<TUser> {
+    return createPocketBaseAuth<TUser>(client, Collections.Users, fields);
 }

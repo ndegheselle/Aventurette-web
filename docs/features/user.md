@@ -18,7 +18,10 @@ reached from the account menu in the navbar (`AuthMenu`).
 
 `useAuth` is the session, and there is exactly one: `current` is module-level state, shared by
 every caller, so signing in anywhere signs in everywhere. `UserData` in `models/user.ts` is this
-app's user record, and what `useAuth().current` holds.
+app's user record; `useAuth().current` holds a `SessionUser`, the part of it the session needs —
+id, email, name, avatar and role — and the backend is asked for those fields only
+(`api/session.ts`). The rest of the record, the favorites included, is read by the screen that
+needs it.
 
 `AuthMenu` is the session's corner of the navbar: the signed-in user's email and a logout, or a
 login link. `logout` only drops the session; the menu then goes to the login screen.
@@ -71,27 +74,20 @@ rules refuse a body that sets `role`, or anyone could sign up as an admin or pro
 
 ## Settings
 
-
-The settings page shows the account's email, read-only, and edits its display name. Saving
-writes the user's own record, then asks `useAuth().refresh()` for it again: the session holds a
-copy of the user, and this is what keeps the navbar's copy current.
-
-The backend's `users` update rule (`id = @request.auth.id`, and no `role` in the body) is what
-keeps a user to their own record; nothing here checks it.
+The settings page sets the theme and the language, and logs out. Its *Profile* and *Children*
+entries are shown disabled: nothing edits the user record yet.
 
 ## Favorites and history
 
-Stored in the backend. Only the favourites are written yet, from the feedback screen that
-follows a run (see [activities](activities.md#after-a-run)).
-
 - `users.favorites` is a list of activities. It sits on the user record, so the `users` rules
   already keep it to its owner. Deleting an activity removes it from every list.
-  `useFavorites` reads it from the session and toggles one activity (`withFavoriteToggled`),
-  then refreshes the session so the change shows.
 - `user_activity_history` holds one record per user and activity (a unique index on both):
   revisiting updates the record, and `updated` is when the activity was last opened. Every rule
   is `user = @request.auth.id`, and an update cannot move a record to another user or activity.
-  Deleting either side deletes the record.
+  Deleting either side deletes the record. Nothing in the app reads or writes it yet.
+
+The favorites' screens, and reading and writing them, are the
+[activities](activities.md#favorites) feature's.
 
 ## Errors
 
@@ -120,7 +116,6 @@ One rule, in one place.
 
 - An empty role is a plain user.
 - No roles asked for lets anyone through; otherwise the user must hold one of them.
-- Toggling a favourite adds an activity that is not one, and takes off one that is.
 
 *`tests/Login.page.spec.ts`, `tests/Register.page.spec.ts`*
 
@@ -133,9 +128,7 @@ One rule, in one place.
 
 ## Not finished
 
-- **Favorites and history have no screen.** The feedback screen adds and removes a
-  favourite; the library's *Favorites* tab is still disabled, the activity page's heart
-  still does nothing, and nothing reads or writes the history yet.
+- **History has no screen.** The backend stores it; nothing in the app reads or writes it yet.
 - **Both forms are pre-filled with a development account** (`test@example.com` / `1234567890`),
   in `useLoginForm` and `useRegisterForm`. This has to go before real users see it.
 - **"Stay logged in" is not wired to anything.** The checkbox binds to `rememberMe`, which is
@@ -143,8 +136,7 @@ One rule, in one place.
 - The OAuth2 provider buttons render and throw `NotImplementedError` when clicked.
 - A denied route redirects to `/` silently, with no message. A route that redirects `/` to an
   admin-only screen would loop.
-
-
-- The email and the password cannot be changed here; both go through PocketBase flows
-  (confirmation emails) that nothing in the app drives yet.
-- The avatar the backend can store is not editable; the navbar shows a placeholder.
+- **Nothing edits the user record.** The settings page's *Profile* entry is disabled. The email
+  and the password go through PocketBase flows (confirmation emails) that nothing in the app
+  drives yet, and the avatar the backend can store is not editable; the navbar shows a
+  placeholder.

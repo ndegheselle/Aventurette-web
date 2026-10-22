@@ -26,6 +26,15 @@ export interface IDataCrud<TEntity extends BaseEntity> {
     update(id: string, data: Partial<TEntity>): Promise<TEntity>;
     remove(id: string): Promise<void>;
 
+    /**
+     * Add ids to a list field of one record, or take them off, sending only those ids: the rest
+     * of the list is neither read nor written, so two changes made at once both land.
+     *
+     * @param field the field as the backend stores it
+     */
+    link(id: string, field: string, ids: string[]): Promise<void>;
+    unlink(id: string, field: string, ids: string[]): Promise<void>;
+
     /** Null when no record has that id. */
     getById(id: string): Promise<TEntity | null>;
     getAll(): Promise<TEntity[]>;

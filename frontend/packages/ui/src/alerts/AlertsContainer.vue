@@ -3,7 +3,7 @@ import { EnumAlertType, useAlert } from '@chapelure/ui/alerts/useAlert';
 import { CircleCheckIcon, TriangleAlertIcon, XIcon } from 'lucide-vue-next';
 import { useTemplateRef, watchEffect } from 'vue';
 
-const { alerts, close } = useAlert();
+const { alerts, close, act } = useAlert();
 
 const dialogRef = useTemplateRef('dialogRef');
 
@@ -15,8 +15,9 @@ watchEffect(() => {
 </script>
 
 <template>
-    <dialog ref="dialogRef" class="z-9999"> 
-        <TransitionGroup name="alert" tag="div" class="toast stack stack-top" v-if="alerts.length > 0">
+    <dialog ref="dialogRef" class="z-9999">
+        <!-- Top center on a phone, where the bottom of the screen is the dock's and the page's actions'. -->
+        <TransitionGroup name="alert" tag="div" class="toast toast-top toast-center md:toast-bottom md:toast-end stack stack-top" v-if="alerts.length > 0">
             <div role="alert" class="alert" 
                 v-for="alert in alerts.toReversed()" :key="alert.id" 
                 :class="{
@@ -26,6 +27,9 @@ watchEffect(() => {
                 <TriangleAlertIcon class="opacity-50" v-if="alert.type === EnumAlertType.Error" />
                 <CircleCheckIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Success" />
                 <span>{{ alert.message }}</span>
+                <button v-if="alert.action" @click="act(alert)" class="btn btn-sm">
+                    {{ alert.action.label }}
+                </button>
                 <button @click="close(alert.id)" class="btn btn-sm btn-ghost btn-circle" :aria-label="$t('actions.close')">
                     <XIcon class="icon-sm" />
                 </button>

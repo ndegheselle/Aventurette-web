@@ -10,7 +10,7 @@ const aRejection = (fields: Record<string, { code?: string }>) =>
 
 function setup(records: Record<string, unknown>[] = [{ id: 'usr1', email: 'parent@example.com' }]) {
     const pb = fakePocketBase(records);
-    return { pb, auth: createPocketBaseAuth<User>(pb.client, 'users') };
+    return { pb, auth: createPocketBaseAuth<User>(pb.client, 'users', ['id', 'email']) };
 }
 
 describe('createPocketBaseAuth', () => {
@@ -88,6 +88,17 @@ describe('createPocketBaseAuth', () => {
 
             await expect(auth.refresh()).resolves.toBeNull();
         });
+    });
+
+    it('asks for the session\'s fields of the user only, beside the token', async () => {
+        const { pb, auth } = setup();
+
+        await auth.login('parent@example.com', 'secret');
+        await auth.refresh();
+
+        const asked = { fields: 'token,record.id,record.email' };
+        expect(pb.lastCall('authWithPassword')?.[2]).toEqual(asked);
+        expect(pb.lastCall('authRefresh')?.[0]).toEqual(asked);
     });
 
     it('clears the stored session on logout', () => {

@@ -64,4 +64,15 @@ describe('useAlert', () => {
 
         expect(alert.alerts.value).toHaveLength(0);
     });
+
+    it('runs an alert\'s action and closes the alert', () => {
+        const alert = useAlert();
+        const undo = vi.fn();
+        alert.success('Removed', { label: 'Undo', run: undo });
+
+        alert.act(alert.alerts.value[0]!);
+
+        expect(undo).toHaveBeenCalledOnce();
+        expect(alert.alerts.value).toHaveLength(0);
+    });
 });
