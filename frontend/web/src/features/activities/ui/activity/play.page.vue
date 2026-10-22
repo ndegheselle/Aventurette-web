@@ -7,7 +7,7 @@ import StepTips from '@features/activities/ui/activity/_parts/tips.vue';
 import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, CircleQuestionMarkIcon, FlagIcon } from 'lucide-vue-next';
 import { watch } from 'vue';
 
-const { activity, steps, index, current, isFirst, isLast, previous, next, leave, headingOf } = useActivityPlay();
+const { activity, steps, index, current, isFirst, isLast, previous, next, leave, finish, headingOf } = useActivityPlay();
 
 // Each step is a page of its own: open it at its top.
 watch(index, () => window.scrollTo({ top: 0 }));
@@ -58,7 +58,7 @@ watch(index, () => window.scrollTo({ top: 0 }));
                         <ChevronRightIcon />
                     </button>
                     <button v-else type="button" class="btn btn-primary btn-square btn-lg"
-                        :aria-label="$t('activities.play.finish')" @click="leave">
+                        :aria-label="$t('activities.play.finish')" @click="finish">
                         <FlagIcon />
                     </button>
                 </div>

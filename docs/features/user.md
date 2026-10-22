@@ -81,10 +81,13 @@ keeps a user to their own record; nothing here checks it.
 
 ## Favorites and history
 
-Stored in the backend, not read by the app yet.
+Stored in the backend. Only the favourites are written yet, from the feedback screen that
+follows a run (see [activities](activities.md#after-a-run)).
 
 - `users.favorites` is a list of activities. It sits on the user record, so the `users` rules
   already keep it to its owner. Deleting an activity removes it from every list.
+  `useFavorites` reads it from the session and toggles one activity (`withFavoriteToggled`),
+  then refreshes the session so the change shows.
 - `user_activity_history` holds one record per user and activity (a unique index on both):
   revisiting updates the record, and `updated` is when the activity was last opened. Every rule
   is `user = @request.auth.id`, and an update cannot move a record to another user or activity.
@@ -117,6 +120,7 @@ One rule, in one place.
 
 - An empty role is a plain user.
 - No roles asked for lets anyone through; otherwise the user must hold one of them.
+- Toggling a favourite adds an activity that is not one, and takes off one that is.
 
 *`tests/Login.page.spec.ts`, `tests/Register.page.spec.ts`*
 
@@ -129,8 +133,9 @@ One rule, in one place.
 
 ## Not finished
 
-- **Favorites and history have no screen.** The backend stores them; nothing in the app
-  reads or writes them yet.
+- **Favorites and history have no screen.** The feedback screen adds and removes a
+  favourite; the library's *Favorites* tab is still disabled, the activity page's heart
+  still does nothing, and nothing reads or writes the history yet.
 - **Both forms are pre-filled with a development account** (`test@example.com` / `1234567890`),
   in `useLoginForm` and `useRegisterForm`. This has to go before real users see it.
 - **"Stay logged in" is not wired to anything.** The checkbox binds to `rememberMe`, which is

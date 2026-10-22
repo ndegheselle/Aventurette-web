@@ -162,6 +162,16 @@
             "finish": "Finish",
             "empty": "This activity has no steps yet."
         },
+        "feedback": {
+            "bravo": "Well done!",
+            "finished": "You finished “{name}”.",
+            "like": "I like this activity",
+            "favorite": "Add to favourites",
+            "comment": "Any comment?",
+            "commentPlaceholder": "What worked, what didn't…",
+            "leave": "Leave",
+            "saveRefused": "Your feedback could not be saved."
+        },
         "card": {
             "more": "More options"
         },

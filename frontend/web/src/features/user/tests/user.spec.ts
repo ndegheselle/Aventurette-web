@@ -1,6 +1,6 @@
 import { aUser } from '@tests';
 import { describe, expect, it } from 'vitest';
-import { hasRole, Role, roleOf, type UserData } from '@features/user/models/user';
+import { hasRole, Role, roleOf, withFavoriteToggled, type UserData } from '@features/user/models/user';
 
 describe('roleOf', () => {
     it('reads an empty role as a plain user', () => {
@@ -24,5 +24,15 @@ describe('hasRole', () => {
 
     it('refuses a user holding none of them', () => {
         expect(hasRole(aUser({ role: Role.USER }), [Role.ADMIN])).toBe(false);
+    });
+});
+
+describe('withFavoriteToggled', () => {
+    it('adds an activity that is not a favourite yet', () => {
+        expect(withFavoriteToggled(['act-1'], 'act-2')).toEqual(['act-1', 'act-2']);
+    });
+
+    it('takes off an activity that is one already, keeping the others', () => {
+        expect(withFavoriteToggled(['act-1', 'act-2'], 'act-1')).toEqual(['act-2']);
     });
 });

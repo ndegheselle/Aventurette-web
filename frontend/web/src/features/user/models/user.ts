@@ -32,3 +32,9 @@ export function toProfileForm(user: Pick<UserData, 'name'> | null): ProfileForm 
 export function toProfilePatch(form: ProfileForm): Partial<UserData> {
     return { name: form.name.trim() };
 }
+
+/** The favourites with `activity` added, or taken off when it is one already. */
+export function withFavoriteToggled(favorites: readonly string[], activity: string): string[] {
+    if (favorites.includes(activity)) return favorites.filter(id => id !== activity);
+    return [...favorites, activity];
+}
