@@ -8,6 +8,7 @@ it owns, the shape of its data, the rules that hold, and what is not finished.
 | [activities](activities.md) | Browsing and searching the public activity catalogue |
 | [activities-authoring](activities-authoring.md) | Authoring: the author's own activities, and the form behind them |
 | [catalogue-authoring](catalogue-authoring.md) | The catalogues every activity picks from: materials, tags, safety instructions, tips |
+| [planning](planning.md) | The user's calendar of the activities they plan to run |
 | [user](user.md) | The account: signing in and up, the session, roles, the route guard, and settings |
 | [dashboard](dashboard.md) | The signed-in user's landing page — empty for now |
 

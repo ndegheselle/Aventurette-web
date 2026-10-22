@@ -5,17 +5,18 @@ import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as authoringRoutesNames } from '@features/admin/activities-authoring/routes';
 import { routesNames as catalogueRoutesNames } from '@features/admin/catalogue-authoring/routes';
+import { routesNames as planningRoutesNames } from '@features/planning/routes';
 import { useAuth } from '@features/user/composables/useAuth';
 import { Role } from '@features/user/models/user';
 import { routesNames as usersRoutesNames } from '@features/user/routes';
 import {
+    CalendarIcon,
     LibraryBigIcon,
     LibraryIcon,
     LightbulbIcon,
     PanelLeftCloseIcon,
     PanelLeftOpenIcon,
     PencilLineIcon,
-    SearchIcon,
 } from 'lucide-vue-next';
 import { ref } from 'vue';
 
@@ -72,10 +73,10 @@ const { hasRole } = useAuth();
                     </li>
                     <li>
                         <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                            :to="{ name: activitiesRoutesNames.search }" active-class="menu-active"
-                            :data-tip="$t('dock.search')">
-                            <SearchIcon />
-                            <span class="is-drawer-close:hidden">{{ $t('dock.search') }}</span>
+                            :to="{ name: planningRoutesNames.planning }" active-class="menu-active"
+                            :data-tip="$t('dock.planning')">
+                            <CalendarIcon />
+                            <span class="is-drawer-close:hidden">{{ $t('dock.planning') }}</span>
                         </RouterLink>
                     </li>
                     <li class="menu-disabled">

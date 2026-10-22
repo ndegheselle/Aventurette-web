@@ -2,7 +2,8 @@
 import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { LibraryIcon, LightbulbIcon, SearchIcon, UserIcon } from 'lucide-vue-next';
+import { routesNames as planningRoutesNames } from '@features/planning/routes';
+import { CalendarIcon, LibraryIcon, LightbulbIcon, UserIcon } from 'lucide-vue-next';
 import { routesNames as usersRoutesNames } from '@features/user/routes';
 
 </script>
@@ -19,11 +20,11 @@ import { routesNames as usersRoutesNames } from '@features/user/routes';
                 <LibraryIcon />
                 <span class="dock-label">{{ $t('dock.library') }}</span>
             </RouterLink>
-            <RouterLink :to="{ name: activitiesRoutesNames.search }">
-                <SearchIcon />
-                <span class="dock-label">{{ $t('dock.search') }}</span>
+            <RouterLink :to="{ name: planningRoutesNames.planning }" active-class="dock-active">
+                <CalendarIcon />
+                <span class="dock-label">{{ $t('dock.planning') }}</span>
             </RouterLink>
-            <!-- XXX : no search or tips page for the public yet. -->
+            <!-- XXX : no tips page for the public yet. -->
             <button type="button" disabled>
                 <LightbulbIcon />
                 <span class="dock-label">{{ $t('dock.tips') }}</span>

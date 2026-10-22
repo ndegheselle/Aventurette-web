@@ -1,0 +1,15 @@
+{
+    "planning": {
+        "actions": {
+            "plan": "Planifier",
+            "open": "Voir l'activité",
+            "remove": "Retirer du planning"
+        },
+        "plan": {
+            "title": "Planifier l'activité",
+            "when": "Quand voulez-vous faire « {name} » ?"
+        },
+        "added": "Activité ajoutée au planning",
+        "removed": "Activité retirée du planning"
+    }
+}
