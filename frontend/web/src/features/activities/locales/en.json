@@ -183,6 +183,7 @@
         "library": {
             "tabs": {
                 "catalogue": "Catalogue",
+                "search": "Search",
                 "favorites": "Favorites",
                 "history": "History"
             },
