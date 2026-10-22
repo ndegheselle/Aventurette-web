@@ -41,6 +41,19 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
         return toEntity(record);
     }
 
+    // PocketBase's `field+` and `field-` modifiers. Only the id comes back: nothing reads the rest.
+    // No request key: the SDK would otherwise abort a link still in flight when another one goes
+    // to the same record, though the backend applies both.
+    const listOptions = { fields: 'id', requestKey: null };
+
+    async function link(id: string, field: string, ids: string[]): Promise<void> {
+        await mapErrors(() => collection.update(id, { [`${field}+`]: ids }, listOptions));
+    }
+
+    async function unlink(id: string, field: string, ids: string[]): Promise<void> {
+        await mapErrors(() => collection.update(id, { [`${field}-`]: ids }, listOptions));
+    }
+
     async function remove(id: string): Promise<void> {
         await mapErrors(() => collection.delete(id));
     }
@@ -74,5 +87,5 @@ export function createPocketBaseCrud<TPayload extends BaseEntity, TEntity extend
         return { items: result.items.map(toEntity), total: result.totalItems, options };
     }
 
-    return { create, update, remove, getAll, getById, filter };
+    return { create, update, link, unlink, remove, getAll, getById, filter };
 }

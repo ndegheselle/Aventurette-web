@@ -63,6 +63,22 @@ export function fakeCrud<T extends BaseEntity>(seed: T[] = []): FakeCrud<T> {
             return updated;
         },
 
+        // The field is read as the list of ids it is stored as.
+        async link(id, field, ids) {
+            raiseIfArmed();
+            const item = fake.items.find(i => i.id === id) as Record<string, unknown> | undefined;
+            if (!item) throw new Error(`fakeCrud: no record ${id}`);
+            const current = (item[field] ?? []) as string[];
+            item[field] = [...current, ...ids.filter(linked => !current.includes(linked))];
+        },
+
+        async unlink(id, field, ids) {
+            raiseIfArmed();
+            const item = fake.items.find(i => i.id === id) as Record<string, unknown> | undefined;
+            if (!item) throw new Error(`fakeCrud: no record ${id}`);
+            item[field] = ((item[field] ?? []) as string[]).filter(linked => !ids.includes(linked));
+        },
+
         async remove(id) {
             raiseIfArmed();
             fake.items = fake.items.filter(i => i.id !== id);
