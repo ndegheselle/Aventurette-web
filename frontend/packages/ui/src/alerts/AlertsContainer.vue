@@ -15,8 +15,9 @@ watchEffect(() => {
 </script>
 
 <template>
-    <dialog ref="dialogRef" class="z-9999"> 
-        <TransitionGroup name="alert" tag="div" class="toast stack stack-top" v-if="alerts.length > 0">
+    <dialog ref="dialogRef" class="z-9999">
+        <!-- Top center on a phone, where the bottom of the screen is the dock's and the page's actions'. -->
+        <TransitionGroup name="alert" tag="div" class="toast toast-top toast-center md:toast-bottom md:toast-end stack stack-top" v-if="alerts.length > 0">
             <div role="alert" class="alert" 
                 v-for="alert in alerts.toReversed()" :key="alert.id" 
                 :class="{
