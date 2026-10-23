@@ -13,7 +13,7 @@
     "@chapelure/pocketbase": "*",
     "@chapelure/ui": "*",
     "@fullcalendar/vue3": "^7.1.3",
-    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/typography": "^0.5.4",
     "@tailwindcss/vite": "^4.1.18",
     "daisyui": "^5.5.14",
     "lottie-web": "^5.13.0",

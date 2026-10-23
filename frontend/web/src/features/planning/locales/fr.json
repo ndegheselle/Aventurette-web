@@ -2,8 +2,8 @@
     "planning": {
         "actions": {
             "plan": "Planifier",
-            "open": "Voir l'activité",
-            "remove": "Retirer du planning"
+            "open": "Voir",
+            "remove": "Retirer"
         },
         "plan": {
             "title": "Planifier l'activité",

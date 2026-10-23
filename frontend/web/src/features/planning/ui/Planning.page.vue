@@ -11,10 +11,10 @@ import FullCalendar, { type CalendarOptions } from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/vue3/daygrid';
 import listPlugin from '@fullcalendar/vue3/list';
 import frLocale from '@fullcalendar/vue3/locales/fr';
-import classicThemePlugin from '@fullcalendar/vue3/themes/classic';
-import timeGridPlugin from '@fullcalendar/vue3/timegrid';
 import '@fullcalendar/vue3/skeleton.css';
+import classicThemePlugin from '@fullcalendar/vue3/themes/classic';
 import '@fullcalendar/vue3/themes/classic/theme.css';
+import timeGridPlugin from '@fullcalendar/vue3/timegrid';
 import { EyeIcon, Trash2Icon } from 'lucide-vue-next';
 import { computed, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -32,8 +32,8 @@ const options = computed<CalendarOptions>(() => ({
     locale: locale.value,
     initialView: isMobile.value ? 'listWeek' : 'dayGridMonth',
     headerToolbar: isMobile.value
-        ? { start: 'title', end: 'prev,next' }
-        : { start: 'prev,next today', center: 'title', end: 'dayGridMonth,timeGridWeek,listWeek' },
+        ? { start: 'title prev,next', end: 'timeGridWeek,timeGridDay,listWeek' }
+        : { start: 'prev,next today', center: 'title', end: 'timeGridWeek,timeGridDay,listWeek' },
     height: 'auto',
     events: fetchEvents,
     eventClick: ({ event }) => select(event.id),
@@ -50,7 +50,7 @@ const options = computed<CalendarOptions>(() => ({
             <template #title>{{ selected?.activity?.name }}</template>
             <div v-if="selected" class="flex flex-col gap-4">
                 <p>{{ formatPlanStart(selected.start, locale) }}</p>
-                <div class="flex justify-end gap-2">
+                <div class="grid grid-cols-2 gap-2">
                     <button type="button" class="btn btn-error btn-soft" @click="removeSelected">
                         <Trash2Icon />
                         {{ $t('planning.actions.remove') }}

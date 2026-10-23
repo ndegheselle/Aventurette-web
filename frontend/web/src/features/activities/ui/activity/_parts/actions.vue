@@ -4,7 +4,7 @@ import type { ActivityData } from '@features/activities/models/activity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import FavoriteButton from '@features/activities/ui/activity/_parts/favorite.vue';
 import PlanButton from '@features/planning/ui/PlanButton.vue';
-import { PlayIcon, PresentationIcon } from 'lucide-vue-next';
+import { PlayIcon } from 'lucide-vue-next';
 
 defineProps<{
     activity: ActivityData;
@@ -17,9 +17,6 @@ defineProps<{
                     :to="{ name: activitiesRoutesNames.play, params: { id: activity.id } }">
             <PlayIcon />
         </RouterLink>
-        <button type="button" class="btn btn-square btn-lg" disabled>
-            <PresentationIcon />
-        </button>
         <FavoriteButton :activity="activity" class="btn btn-square btn-lg" />
         <PlanButton :activity="activity" class="btn btn-square btn-lg" />
     </div>
