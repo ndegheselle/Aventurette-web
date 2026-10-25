@@ -1,5 +1,6 @@
 <!-- The user's planning: a calendar of the activities they planned. Tapping one opens a sheet to
-     go to the activity or take the plan off. -->
+     go to the activity or take the plan off; the toolbar's button, or the placeholder shown when
+     the dates hold nothing, opens the one planning another. -->
 <script setup lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useIsMobile } from '@chapelure/ui/layout/useIsMobile';
@@ -7,6 +8,8 @@ import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { usePlanning } from '@features/planning/composables/usePlanning';
 import { formatPlanStart } from '@features/planning/models/planning';
+import NothingPlanned from '@features/planning/ui/NothingPlanned.vue';
+import PlanActivityModal from '@features/planning/ui/PlanActivity.modal.vue';
 import FullCalendar, { type CalendarOptions } from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/vue3/daygrid';
 import listPlugin from '@fullcalendar/vue3/list';
@@ -16,13 +19,17 @@ import classicThemePlugin from '@fullcalendar/vue3/themes/classic';
 import '@fullcalendar/vue3/themes/classic/theme.css';
 import timeGridPlugin from '@fullcalendar/vue3/timegrid';
 import { EyeIcon, Trash2Icon } from 'lucide-vue-next';
-import { computed, useTemplateRef } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const calendar = useTemplateRef<InstanceType<typeof FullCalendar>>('calendar');
-const { fetchEvents, sheet, selected, select, removeSelected } = usePlanning(calendar);
-const { locale } = useI18n();
+const planModal = useTemplateRef<InstanceType<typeof PlanActivityModal>>('planModal');
+const { fetchEvents, nothingPlanned, refresh, sheet, selected, select, removeSelected } = usePlanning(calendar);
+const { locale, t } = useI18n();
 const { isMobile } = useIsMobile();
+
+/** A list view says it is empty in its own place; a grid stays drawn, with the placeholder over it. */
+const isListView = ref(false);
 
 // A month grid is unreadable on a phone, and the toolbar does not fit one line: there, the week
 // as a list and nothing to switch to.
@@ -32,18 +39,30 @@ const options = computed<CalendarOptions>(() => ({
     locale: locale.value,
     initialView: isMobile.value ? 'listWeek' : 'dayGridMonth',
     headerToolbar: isMobile.value
-        ? { start: 'title prev,next', end: 'timeGridWeek,timeGridDay,listWeek' }
-        : { start: 'prev,next today', center: 'title', end: 'timeGridWeek,timeGridDay,listWeek' },
+        ? { start: 'title prev,next', end: 'timeGridWeek,timeGridDay,listWeek add' }
+        : { start: 'prev,next today', center: 'title', end: 'timeGridWeek,timeGridDay,listWeek add' },
+    buttons: { add: { text: t('planning.actions.addShort'), hint: t('planning.actions.add'), click: () => planModal.value?.show() } },
     height: 'auto',
     events: fetchEvents,
     eventClick: ({ event }) => select(event.id),
+    datesSet: ({ view }) => {
+        isListView.value = view.type.startsWith('list');
+    },
 }));
 </script>
 
 <template>
     <Container>
-        <div class="planning p-2">
-            <FullCalendar ref="calendar" :options="options" />
+        <div class="planning relative p-2">
+            <FullCalendar ref="calendar" :options="options">
+                <template #noEventsContent>
+                    <NothingPlanned @add="planModal?.show()" />
+                </template>
+            </FullCalendar>
+
+            <div v-if="nothingPlanned && !isListView" class="absolute inset-x-0 top-32 flex justify-center pointer-events-none">
+                <NothingPlanned class="pointer-events-auto bg-base-100 rounded-box shadow-sm" @add="planModal?.show()" />
+            </div>
         </div>
 
         <ResponsiveModal :controller="sheet">
@@ -63,6 +82,8 @@ const options = computed<CalendarOptions>(() => ({
                 </div>
             </div>
         </ResponsiveModal>
+
+        <PlanActivityModal ref="planModal" @planned="refresh" />
     </Container>
 </template>
 

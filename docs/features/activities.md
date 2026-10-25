@@ -26,9 +26,6 @@ dependency runs one way: nothing here imports `activities-authoring`.
 any tab. Search is one of them: it has no entry of its own in the dock or the sidebar, whose
 place it held went to the [planning](planning.md).
 
-The detail screen's actions end with the planning's button (`planning/ui/PlanButton.vue`),
-beside the heart.
-
 One composable to a screen: `useActivitiesList` holds the results and the search,
 `useActivity` the detail screen, `useActivityPlay` the run and `useActivityFeedback` the screen
 after it.

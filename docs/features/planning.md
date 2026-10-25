@@ -14,12 +14,19 @@ FullCalendar would otherwise add about a third to the main bundle.
 
 ## Planning an activity
 
-A button beside the heart on an activity's page (`ui/PlanButton.vue`) opens a sheet with a date
-and time, set to the next full hour (`defaultPlanningStart`). Confirming saves the plan and a
-toast says so. An activity may be planned any number of times.
+Activities are planned from the planning page, and only there. The calendar's toolbar has an
+*Add* button, and dates holding no plan show a placeholder with the same action
+(`ui/NothingPlanned.vue`): in place of a list view's own empty message, and over a grid, which
+stays drawn.
 
-The sheet is teleported to the body: the actions holding the button stick above the dock on a
-phone, and a sheet opened inside them would sit under the dock.
+Either opens a sheet (`ui/PlanActivity.modal.vue`, driven by `usePlanActivity`): a search over the
+activities' names, listing the first eight by name (`planningApi.activitiesNamed`), and a date
+and time set to the next full hour (`defaultPlanningStart`). *Plan* is enabled once an activity is
+picked and the date is whole. Confirming saves the plan, a toast says so, and the calendar reads
+its events again. An activity may be planned any number of times.
+
+The search runs as the user types; only the last one asked for may fill the list or report a
+failure, for the same reason as the calendar's reads below.
 
 The picker is a `datetime-local` input, which holds a local time with no zone.
 `toDateTimeInput` and `fromDateTimeInput` translate it field by field — `toISOString` would show
@@ -73,10 +80,15 @@ sort wrong. `planningApi.between` reads one user's plans over `[from, to)`, at m
 - The mapper reads PocketBase's date and the activity whole, an unexpanded activity as none,
   and writes the activity as its id and the date as PocketBase compares it.
 
+*`tests/usePlanActivity.spec.ts`*
+
+- The sheet plans the activity picked at the time picked.
+- A search answering after a later one does not replace its results.
+
 ## Not finished
 
 - **A plan cannot be moved.** Taking it off and planning it again is the only way.
-- **Only the activity's page plans.** The library's cards have the heart but not the planning
-  button.
+- **Only the planning page plans.** Neither the activity's page nor the library's cards do, and
+  tapping a date on the calendar does not open the sheet on it.
 - **More than 200 plans in the dates shown** are not all read.
 - **Nothing reminds the user** of what they planned.

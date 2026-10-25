@@ -1,15 +1,19 @@
 {
     "planning": {
         "actions": {
+            "add": "Ajouter une activité",
+            "addShort": "Ajouter",
             "plan": "Planifier",
             "open": "Voir",
             "remove": "Retirer"
         },
         "plan": {
-            "title": "Planifier l'activité",
-            "when": "Quand voulez-vous faire « {name} » ?"
+            "title": "Planifier une activité",
+            "which": "Quelle activité ?",
+            "when": "Quand ?"
         },
         "added": "Activité ajoutée au planning",
-        "removed": "Activité retirée du planning"
+        "removed": "Activité retirée du planning",
+        "empty": "Rien de prévu sur ces dates"
     }
 }

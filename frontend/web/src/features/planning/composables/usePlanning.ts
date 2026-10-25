@@ -3,7 +3,7 @@ import { useModal } from '@chapelure/ui/modals/useModal';
 import { planningApi } from '@features/planning/api/planning.api';
 import { planningEventsOf, type PlannedActivityData, type PlanningEvent } from '@features/planning/models/planning';
 import { useAuth } from '@features/user/composables/useAuth';
-import { ref, type ShallowRef } from 'vue';
+import { computed, ref, type ShallowRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 /** What of the calendar component this screen drives: asking it to read its events again. */
@@ -11,7 +11,7 @@ type Calendar = { getApi(): { refetchEvents(): void } };
 
 /**
  * The planning screen: the user's plans over the dates the calendar shows, and the sheet opened
- * on one of them, from which it can be taken off.
+ * on one of them, from which it can be taken off. Dates holding no plan offer to add one.
  *
  * The calendar asks for its events itself, through `fetchEvents`, each time its dates change.
  * They are not handed to it as reactive options: the calendar re-applies options that change,
@@ -22,8 +22,10 @@ export function usePlanning(calendar: Readonly<ShallowRef<Calendar | null>>) {
     const alert = useAlert();
     const { t } = useI18n();
 
-    /** The plans the calendar last read, to find the one tapped. */
-    const planned = ref<PlannedActivityData[]>([]);
+    /** The plans the calendar last read, to find the one tapped. Null until the first read is back. */
+    const planned = ref<PlannedActivityData[] | null>(null);
+    /** The dates shown hold nothing to draw: the screen shows a placeholder instead. */
+    const nothingPlanned = computed(() => planned.value !== null && planningEventsOf(planned.value).length === 0);
 
     function reportFailure() {
         alert.error(t('validation.errors.default'));
@@ -55,7 +57,7 @@ export function usePlanning(calendar: Readonly<ShallowRef<Calendar | null>>) {
     const selected = ref<PlannedActivityData | null>(null);
 
     function select(id: string) {
-        selected.value = planned.value.find(plan => plan.id === id) ?? null;
+        selected.value = planned.value?.find(plan => plan.id === id) ?? null;
         if (selected.value) sheet.show();
     }
 
@@ -84,5 +86,5 @@ export function usePlanning(calendar: Readonly<ShallowRef<Calendar | null>>) {
         });
     }
 
-    return { fetchEvents, sheet, selected, select, removeSelected };
+    return { fetchEvents, nothingPlanned, refresh, sheet, selected, select, removeSelected };
 }
