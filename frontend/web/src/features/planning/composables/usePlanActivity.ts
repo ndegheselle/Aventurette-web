@@ -1,41 +1,44 @@
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
-import { useModal } from '@chapelure/ui/modals/useModal';
 import type { ActivityData } from '@features/activities/models/activity';
 import { planningApi } from '@features/planning/api/planning.api';
-import {
-    createPlannedActivity,
-    defaultPlanningStart,
-    fromDateTimeInput,
-    toDateTimeInput,
-} from '@features/planning/models/planning';
+import { usePlanningPick } from '@features/planning/composables/usePlanningPick';
+import { planningWriteOf } from '@features/planning/models/planning';
+import { routesNames as planningRoutesNames } from '@features/planning/routes';
 import { useAuth } from '@features/user/composables/useAuth';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
-/** Planning one activity: a sheet to pick when, then the plan saved. */
+/**
+ * Adding one activity to the planning: for what the planning picked it for, or else at the next
+ * full hour. Then the planning opens on the plan, where its time can be changed.
+ */
 export function usePlanActivity() {
     const userId = useAuth().currentId();
     const alert = useAlert();
     const { t } = useI18n();
-
-    const picker = useModal();
-    /** What the `datetime-local` input holds. */
-    const start = ref('');
-    const canConfirm = computed(() => fromDateTimeInput(start.value) !== null);
+    const router = useRouter();
+    const { pick, clear } = usePlanningPick();
 
     async function plan(activity: ActivityData) {
-        start.value = toDateTimeInput(defaultPlanningStart(new Date()));
-        const confirmed = await picker.show();
-        const when = fromDateTimeInput(start.value);
-        if (!confirmed || !when) return;
-
+        const write = planningWriteOf(pick.value, userId, activity, new Date());
+        let id: string;
         try {
-            await planningApi.create(createPlannedActivity(userId, activity, when));
-            alert.success(t('planning.added'));
+            if (write.kind === 'change') {
+                await planningApi.update(write.id, { activity: write.activity });
+                id = write.id;
+            } else {
+                id = (await planningApi.create(write.plan)).id;
+            }
         } catch {
             alert.error(t('validation.errors.default'));
+            return;
         }
+
+        clear();
+        alert.success(t(write.kind === 'change' ? 'planning.changed' : 'planning.added'));
+        router.push({ name: planningRoutesNames.planning, query: { plan: id } });
     }
 
-    return { picker, start, canConfirm, plan };
+    return { picking: computed(() => pick.value !== null), plan };
 }

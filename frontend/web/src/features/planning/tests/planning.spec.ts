@@ -1,8 +1,11 @@
 import { plannedActivityMapper, toBackendDate, type PlannedActivityPayload } from '@features/planning/api/plannedActivity.mapper';
 import {
+    calendarTapOf,
     defaultPlanningStart,
     fromDateTimeInput,
+    newPlanStart,
     planningEventsOf,
+    planningWriteOf,
     toDateTimeInput,
     type PlannedActivityData,
 } from '@features/planning/models/planning';
@@ -94,5 +97,65 @@ describe('plannedActivityMapper', () => {
 
     it('writes a range bound the way dates are stored, so the comparison sorts right', () => {
         expect(toBackendDate(new Date(Date.UTC(2026, 0, 1)))).toBe('2026-01-01 00:00:00.000Z');
+    });
+});
+
+describe('calendarTapOf', () => {
+    const now = new Date(2026, 9, 26, 14, 20);
+    const tapped = new Date(2026, 9, 22, 10, 30);
+
+    it('opens the day tapped in the month', () => {
+        expect(calendarTapOf('dayGridMonth', tapped, true, now)).toEqual({ kind: 'openDay', date: tapped });
+    });
+
+    it('plans at the time tapped in the other views', () => {
+        expect(calendarTapOf('timeGridWeek', tapped, false, now)).toEqual({ kind: 'plan', start: tapped });
+        expect(calendarTapOf('timeGridDay', tapped, false, now)).toEqual({ kind: 'plan', start: tapped });
+    });
+
+    it('plans on the all-day row at the hour a new plan would start now', () => {
+        const day = new Date(2026, 9, 22);
+        expect(calendarTapOf('timeGridWeek', day, true, now)).toEqual({ kind: 'plan', start: new Date(2026, 9, 22, 15, 0) });
+    });
+});
+
+describe('newPlanStart', () => {
+    const now = new Date(2026, 9, 26, 14, 20);
+
+    it('starts at the next full hour when today is shown', () => {
+        expect(newPlanStart(now, new Date(2026, 9, 26), new Date(2026, 10, 2))).toEqual(new Date(2026, 9, 26, 15, 0));
+    });
+
+    it('starts on the first day shown, at that hour, when today is not', () => {
+        expect(newPlanStart(now, new Date(2026, 10, 9), new Date(2026, 10, 16))).toEqual(new Date(2026, 10, 9, 15, 0));
+    });
+
+    it('does not count the end of the dates shown as shown', () => {
+        expect(newPlanStart(now, new Date(2026, 9, 25), new Date(2026, 9, 26))).toEqual(new Date(2026, 9, 25, 15, 0));
+    });
+});
+
+describe('planningWriteOf', () => {
+    const now = new Date(2026, 9, 26, 14, 20);
+    const activity = anActivity({ name: 'Treasure hunt' });
+
+    it('plans at the next full hour when nothing was being picked', () => {
+        expect(planningWriteOf(null, 'usr-1', activity, now)).toEqual({
+            kind: 'create',
+            plan: { id: '', user: 'usr-1', activity, start: new Date(2026, 9, 26, 15, 0) },
+        });
+    });
+
+    it('plans at the time picked for a new plan', () => {
+        const start = new Date(2026, 10, 3, 9, 0);
+        expect(planningWriteOf({ start, planId: null }, 'usr-1', activity, now)).toEqual({
+            kind: 'create',
+            plan: { id: '', user: 'usr-1', activity, start },
+        });
+    });
+
+    it('changes the activity of the plan picked for, rather than adding one', () => {
+        const pick = { start: new Date(2026, 10, 3, 9, 0), planId: 'plan-1' };
+        expect(planningWriteOf(pick, 'usr-1', activity, now)).toEqual({ kind: 'change', id: 'plan-1', activity });
     });
 });

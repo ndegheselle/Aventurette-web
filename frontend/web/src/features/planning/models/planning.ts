@@ -9,7 +9,7 @@ export type PlannedActivityData = {
     start: Date;
 };
 
-/** The plan a user makes from an activity's page, before it is saved. */
+/** A plan added from an activity's page, before it is saved. */
 export function createPlannedActivity(user: string, activity: ActivityData, start: Date): PlannedActivityData {
     return { id: '', user, activity, start };
 }
@@ -21,6 +21,66 @@ export type PlanningEvent = {
     start: Date;
     end?: Date;
 };
+
+/** The calendar's views the toolbar switches between, by FullCalendar's names. */
+export const PLANNING_VIEWS = ['dayGridMonth', 'timeGridWeek', 'timeGridDay', 'listWeek'] as const;
+export type PlanningView = typeof PLANNING_VIEWS[number];
+
+/** What tapping the calendar does: open the day tapped, or plan at the time tapped. */
+export type CalendarTap =
+    | { kind: 'openDay'; date: Date }
+    | { kind: 'plan'; start: Date };
+
+/**
+ * From the month, a tap opens that day. Elsewhere it plans at the time tapped — on the all-day
+ * row, which has no time, at the hour a new plan would start now.
+ */
+export function calendarTapOf(view: string, date: Date, allDay: boolean, now: Date): CalendarTap {
+    if (view === 'dayGridMonth') return { kind: 'openDay', date };
+    if (!allDay) return { kind: 'plan', start: date };
+    return { kind: 'plan', start: atTimeOf(date, defaultPlanningStart(now)) };
+}
+
+/**
+ * Where the plus button's plan starts: the next full hour when today is among the dates shown
+ * (`[from, to)`), else the same hour on the first of them, so the new plan lands in sight.
+ */
+export function newPlanStart(now: Date, from: Date, to: Date): Date {
+    const next = defaultPlanningStart(now);
+    if (now >= from && now < to) return next;
+    return atTimeOf(from, next);
+}
+
+/** `day`'s date at `time`'s hour and minutes. */
+function atTimeOf(day: Date, time: Date): Date {
+    const at = new Date(day);
+    at.setHours(time.getHours(), time.getMinutes(), 0, 0);
+    return at;
+}
+
+/**
+ * What the search is picking an activity for, from the planning: a new plan at `start`, or the
+ * plan `planId`, whose activity is changed.
+ */
+export type PlanningPick = {
+    start: Date;
+    planId: string | null;
+};
+
+/** What adding an activity to the planning writes. */
+export type PlanningWrite =
+    | { kind: 'create'; plan: PlannedActivityData }
+    | { kind: 'change'; id: string; activity: ActivityData };
+
+/**
+ * Adding an activity to the planning: what the planning picked it for, or, picked for nothing,
+ * a new plan at the next full hour.
+ */
+export function planningWriteOf(pick: PlanningPick | null, user: string, activity: ActivityData, now: Date): PlanningWrite {
+    if (pick?.planId) return { kind: 'change', id: pick.planId, activity };
+    const start = pick?.start ?? defaultPlanningStart(now);
+    return { kind: 'create', plan: createPlannedActivity(user, activity, start) };
+}
 
 const MINUTE_MS = 60_000;
 

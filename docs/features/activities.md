@@ -27,7 +27,8 @@ any tab. Search is one of them: it has no entry of its own in the dock or the si
 place it held went to the [planning](planning.md).
 
 The detail screen's actions end with the planning's button (`planning/ui/PlanButton.vue`),
-beside the heart.
+beside the heart. The search tab shows the planning's banner (`planning/ui/PickBanner.vue`)
+while the planning is picking an activity from it.
 
 One composable to a screen: `useActivitiesList` holds the results and the search,
 `useActivity` the detail screen, `useActivityPlay` the run and `useActivityFeedback` the screen

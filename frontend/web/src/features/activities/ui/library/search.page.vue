@@ -5,6 +5,7 @@ import InfiniteScroll from '@chapelure/ui/data/InfiniteScroll.vue';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import { useLibraryFeed } from '@features/activities/composables/useLibraryFeed';
 import ActivityCard from '@features/activities/ui/activity/card.vue';
+import PickBanner from '@features/planning/ui/PickBanner.vue';
 import { ChevronRightIcon } from 'lucide-vue-next';
 
 const { items, loading, done, loadMore } = useLibraryFeed();
@@ -12,6 +13,7 @@ const { items, loading, done, loadMore } = useLibraryFeed();
 
 <template>
     <div class="flex flex-col gap-2 p-2">
+        <PickBanner />
         <SearchInput />
         <div class="flex gap-2">
             <div class="flex-1 grid grid-cols-3 gap-2 opacity-50">

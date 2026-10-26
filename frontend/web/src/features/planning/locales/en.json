@@ -1,15 +1,34 @@
 {
     "planning": {
         "actions": {
-            "plan": "Plan",
+            "plan": "Add to planning",
+            "add": "Plan an activity",
+            "pick": "Choose an activity",
+            "change": "Change",
             "open": "See the activity",
             "remove": "Remove from the planning"
         },
-        "plan": {
-            "title": "Plan the activity",
-            "when": "When do you want to run “{name}”?"
-        },
         "added": "Activity added to the planning",
-        "removed": "Activity removed from the planning"
+        "removed": "Activity removed from the planning",
+        "calendar": {
+            "prev": "Previous",
+            "next": "Next",
+            "today": "Today",
+            "views": {
+                "dayGridMonth": "Month",
+                "timeGridWeek": "Week",
+                "timeGridDay": "Day",
+                "listWeek": "List"
+            }
+        },
+        "sheet": {
+            "newTitle": "New plan",
+            "when": "When",
+            "preview": "New plan"
+        },
+        "pick": {
+            "for": "Choose an activity for {when}"
+        },
+        "changed": "Activity changed in the planning"
     }
 }

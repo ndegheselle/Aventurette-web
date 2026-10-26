@@ -1,15 +1,34 @@
 {
     "planning": {
         "actions": {
-            "plan": "Planifier",
+            "plan": "Ajouter au planning",
+            "add": "Planifier une activité",
+            "pick": "Choisir une activité",
+            "change": "Changer",
             "open": "Voir",
             "remove": "Retirer"
         },
-        "plan": {
-            "title": "Planifier l'activité",
-            "when": "Quand voulez-vous faire « {name} » ?"
-        },
         "added": "Activité ajoutée au planning",
-        "removed": "Activité retirée du planning"
+        "removed": "Activité retirée du planning",
+        "calendar": {
+            "prev": "Précédent",
+            "next": "Suivant",
+            "today": "Aujourd'hui",
+            "views": {
+                "dayGridMonth": "Mois",
+                "timeGridWeek": "Semaine",
+                "timeGridDay": "Jour",
+                "listWeek": "Liste"
+            }
+        },
+        "sheet": {
+            "newTitle": "Nouvelle activité planifiée",
+            "when": "Quand",
+            "preview": "Nouvelle activité"
+        },
+        "pick": {
+            "for": "Choisissez une activité pour le {when}"
+        },
+        "changed": "Activité changée dans le planning"
     }
 }

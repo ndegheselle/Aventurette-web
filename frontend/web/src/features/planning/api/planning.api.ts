@@ -29,6 +29,10 @@ export const planningApi = {
         return found.items;
     },
 
+    /** Null when the plan is gone, or is not the user's. */
+    getById: (id: string) => planned.getById(id),
     create: (plan: PlannedActivityData) => planned.create(plan),
+    /** Moves a plan, or changes its activity. */
+    update: (id: string, changes: Partial<Pick<PlannedActivityData, 'start' | 'activity'>>) => planned.update(id, changes),
     remove: (id: string) => planned.remove(id),
 };
