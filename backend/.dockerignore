@@ -2,4 +2,5 @@
 # context and .dockerignore under api/, and the front image is built from the repository root.
 api
 nginx/certbot
+backups
 **/*.log

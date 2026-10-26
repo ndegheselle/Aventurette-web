@@ -17,6 +17,7 @@ Budget about 30 minutes, most of it waiting on the first Docker build.
 - [8. Get the certificate and turn on HTTPS](#8-get-the-certificate-and-turn-on-https)
 - [9. Set up PocketBase](#9-set-up-pocketbase)
 - [10. Check it works](#10-check-it-works)
+- [11. Automatic deploys](#11-automatic-deploys)
 - [Running it from here](#running-it-from-here)
 - [When something is wrong](#when-something-is-wrong)
 
@@ -300,16 +301,77 @@ curl -I http://lubriciel.ovh
 The last one should be a `301` to `https://`. Then open `https://lubriciel.ovh` in a
 browser, sign up, and confirm the request goes to `api.lubriciel.ovh` in the network tab.
 
-## Running it from here
+## 11. Automatic deploys
 
-Deploy a new version:
+From here on, a push to the `production` branch deploys.
+[.github/workflows/deploy.yml](../.github/workflows/deploy.yml) runs the same check as every
+other push. If it passes, the workflow connects to the server over SSH and runs
+[scripts/deploy.sh](scripts/deploy.sh), which does four things:
+
+1. checks out `origin/production`;
+2. builds the images while the current version keeps serving;
+3. backs up `api/pb_data` with [scripts/backup.sh](scripts/backup.sh);
+4. restarts on the new images. Migrations run as the api starts.
+
+If any step fails, the script stops and the running version stays up.
+
+Set it up once.
+
+**A key just for GitHub.** On the server, as your user:
 
 ```bash
-cd ~/Aventurette-web && git pull && cd backend && docker compose up -d --build
+ssh-keygen -t ed25519 -N '' -C github-deploy -f ~/.ssh/github-deploy
 ```
 
-Only changed images are rebuilt. `api/pb_data` and the certificates are untouched, so this
-is safe to run whenever.
+Allow it in `~/.ssh/authorized_keys`, pinned to the deploy script. Whatever the client asks
+for, this key can only run `deploy.sh`:
+
+```bash
+echo "command=\"sh $HOME/Aventurette-web/backend/scripts/deploy.sh\",no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty $(cat ~/.ssh/github-deploy.pub)" >> ~/.ssh/authorized_keys
+```
+
+**The secrets.** On GitHub, under *Settings > Environments*, create an environment named
+`production` and add these four secrets to it:
+
+| Secret | Value |
+|---|---|
+| `DEPLOY_KEY` | the private key: `cat ~/.ssh/github-deploy` |
+| `DEPLOY_HOST` | the server's IP |
+| `DEPLOY_USER` | `nicolas` |
+| `DEPLOY_KNOWN_HOSTS` | the output of `ssh-keyscan <server-ip>`, run from your own machine |
+
+Then delete the private key from the server. GitHub has its own copy now:
+
+```bash
+rm ~/.ssh/github-deploy
+```
+
+**The branch.** From your own machine:
+
+```bash
+git push origin main:production
+```
+
+That push is also the first automatic deploy. Follow it under the *Actions* tab. The
+server's checkout switches to a local `production` branch, and it stays on that branch from
+then on.
+
+## Running it from here
+
+Deploy a new version, from your own machine:
+
+```bash
+git push origin main:production
+```
+
+Or by hand on the server. It is the same script the workflow runs, so it skips the check:
+
+```bash
+sh ~/Aventurette-web/backend/scripts/deploy.sh
+```
+
+Only changed images are rebuilt. `api/pb_data` and the certificates are untouched, so a
+deploy is safe to run whenever.
 
 Rebuild the front bundle after changing the domain in `.env`:
 
@@ -317,14 +379,47 @@ Rebuild the front bundle after changing the domain in `.env`:
 docker compose up -d --build front
 ```
 
-Back up. `api/pb_data` is the entire application state. Take the snapshot from the admin UI
-(*Settings > Backups*) rather than copying the files: SQLite may have writes sitting in its
-WAL, so a file copy from under a running server is not guaranteed consistent. Snapshots land
-in `api/pb_data/backups`, so from your own machine:
+### Back up
+
+`api/pb_data` is the entire application state, and every deploy archives it first into
+`backups/pb_data-<date>.tar.gz`. The last 10 archives are kept. To take one outside a deploy:
 
 ```bash
-scp -r nicolas@<server-ip>:Aventurette-web/backend/api/pb_data/backups .
+sh scripts/backup.sh
 ```
+
+The script stops the api for the few seconds the archive takes. A copy taken while
+PocketBase is running would not be consistent, because SQLite may still have writes in its
+WAL. The scheduled snapshots from the admin UI (*Settings > Backups*, see
+[step 9](#9-set-up-pocketbase)) are separate and land in `api/pb_data/backups`.
+
+Both folders live on the server, so copy them off from time to time, from your own machine:
+
+```bash
+scp -r nicolas@<server-ip>:Aventurette-web/backend/backups .
+```
+
+### Restore a backup
+
+To undo a deploy whose migration went wrong, push `production` back to the last good commit.
+That brings back the old code, but the database keeps the new schema. Then restore the
+archive taken before the bad deploy. That is the second-newest one, because the rollback
+deploy took a backup too. From `backend/`:
+
+```bash
+docker compose stop api
+```
+
+```bash
+docker compose run --rm --no-deps -v "$PWD/backups:/backups" --entrypoint sh api -c 'find /app/pb_data -mindepth 1 -maxdepth 1 ! -name backups -exec rm -rf {} + && tar xzf /backups/pb_data-<date>.tar.gz -C /app'
+```
+
+```bash
+docker compose start api
+```
+
+This replaces everything in `pb_data` except PocketBase's own `backups/` folder. That folder
+is not in the archive, so it is kept as it is.
 
 Restart one service, or stop and start the lot:
 
@@ -351,6 +446,12 @@ docker compose ps
 ```bash
 docker compose logs -f nginx
 ```
+
+**A deploy failed.** The workflow log under *Actions* shows the output of `deploy.sh`, and
+the `==>` lines show which step stopped it. The running version is still the previous one. If
+the backup failed, the api was started again anyway. If it is `Permission denied (publickey)`,
+check the `authorized_keys` line and the `DEPLOY_*` secrets from
+[step 11](#11-automatic-deploys).
 
 **nginx keeps restarting.** Almost always a config error. Ask it:
 

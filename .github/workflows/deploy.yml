@@ -1,0 +1,40 @@
+# Deploys to the server on every push to the `production` branch:
+#
+#   git push origin main:production
+#
+# Runs the check first, then backend/scripts/deploy.sh on the server over SSH. The deploy key is
+# pinned to that script in the server's authorized_keys, so it cannot run anything else.
+# Setup is in backend/DEPLOYMENT.md, "Automatic deploys".
+name: deploy
+
+on:
+  push:
+    branches: [production]
+
+# One deploy at a time; a push during a deploy waits for it instead of cancelling it halfway.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  check:
+    uses: ./.github/workflows/check.yml
+
+  deploy:
+    needs: check
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Run deploy.sh on the server
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          # No command: the server's authorized_keys entry decides what runs.
+          ssh -i ~/.ssh/deploy -o BatchMode=yes "$DEPLOY_USER@$DEPLOY_HOST"

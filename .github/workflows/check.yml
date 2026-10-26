@@ -8,6 +8,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Called by deploy.yml, so nothing reaches the server without passing it.
+  workflow_call:
 
 jobs:
   check:

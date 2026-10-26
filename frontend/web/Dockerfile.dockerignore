@@ -7,6 +7,7 @@
 .vscode
 backend/api
 backend/nginx
+backend/backups
 # The dev server's API URL. VITE_API_URL is passed as a build arg instead, so keeping this
 # out of the image also keeps a local value from ever reaching a production bundle.
 frontend/web/.env
