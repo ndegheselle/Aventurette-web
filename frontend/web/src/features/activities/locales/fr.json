@@ -183,14 +183,16 @@
         "library": {
             "tabs": {
                 "catalogue": "Catalogue",
-                "search": "Rechercher",
                 "favorites": "Favoris",
                 "history": "Historique"
             },
             "favoritesEmpty": "Aucun favori pour l'instant. Touchez le cœur d'une activité pour la retrouver ici."
         },
-        "searchPage": {
-            "quickFilters": {
+        "filters": {
+            "title": "Filtres",
+            "open": "Filtrer les activités",
+            "reset": "Réinitialiser",
+            "quick": {
                 "age": "Âge",
                 "duration": "Durée",
                 "location": "Lieu"

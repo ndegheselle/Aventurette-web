@@ -15,7 +15,6 @@ dependency runs one way: nothing here imports `activities-authoring`.
 | Name | Path | Screen |
 |---|---|---|
 | `activities.library` | `/activities/library` | The library's catalogue tab |
-| `activities.search` | `/activities/library/search` | The library's search tab |
 | `activities.favorites` | `/activities/library/favorites` | The library's favorites tab |
 | `activities.page` | `/activities/:id` | One activity in full |
 | `activities.play` | `/activities/:id/play/:step?` | Running the activity, one step to a page |
@@ -23,11 +22,15 @@ dependency runs one way: nothing here imports `activities-authoring`.
 
 `/` redirects to `activities.library`. The library's tabs are child routes of
 `/activities/library`, so the sidebar's and the dock's link to the library stays active on
-any tab. Search is one of them: it has no entry of its own in the dock or the sidebar, whose
-place it held went to the [planning](planning.md).
+any tab.
+
+The catalogue has no search tab: a floating button at its top right opens the filters, a
+`ResponsiveModal` with the `expandable` height. On a phone it opens on half the screen with the
+search and the quick filters (age, duration, place); pulled up, it shows every filter
+(`ui/library/filters.vue`).
 
 The detail screen's actions end with the planning's button (`planning/ui/PlanButton.vue`),
-beside the heart. The search tab shows the planning's banner (`planning/ui/PickBanner.vue`)
+beside the heart. The catalogue shows the planning's banner (`planning/ui/PickBanner.vue`)
 while the planning is picking an activity from it.
 
 One composable to a screen: `useActivitiesList` holds the results and the search,
@@ -306,7 +309,8 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
 
 - **Tags read in French whatever the locale.** Their wordings were per locale for a while and
   are one language again until data gets a systematic way to be translated.
-- **The list cannot be filtered**, only searched by name and description. The family columns
+- **The list cannot be filtered, nor searched.** The catalogue's filter sheet shows the search
+  and the filters but none is wired to the feed yet: the options are disabled. The family columns
   are ready for increment 1's filters, but a filter key is a column name, not a family path.
 - **The number of leaders needed is typed in.** The template computes it from age, group size
   and the supervision referential, which does not exist yet.

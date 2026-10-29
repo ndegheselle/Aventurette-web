@@ -183,14 +183,16 @@
         "library": {
             "tabs": {
                 "catalogue": "Catalogue",
-                "search": "Search",
                 "favorites": "Favorites",
                 "history": "History"
             },
             "favoritesEmpty": "No favorites yet. Tap the heart on an activity to find it here."
         },
-        "searchPage": {
-            "quickFilters": {
+        "filters": {
+            "title": "Filters",
+            "open": "Filter the activities",
+            "reset": "Reset",
+            "quick": {
                 "age": "Age",
                 "duration": "Duration",
                 "location": "Location"

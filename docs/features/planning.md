@@ -8,7 +8,7 @@ The user's calendar: when they mean to run which activity.
 |---|---|---|
 | `planning` | `/planning` | The calendar of the user's plans |
 
-The dock and the sidebar link it where the search used to be; search is now a tab of the
+The dock and the sidebar link it where the search used to be; search is now the catalogue's filters in the
 library ([activities](activities.md#routes)). The page is loaded when it is first opened:
 FullCalendar would otherwise add about a third to the main bundle.
 
@@ -25,7 +25,7 @@ plans at the next full hour, or at that hour on the first day shown when today i
 desktop it ends the toolbar.
 
 The sheet holds the date and time, and *Choose an activity*. That sets the pick
-(`usePlanningPick`, module state) and opens the search, which shows a banner saying what the
+(`usePlanningPick`, module state) and opens the catalogue, which shows a banner saying what the
 pick is for, with a way to give it up. On the activity's page, the planning button then stands
 out and reads *Add to planning*.
 
@@ -103,7 +103,7 @@ sort wrong. `planningApi.between` reads one user's plans over `[from, to)`, at m
 ## Not finished
 
 - **The list view has no time to tap.** A plan is added there with the plus button.
-- **A pick outlives leaving the search** for anywhere but the planning: the banner and the
+- **A pick outlives leaving the catalogue** for anywhere but the planning: the banner and the
   standing-out button stay until it is used or given up.
 - **Only the activity's page plans.** The library's cards have the heart but not the planning
   button.

@@ -12,6 +12,10 @@ export interface ISwipeOptions {
     direction: SwipeDirection;
     /** Called when a swipe is let go past its threshold. */
     onCommit: () => void;
+    /** Called when a swipe against the direction is let go past its threshold, while `reversible`. */
+    onCommitReverse?: () => void;
+    /** Whether moving against the direction counts right now; then `offset` goes negative. Off by default. */
+    reversible?: () => boolean;
     /** The element's size along the direction, in px; the threshold is a share of it. */
     size: () => number;
     thresholds?: Partial<ISwipeThresholds>;
@@ -24,7 +28,7 @@ export interface ISwipeOptions {
 export function useSwipe(options: ISwipeOptions) {
     const thresholds = { ...DEFAULT_SWIPE_THRESHOLDS, ...options.thresholds };
 
-    /** How far the element is dragged along the direction, in px. Never negative. */
+    /** How far the element is dragged along the direction, in px. Negative only while `reversible`. */
     const offset = ref(0);
     const isDragging = ref(false);
     let startX = 0;
@@ -52,16 +56,19 @@ export function useSwipe(options: ISwipeOptions) {
 
     function onPointermove(event: PointerEvent) {
         if (!isDragging.value) return;
-        // Against the direction would pull the element off its resting place the wrong way.
-        offset.value = Math.max(0, distanceAlong(options.direction, event.clientX - startX, event.clientY - startY));
+        const distance = distanceAlong(options.direction, event.clientX - startX, event.clientY - startY);
+        // Against the direction would pull the element off its resting place the wrong way, unless asked for.
+        offset.value = options.reversible?.() ? distance : Math.max(0, distance);
     }
 
     function onPointerup(event: PointerEvent) {
         if (!isDragging.value) return;
         isDragging.value = false;
         const elapsed = Math.max(event.timeStamp - startTime, 1);
-        if (shouldCommit(offset.value, options.size(), offset.value / elapsed, thresholds)) options.onCommit();
-        else reset();
+        const distance = Math.abs(offset.value);
+        if (!shouldCommit(distance, options.size(), distance / elapsed, thresholds)) reset();
+        else if (offset.value > 0) options.onCommit();
+        else options.onCommitReverse?.();
     }
 
     return {

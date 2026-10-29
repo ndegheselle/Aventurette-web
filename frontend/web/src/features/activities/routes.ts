@@ -6,12 +6,10 @@ import Play from '@features/activities/ui/activity/play.page.vue';
 import Catalogue from '@features/activities/ui/library/catalogue.page.vue';
 import Favorites from '@features/activities/ui/library/favorites.page.vue';
 import Library from '@features/activities/ui/library/library.page.vue';
-import Search from '@features/activities/ui/library/search.page.vue';
 
 export const routesNames = {
     library: 'activities.library',
     favorites: 'activities.favorites',
-    search: 'activities.search',
     activity: 'activities.activity',
     play: 'activities.play',
     feedback: 'activities.feedback',
@@ -27,11 +25,6 @@ const routes: RouteRecordRaw[] = [
                 path: '',
                 name: routesNames.library,
                 component: Catalogue,
-            },
-            {
-                path: 'search',
-                name: routesNames.search,
-                component: Search,
             },
             {
                 path: 'favorites',

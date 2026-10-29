@@ -187,13 +187,13 @@ export function usePlanning(calendar: Readonly<ShallowRef<Calendar | null>>) {
         refresh();
     }
 
-    /** Off to the search, to pick the activity of the new plan or another for the selected one. */
+    /** Off to the catalogue, to pick the activity of the new plan or another for the selected one. */
     function pickActivity() {
         const at = fromDateTimeInput(start.value);
         if (!at) return;
         pick.value = { start: at, planId: selected.value?.id ?? null };
         sheet.cancel();
-        router.push({ name: activitiesRoutesNames.search });
+        router.push({ name: activitiesRoutesNames.library });
     }
 
     async function restore(plan: PlannedActivityData) {

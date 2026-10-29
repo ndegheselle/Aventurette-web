@@ -11,7 +11,7 @@ const { favorites, loading } = useFavorites();
         <span class="loading loading-spinner"></span>
     </div>
 
-    <div v-else-if="favorites.length === 0" class="flex flex-col items-center gap-2 p-8 text-center opacity-70">
+    <div v-else-if="favorites.length === 0" class="flex my-auto flex-col items-center gap-2 p-8 text-center opacity-50">
         <HeartIcon class="size-10" />
         <p>{{ $t('activities.library.favoritesEmpty') }}</p>
     </div>

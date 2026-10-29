@@ -2,9 +2,9 @@
      it; tapping a time, or the plus button, opens one on a new plan, drawn where it will land.
      Tapping a day of the month opens that day. -->
 <script setup lang="ts">
+import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useIsMobile } from '@chapelure/ui/layout/useIsMobile';
-import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { usePlanning } from '@features/planning/composables/usePlanning';
@@ -125,7 +125,7 @@ const options = computed<CalendarOptions>(() => ({
                     {{ $t('planning.actions.pick') }}
                 </button>
 
-                <div v-else-if="selected" class="grid grid-cols-2 gap-2">
+                <div v-else-if="selected" class="grid grid-cols-3 gap-2">
                     <RouterLink v-if="selected.activity" class="btn btn-primary"
                                 :to="{ name: activitiesRoutesNames.activity, params: { id: selected.activity.id } }">
                         <EyeIcon />
@@ -135,7 +135,7 @@ const options = computed<CalendarOptions>(() => ({
                         <ArrowLeftRightIcon />
                         {{ $t('planning.actions.change') }}
                     </button>
-                    <button type="button" class="btn btn-error btn-soft col-span-2" @click="removeSelected">
+                    <button type="button" class="btn btn-error btn-soft" @click="removeSelected">
                         <Trash2Icon />
                         {{ $t('planning.actions.remove') }}
                     </button>

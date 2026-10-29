@@ -13,10 +13,6 @@ import { routesNames as activitiesRoutesNames } from '@features/activities/route
                 {{ $t('activities.library.tabs.catalogue') }}
             </RouterLink>
             <RouterLink role="tab" class="tab" exact-active-class="tab-active"
-                        :to="{ name: activitiesRoutesNames.search }">
-                {{ $t('activities.library.tabs.search') }}
-            </RouterLink>
-            <RouterLink role="tab" class="tab" exact-active-class="tab-active"
                         :to="{ name: activitiesRoutesNames.favorites }">
                 {{ $t('activities.library.tabs.favorites') }}
             </RouterLink>
