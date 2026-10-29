@@ -9,6 +9,7 @@ const SESSION_FIELDS: Record<keyof SessionUser, true> = {
     name: true,
     avatar: true,
     role: true,
+    onboarded: true,
 };
 
 const provider = authProvider<SessionUser>(Object.keys(SESSION_FIELDS) as (keyof SessionUser)[]);

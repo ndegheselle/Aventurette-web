@@ -8,7 +8,9 @@ The account: signing in and up, the session, roles, guarding the rest of the app
 |---|---|---|
 | `user.login` | `/user/login` | Log in |
 | `user.register` | `/user/register` | Sign up |
+| `user.onboarding` | `/user/onboarding` | The filter defaults, once, at the first sign-in |
 | `user.settings` | `/user/settings` | Settings |
+| `user.profile` | `/user/settings/profile` | The settings' profile section: the filter defaults |
 
 Both hang under `Auth.layout.vue` rather than the default one: no sidebar, and a navbar holding
 only a home link and the theme and language menus, above the same footer. Settings is private like any new route, under the main layout, and is
@@ -72,10 +74,30 @@ rules refuse a body that sets `role`, or anyone could sign up as an admin or pro
 `role` is required all the same: a user created without one is given `USER` by a hook
 (`backend/api/hooks/users.go`), which is what lets a sign-up through.
 
+## Onboarding
+
+A signed-in user whose record says they have not been `onboarded` is sent to `user.onboarding`
+by the guard, whatever they were opening. It hangs under the bare layout (`bareRoutes`), though
+it is private. It asks for the catalogue's filter defaults; *Save* stores them and *Later*
+stores nothing. Either way the user is `onboarded` after, so it is shown once, and the session is
+refreshed so the guard knows.
+
+## Filter defaults
+
+The ages, the duration in minutes and the places the user looks for activities in:
+`defaultAgeMin` and `defaultAgeMax`, `defaultDurationMin` and `defaultDurationMax`, and
+`defaultLocations` on the user record, read and written through `api/filterDefaults.mapper.ts`.
+As on an activity's audience, a 0 bound is unset. The places were copied from an activity's
+`locations` when the migration ran; adding a place to one does not add it to the other.
+`useFilterDefaults` holds the form for both the onboarding and the profile, and
+`ui/FilterDefaults.vue` its fields.
+
 ## Settings
 
-The settings page sets the theme and the language, and logs out. Its *Profile* and *Children*
-entries are shown disabled: nothing edits the user record yet.
+The settings page sets the theme and the language, opens the profile, and logs out. A section,
+the profile so far, is a child route of `user.settings`: on a phone it takes the whole page, with
+a back button to the menu; on a desktop it shows beside the menu. The *Children* entry is shown
+disabled.
 
 ## Favorites and history
 
@@ -112,6 +134,13 @@ One rule, in one place.
 - On a route with `meta.roles`, the guard sends a user without the role home, admits one with
   it, and still sends an anonymous visitor to login.
 
+- A user who has not seen the onboarding is sent there first, and let into it.
+
+*`tests/filterDefaults.spec.ts`*
+
+- A 0 bound reads as unset, and an unset one is written back as 0.
+- A write sends only the fields given, so putting the onboarding off keeps the defaults.
+
 *`tests/user.spec.ts`*
 
 - An empty role is a plain user.
@@ -136,7 +165,11 @@ One rule, in one place.
 - The OAuth2 provider buttons render and throw `NotImplementedError` when clicked.
 - A denied route redirects to `/` silently, with no message. A route that redirects `/` to an
   admin-only screen would loop.
-- **Nothing edits the user record.** The settings page's *Profile* entry is disabled. The email
+- **The filter defaults filter nothing yet.** The catalogue's filters are not wired to its
+  feed, so the defaults are stored and shown in the profile, and used nowhere else.
+- **Every account that existed before onboarding gets it once**, at its next sign-in: `onboarded`
+  starts false for everyone.
+- **The profile edits only the filter defaults.** The email
   and the password go through PocketBase flows (confirmation emails) that nothing in the app
   drives yet, and the avatar the backend can store is not editable; the navbar shows a
   placeholder.

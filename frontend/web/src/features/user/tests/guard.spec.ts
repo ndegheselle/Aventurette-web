@@ -50,6 +50,20 @@ describe('authGuard', () => {
         refresh.mockRestore();
     });
 
+    describe('a user who has not seen the onboarding', () => {
+        it('is sent there first', async () => {
+            provider.session = aUser({ onboarded: false });
+
+            await expect(authGuard(going('activities'))).resolves.toEqual({ name: routesNames.onboarding });
+        });
+
+        it('is let into the onboarding itself, or it would loop', async () => {
+            provider.session = aUser({ onboarded: false });
+
+            await expect(authGuard(going(routesNames.onboarding))).resolves.toBeUndefined();
+        });
+    });
+
     describe('a route restricted to some roles', () => {
         it('sends a user without the role home', async () => {
             provider.session = aUser({ role: Role.USER });

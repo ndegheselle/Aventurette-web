@@ -1,5 +1,5 @@
 import { useAuth } from '@features/user/composables/useAuth';
-import type { Role } from '@features/user/models/user';
+import { needsOnboarding, type Role } from '@features/user/models/user';
 import { routesNames } from '@features/user/routes';
 import type { RouteLocationNormalized } from 'vue-router';
 
@@ -11,8 +11,9 @@ declare module 'vue-router' {
 }
 
 /**
- * Lets login and register through; anything else needs a session, or goes to login. A route
- * whose `meta.roles` the user does not hold sends them home.
+ * Lets login and register through; anything else needs a session, or goes to login. A user who
+ * has not seen the onboarding goes there first. A route whose `meta.roles` the user does not hold
+ * sends them home.
  */
 export async function authGuard(to: RouteLocationNormalized) {
     if (to.name === routesNames.login || to.name === routesNames.register)
@@ -21,6 +22,9 @@ export async function authGuard(to: RouteLocationNormalized) {
     const auth = useAuth();
     if (!auth.isLoggedIn.value && !await auth.refresh())
         return { name: routesNames.login };
+
+    if (to.name !== routesNames.onboarding && needsOnboarding(auth.current.value))
+        return { name: routesNames.onboarding };
 
     if (!auth.hasRole(...to.meta.roles ?? []))
         return { path: '/' };

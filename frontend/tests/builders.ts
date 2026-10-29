@@ -171,6 +171,8 @@ export function aUser(overrides: Partial<UserData> = {}): UserData {
         verified: true,
         type: UsersTypeOptions.PERSONNAL,
         role: UsersRoleOptions.USER,
+        // Past the onboarding, so the guard lets them where they are going.
+        onboarded: true,
         ...overrides,
     } as UserData;
 }

@@ -28,7 +28,23 @@
             "children": "Enfants",
             "theme": "Thème",
             "language": "Langue",
-            "profile": "Profil"
+            "profile": "Profil",
+            "pickSection": "Choisissez une rubrique dans le menu."
+        },
+        "onboarding": {
+            "title": "Bienvenue !",
+            "intro": "Choisissez les filtres par défaut du catalogue. Vous pourrez les changer à tout moment dans votre profil.",
+            "later": "Plus tard"
+        },
+        "filterDefaults": {
+            "title": "Filtres par défaut",
+            "help": "Ce que le catalogue filtre en premier.",
+            "age": "Âge (ans)",
+            "duration": "Durée (min)",
+            "locations": "Lieux"
+        },
+        "profile": {
+            "saved": "Profil enregistré"
         }
     }
 }

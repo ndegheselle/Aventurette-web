@@ -352,6 +352,23 @@ export const UsersTypeOptions = {
 } as const
 export type UsersTypeOptions = typeof UsersTypeOptions[keyof typeof UsersTypeOptions]
 
+export const UsersDefaultLocationsOptions = {
+	"PARK": "PARK",
+	"HOUSE": "HOUSE",
+	"BALCONY": "BALCONY",
+	"CAR": "CAR",
+	"CITY": "CITY",
+	"CAMPAIGN": "CAMPAIGN",
+	"FOREST": "FOREST",
+	"MOUNTAIN": "MOUNTAIN",
+	"POOL": "POOL",
+	"LAKE": "LAKE",
+	"RIVER": "RIVER",
+	"BATH": "BATH",
+	"MEAL": "MEAL",
+} as const
+export type UsersDefaultLocationsOptions = typeof UsersDefaultLocationsOptions[keyof typeof UsersDefaultLocationsOptions]
+
 export const UsersRoleOptions = {
 	"USER": "USER",
 	"ADMIN": "ADMIN",
@@ -360,11 +377,17 @@ export type UsersRoleOptions = typeof UsersRoleOptions[keyof typeof UsersRoleOpt
 export type UsersRecord = {
 	avatar?: FileNameString
 	created: IsoAutoDateString
+	defaultAgeMax?: number
+	defaultAgeMin?: number
+	defaultDurationMax?: number
+	defaultDurationMin?: number
+	defaultLocations?: UsersDefaultLocationsOptions[]
 	email: string
 	emailVisibility?: boolean
 	favorites?: RecordIdString[]
 	id: string
 	name?: string
+	onboarded?: boolean
 	password: string
 	role: UsersRoleOptions
 	tokenKey: string

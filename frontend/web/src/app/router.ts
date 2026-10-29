@@ -6,7 +6,7 @@ import authoringRoutes from '@features/admin/activities-authoring/routes';
 import catalogueRoutes from '@features/admin/catalogue-authoring/routes';
 import dashboardRoutes from '@features/dashboard/routes';
 import planningRoutes from '@features/planning/routes';
-import userRoutes, { publicRoutes as userPublicRoutes } from '@features/user/routes';
+import userRoutes, { bareRoutes as userBareRoutes, publicRoutes as userPublicRoutes } from '@features/user/routes';
 import type { RouteRecordRaw } from 'vue-router';
 
 // Each feature owns its route module; the app only picks the layout they hang under.
@@ -39,6 +39,7 @@ const routes: RouteRecordRaw[] = [
         component: Empty,
         children: [
             ...userPublicRoutes,
+            ...userBareRoutes,
         ]
     },
 ];

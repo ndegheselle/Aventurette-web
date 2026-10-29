@@ -28,7 +28,23 @@
             "children": "Children",
             "theme": "Theme",
             "language": "Language",
-            "profile": "Profile"
+            "profile": "Profile",
+            "pickSection": "Pick a section from the menu."
+        },
+        "onboarding": {
+            "title": "Welcome!",
+            "intro": "Pick the catalogue's default filters. You can change them at any time in your profile.",
+            "later": "Later"
+        },
+        "filterDefaults": {
+            "title": "Default filters",
+            "help": "What the catalogue filters on first.",
+            "age": "Age (years)",
+            "duration": "Duration (min)",
+            "locations": "Places"
+        },
+        "profile": {
+            "saved": "Profile saved"
         }
     }
 }
