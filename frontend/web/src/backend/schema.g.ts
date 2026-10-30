@@ -182,6 +182,7 @@ export type ActivitiesRecord = {
 	cross_supervision?: boolean
 	description?: HTMLString
 	development_tags?: RecordIdString[]
+	duration?: number
 	format?: ActivitiesFormatOptions
 	goal_tags?: RecordIdString[]
 	host_effort?: ActivitiesHostEffortOptions

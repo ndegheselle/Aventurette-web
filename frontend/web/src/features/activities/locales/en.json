@@ -186,6 +186,7 @@
                 "favorites": "Favorites",
                 "history": "History"
             },
+            "catalogueEmpty": "No activity matches your search. Try widening your filters.",
             "favoritesEmpty": "No favorites yet. Tap the heart on an activity to find it here."
         },
         "filters": {

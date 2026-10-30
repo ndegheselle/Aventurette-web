@@ -14,11 +14,15 @@ import { useFilterDefaults } from '@features/user/composables/useFilterDefaults'
 import { computed, ref, watch } from 'vue';
 
 /**
- * The catalogue's search and filters. They start from the user's profile once it is read. Each
- * sheet edits a draft: applying it replaces what is applied, closing it any other way drops it.
+ * The catalogue's search and filters. `search` is what is typed, `searched` what the list is
+ * searched for: the search input says when typing has settled. The filters start from the user's
+ * profile once it is read. Each sheet edits a draft: applying it replaces what is applied,
+ * closing it any other way drops it.
  */
 export function useCatalogueFilters() {
     const search = ref('');
+    const searched = ref('');
+    const searchFor = (value: string) => { searched.value = value; };
     const applied = ref<CatalogueFilters>(emptyCatalogueFilters());
     const draft = ref<CatalogueFilters>(emptyCatalogueFilters());
 
@@ -60,7 +64,7 @@ export function useCatalogueFilters() {
     });
 
     return {
-        search, applied, draft, activeCount, draftCount,
+        search, searched, searchFor, applied, draft, activeCount, draftCount,
         allSheet, quickSheet, quickShown, openAll, openQuick, reset,
         hasProfile, profileApplied,
     };

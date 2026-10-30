@@ -1,5 +1,4 @@
-<!-- The catalogue's filter fields, bound to a draft: the one quick filter given as `only`, or every filter.
-     Not wired to the feed yet: they show what will be filtered on. -->
+<!-- The catalogue's filter fields, bound to a draft: the one quick filter given as `only`, or every filter. -->
 <script setup lang="ts">
 import RangeInput from '@chapelure/ui/inputs/RangeInput.vue';
 import { toggled } from '@chapelure/ui/inputs/selection';

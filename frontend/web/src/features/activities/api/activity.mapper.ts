@@ -1,11 +1,24 @@
 import type { ActivitiesResponse } from "@/backend/schema.g";
-import { emptyIfNull, toEntities, toIds, type EntityMapper } from "@chapelure/core";
+import {
+    createFilter,
+    createGroup,
+    createSearchFilter,
+    emptyIfNull,
+    FilterLogical,
+    FilterOperator,
+    toEntities,
+    toIds,
+    type EntityMapper,
+    type Filter,
+    type FilterGroup,
+} from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import { safetyInstructionMapper, type SafetyInstructionPayload } from "@features/activities/api/safety.mapper";
 import { stepMapper, type ActivityStepPayload } from "@features/activities/api/step.mapper";
 import { tagMapper, type ActivityTagPayload } from "@features/activities/api/tag.mapper";
 import { workshopMapper, type ActivityWorkshopPayload } from "@features/activities/api/workshop.mapper";
 import { DEVELOPMENT_AXES, type ActivityData, type DevelopmentAxis } from "@features/activities/models/activity";
+import type { CatalogueFilters } from "@features/activities/models/catalogueFilters";
 import type { ActivityTagData } from "@features/activities/models/tag";
 
 /** An activity as the backend stores it, with what an expanded read carries alongside. */
@@ -159,3 +172,65 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
         };
     },
 };
+
+// ── The catalogue's filters ─────────────────────────────────────────────────────────────────
+
+type ActivityFilter = Filter<ActivityPayload> | FilterGroup<ActivityPayload>;
+
+/** A column, or `<column>:each` for the values of a multiple select, one at a time. */
+type FilterKey = keyof ActivityPayload | `${keyof ActivityPayload}:each`;
+
+const where = (key: FilterKey, operator: FilterOperator, value: unknown, combine: FilterLogical = FilterLogical.And) =>
+    createFilter<ActivityPayload>({ key: key as keyof ActivityPayload, operator, value, combine });
+
+/**
+ * The ages an activity is for overlap the ones asked for. A 0 in either column is unset: no
+ * limit on that side, so an activity with no upper age is for every age from its lower one.
+ */
+function agesOverlap(min: number | null, max: number | null): ActivityFilter[] {
+    return [
+        ...(min !== null ? [createGroup<ActivityPayload>({
+            filters: [
+                where('age_max', FilterOperator.GreaterOrEquals, min, FilterLogical.Or),
+                where('age_max', FilterOperator.Equals, 0),
+            ],
+        })] : []),
+        // A 0 lower bound is below any asked for, so it needs no case of its own.
+        ...(max !== null ? [where('age_min', FilterOperator.LessOrEquals, max)] : []),
+    ];
+}
+
+/** `duration` is the sum of the steps', kept on the activity by a backend hook. */
+function durationWithin(min: number | null, max: number | null): ActivityFilter[] {
+    return [
+        ...(min !== null ? [where('duration', FilterOperator.GreaterOrEquals, min)] : []),
+        ...(max !== null ? [where('duration', FilterOperator.LessOrEquals, max)] : []),
+    ];
+}
+
+/**
+ * The catalogue's search and filters as the backend reads them, every one of them required.
+ * Within a list, any one value chosen is enough: an activity in the park or the forest. A list
+ * nothing is chosen in, and an empty search, filter on nothing.
+ *
+ * A multiple select is compared through `:each`: `locations ?= 'PARK'` compares the whole stored
+ * list and matches nothing, where `locations:each ?= 'PARK'` matches an activity holding it.
+ */
+export function catalogueFilterOf(filters: CatalogueFilters, search: string): FilterGroup<ActivityPayload> {
+    const anyOf = (key: FilterKey, operator: FilterOperator, values: string[]) =>
+        values.length ? [where(key, operator, values)] : [];
+    const searched = search.trim();
+
+    return createGroup<ActivityPayload>({
+        filters: [
+            ...(searched ? [createSearchFilter<ActivityPayload>(searched, ['name', 'description'])] : []),
+            ...agesOverlap(filters.ageMin, filters.ageMax),
+            ...durationWithin(filters.durationMin, filters.durationMax),
+            ...anyOf('locations:each', FilterOperator.AnyEquals, filters.locations),
+            ...anyOf('format', FilterOperator.Equals, filters.formats),
+            ...anyOf('practices:each', FilterOperator.AnyEquals, filters.practices),
+            ...anyOf('children_pace', FilterOperator.Equals, filters.childrenPaces),
+            ...anyOf('seasons:each', FilterOperator.AnyEquals, filters.seasons),
+        ],
+    });
+}

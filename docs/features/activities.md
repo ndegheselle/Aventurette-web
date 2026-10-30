@@ -31,6 +31,17 @@ start of the line opens one with every filter, a *Reset* and the *Apply my profi
 are `ResponsiveModal`s and edit a draft that only *Apply* keeps (`useCatalogueFilters`). The
 quick filters start from the profile's defaults ([user](user.md)), and the toggle reads on while
 they still match them (`models/catalogueFilters.ts`). The fields are `ui/library/filters.vue`.
+The search and the badges stay at the top, under the tabs, while the list scrolls.
+
+**What the filters keep.** Every filter set has to hold, and within a list any one value chosen
+is enough: an activity in the park *or* the forest. The ages keep an activity whose range
+overlaps the one asked for, an unset bound on either side being no limit. The duration bounds
+`activities.duration`, the sum of the steps' durations: a filter cannot add up a relation, so a
+backend hook (`hooks/activity_duration.go`) stores it on the activity whenever a step or the
+activity is written, and overwrites whatever a client sends for it. `catalogueFilterOf`, beside
+the mapper, turns the filters into columns: a filter key is a column name, not a family path.
+Changing the search or the filters starts the list over, and a page still on its way for the
+previous ones is dropped (`useLibraryFeed`).
 
 The detail screen's actions end with the planning's button (`planning/ui/PlanButton.vue`),
 beside the heart. The catalogue shows the planning's banner (`planning/ui/PickBanner.vue`)
@@ -312,9 +323,6 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
 
 - **Tags read in French whatever the locale.** Their wordings were per locale for a while and
   are one language again until data gets a systematic way to be translated.
-- **The list cannot be filtered, nor searched.** The catalogue's search and filters can be set
-  and applied, but none is wired to the feed yet: the list stays the same. The family columns
-  are ready for increment 1's filters, but a filter key is a column name, not a family path.
 - **The number of leaders needed is typed in.** The template computes it from age, group size
   and the supervision referential, which does not exist yet.
 - **The run adds no step.** The template's gathering of the material and of the children, and

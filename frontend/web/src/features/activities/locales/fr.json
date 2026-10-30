@@ -186,6 +186,7 @@
                 "favorites": "Favoris",
                 "history": "Historique"
             },
+            "catalogueEmpty": "Aucune activité ne correspond à votre recherche. Essayez d'élargir vos filtres.",
             "favoritesEmpty": "Aucun favori pour l'instant. Touchez le cœur d'une activité pour la retrouver ici."
         },
         "filters": {

@@ -4,23 +4,24 @@ import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
 import { useCatalogueFilters } from '@features/activities/composables/useCatalogueFilters';
 import { useLibraryFeed } from '@features/activities/composables/useLibraryFeed';
-import { isQuickFilterSet, QUICK_FILTERS, quickFilterLabel } from '@features/activities/models/catalogueFilters';
+import { QUICK_FILTERS, quickFilterLabel } from '@features/activities/models/catalogueFilters';
 import ActivityCard from '@features/activities/ui/activity/card.vue';
 import LibraryFilters from '@features/activities/ui/library/filters.vue';
 import PickBanner from '@features/planning/ui/PickBanner.vue';
-import { ChevronDownIcon, FunnelIcon } from 'lucide-vue-next';
+import { ChevronDownIcon, FunnelIcon, SearchXIcon } from 'lucide-vue-next';
 
-const { items, loading, done, loadMore } = useLibraryFeed();
 const {
-    search, applied, draft, activeCount, draftCount,
+    search, searched, searchFor, applied, draft, activeCount, draftCount,
     allSheet, quickSheet, quickShown, openAll, openQuick, reset,
     hasProfile, profileApplied,
 } = useCatalogueFilters();
+const { items, loading, done, empty, loadMore } = useLibraryFeed(applied, searched);
 </script>
 
 <template>
-    <div class="flex flex-col gap-2 mx-2 mb-2">
-        <SearchInput v-model="search" />
+    <!-- Sticky under the library's tabs, which are sticky themselves: the search and filters stay in reach. -->
+    <div class="sticky top-14 z-10 flex flex-col gap-2 bg-base-100 px-2 pb-2">
+        <SearchInput v-model="search" @search="searchFor" />
 
         <!-- The full filters' button, then the quick ones on a line that scrolls sideways. -->
         <!-- The padding keeps the count's indicator inside the line, which clips what overflows it. -->
@@ -41,7 +42,6 @@ const {
                         :key="quick"
                         type="button"
                         class="btn btn-soft"
-                        :class="isQuickFilterSet(applied, quick) ? 'badge-primary' : 'badge-outline'"
                         @click="() => openQuick(quick)">
                     {{ $t(quickFilterLabel(applied, quick).key, quickFilterLabel(applied, quick).params) }}
                     <ChevronDownIcon class="size-4" />
@@ -49,9 +49,15 @@ const {
             </div>
         </div>
 
-        <div class="empty:hidden">
-            <PickBanner />
-        </div>
+    </div>
+
+    <div class="mx-2 mb-2 empty:hidden">
+        <PickBanner />
+    </div>
+
+    <div v-if="empty" class="flex flex-col items-center gap-2 p-8 text-center opacity-50">
+        <SearchXIcon class="size-10" />
+        <p>{{ $t('activities.library.catalogueEmpty') }}</p>
     </div>
 
     <!-- Two columns, the second one's first card shorter so the cards do not line up. -->
