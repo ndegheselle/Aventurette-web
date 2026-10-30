@@ -24,10 +24,13 @@ dependency runs one way: nothing here imports `activities-authoring`.
 `/activities/library`, so the sidebar's and the dock's link to the library stays active on
 any tab.
 
-The catalogue has no search tab: a floating button at its top right opens the filters, a
-`ResponsiveModal` with the `expandable` height. On a phone it opens on half the screen with the
-search and the quick filters (age, duration, place); pulled up, it shows every filter
-(`ui/library/filters.vue`).
+The catalogue has no search tab: its top holds the search, and under it a line of badges for
+the quick filters (age, duration, place), each reading as its name until something is chosen and
+as the choice after. A badge opens a sheet with that filter's values alone; the button at the
+start of the line opens one with every filter, a *Reset* and the *Apply my profile* toggle. Both
+are `ResponsiveModal`s and edit a draft that only *Apply* keeps (`useCatalogueFilters`). The
+quick filters start from the profile's defaults ([user](user.md)), and the toggle reads on while
+they still match them (`models/catalogueFilters.ts`). The fields are `ui/library/filters.vue`.
 
 The detail screen's actions end with the planning's button (`planning/ui/PlanButton.vue`),
 beside the heart. The catalogue shows the planning's banner (`planning/ui/PickBanner.vue`)
@@ -309,8 +312,8 @@ data. [activities-authoring](activities-authoring.md) has the gaps that belong t
 
 - **Tags read in French whatever the locale.** Their wordings were per locale for a while and
   are one language again until data gets a systematic way to be translated.
-- **The list cannot be filtered, nor searched.** The catalogue's filter sheet shows the search
-  and the filters but none is wired to the feed yet: the options are disabled. The family columns
+- **The list cannot be filtered, nor searched.** The catalogue's search and filters can be set
+  and applied, but none is wired to the feed yet: the list stays the same. The family columns
   are ready for increment 1's filters, but a filter key is a column name, not a family path.
 - **The number of leaders needed is typed in.** The template computes it from age, group size
   and the supervision referential, which does not exist yet.

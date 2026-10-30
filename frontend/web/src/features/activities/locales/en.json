@@ -192,6 +192,26 @@
             "title": "Filters",
             "open": "Filter the activities",
             "reset": "Reset",
+            "apply": "Apply",
+            "any": "Any",
+            "locations": "{count} places",
+            "age": {
+                "from": "{min}+ years",
+                "upTo": "Up to {max} years",
+                "between": "{min}–{max} years",
+                "exactly": "{min} years"
+            },
+            "duration": {
+                "from": "{min}+ min",
+                "upTo": "Up to {max} min",
+                "between": "{min}–{max} min",
+                "exactly": "{min} min"
+            },
+            "profile": {
+                "title": "Apply my profile",
+                "help": "The age, duration and places from your profile.",
+                "empty": "Your profile has no default filters yet."
+            },
             "quick": {
                 "age": "Age",
                 "duration": "Duration",

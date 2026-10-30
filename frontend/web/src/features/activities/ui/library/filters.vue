@@ -1,45 +1,81 @@
-<!-- The catalogue's filters: the quick ones always, every one once the sheet is expanded.
+<!-- The catalogue's filter fields, bound to a draft: the one quick filter given as `only`, or every filter.
      Not wired to the feed yet: they show what will be filtered on. -->
 <script setup lang="ts">
+import RangeInput from '@chapelure/ui/inputs/RangeInput.vue';
+import { toggled } from '@chapelure/ui/inputs/selection';
 import {
-    ActivityFormat,
-    ActivityLocation,
-    ActivityPractice,
-    ActivitySeason,
-    ChildrenPace
-} from '@features/activities/models/activity';
+    CHOICE_GROUPS,
+    isChosen,
+    isQuickFilterSet,
+    LOCATIONS,
+    quickFilterLabel,
+    withChoiceToggled,
+    type CatalogueFilters,
+    type QuickFilter
+} from '@features/activities/models/catalogueFilters';
+import { DEFAULT_AGE_BOUNDS, DEFAULT_DURATION_BOUNDS } from '@features/user/models/user';
 
-defineProps<{
-    expanded: boolean;
+const { only = null } = defineProps<{
+    only?: QuickFilter | null;
 }>();
 
-/** Each group of the full filters: its title's key, and its options' key prefix and values. */
-const groups = [
-    { title: 'activities.fields.format', prefix: 'activities.format', values: Object.values(ActivityFormat) },
-    { title: 'activities.fields.practices', prefix: 'activities.practice', values: Object.values(ActivityPractice) },
-    { title: 'activities.fields.childrenPace', prefix: 'activities.childrenPace', values: Object.values(ChildrenPace) },
-    { title: 'activities.fields.locations', prefix: 'activities.location', values: Object.values(ActivityLocation) },
-    { title: 'activities.fields.seasons', prefix: 'activities.season', values: Object.values(ActivitySeason) }
-];
+const filters = defineModel<CatalogueFilters>({ required: true });
 
-const quick = ['age', 'duration', 'location'] as const;
+const shows = (quick: QuickFilter) => only === null || only === quick;
 </script>
 
 <template>
     <div class="flex flex-col gap-4">
-        <div class="grid grid-cols-3 gap-2 opacity-50">
-            <div v-for="filter in quick" :key="filter" class="flex flex-col mx-auto">
-                <img class="mask mask-circle" src="https://placeholder.pagebee.io/api/plain/64/64" alt="" />
-                <span class="text-sm text-center">{{ $t(`activities.filters.quick.${filter}`) }}</span>
-            </div>
-        </div>
+        <fieldset v-if="shows('age')" class="fieldset">
+            <legend class="fieldset-legend w-full">
+                <template v-if="only === null">{{ $t('activities.filters.quick.age') }}</template>
+                <span class="ms-auto font-normal opacity-70">
+                    <template v-if="isQuickFilterSet(filters, 'age')">
+                        {{ $t(quickFilterLabel(filters, 'age').key, quickFilterLabel(filters, 'age').params) }}
+                    </template>
+                    <template v-else>{{ $t('activities.filters.any') }}</template>
+                </span>
+            </legend>
+            <RangeInput class="text-primary" v-bind="DEFAULT_AGE_BOUNDS"
+                        v-model:min="filters.ageMin" v-model:max="filters.ageMax" />
+        </fieldset>
 
-        <template v-if="expanded">
-            <fieldset v-for="group in groups" :key="group.title" class="fieldset">
+        <fieldset v-if="shows('duration')" class="fieldset">
+            <legend class="fieldset-legend w-full">
+                <template v-if="only === null">{{ $t('activities.filters.quick.duration') }}</template>
+                <span class="ms-auto font-normal opacity-70">
+                    <template v-if="isQuickFilterSet(filters, 'duration')">
+                        {{ $t(quickFilterLabel(filters, 'duration').key, quickFilterLabel(filters, 'duration').params) }}
+                    </template>
+                    <template v-else>{{ $t('activities.filters.any') }}</template>
+                </span>
+            </legend>
+            <RangeInput class="text-primary" v-bind="DEFAULT_DURATION_BOUNDS"
+                        v-model:min="filters.durationMin" v-model:max="filters.durationMax" />
+        </fieldset>
+
+        <fieldset v-if="shows('location')" class="fieldset">
+            <legend v-if="only === null" class="fieldset-legend">{{ $t('activities.filters.quick.location') }}</legend>
+            <div class="flex flex-wrap gap-2">
+                <button v-for="location in LOCATIONS" :key="location"
+                        type="button" class="btn btn-sm"
+                        :class="filters.locations.includes(location) ? 'btn-primary' : 'btn-soft'"
+                        :aria-pressed="filters.locations.includes(location)"
+                        @click="() => filters.locations = toggled(filters.locations, location)">
+                    {{ $t(`activities.location.${location}`) }}
+                </button>
+            </div>
+        </fieldset>
+
+        <template v-if="only === null">
+            <fieldset v-for="group in CHOICE_GROUPS" :key="group.field" class="fieldset">
                 <legend class="fieldset-legend">{{ $t(group.title) }}</legend>
                 <div class="flex flex-wrap gap-2">
                     <button v-for="value in group.values" :key="value"
-                            type="button" class="btn btn-sm btn-soft" disabled>
+                            type="button" class="btn btn-sm"
+                            :class="isChosen(filters, group.field, value) ? 'btn-primary' : 'btn-soft'"
+                            :aria-pressed="isChosen(filters, group.field, value)"
+                            @click="() => filters = withChoiceToggled(filters, group.field, value)">
                         {{ $t(`${group.prefix}.${value}`) }}
                     </button>
                 </div>
