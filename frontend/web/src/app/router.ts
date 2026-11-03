@@ -1,7 +1,11 @@
 import Desktop from '@/app/layouts/Desktop.layout.vue';
 import Empty from '@/app/layouts/Empty.layout.vue';
 import Responsive from '@/app/layouts/Responsive.layout.vue';
-import activitiesRoutes, { routesNames as activitiesRoutesNames } from '@features/activities/routes';
+import Space from '@/app/layouts/Space.layout.vue';
+import activitiesRoutes, {
+    routesNames as activitiesRoutesNames,
+    spaceRoutes as activitiesSpaceRoutes,
+} from '@features/activities/routes';
 import authoringRoutes from '@features/admin/activities-authoring/routes';
 import catalogueRoutes from '@features/admin/catalogue-authoring/routes';
 import dashboardRoutes from '@features/dashboard/routes';
@@ -20,8 +24,16 @@ const routes: RouteRecordRaw[] = [
 
             ...dashboardRoutes,
             ...activitiesRoutes,
-            ...planningRoutes,
             ...userRoutes,
+            // The user's space: what is theirs, one tab each, whichever feature it comes from.
+            {
+                path: '/space',
+                component: Space,
+                children: [
+                    ...planningRoutes,
+                    ...activitiesSpaceRoutes,
+                ]
+            },
         ]
     },
     // Authoring is laid out for a large screen: only the desktop sidebar links it, and it keeps

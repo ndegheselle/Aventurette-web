@@ -3,7 +3,6 @@
      Tapping a day of the month opens that day. -->
 <script setup lang="ts">
 import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import Container from '@chapelure/ui/layout/Container.vue';
 import { useIsMobile } from '@chapelure/ui/layout/useIsMobile';
 import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
@@ -58,8 +57,9 @@ const options = computed<CalendarOptions>(() => ({
 }));
 </script>
 
+<!-- A tab of the user's space, which holds the page's container. -->
 <template>
-    <Container>
+    <div class="flex flex-col">
         <!-- On a phone, room under the calendar for the actions floating above the dock. -->
         <div class="planning p-2 max-md:pb-20">
             <div class="flex items-center gap-1 mb-2">
@@ -142,7 +142,7 @@ const options = computed<CalendarOptions>(() => ({
                 </div>
             </div>
         </ResponsiveModal>
-    </Container>
+    </div>
 </template>
 
 <style scoped>

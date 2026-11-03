@@ -14,15 +14,16 @@ dependency runs one way: nothing here imports `activities-authoring`.
 
 | Name | Path | Screen |
 |---|---|---|
-| `activities.library` | `/activities/library` | The library's catalogue tab |
-| `activities.favorites` | `/activities/library/favorites` | The library's favorites tab |
+| `activities.library` | `/activities/library` | The catalogue and its search — *Search* in the dock |
+| `activities.favorites` | `/space/favorites` | The favorites, a tab of the user's space |
 | `activities.page` | `/activities/:id` | One activity in full |
 | `activities.play` | `/activities/:id/play/:step?` | Running the activity, one step to a page |
 | `activities.feedback` | `/activities/:id/feedback` | After a run: well done, and what the user thought |
 
-`/` redirects to `activities.library`. The library's tabs are child routes of
-`/activities/library`, so the sidebar's and the dock's link to the library stays active on
-any tab.
+`/` redirects to `activities.library`. The favorites are not under it: they are a tab of the
+user's space (`app/layouts/Space.layout.vue`), beside the [planning](planning.md#routes). The
+feature exports that route apart, as `spaceRoutes`, with a path relative to the space, and the
+app mounts it there.
 
 The catalogue has no search tab: its top holds the search, and under it a line of badges for
 the quick filters (age, duration, place), each reading as its name until something is chosen and
@@ -31,7 +32,7 @@ start of the line opens one with every filter, a *Reset* and the *Apply my profi
 are `ResponsiveModal`s and edit a draft that only *Apply* keeps (`useCatalogueFilters`). The
 quick filters start from the profile's defaults ([user](user.md)), and the toggle reads on while
 they still match them (`models/catalogueFilters.ts`). The fields are `ui/library/filters.vue`.
-The search and the badges stay at the top, under the tabs, while the list scrolls.
+The search and the badges stay at the top while the list scrolls.
 
 **What the filters keep.** Every filter set has to hold, and within a list any one value chosen
 is enough: an activity in the park *or* the forest. The ages keep an activity whose range
@@ -55,9 +56,9 @@ after it.
 
 A heart on every card and on the detail screen adds the activity to the user's favorites, or
 takes it off (`_parts/favorite.vue`). Either way a toast says so; the one for a removal has a
-*Cancel* button that puts the favorite back, with no toast of its own. The favorites tab shows
-them with the library's card, in the order they were added, or a message saying there are none
-yet.
+*Cancel* button that puts the favorite back, with no toast of its own. The favorites tab of the
+user's space shows them with the library's card, in the order they were added, or a message
+saying there are none yet.
 
 `useFavorites` is all of it: the list, and adding or removing one. The list is module state,
 shared by every heart and the tab. It is read once per signed-in user, by id, and kept in step

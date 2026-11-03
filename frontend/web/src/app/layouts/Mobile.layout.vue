@@ -3,7 +3,7 @@ import AlertsContainer from '@chapelure/ui/alerts/AlertsContainer.vue';
 import ConfirmationModal from '@chapelure/ui/modals/ConfirmationModal.vue';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import { routesNames as planningRoutesNames } from '@features/planning/routes';
-import { CalendarIcon, LibraryIcon, LightbulbIcon, UserIcon } from 'lucide-vue-next';
+import { FolderHeartIcon, LightbulbIcon, SearchIcon, UserIcon } from 'lucide-vue-next';
 import { routesNames as usersRoutesNames } from '@features/user/routes';
 
 </script>
@@ -17,12 +17,13 @@ import { routesNames as usersRoutesNames } from '@features/user/routes';
 
         <div class="dock dock-sm bg-base-300">
             <RouterLink :to="{ name: activitiesRoutesNames.library }" active-class="dock-active">
-                <LibraryIcon />
-                <span class="dock-label">{{ $t('dock.library') }}</span>
+                <SearchIcon />
+                <span class="dock-label">{{ $t('dock.search') }}</span>
             </RouterLink>
+            <!-- The planning is the space's first tab: the link stays active on the others. -->
             <RouterLink :to="{ name: planningRoutesNames.planning }" active-class="dock-active">
-                <CalendarIcon />
-                <span class="dock-label">{{ $t('dock.planning') }}</span>
+                <FolderHeartIcon />
+                <span class="dock-label">{{ $t('dock.space') }}</span>
             </RouterLink>
             <!-- XXX : no tips page for the public yet. -->
             <button type="button" disabled>
