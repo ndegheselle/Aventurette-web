@@ -6,10 +6,13 @@ The user's calendar: when they mean to run which activity.
 
 | Name | Path | Screen |
 |---|---|---|
-| `planning` | `/planning` | The calendar of the user's plans |
+| `planning` | `/space` | The calendar of the user's plans |
 
-The dock and the sidebar link it where the search used to be; search is now the catalogue's filters in the
-library ([activities](activities.md#routes)). The page is loaded when it is first opened:
+The planning is the first tab of the user's space, *My space* in the dock and the sidebar, beside
+the favorites ([activities](activities.md#routes)) and a history still to come. The app mounts
+it there (`app/router.ts`, `app/layouts/Space.layout.vue`); its path is empty so that it is the
+space's own address, and the link to the space stays active on the other tabs. The page is
+loaded when it is first opened:
 FullCalendar would otherwise add about a third to the main bundle.
 
 ## Planning an activity

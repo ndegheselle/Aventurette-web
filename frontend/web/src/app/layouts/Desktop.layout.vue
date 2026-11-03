@@ -10,13 +10,13 @@ import { useAuth } from '@features/user/composables/useAuth';
 import { Role } from '@features/user/models/user';
 import { routesNames as usersRoutesNames } from '@features/user/routes';
 import {
-    CalendarIcon,
+    FolderHeartIcon,
     LibraryBigIcon,
-    LibraryIcon,
     LightbulbIcon,
     PanelLeftCloseIcon,
     PanelLeftOpenIcon,
     PencilLineIcon,
+    SearchIcon,
 } from 'lucide-vue-next';
 import { ref } from 'vue';
 
@@ -66,17 +66,18 @@ const { hasRole } = useAuth();
                     <li>
                         <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
                             :to="{ name: activitiesRoutesNames.library }" active-class="menu-active"
-                            :data-tip="$t('dock.library')">
-                            <LibraryIcon />
-                            <span class="is-drawer-close:hidden">{{ $t('dock.library') }}</span>
+                            :data-tip="$t('dock.search')">
+                            <SearchIcon />
+                            <span class="is-drawer-close:hidden">{{ $t('dock.search') }}</span>
                         </RouterLink>
                     </li>
+                    <!-- The planning is the space's first tab: the link stays active on the others. -->
                     <li>
                         <RouterLink class="p-3 is-drawer-close:tooltip is-drawer-close:tooltip-right"
                             :to="{ name: planningRoutesNames.planning }" active-class="menu-active"
-                            :data-tip="$t('dock.planning')">
-                            <CalendarIcon />
-                            <span class="is-drawer-close:hidden">{{ $t('dock.planning') }}</span>
+                            :data-tip="$t('dock.space')">
+                            <FolderHeartIcon />
+                            <span class="is-drawer-close:hidden">{{ $t('dock.space') }}</span>
                         </RouterLink>
                     </li>
                     <li class="menu-disabled">
