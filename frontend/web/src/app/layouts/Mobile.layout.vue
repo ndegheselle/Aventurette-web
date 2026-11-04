@@ -16,14 +16,14 @@ import { routesNames as usersRoutesNames } from '@features/user/routes';
         </main>
 
         <div class="dock dock-sm bg-base-300">
-            <RouterLink :to="{ name: activitiesRoutesNames.library }" active-class="dock-active">
-                <SearchIcon />
-                <span class="dock-label">{{ $t('dock.search') }}</span>
-            </RouterLink>
-            <!-- The planning is the space's first tab: the link stays active on the others. -->
+            
             <RouterLink :to="{ name: planningRoutesNames.planning }" active-class="dock-active">
                 <FolderHeartIcon />
                 <span class="dock-label">{{ $t('dock.space') }}</span>
+            </RouterLink>
+                        <RouterLink :to="{ name: activitiesRoutesNames.library }" active-class="dock-active">
+                <SearchIcon />
+                <span class="dock-label">{{ $t('dock.search') }}</span>
             </RouterLink>
             <!-- XXX : no tips page for the public yet. -->
             <button type="button" disabled>
