@@ -277,6 +277,12 @@ without this every request looks like it comes from the nginx container and rate
 and logging are useless — see
 [the PocketBase docs](https://pocketbase.io/docs/going-to-production/#using-reverse-proxy).
 
+On the same page, enable the *Batch API*. It is off by default, and the front saves an entity
+together with its children in a single batch request
+([packages/pocketbase/src/batch.ts](../frontend/packages/pocketbase/src/batch.ts)). Without it,
+every such save fails with a `403`. Raise *Max allowed batch requests* if a save sends more
+records than the limit allows.
+
 While you are there, turn on *Settings > Backups* on a schedule.
 
 You do not have to create collections. The schema is committed as migration files under

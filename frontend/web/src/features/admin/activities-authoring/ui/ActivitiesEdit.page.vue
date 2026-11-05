@@ -5,10 +5,10 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import { ActivityState, type ActivityData } from '@features/activities/models/activity';
-import ActivityImportModal from '@features/admin/activities-authoring/ui/ActivityImport.modal.vue';
 import { useActivitiesEditList } from '@features/admin/activities-authoring/composables/useActivitiesEditList';
 import { authoredStateTabs } from '@features/admin/activities-authoring/models/activity.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';
+import ActivityImportModal from '@features/admin/activities-authoring/ui/ActivityImport.modal.vue';
 import { ImportIcon, PenIcon, PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -42,7 +42,7 @@ useNavbar(t('activities.authoring.title'));
 
 <template>
     <Container>
-        <div class="flex gap-2">
+        <div class="flex gap-2 my-2">
             <div role="tablist"
                  class="tabs flex-1 tabs-box">
                 <a v-for="tab in authoredStateTabs"

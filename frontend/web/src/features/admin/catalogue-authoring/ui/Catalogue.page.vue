@@ -19,7 +19,7 @@ useNavbar(t('catalogue.title'));
 <template>
     <Container>
         <div role="tablist"
-             class="tabs tabs-box">
+             class="tabs tabs-box my-2">
             <RouterLink v-for="tab in tabs"
                         :key="tab.to"
                         role="tab"
