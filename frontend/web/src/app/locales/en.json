@@ -2,8 +2,8 @@
     "home": "Home",
     "back": "Back",
     "dock": {
-        "library": "Library",
-        "planning": "Planning",
+        "search": "Search",
+        "space": "My space",
         "tips": "Tips",
         "profil": "Profil"
     },
@@ -13,5 +13,12 @@
     "sidebar": {
         "open": "Open the menu",
         "close": "Close the menu"
+    },
+    "space": {
+        "tabs": {
+            "planning": "Planning",
+            "favorites": "Favorites",
+            "history": "History"
+        }
     }
 }

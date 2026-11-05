@@ -5,7 +5,6 @@ import Feedback from '@features/activities/ui/activity/feedback.page.vue';
 import Play from '@features/activities/ui/activity/play.page.vue';
 import Catalogue from '@features/activities/ui/library/catalogue.page.vue';
 import Favorites from '@features/activities/ui/library/favorites.page.vue';
-import Library from '@features/activities/ui/library/library.page.vue';
 
 export const routesNames = {
     library: 'activities.library',
@@ -16,22 +15,10 @@ export const routesNames = {
 } as const;
 
 const routes: RouteRecordRaw[] = [
-    // The tabs are children of the library, so a link to the library stays active on any tab.
     {
         path: '/activities/library',
-        component: Library,
-        children: [
-            {
-                path: '',
-                name: routesNames.library,
-                component: Catalogue,
-            },
-            {
-                path: 'favorites',
-                name: routesNames.favorites,
-                component: Favorites,
-            },
-        ],
+        name: routesNames.library,
+        component: Catalogue,
     },
     {
         path: '/activities/:id',
@@ -47,6 +34,15 @@ const routes: RouteRecordRaw[] = [
         path: '/activities/:id/feedback',
         name: routesNames.feedback,
         component: Feedback,
+    },
+];
+
+/** The favorites, a tab of the user's space: the app mounts it there, so its path is relative to it. */
+export const spaceRoutes: RouteRecordRaw[] = [
+    {
+        path: 'favorites',
+        name: routesNames.favorites,
+        component: Favorites,
     },
 ];
 

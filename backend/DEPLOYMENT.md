@@ -92,20 +92,20 @@ Log in as root, then create a user for yourself — the deploy does not need roo
 installing Docker:
 
 ```bash
-adduser nicolas
+adduser lestrade
 ```
 
 ```bash
-usermod -aG sudo nicolas
+usermod -aG sudo lestrade
 ```
 
 Copy your SSH key over, still as root:
 
 ```bash
-mkdir -p /home/nicolas/.ssh && cp ~/.ssh/authorized_keys /home/nicolas/.ssh/ && chown -R nicolas:nicolas /home/nicolas/.ssh && chmod 700 /home/nicolas/.ssh && chmod 600 /home/nicolas/.ssh/authorized_keys
+mkdir -p /home/lestrade/.ssh && cp ~/.ssh/authorized_keys /home/lestrade/.ssh/ && chown -R lestrade:lestrade /home/lestrade/.ssh && chmod 700 /home/lestrade/.ssh && chmod 600 /home/lestrade/.ssh/authorized_keys
 ```
 
-Open a **second** terminal and confirm `ssh nicolas@<server-ip>` works before going on — if
+Open a **second** terminal and confirm `ssh lestrade@<server-ip>` works before going on — if
 it does not, you still have the root session to fix it with.
 
 Once it works, turn off password logins. In `/etc/ssh/sshd_config` set:
@@ -343,7 +343,7 @@ echo "command=\"sh $HOME/Aventurette-web/backend/scripts/deploy.sh\",no-port-for
 |---|---|
 | `DEPLOY_KEY` | the private key: `cat ~/.ssh/github-deploy` |
 | `DEPLOY_HOST` | the server's IP |
-| `DEPLOY_USER` | `nicolas` |
+| `DEPLOY_USER` | `lestrade` |
 | `DEPLOY_KNOWN_HOSTS` | the output of `ssh-keyscan <server-ip>`, run from your own machine |
 
 Then delete the private key from the server. GitHub has its own copy now:
