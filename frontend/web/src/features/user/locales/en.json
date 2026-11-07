@@ -7,16 +7,16 @@
         },
         "login": {
             "title": "Log in",
-            "defaultError": "Wrong credentials."
+            "sendCode": "Send me a code",
+            "codeSentTo": "A sign-in code was sent to {email}. It is valid for 10 minutes.",
+            "changeEmail": "Change email",
+            "requestError": "The code could not be sent.",
+            "codeError": "Invalid or expired code."
         },
-        "register": "Sign up",
         "form": {
             "withOauth2": "or log in with",
             "email": "Email",
-            "password": "Password",
-            "confirmPassword": "Confirm password",
-            "accountNew": "Create a new account",
-            "accountAlready": "I already have an account",
+            "code": "Sign-in code",
             "rememberMe": "Stay logged in"
         }
     },

@@ -52,11 +52,11 @@ describe('useSubmit', () => {
     });
 
     it('shows the caller\'s own message when the backend sent no field detail', async () => {
-        const form = setup(async () => { throw new Error('boom'); }, 'auth.login.defaultError');
+        const form = setup(async () => { throw new Error('boom'); }, 'auth.login.codeError');
 
         await form.submit();
 
-        expect(form.errors.global.value).toBe('Wrong credentials.');
+        expect(form.errors.global.value).toBe('Invalid or expired code.');
     });
 
     it('clears the previous failure when resubmitted', async () => {

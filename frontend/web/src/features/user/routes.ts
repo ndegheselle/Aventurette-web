@@ -1,29 +1,22 @@
 import LoginPage from '@features/user/ui/Login.page.vue';
 import OnboardingPage from '@features/user/ui/Onboarding.page.vue';
 import ProfilePage from '@features/user/ui/Profile.page.vue';
-import RegisterPage from '@features/user/ui/Register.page.vue';
 import SettingsPage from '@features/user/ui/Settings.page.vue';
 import type { RouteRecordRaw } from 'vue-router';
 
 export const routesNames = {
     login: 'user.login',
-    register: 'user.register',
     onboarding: 'user.onboarding',
     settings: 'user.settings',
     profile: 'user.profile',
 } as const;
 
-/** Reachable signed out, so they hang under the bare layout. */
+/** Reachable signed out, so it hangs under the bare layout. */
 export const publicRoutes: RouteRecordRaw[] = [
     {
         path: '/user/login',
         name: routesNames.login,
         component: LoginPage,
-    },
-    {
-        path: '/user/register',
-        name: routesNames.register,
-        component: RegisterPage,
     },
 ];
 

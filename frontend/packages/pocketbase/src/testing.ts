@@ -61,9 +61,13 @@ export function fakePocketBase(records: Record<string, unknown>[] = []): FakePoc
             record('authRefresh', [options]);
             return { record: fake.records[0], token: 'fake-token' };
         },
-        async requestVerification(email: string) {
-            record('requestVerification', [email]);
-            return true;
+        async requestOTP(email: string) {
+            record('requestOTP', [email]);
+            return { otpId: 'otp1' };
+        },
+        async authWithOTP(otpId: string, password: string, options?: unknown) {
+            record('authWithOTP', [otpId, password, options]);
+            return { record: fake.records[0], token: 'fake-token' };
         },
         async create(data: Record<string, unknown>, options?: unknown) {
             record('create', [data, options]);

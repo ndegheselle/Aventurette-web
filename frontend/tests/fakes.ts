@@ -110,7 +110,7 @@ function page<T>(items: T[], options: PaginationOptions): Paginated<T> {
 export interface FakeAuth<TUser extends BaseEntity> extends IAuthProvider<TUser> {
     /** The session `refresh` revives. Null for a signed-out start. */
     session: TUser | null;
-    /** Make the next login or register fail the way rejected credentials do. */
+    /** Make the next login, code request or code login fail the way the backend refuses one. */
     failNextWith(fields: FieldErrors, message?: string): void;
 }
 
@@ -137,7 +137,12 @@ export function fakeAuthProvider<TUser extends BaseEntity>(user: TUser): FakeAut
             return user;
         },
 
-        async register() {
+        async requestOtp() {
+            raiseIfArmed();
+            return 'otp1';
+        },
+
+        async loginWithOtp() {
             raiseIfArmed();
             fake.session = user;
             return user;

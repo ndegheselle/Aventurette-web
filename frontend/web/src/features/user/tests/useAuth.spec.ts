@@ -29,34 +29,26 @@ describe('useAuth', () => {
         expect(auth.current.value).toBeNull();
     });
 
-    it('holds the user after a login', async () => {
+    it('holds the user after a code login', async () => {
         const { auth } = await setup();
 
-        await auth.login('parent@example.com', 'secret');
+        await auth.loginWithOtp('otp1', '123456');
 
         expect(auth.isLoggedIn.value).toBe(true);
         expect(auth.current.value).toEqual(user);
     });
 
-    it('holds the user after a registration', async () => {
-        const { auth } = await setup();
-
-        await auth.register('parent@example.com', 'secret', 'secret');
-
-        expect(auth.current.value).toEqual(user);
-    });
-
-    it('lets a rejected login through to the caller rather than swallowing it', async () => {
+    it('lets a rejected code through to the caller rather than swallowing it', async () => {
         const { auth } = await setup();
         provider.failNextWith({});
 
-        await expect(auth.login('parent@example.com', 'wrong')).rejects.toThrow();
+        await expect(auth.loginWithOtp('otp1', 'wrong')).rejects.toThrow();
         expect(auth.isLoggedIn.value).toBe(false);
     });
 
     it('shares one session across every caller', async () => {
         const { auth } = await setup();
-        await auth.login('parent@example.com', 'secret');
+        await auth.loginWithOtp('otp1', '123456');
 
         const { auth: elsewhere } = await setup();
 
@@ -65,7 +57,7 @@ describe('useAuth', () => {
 
     it('drops the session on logout', async () => {
         const { auth } = await setup();
-        await auth.login('parent@example.com', 'secret');
+        await auth.loginWithOtp('otp1', '123456');
 
         auth.logout();
 
@@ -92,7 +84,7 @@ describe('useAuth', () => {
     describe('currentId', () => {
         it('returns the signed-in user\'s id', async () => {
             const { auth } = await setup();
-            await auth.login('parent@example.com', 'secret');
+            await auth.loginWithOtp('otp1', '123456');
 
             expect(auth.currentId()).toBe(user.id);
         });

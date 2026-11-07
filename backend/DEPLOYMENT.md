@@ -285,6 +285,15 @@ records than the limit allows.
 
 While you are there, turn on *Settings > Backups* on a schedule.
 
+**Configure *Settings > Mail settings*.** Users sign in with a one-time code sent by email, so
+without an SMTP server nobody can log in. Set the sender name and address, enable *Use SMTP mail
+server*, and send yourself a test email from that page.
+
+**Add the beta testers.** Sign-up is closed: a tester is an account you create, in
+*Collections > users > New record*, with their email and any password (they never use it — the
+login screen asks for a code). Leave `role` empty for a plain user. Removing the record removes
+their access.
+
 You do not have to create collections. The schema is committed as migration files under
 `api/migrations/` and was applied automatically when the container started. Automigrate is
 off in a compiled binary, so the running server never writes schema of its own — schema

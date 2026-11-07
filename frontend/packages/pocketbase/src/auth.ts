@@ -23,13 +23,14 @@ export function createPocketBaseAuth<TUser extends BaseEntity>(
             return result.record;
         },
 
-        async register(email: string, password: string, passwordConfirm: string): Promise<TUser> {
-            return await mapErrors(async () => {
-                await collection.create({ email, password, passwordConfirm });
-                await collection.requestVerification(email);
-                const result = await collection.authWithPassword<TUser>(email, password, options);
-                return result.record;
-            });
+        async requestOtp(email: string): Promise<string> {
+            const result = await mapErrors(() => collection.requestOTP(email));
+            return result.otpId;
+        },
+
+        async loginWithOtp(otpId: string, code: string): Promise<TUser> {
+            const result = await mapErrors(() => collection.authWithOTP<TUser>(otpId, code, options));
+            return result.record;
         },
 
         async refresh(): Promise<TUser | null> {
