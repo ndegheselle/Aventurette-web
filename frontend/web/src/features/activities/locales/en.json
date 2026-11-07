@@ -197,20 +197,20 @@
                 "between": "{min}–{max} years",
                 "exactly": "{min} years"
             },
-            "duration": {
-                "from": "{min}+ min",
-                "upTo": "Up to {max} min",
-                "between": "{min}–{max} min",
-                "exactly": "{min} min"
+            "participants": {
+                "from": "{min}+ children",
+                "upTo": "Up to {max} children",
+                "between": "{min}–{max} children",
+                "exactly": "{min} children"
             },
             "profile": {
                 "title": "Apply my profile",
-                "help": "The age, duration and places from your profile.",
+                "help": "The age, number of children and places from your profile.",
                 "empty": "Your profile has no default filters yet."
             },
             "quick": {
                 "age": "Age",
-                "duration": "Duration",
+                "participants": "Children",
                 "location": "Location"
             }
         }

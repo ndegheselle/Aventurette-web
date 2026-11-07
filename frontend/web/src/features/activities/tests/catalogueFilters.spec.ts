@@ -16,7 +16,7 @@ const filters = (overrides: Partial<CatalogueFilters> = {}): CatalogueFilters =>
     ({ ...emptyCatalogueFilters(), ...overrides });
 
 const profile = (overrides: Partial<FilterDefaultsData> = {}): FilterDefaultsData => ({
-    id: 'user', ageMin: 3, ageMax: 6, durationMin: null, durationMax: 30,
+    id: 'user', ageMin: 3, ageMax: 6, participantsMin: null, participantsMax: 3,
     locations: [ActivityLocation.PARK, ActivityLocation.FOREST], onboarded: true,
     ...overrides,
 });
@@ -29,8 +29,8 @@ describe('quickFilterLabel', () => {
     it('reads as the range chosen, open on the side left unset', () => {
         expect(quickFilterLabel(filters({ ageMin: 3, ageMax: 6 }), 'age'))
             .toEqual({ key: 'activities.filters.age.between', params: { min: 3, max: 6 } });
-        expect(quickFilterLabel(filters({ durationMax: 30 }), 'duration'))
-            .toEqual({ key: 'activities.filters.duration.upTo', params: { max: 30 } });
+        expect(quickFilterLabel(filters({ participantsMax: 3 }), 'participants'))
+            .toEqual({ key: 'activities.filters.participants.upTo', params: { max: 3 } });
     });
 
     it('names a single place, and counts several', () => {
@@ -64,7 +64,7 @@ describe('the profile', () => {
     it('sets the quick filters only, leaving the others as they were', () => {
         const applied = withProfile(filters({ seasons: [ActivitySeason.WINTER] }), profile());
 
-        expect(applied).toMatchObject({ ageMin: 3, ageMax: 6, durationMax: 30, seasons: [ActivitySeason.WINTER] });
+        expect(applied).toMatchObject({ ageMin: 3, ageMax: 6, participantsMax: 3, seasons: [ActivitySeason.WINTER] });
         expect(withoutProfile(applied)).toEqual(filters({ seasons: [ActivitySeason.WINTER] }));
     });
 
@@ -80,7 +80,7 @@ describe('the profile', () => {
     });
 
     it('is never applied when it chose nothing, even on empty filters', () => {
-        const empty = profile({ ageMin: null, ageMax: null, durationMax: null, locations: [] });
+        const empty = profile({ ageMin: null, ageMax: null, participantsMax: null, locations: [] });
 
         expect(matchesProfile(filters(), empty)).toBe(false);
     });

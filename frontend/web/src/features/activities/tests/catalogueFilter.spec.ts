@@ -24,9 +24,15 @@ describe('catalogueFilterOf', () => {
         ]);
     });
 
-    it('bounds the duration the steps add up to', () => {
-        expect(filtersOf({ durationMax: 30 })).toMatchObject([
-            { key: 'duration', operator: FilterOperator.LessOrEquals, value: 30 },
+    it('keeps an activity whose participants overlap the number of children asked for', () => {
+        expect(filtersOf({ participantsMin: 2, participantsMax: 2 })).toMatchObject([
+            {
+                filters: [
+                    { key: 'participants_max', operator: FilterOperator.GreaterOrEquals, value: 2, combine: FilterLogical.Or },
+                    { key: 'participants_max', operator: FilterOperator.Equals, value: 0 },
+                ],
+            },
+            { key: 'participants_min', operator: FilterOperator.LessOrEquals, value: 2 },
         ]);
     });
 

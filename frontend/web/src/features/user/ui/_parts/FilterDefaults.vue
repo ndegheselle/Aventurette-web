@@ -1,9 +1,9 @@
-<!-- The filter defaults' fields, for the onboarding and the profile: the ages, the duration and the places. -->
+<!-- The filter defaults' fields, for the onboarding and the profile: the ages, the number of children and the places. -->
 <script setup lang="ts">
 import RangeInput from '@chapelure/ui/inputs/RangeInput.vue';
 import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { toggled } from '@chapelure/ui/inputs/selection';
-import { DEFAULT_AGE_BOUNDS, DEFAULT_DURATION_BOUNDS, Location, type FilterDefaultsData } from '@features/user/models/user';
+import { DEFAULT_AGE_BOUNDS, DEFAULT_PARTICIPANTS_BOUNDS, Location, type FilterDefaultsData } from '@features/user/models/user';
 
 const defaults = defineModel<FilterDefaultsData>({ required: true });
 
@@ -25,13 +25,13 @@ const locations = Object.values(Location);
 
         <fieldset class="fieldset">
             <legend class="fieldset-legend w-full">
-                {{ $t('user.filterDefaults.duration') }}
+                {{ $t('user.filterDefaults.participants') }}
                 <span class="ms-auto font-normal opacity-70">
-                    {{ $t(rangeLabel(defaults.durationMin, defaults.durationMax).key, rangeLabel(defaults.durationMin, defaults.durationMax).params) }}
+                    {{ $t(rangeLabel(defaults.participantsMin, defaults.participantsMax).key, rangeLabel(defaults.participantsMin, defaults.participantsMax).params) }}
                 </span>
             </legend>
-            <RangeInput class="text-primary" v-bind="DEFAULT_DURATION_BOUNDS"
-                        v-model:min="defaults.durationMin" v-model:max="defaults.durationMax" />
+            <RangeInput class="text-primary" v-bind="DEFAULT_PARTICIPANTS_BOUNDS"
+                        v-model:min="defaults.participantsMin" v-model:max="defaults.participantsMax" />
         </fieldset>
 
         <fieldset class="fieldset">

@@ -40,7 +40,7 @@
             "title": "Filtres par défaut",
             "help": "Ce que le catalogue filtre en premier.",
             "age": "Âge (ans)",
-            "duration": "Durée (min)",
+            "participants": "Nombre d'enfants",
             "locations": "Lieux"
         },
         "profile": {

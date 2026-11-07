@@ -12,7 +12,7 @@ import {
     type CatalogueFilters,
     type QuickFilter
 } from '@features/activities/models/catalogueFilters';
-import { DEFAULT_AGE_BOUNDS, DEFAULT_DURATION_BOUNDS } from '@features/user/models/user';
+import { DEFAULT_AGE_BOUNDS, DEFAULT_PARTICIPANTS_BOUNDS } from '@features/user/models/user';
 
 const { only = null } = defineProps<{
     only?: QuickFilter | null;
@@ -39,18 +39,18 @@ const shows = (quick: QuickFilter) => only === null || only === quick;
                         v-model:min="filters.ageMin" v-model:max="filters.ageMax" />
         </fieldset>
 
-        <fieldset v-if="shows('duration')" class="fieldset">
+        <fieldset v-if="shows('participants')" class="fieldset">
             <legend class="fieldset-legend w-full">
-                <template v-if="only === null">{{ $t('activities.filters.quick.duration') }}</template>
+                <template v-if="only === null">{{ $t('activities.filters.quick.participants') }}</template>
                 <span class="ms-auto font-normal opacity-70">
-                    <template v-if="isQuickFilterSet(filters, 'duration')">
-                        {{ $t(quickFilterLabel(filters, 'duration').key, quickFilterLabel(filters, 'duration').params) }}
+                    <template v-if="isQuickFilterSet(filters, 'participants')">
+                        {{ $t(quickFilterLabel(filters, 'participants').key, quickFilterLabel(filters, 'participants').params) }}
                     </template>
                     <template v-else>{{ $t('activities.filters.any') }}</template>
                 </span>
             </legend>
-            <RangeInput class="text-primary" v-bind="DEFAULT_DURATION_BOUNDS"
-                        v-model:min="filters.durationMin" v-model:max="filters.durationMax" />
+            <RangeInput class="text-primary" v-bind="DEFAULT_PARTICIPANTS_BOUNDS"
+                        v-model:min="filters.participantsMin" v-model:max="filters.participantsMax" />
         </fieldset>
 
         <fieldset v-if="shows('location')" class="fieldset">

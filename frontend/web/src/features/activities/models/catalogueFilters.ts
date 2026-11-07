@@ -9,14 +9,14 @@ import {
 import type { FilterDefaultsData } from '@features/user/models/user';
 
 /**
- * What the catalogue is filtered on. The age, the duration and the places are the quick filters,
- * the ones the user's profile holds defaults for; the rest are only in the full sheet.
+ * What the catalogue is filtered on. The age, the number of children and the places are the quick
+ * filters, the ones the user's profile holds defaults for; the rest are only in the full sheet.
  */
 export interface CatalogueFilters {
     ageMin: RangeEnd;
     ageMax: RangeEnd;
-    durationMin: RangeEnd;
-    durationMax: RangeEnd;
+    participantsMin: RangeEnd;
+    participantsMax: RangeEnd;
     locations: ActivityLocation[];
     formats: ActivityFormat[];
     practices: ActivityPractice[];
@@ -26,7 +26,7 @@ export interface CatalogueFilters {
 
 export function emptyCatalogueFilters(): CatalogueFilters {
     return {
-        ageMin: null, ageMax: null, durationMin: null, durationMax: null,
+        ageMin: null, ageMax: null, participantsMin: null, participantsMax: null,
         locations: [], formats: [], practices: [], childrenPaces: [], seasons: [],
     };
 }
@@ -71,13 +71,13 @@ export const LOCATIONS = Object.values(ActivityLocation);
 
 // ── Quick filters ───────────────────────────────────────────────────────────────────────────
 
-export const QUICK_FILTERS = ['age', 'duration', 'location'] as const;
+export const QUICK_FILTERS = ['age', 'participants', 'location'] as const;
 export type QuickFilter = typeof QUICK_FILTERS[number];
 
 export function isQuickFilterSet(filters: CatalogueFilters, quick: QuickFilter): boolean {
     switch (quick) {
         case 'age': return filters.ageMin !== null || filters.ageMax !== null;
-        case 'duration': return filters.durationMin !== null || filters.durationMax !== null;
+        case 'participants': return filters.participantsMin !== null || filters.participantsMax !== null;
         case 'location': return filters.locations.length > 0;
     }
 }
@@ -93,7 +93,7 @@ export function quickFilterLabel(filters: CatalogueFilters, quick: QuickFilter):
 
     switch (quick) {
         case 'age': return rangeLabelOf('age', filters.ageMin, filters.ageMax);
-        case 'duration': return rangeLabelOf('duration', filters.durationMin, filters.durationMax);
+        case 'participants': return rangeLabelOf('participants', filters.participantsMin, filters.participantsMax);
         case 'location':
             if (filters.locations.length === 1) return { key: `activities.location.${filters.locations[0]}`, params: {} };
             return { key: 'activities.filters.locations', params: { count: filters.locations.length } };
@@ -101,7 +101,7 @@ export function quickFilterLabel(filters: CatalogueFilters, quick: QuickFilter):
 }
 
 /** A set range, in its own unit: `activities.filters.age.between` reads "3–6 years". */
-function rangeLabelOf(quick: 'age' | 'duration', min: RangeEnd, max: RangeEnd): QuickFilterLabel {
+function rangeLabelOf(quick: 'age' | 'participants', min: RangeEnd, max: RangeEnd): QuickFilterLabel {
     const prefix = `activities.filters.${quick}`;
     if (max === null) return { key: `${prefix}.from`, params: { min: min! } };
     if (min === null) return { key: `${prefix}.upTo`, params: { max } };
@@ -124,7 +124,7 @@ export function activeFilterCount(filters: CatalogueFilters): number {
 export function isProfileEmpty(defaults: FilterDefaultsData | null): boolean {
     return defaults === null
         || (defaults.ageMin === null && defaults.ageMax === null
-            && defaults.durationMin === null && defaults.durationMax === null
+            && defaults.participantsMin === null && defaults.participantsMax === null
             && defaults.locations.length === 0);
 }
 
@@ -133,7 +133,7 @@ export function withProfile(filters: CatalogueFilters, defaults: FilterDefaultsD
     return {
         ...filters,
         ageMin: defaults.ageMin, ageMax: defaults.ageMax,
-        durationMin: defaults.durationMin, durationMax: defaults.durationMax,
+        participantsMin: defaults.participantsMin, participantsMax: defaults.participantsMax,
         locations: [...defaults.locations],
     };
 }
@@ -142,7 +142,7 @@ export function withProfile(filters: CatalogueFilters, defaults: FilterDefaultsD
 export function withoutProfile(filters: CatalogueFilters): CatalogueFilters {
     return {
         ...filters,
-        ageMin: null, ageMax: null, durationMin: null, durationMax: null,
+        ageMin: null, ageMax: null, participantsMin: null, participantsMax: null,
         locations: [],
     };
 }
@@ -155,7 +155,7 @@ export function matchesProfile(filters: CatalogueFilters, defaults: FilterDefaul
     if (defaults === null || isProfileEmpty(defaults)) return false;
 
     return filters.ageMin === defaults.ageMin && filters.ageMax === defaults.ageMax
-        && filters.durationMin === defaults.durationMin && filters.durationMax === defaults.durationMax
+        && filters.participantsMin === defaults.participantsMin && filters.participantsMax === defaults.participantsMax
         && filters.locations.length === defaults.locations.length
         && defaults.locations.every(location => filters.locations.includes(location));
 }
