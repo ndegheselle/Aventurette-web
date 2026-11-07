@@ -183,30 +183,28 @@ type FilterKey = keyof ActivityPayload | `${keyof ActivityPayload}:each`;
 const where = (key: FilterKey, operator: FilterOperator, value: unknown, combine: FilterLogical = FilterLogical.And) =>
     createFilter<ActivityPayload>({ key: key as keyof ActivityPayload, operator, value, combine });
 
+type RangeColumns = { lower: keyof ActivityPayload; upper: keyof ActivityPayload };
+
 /**
- * The ages an activity is for overlap the ones asked for. A 0 in either column is unset: no
- * limit on that side, so an activity with no upper age is for every age from its lower one.
+ * The range an activity is for, its ages or its participants, overlaps the one asked for. A 0 in
+ * either column is unset: no limit on that side, so an activity with no upper age is for every
+ * age from its lower one.
  */
-function agesOverlap(min: number | null, max: number | null): ActivityFilter[] {
+function rangesOverlap({ lower, upper }: RangeColumns, min: number | null, max: number | null): ActivityFilter[] {
     return [
         ...(min !== null ? [createGroup<ActivityPayload>({
             filters: [
-                where('age_max', FilterOperator.GreaterOrEquals, min, FilterLogical.Or),
-                where('age_max', FilterOperator.Equals, 0),
+                where(upper, FilterOperator.GreaterOrEquals, min, FilterLogical.Or),
+                where(upper, FilterOperator.Equals, 0),
             ],
         })] : []),
         // A 0 lower bound is below any asked for, so it needs no case of its own.
-        ...(max !== null ? [where('age_min', FilterOperator.LessOrEquals, max)] : []),
+        ...(max !== null ? [where(lower, FilterOperator.LessOrEquals, max)] : []),
     ];
 }
 
-/** `duration` is the sum of the steps', kept on the activity by a backend hook. */
-function durationWithin(min: number | null, max: number | null): ActivityFilter[] {
-    return [
-        ...(min !== null ? [where('duration', FilterOperator.GreaterOrEquals, min)] : []),
-        ...(max !== null ? [where('duration', FilterOperator.LessOrEquals, max)] : []),
-    ];
-}
+const AGES: RangeColumns = { lower: 'age_min', upper: 'age_max' };
+const PARTICIPANTS: RangeColumns = { lower: 'participants_min', upper: 'participants_max' };
 
 /**
  * The catalogue's search and filters as the backend reads them, every one of them required.
@@ -224,8 +222,8 @@ export function catalogueFilterOf(filters: CatalogueFilters, search: string): Fi
     return createGroup<ActivityPayload>({
         filters: [
             ...(searched ? [createSearchFilter<ActivityPayload>(searched, ['name', 'description'])] : []),
-            ...agesOverlap(filters.ageMin, filters.ageMax),
-            ...durationWithin(filters.durationMin, filters.durationMax),
+            ...rangesOverlap(AGES, filters.ageMin, filters.ageMax),
+            ...rangesOverlap(PARTICIPANTS, filters.participantsMin, filters.participantsMax),
             ...anyOf('locations:each', FilterOperator.AnyEquals, filters.locations),
             ...anyOf('format', FilterOperator.Equals, filters.formats),
             ...anyOf('practices:each', FilterOperator.AnyEquals, filters.practices),

@@ -380,9 +380,9 @@ export type UsersRecord = {
 	created: IsoAutoDateString
 	defaultAgeMax?: number
 	defaultAgeMin?: number
-	defaultDurationMax?: number
-	defaultDurationMin?: number
 	defaultLocations?: UsersDefaultLocationsOptions[]
+	defaultParticipantsMax?: number
+	defaultParticipantsMin?: number
 	email: string
 	emailVisibility?: boolean
 	favorites?: RecordIdString[]

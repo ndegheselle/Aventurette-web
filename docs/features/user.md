@@ -84,8 +84,8 @@ refreshed so the guard knows.
 
 ## Filter defaults
 
-The ages, the duration in minutes and the places the user looks for activities in:
-`defaultAgeMin` and `defaultAgeMax`, `defaultDurationMin` and `defaultDurationMax`, and
+The ages, the number of children and the places the user looks for activities in:
+`defaultAgeMin` and `defaultAgeMax`, `defaultParticipantsMin` and `defaultParticipantsMax`, and
 `defaultLocations` on the user record, read and written through `api/filterDefaults.mapper.ts`.
 As on an activity's audience, a 0 bound is unset. The places were copied from an activity's
 `locations` when the migration ran; adding a place to one does not add it to the other.

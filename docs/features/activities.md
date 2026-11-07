@@ -26,7 +26,7 @@ feature exports that route apart, as `spaceRoutes`, with a path relative to the 
 app mounts it there.
 
 The catalogue has no search tab: its top holds the search, and under it a line of badges for
-the quick filters (age, duration, place), each reading as its name until something is chosen and
+the quick filters (age, number of children, place), each reading as its name until something is chosen and
 as the choice after. A badge opens a sheet with that filter's values alone; the button at the
 start of the line opens one with every filter, a *Reset* and the *Apply my profile* toggle. Both
 are `ResponsiveModal`s and edit a draft that only *Apply* keeps (`useCatalogueFilters`). The
@@ -36,10 +36,10 @@ The search and the badges stay at the top while the list scrolls.
 
 **What the filters keep.** Every filter set has to hold, and within a list any one value chosen
 is enough: an activity in the park *or* the forest. The ages keep an activity whose range
-overlaps the one asked for, an unset bound on either side being no limit. The duration bounds
-`activities.duration`, the sum of the steps' durations: a filter cannot add up a relation, so a
-backend hook (`hooks/activity_duration.go`) stores it on the activity whenever a step or the
-activity is written, and overwrites whatever a client sends for it. `catalogueFilterOf`, beside
+overlaps the one asked for, an unset bound on either side being no limit, and so do the
+participants for the number of children. `activities.duration`, the sum of the steps' durations,
+is still kept by a backend hook (`hooks/activity_duration.go`), but the catalogue no longer
+filters on it. `catalogueFilterOf`, beside
 the mapper, turns the filters into columns: a filter key is a column name, not a family path.
 Changing the search or the filters starts the list over, and a page still on its way for the
 previous ones is dropped (`useLibraryFeed`).

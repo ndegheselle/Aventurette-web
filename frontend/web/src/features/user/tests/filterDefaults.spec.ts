@@ -17,13 +17,13 @@ describe('filterDefaultsMapper', () => {
         const defaults = filterDefaultsMapper.toEntity(payload({ onboarded: undefined }), fakeFileUrls());
 
         expect(defaults).toMatchObject({
-            ageMin: null, ageMax: null, durationMin: null, durationMax: null, locations: [], onboarded: false,
+            ageMin: null, ageMax: null, participantsMin: null, participantsMax: null, locations: [], onboarded: false,
         });
     });
 
     it('writes an unset bound back as 0', () => {
-        expect(filterDefaultsMapper.toPayload({ ageMin: null, durationMax: 45, locations: [Location.PARK] }))
-            .toEqual({ defaultAgeMin: 0, defaultDurationMax: 45, defaultLocations: [Location.PARK] });
+        expect(filterDefaultsMapper.toPayload({ ageMin: null, participantsMax: 4, locations: [Location.PARK] }))
+            .toEqual({ defaultAgeMin: 0, defaultParticipantsMax: 4, defaultLocations: [Location.PARK] });
     });
 
     it('sends only what is given, so putting the onboarding off keeps the defaults', () => {

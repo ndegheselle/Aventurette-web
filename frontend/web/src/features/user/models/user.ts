@@ -35,23 +35,23 @@ export type Location = UsersDefaultLocationsOptions;
 export type DefaultBound = number | null;
 
 /**
- * What the catalogue's filters start from: the ages, the duration in minutes and the places the
+ * What the catalogue's filters start from: the ages, the number of children and the places the
  * user looks for activities in. Chosen at onboarding, changed in the profile.
  */
 export interface FilterDefaultsData {
     id: string;
     ageMin: DefaultBound;
     ageMax: DefaultBound;
-    durationMin: DefaultBound;
-    durationMax: DefaultBound;
+    participantsMin: DefaultBound;
+    participantsMax: DefaultBound;
     locations: Location[];
     /** Whether the onboarding was shown, saved or put off. */
     onboarded: boolean;
 }
 
-/** How far the sliders go: ages in years, durations in minutes. */
+/** How far the sliders go: ages in years, children in head count. */
 export const DEFAULT_AGE_BOUNDS = { floor: 0, ceiling: 18 };
-export const DEFAULT_DURATION_BOUNDS = { floor: 0, ceiling: 120, step: 5 };
+export const DEFAULT_PARTICIPANTS_BOUNDS = { floor: 1, ceiling: 10 };
 
 /** A signed-in user who has not seen the onboarding is sent there before anything else. */
 export function needsOnboarding(user: Pick<SessionUser, 'onboarded'> | null): boolean {
