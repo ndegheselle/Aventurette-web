@@ -16,8 +16,8 @@ function signInWith(_provider: string) {
 </script>
 
 <template>
-    <div class="flex flex-1 my-2">
-        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 m-auto">
+    <div class="flex flex-1 my-2 px-4">
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full max-w-xs min-w-0 border p-4 m-auto">
             <legend class="fieldset-legend">{{ $t('auth.login.title') }}</legend>
 
             <Field label="auth.form.email"
