@@ -19,7 +19,7 @@ export function useLoginForm() {
     const otpId = ref<string | null>(null);
     const codeSent = computed(() => otpId.value !== null);
 
-    // XXX : bound to the checkbox but sent nowhere — the provider decides the session's lifetime.
+    // Unticked, the session ends with the tab.
     const rememberMe = ref(true);
 
     const codeRequest = useSubmit(
@@ -32,7 +32,7 @@ export function useLoginForm() {
     const codeLogin = useSubmit(
         async () => {
             if (!otpId.value) return;
-            await auth.loginWithOtp(otpId.value, code.value);
+            await auth.loginWithOtp(otpId.value, code.value, rememberMe.value);
             router.push('/');
         },
         { defaultErrorKey: 'auth.login.codeError' },

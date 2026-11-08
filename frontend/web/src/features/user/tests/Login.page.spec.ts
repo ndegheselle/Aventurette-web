@@ -77,6 +77,25 @@ describe('Login.page', () => {
         expect(router.currentRoute.value.path).toBe('/');
     });
 
+    it('keeps the session for the next visit by default', async () => {
+        const { wrapper } = await mountForm();
+        await requestCode(wrapper);
+
+        await submitCode(wrapper);
+
+        expect(auth.lastLoginOptions).toEqual({ remember: true });
+    });
+
+    it('ends the session with the tab when "Stay logged in" is unticked', async () => {
+        const { wrapper } = await mountForm();
+        await wrapper.find('input[type=checkbox]').setValue(false);
+        await requestCode(wrapper);
+
+        await submitCode(wrapper);
+
+        expect(auth.lastLoginOptions).toEqual({ remember: false });
+    });
+
     it('disables the button while the code is being checked', async () => {
         const { wrapper } = await mountForm();
         await requestCode(wrapper);

@@ -66,6 +66,27 @@ describe('createPocketBaseAuth', () => {
         expect(pb.lastCall('authRefresh')?.[0]).toEqual(asked);
     });
 
+    describe('remembering the session', () => {
+        const remembered = (pb: { client: { authStore: unknown } }) =>
+            (pb.client.authStore as { remember: boolean }).remember;
+
+        it('remembers a code login unless told otherwise', async () => {
+            const { pb, auth } = setup();
+
+            await auth.loginWithOtp('otp1', '123456');
+
+            expect(remembered(pb)).toBe(true);
+        });
+
+        it('keeps a code login for the tab only when not to be remembered', async () => {
+            const { pb, auth } = setup();
+
+            await auth.loginWithOtp('otp1', '123456', { remember: false });
+
+            expect(remembered(pb)).toBe(false);
+        });
+    });
+
     it('clears the stored session on logout', () => {
         const { pb, auth } = setup();
 

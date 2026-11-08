@@ -105,7 +105,9 @@ export function fakePocketBase(records: Record<string, unknown>[] = []): FakePoc
         },
     };
 
+    // Stands in for RememberingAuthStore: `remember` is what the adapter set last.
     const authStore = {
+        remember: true,
         clear() { record('authStore.clear', []); },
     };
 

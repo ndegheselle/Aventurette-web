@@ -16,8 +16,9 @@ export function useAuth() {
         return await auth.requestOtp(email);
     }
 
-    async function loginWithOtp(otpId: string, code: string) {
-        current.value = await auth.loginWithOtp(otpId, code);
+    /** `remember` false ends the session with the tab rather than keeping it for the next visit. */
+    async function loginWithOtp(otpId: string, code: string, remember: boolean) {
+        current.value = await auth.loginWithOtp(otpId, code, { remember });
     }
 
     /** Drop the session. Where to go next is the caller's. */

@@ -50,7 +50,7 @@ beforeEach(async () => {
     activities.items = [anActivity({ id: 'act-1' })];
     feedbacks.items = [];
     const [auth] = withSetup(() => useAuth());
-    await auth.loginWithOtp('otp1', '123456');
+    await auth.loginWithOtp('otp1', '123456', true);
 });
 
 describe('useActivityFeedback', () => {

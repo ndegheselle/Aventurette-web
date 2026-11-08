@@ -54,6 +54,14 @@ login link. `logout` only drops the session; the menu then goes to the login scr
 The session itself is persisted by the backend adapter, not here. `refresh()` is what asks
 whether a stored one is still valid — which is what makes a reload keep you signed in.
 
+**"Stay logged in"** is ticked by default. Ticked, the session is kept in `localStorage` and
+survives closing the browser; unticked, it is kept in `sessionStorage` and ends with the tab — so
+a link opened in a new tab asks to sign in again. `useLoginForm` passes the choice to
+`loginWithOtp` as `{ remember }`, and the adapter's `RememberingAuthStore` decides where the
+token goes. A session found at startup stays where it was found, so the refresh on every boot
+does not turn a tab's session into a remembered one. A browser that restores its tabs on restart
+also restores their `sessionStorage`, and the session with it.
+
 `useAuth` never navigates: the route guard calls it outside of a component, where the router
 cannot be injected, so moving between screens is left to the component that asks for it.
 
@@ -176,6 +184,13 @@ whatever the reason, so codes cannot be probed), and shows the code step's own m
 - A refused code stays on the code step with its message, signs nobody in, and can be retried
   with the error cleared. A good one signs in and goes home.
 - *Change email* goes back to the email step.
+- The session is remembered unless *Stay logged in* is unticked.
+
+*`frontend/packages/pocketbase/src/authStore.spec.ts`*
+
+- A remembered session is kept in `localStorage` only, an unremembered one in `sessionStorage`
+  only; logging out clears both.
+- A tab's session revived after a reload is refreshed back into the tab, not into `localStorage`.
 
 *`backend/api/hooks/users_test.go`*
 
@@ -187,8 +202,6 @@ whatever the reason, so codes cannot be probed), and shows the code step's own m
 - **History has no screen.** The backend stores it; nothing in the app reads or writes it yet.
 - **The login form is pre-filled with a development email** (`test@example.com`), in
   `useLoginForm`. This has to go before real users see it.
-- **"Stay logged in" is not wired to anything.** The checkbox binds to `rememberMe`, which is
-  never sent; the session's lifetime is whatever the adapter decides.
 - The OAuth2 provider buttons render and throw `NotImplementedError` when clicked.
 - A denied route redirects to `/` silently, with no message. A route that redirects `/` to an
   admin-only screen would loop.

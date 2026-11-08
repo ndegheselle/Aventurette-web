@@ -32,7 +32,7 @@ describe('useAuth', () => {
     it('holds the user after a code login', async () => {
         const { auth } = await setup();
 
-        await auth.loginWithOtp('otp1', '123456');
+        await auth.loginWithOtp('otp1', '123456', true);
 
         expect(auth.isLoggedIn.value).toBe(true);
         expect(auth.current.value).toEqual(user);
@@ -42,13 +42,13 @@ describe('useAuth', () => {
         const { auth } = await setup();
         provider.failNextWith({});
 
-        await expect(auth.loginWithOtp('otp1', 'wrong')).rejects.toThrow();
+        await expect(auth.loginWithOtp('otp1', 'wrong', true)).rejects.toThrow();
         expect(auth.isLoggedIn.value).toBe(false);
     });
 
     it('shares one session across every caller', async () => {
         const { auth } = await setup();
-        await auth.loginWithOtp('otp1', '123456');
+        await auth.loginWithOtp('otp1', '123456', true);
 
         const { auth: elsewhere } = await setup();
 
@@ -57,7 +57,7 @@ describe('useAuth', () => {
 
     it('drops the session on logout', async () => {
         const { auth } = await setup();
-        await auth.loginWithOtp('otp1', '123456');
+        await auth.loginWithOtp('otp1', '123456', true);
 
         auth.logout();
 
@@ -84,7 +84,7 @@ describe('useAuth', () => {
     describe('currentId', () => {
         it('returns the signed-in user\'s id', async () => {
             const { auth } = await setup();
-            await auth.loginWithOtp('otp1', '123456');
+            await auth.loginWithOtp('otp1', '123456', true);
 
             expect(auth.currentId()).toBe(user.id);
         });
