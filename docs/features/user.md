@@ -1,20 +1,43 @@
 # user
 
-The account: signing in and up, the session, roles, guarding the rest of the app, and what a signed-in user can change about themselves.
+The account: signing in, the session, roles, guarding the rest of the app, and what a signed-in user can change about themselves.
 
 ## Routes
 
 | Name | Path | Screen |
 |---|---|---|
 | `user.login` | `/user/login` | Log in |
-| `user.register` | `/user/register` | Sign up |
 | `user.onboarding` | `/user/onboarding` | The filter defaults, once, at the first sign-in |
 | `user.settings` | `/user/settings` | Settings |
 | `user.profile` | `/user/settings/profile` | The settings' profile section: the filter defaults |
 
-Both hang under `Auth.layout.vue` rather than the default one: no sidebar, and a navbar holding
+Login and onboarding hang under the bare layout rather than the default one: no sidebar, and a navbar holding
 only a home link and the theme and language menus, above the same footer. Settings is private like any new route, under the main layout, and is
 reached from the account menu in the navbar (`AuthMenu`).
+
+## Signing in
+
+During the beta, the login screen signs in with a **one-time code** sent by email, and nothing
+else. `useLoginForm` has two steps: the email, to which `requestOtp` has a code sent, then the
+code, which `loginWithOtp` turns into a session — the same refreshable 7-day session a password
+gives. Each step is its own `useSubmit`, so an error on one never shows on the other, and
+*Change email* goes back to the first step, which is also how a new code is sent.
+
+**The `users` collection is the list of beta testers.** Sign-up is closed (the create rule is
+`null`), so the only accounts are those a superuser creates from the dashboard
+([DEPLOYMENT.md](../../backend/DEPLOYMENT.md#9-set-up-pocketbase)). PocketBase sends a code only
+to an existing account, and answers an unknown email exactly as it answers a known one, so the
+screen cannot tell anyone which addresses are on the list.
+
+The code has 6 digits and lasts 10 minutes; the email template is in the migration
+(`backend/api/migrations/1793100000_users_sign_in_with_otp.go`). PocketBase allows 5 attempts
+per code every 3 minutes, and at most 10 live codes per account. It needs an SMTP server in
+production; running the backend from source with none, the code is printed in the terminal
+instead (`backend/api/hooks/otp_dev.go`).
+
+**Password login still works on the backend**, and the `IAuthProvider` port keeps `login`: the
+development and seed accounts use it, and turning it back on in the screen is a template change.
+The app itself no longer calls it.
 
 ## The session
 
@@ -31,17 +54,25 @@ login link. `logout` only drops the session; the menu then goes to the login scr
 The session itself is persisted by the backend adapter, not here. `refresh()` is what asks
 whether a stored one is still valid — which is what makes a reload keep you signed in.
 
+**"Stay logged in"** is ticked by default. Ticked, the session is kept in `localStorage` and
+survives closing the browser; unticked, it is kept in `sessionStorage` and ends with the tab — so
+a link opened in a new tab asks to sign in again. `useLoginForm` passes the choice to
+`loginWithOtp` as `{ remember }`, and the adapter's `RememberingAuthStore` decides where the
+token goes. A session found at startup stays where it was found, so the refresh on every boot
+does not turn a tab's session into a remembered one. A browser that restores its tabs on restart
+also restores their `sessionStorage`, and the session with it.
+
 `useAuth` never navigates: the route guard calls it outside of a component, where the router
 cannot be injected, so moving between screens is left to the component that asks for it.
 
 ## The guard
 
 `authGuard` is registered in `main.ts` as a global `beforeEach`. It lets the login
-and register routes through — otherwise nobody could ever sign in — and for anything else
+route through — otherwise nobody could ever sign in — and for anything else
 admits a visitor who is already signed in, or whose stored session `refresh()` revives.
 Everyone else is sent to `user.login`.
 
-It is a whitelist of two named routes, so **a new public route has to be added to it
+It is a whitelist of one named route, so **a new public route has to be added to it
 explicitly**. That is the intended default: new screens are private.
 
 Past the session it reads the route's `meta.roles`: a user holding none of them is sent to `/`.
@@ -69,10 +100,10 @@ and a route asks for one in its meta, which the guard checks:
 
 `meta.roles` is typed by the `RouteMeta` augmentation in `guard.ts`.
 
-A role is **granted by a superuser**, from the PocketBase Dashboard. The `users` create and update
-rules refuse a body that sets `role`, or anyone could sign up as an admin or promote themselves.
-`role` is required all the same: a user created without one is given `USER` by a hook
-(`backend/api/hooks/users.go`), which is what lets a sign-up through.
+A role is **granted by a superuser**, from the PocketBase Dashboard. The `users` update rule
+refuses a body that sets `role`, or anyone could promote themselves; sign-up is closed
+altogether. `role` is required all the same: a user created without one is given `USER` by a hook
+(`backend/api/hooks/users.go`), so a superuser adding a tester can leave it empty.
 
 ## Onboarding
 
@@ -117,19 +148,18 @@ Nothing in this feature validates credentials. The backend does, and answers wit
 codes that the adapter normalises into `ValidationError`; `useValidationErrors` turns a code
 into a message by looking up `validation.errors.<code>`.
 
-That includes the password confirmation on the register form: the backend returns
-`validation_values_mismatch` on `passwordConfirm`, which renders like any other field error.
-One rule, in one place.
+A refused code comes back with no field detail (PocketBase answers *Invalid or expired OTP*
+whatever the reason, so codes cannot be probed), and shows the code step's own message.
 
 ## Rules that hold
 
 *`tests/useAuth.spec.ts`, `tests/guard.spec.ts`*
 
 - One session is shared by every caller.
-- A rejected login reaches the caller rather than being swallowed, and leaves the session empty.
+- A rejected code reaches the caller rather than being swallowed, and leaves the session empty.
 - `logout` clears the session.
 - `currentId()` throws `NotAuthenticatedError` rather than returning an empty id when signed out.
-- The guard lets login and register through, sends an anonymous visitor to login, admits a
+- The guard lets login through, sends an anonymous visitor to login, admits a
   visitor whose stored session is valid, and does not ask the backend again once signed in.
 - On a route with `meta.roles`, the guard sends a user without the role home, admits one with
   it, and still sends an anonymous visitor to login.
@@ -146,22 +176,32 @@ One rule, in one place.
 - An empty role is a plain user.
 - No roles asked for lets anyone through; otherwise the user must hold one of them.
 
-*`tests/Login.page.spec.ts`, `tests/Register.page.spec.ts`*
+*`tests/Login.page.spec.ts`*
 
-- The submit button is disabled while the request is in flight, and enabled again after.
-- A field error from the backend appears against that field; a failure with no detail shows the
-  form's own default message.
-- A refused attempt stays on the page, and can be retried with the error cleared.
-- The register form's confirmation field edits independently of the password. These were bound
-  to the same field once, so the two could never disagree and the check was dead.
+- The screen asks for an email and never a password.
+- A sent code moves to the code step, which names the email it went to; a refused request stays
+  on the email step with the backend's field error.
+- A refused code stays on the code step with its message, signs nobody in, and can be retried
+  with the error cleared. A good one signs in and goes home.
+- *Change email* goes back to the email step.
+- The session is remembered unless *Stay logged in* is unticked.
+
+*`frontend/packages/pocketbase/src/authStore.spec.ts`*
+
+- A remembered session is kept in `localStorage` only, an unremembered one in `sessionStorage`
+  only; logging out clears both.
+- A tab's session revived after a reload is refreshed back into the tab, not into `localStorage`.
+
+*`backend/api/hooks/users_test.go`*
+
+- A sign-up is refused.
+- A code is issued to an existing account, and none to an email that is not one.
 
 ## Not finished
 
 - **History has no screen.** The backend stores it; nothing in the app reads or writes it yet.
-- **Both forms are pre-filled with a development account** (`test@example.com` / `1234567890`),
-  in `useLoginForm` and `useRegisterForm`. This has to go before real users see it.
-- **"Stay logged in" is not wired to anything.** The checkbox binds to `rememberMe`, which is
-  never sent; the session's lifetime is whatever the adapter decides.
+- **The login form is pre-filled with a development email** (`test@example.com`), in
+  `useLoginForm`. This has to go before real users see it.
 - The OAuth2 provider buttons render and throw `NotImplementedError` when clicked.
 - A denied route redirects to `/` silently, with no message. A route that redirects `/` to an
   admin-only screen would loop.

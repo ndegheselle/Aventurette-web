@@ -24,10 +24,6 @@ describe('authGuard', () => {
         await expect(authGuard(going(routesNames.login))).resolves.toBeUndefined();
     });
 
-    it('lets the registration screen through', async () => {
-        await expect(authGuard(going(routesNames.register))).resolves.toBeUndefined();
-    });
-
     it('sends an anonymous visitor to the login screen', async () => {
         await expect(authGuard(going('activities'))).resolves.toEqual({ name: routesNames.login });
     });

@@ -30,43 +30,6 @@ describe('createPocketBaseAuth', () => {
         });
     });
 
-    describe('register', () => {
-        it('creates the account, asks for verification, then signs in', async () => {
-            const { pb, auth } = setup([]);
-
-            await auth.register('new@example.com', 'secret', 'secret');
-
-            expect(pb.calls.map(c => c.method))
-                .toEqual(['create', 'requestVerification', 'authWithPassword']);
-        });
-
-        it('passes the confirmation through, so the backend is what checks it', async () => {
-            const { pb, auth } = setup([]);
-
-            await auth.register('new@example.com', 'secret', 'different');
-
-            expect(pb.lastCall('create')?.[0])
-                .toEqual({ email: 'new@example.com', password: 'secret', passwordConfirm: 'different' });
-        });
-
-        it('normalises a rejected registration', async () => {
-            const { pb, auth } = setup([]);
-            pb.failNextWith(aRejection({ email: { code: 'validation_not_unique' } }));
-
-            await expect(auth.register('taken@example.com', 'secret', 'secret'))
-                .rejects.toBeInstanceOf(ValidationError);
-        });
-
-        it('does not sign in when the account could not be created', async () => {
-            const { pb, auth } = setup([]);
-            pb.failNextWith(aRejection({ email: { code: 'validation_not_unique' } }));
-
-            await auth.register('taken@example.com', 'secret', 'secret').catch(() => { });
-
-            expect(pb.calls.map(c => c.method)).toEqual(['create']);
-        });
-    });
-
     describe('refresh', () => {
         it('revives a session the backend still accepts', async () => {
             const { auth } = setup();
@@ -94,11 +57,34 @@ describe('createPocketBaseAuth', () => {
         const { pb, auth } = setup();
 
         await auth.login('parent@example.com', 'secret');
+        await auth.loginWithOtp('otp1', '123456');
         await auth.refresh();
 
         const asked = { fields: 'token,record.id,record.email' };
         expect(pb.lastCall('authWithPassword')?.[2]).toEqual(asked);
+        expect(pb.lastCall('authWithOTP')?.[2]).toEqual(asked);
         expect(pb.lastCall('authRefresh')?.[0]).toEqual(asked);
+    });
+
+    describe('remembering the session', () => {
+        const remembered = (pb: { client: { authStore: unknown } }) =>
+            (pb.client.authStore as { remember: boolean }).remember;
+
+        it('remembers a code login unless told otherwise', async () => {
+            const { pb, auth } = setup();
+
+            await auth.loginWithOtp('otp1', '123456');
+
+            expect(remembered(pb)).toBe(true);
+        });
+
+        it('keeps a code login for the tab only when not to be remembered', async () => {
+            const { pb, auth } = setup();
+
+            await auth.loginWithOtp('otp1', '123456', { remember: false });
+
+            expect(remembered(pb)).toBe(false);
+        });
     });
 
     it('clears the stored session on logout', () => {

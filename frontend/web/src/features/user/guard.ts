@@ -11,12 +11,12 @@ declare module 'vue-router' {
 }
 
 /**
- * Lets login and register through; anything else needs a session, or goes to login. A user who
+ * Lets login through; anything else needs a session, or goes to login. A user who
  * has not seen the onboarding goes there first. A route whose `meta.roles` the user does not hold
  * sends them home.
  */
 export async function authGuard(to: RouteLocationNormalized) {
-    if (to.name === routesNames.login || to.name === routesNames.register)
+    if (to.name === routesNames.login)
         return;
 
     const auth = useAuth();

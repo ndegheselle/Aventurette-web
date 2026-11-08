@@ -19,7 +19,7 @@ export {
 } from './data/filters';
 export type { Filter, FilterGroup } from './data/filters';
 
-export type { IAuthProvider } from './auth/provider';
+export type { IAuthProvider, LoginOptions } from './auth/provider';
 export type { IFileUrlResolver } from './files/resolver';
 
 export {

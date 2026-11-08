@@ -26,9 +26,9 @@ and nothing else; the rest below is internal.
 
 | | |
 |---|---|
-| `initPocketBase(url)` | Creates and returns the shared client. Idempotent. |
+| `initPocketBase(url)` | Creates and returns the shared client. Idempotent. Its session is kept in `localStorage`, or in `sessionStorage` when a login passes `{ remember: false }` (`RememberingAuthStore`). |
 | `createPocketBaseCrud(client, collection, mapper)` | `IDataCrud`. Every record goes through the mapper, and `mapper.relations` becomes PocketBase's `expand`. Returns **only** the port — the `RecordService` and client stay closed over, so callers cannot reach around the seam. |
-| `createPocketBaseAuth(client, collection)` | `IAuthProvider`. Wraps `authWithPassword`, `authRefresh`, `requestVerification` and the auth store. |
+| `createPocketBaseAuth(client, collection)` | `IAuthProvider`. Wraps `authWithPassword`, `requestOTP`, `authWithOTP`, `authRefresh` and the auth store. |
 | `createPocketBaseFileUrls(client)` | `IFileUrlResolver`, over `pb.files.getURL`. The CRUD adapter builds one and hands it to every `toEntity`, so a mapper resolves a stored file without knowing the backend. |
 | `filterGroupToPocketBase(group)` | Core's filter tree → a PocketBase filter string. |
 | `toValidationError(error)` / `mapErrors(fn)` | Maps a PocketBase refusal (status 400) to core's `ValidationError`. Returns `undefined` for anything else (a missing record, a forbidden call, a server error, network failures and aborts) so those are rethrown untouched rather than mislabelled. |

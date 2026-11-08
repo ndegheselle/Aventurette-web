@@ -43,11 +43,11 @@ describe('useValidationErrors', () => {
     });
 
     it('uses the caller\'s own default message when given one', () => {
-        const errors = setup('auth.login.defaultError');
+        const errors = setup('auth.login.codeError');
 
         errors.set(new Error('nope'));
 
-        expect(errors.global.value).toBe('Wrong credentials.');
+        expect(errors.global.value).toBe('Invalid or expired code.');
     });
 
     it('clears everything on reset, so a retry starts from a clean form', () => {

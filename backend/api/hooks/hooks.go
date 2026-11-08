@@ -23,6 +23,7 @@ func Register(app core.App) {
 	registerTagKindsCheck(app)
 	registerDefaultRole(app)
 	registerActivityDuration(app)
+	registerDevOTPLog(app)
 }
 
 // registerStepChildrenCleanup deletes a step's resources once no step points at them. The editor

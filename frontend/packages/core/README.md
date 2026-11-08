@@ -69,7 +69,7 @@ const group = removeEmptyFilters(createGroup({
 
 | | |
 |---|---|
-| `IAuthProvider<TUser>` | `login`, `register`, `refresh`, `logout`. Keeps session handling and token storage out of the UI. |
+| `IAuthProvider<TUser>` | `login`, `requestOtp`, `loginWithOtp`, `refresh`, `logout`. Keeps session handling and token storage out of the UI. |
 | `IFileUrlResolver` | Turns a stored file reference into a URL, so a component never needs the backend client to show an upload. |
 
 ## Errors

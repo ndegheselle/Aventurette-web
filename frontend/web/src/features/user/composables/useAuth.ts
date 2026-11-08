@@ -11,12 +11,14 @@ export function useAuth() {
     const auth = sessionProvider();
     const isLoggedIn = computed(() => current.value !== null);
 
-    async function register(email: string, password: string, passwordConfirm: string) {
-        current.value = await auth.register(email, password, passwordConfirm);
+    /** Email a sign-in code. Resolves to the id `loginWithOtp` needs; the session is untouched. */
+    async function requestOtp(email: string): Promise<string> {
+        return await auth.requestOtp(email);
     }
 
-    async function login(email: string, password: string) {
-        current.value = await auth.login(email, password);
+    /** `remember` false ends the session with the tab rather than keeping it for the next visit. */
+    async function loginWithOtp(otpId: string, code: string, remember: boolean) {
+        current.value = await auth.loginWithOtp(otpId, code, { remember });
     }
 
     /** Drop the session. Where to go next is the caller's. */
@@ -43,8 +45,8 @@ export function useAuth() {
     return {
         current: readonly(current),
         isLoggedIn,
-        login,
-        register,
+        requestOtp,
+        loginWithOtp,
         logout,
         refresh,
         currentId,

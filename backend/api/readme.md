@@ -10,6 +10,10 @@ admin@test.local
 test1234admin
 ```
 
+The login screen signs in with a one-time code sent by email. Running from source with no SMTP
+server configured, the code is printed in the terminal instead (`hooks/otp_dev.go`). The account
+has to exist: create it from the dashboard, or use the seed's.
+
 Fill the dev database with fake activities (`seed.go`): `--count` simple ones (attributes and steps
 only), plus complete ones filling every field the app shows — tags, safety instructions, materials,
 workshops, and steps with actions, tips and resources. It owns them as `seed@test.local`, replaces the

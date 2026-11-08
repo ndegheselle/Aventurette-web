@@ -7,16 +7,16 @@
         },
         "login": {
             "title": "Se connecter",
-            "defaultError": "Mauvais identifiants."
+            "sendCode": "Recevoir un code",
+            "codeSentTo": "Un code de connexion a été envoyé à {email}. Il est valable 10 minutes.",
+            "changeEmail": "Changer d'e-mail",
+            "requestError": "Le code n'a pas pu être envoyé.",
+            "codeError": "Code invalide ou expiré."
         },
-        "register": "Inscription",
         "form": {
             "withOauth2": "ou connectez-vous avec",
             "email": "E-mail",
-            "password": "Mot de passe",
-            "confirmPassword": "Confirmer le mot de passe",
-            "accountNew": "Créer un nouveau compte",
-            "accountAlready": "J'ai déjà un compte",
+            "code": "Code de connexion",
             "rememberMe": "Rester connecté"
         }
     },

@@ -29,7 +29,7 @@ vi.mock('@features/user/api/session', () => ({
 }));
 
 async function setup() {
-    await useAuth().login('parent@example.com', 'secret');
+    await useAuth().loginWithOtp('otp1', '123456', true);
     const [subject] = withSetup(() => useFavorites());
     await flushPromises();
     return subject;

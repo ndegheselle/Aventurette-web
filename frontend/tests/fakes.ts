@@ -14,6 +14,7 @@ import {
     type IAuthProvider,
     type IDataCrud,
     type IFileUrlResolver,
+    type LoginOptions,
     type Paginated,
     type PaginationOptions,
 } from '@chapelure/core';
@@ -110,7 +111,9 @@ function page<T>(items: T[], options: PaginationOptions): Paginated<T> {
 export interface FakeAuth<TUser extends BaseEntity> extends IAuthProvider<TUser> {
     /** The session `refresh` revives. Null for a signed-out start. */
     session: TUser | null;
-    /** Make the next login or register fail the way rejected credentials do. */
+    /** What the last login was asked to do with the session, once it succeeded. */
+    lastLoginOptions: LoginOptions | undefined;
+    /** Make the next login, code request or code login fail the way the backend refuses one. */
     failNextWith(fields: FieldErrors, message?: string): void;
 }
 
@@ -126,19 +129,27 @@ export function fakeAuthProvider<TUser extends BaseEntity>(user: TUser): FakeAut
 
     const fake: FakeAuth<TUser> = {
         session: null,
+        lastLoginOptions: undefined,
 
         failNextWith(fields, message = 'Invalid credentials') {
             pendingFailure = new ValidationError(fields, message);
         },
 
-        async login() {
+        async login(_email, _password, options) {
             raiseIfArmed();
+            fake.lastLoginOptions = options;
             fake.session = user;
             return user;
         },
 
-        async register() {
+        async requestOtp() {
             raiseIfArmed();
+            return 'otp1';
+        },
+
+        async loginWithOtp(_otpId, _code, options) {
+            raiseIfArmed();
+            fake.lastLoginOptions = options;
             fake.session = user;
             return user;
         },
