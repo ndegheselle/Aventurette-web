@@ -40,7 +40,6 @@ import {
     ClipboardCheckIcon,
     ClipboardListIcon,
     GraduationCapIcon,
-    HeartIcon,
     LibraryIcon,
     ListOrderedIcon,
     MapPinIcon,
@@ -54,6 +53,7 @@ import {
     ShieldAlertIcon,
     SparklesIcon,
     TableOfContentsIcon,
+    ThumbsUpIcon,
     TrashIcon,
     TriangleAlertIcon,
     UndoIcon,
@@ -562,7 +562,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                             <div class="flex items-center gap-2 text-sm opacity-60">
                                 <b>{{ comment.author ?? $t('activities.authoring.comments.anonymous') }}</b>
                                 <span>· {{ $d(comment.updated) }}</span>
-                                <HeartIcon v-if="comment.liked" class="icon-sm text-error fill-current ms-auto"
+                                <ThumbsUpIcon v-if="comment.liked" class="icon-sm text-primary fill-current ms-auto"
                                     :aria-label="$t('activities.authoring.comments.liked')" />
                             </div>
                             <p class="whitespace-pre-line">{{ comment.comment }}</p>
