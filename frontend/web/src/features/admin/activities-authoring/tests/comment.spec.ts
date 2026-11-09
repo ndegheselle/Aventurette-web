@@ -2,7 +2,7 @@ import { commentsToRead, type ActivityCommentData } from '@features/admin/activi
 import { describe, expect, it } from 'vitest';
 
 function aComment(id: string, comment: string, updated: string): ActivityCommentData {
-    return { id, activity: 'act-1', comment, liked: false, author: null, updated: new Date(updated) };
+    return { id, activity: 'act-1', comment, liked: false, updated: new Date(updated) };
 }
 
 describe('commentsToRead', () => {

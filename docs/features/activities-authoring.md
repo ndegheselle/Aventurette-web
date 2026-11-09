@@ -160,10 +160,10 @@ failure is an alert rather than a field error — no field on the form stands fo
 It is disabled on a new activity, which has no record to write the state to until it is saved.
 
 **User comments are read, never written, here.** The last panel lists what users said on the
-feedback screen after a run (`user_activity_feedback`), latest first, with who said it and
-whether they liked the activity. `commentsToRead` drops the feedback with no comment — a like
-alone, or a comment taken back. The author's name comes from expanding the feedback's `user`,
-which needs the users' view rule to let an admin in; the list rule still does not.
+feedback screen after a run (`user_activity_feedback`), latest first, with whether they liked
+the activity. Each reads as from an anonymous user: the feedback's `user` is not expanded, and
+the users' view rule keeps an admin out of other users' records anyway. `commentsToRead` drops
+the feedback with no comment — a like alone, or a comment taken back.
 
 ## Data
 

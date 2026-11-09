@@ -560,7 +560,7 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <div v-for="comment in comments" :key="comment.id" class="card card-sm bg-base-100">
                         <div class="card-body">
                             <div class="flex items-center gap-2 text-sm opacity-60">
-                                <b>{{ comment.author ?? $t('activities.authoring.comments.anonymous') }}</b>
+                                <b>{{ $t('activities.authoring.comments.anonymous') }}</b>
                                 <span>· {{ $d(comment.updated) }}</span>
                                 <ThumbsUpIcon v-if="comment.liked" class="icon-sm text-primary fill-current ms-auto"
                                     :aria-label="$t('activities.authoring.comments.liked')" />
