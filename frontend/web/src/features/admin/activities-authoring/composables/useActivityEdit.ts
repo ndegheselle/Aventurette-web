@@ -20,6 +20,7 @@ import type { ActivityStepData, ActivityTipData } from '@features/activities/mod
 import { tagOptions, type ActivityTagData } from '@features/activities/models/tag';
 import type { ActivityWorkshopData } from '@features/activities/models/workshop';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
+import { commentsApi } from '@features/admin/activities-authoring/api/comments.api';
 import { materialCatalogueApi } from '@features/admin/activities-authoring/api/materials.api';
 import { referencesApi } from '@features/admin/activities-authoring/api/references.api';
 import { saveApi } from '@features/admin/activities-authoring/api/save.api';
@@ -36,6 +37,7 @@ import {
     materialSuggestions,
     withoutMaterial,
 } from '@features/admin/activities-authoring/models/material.edit';
+import type { ActivityCommentData } from '@features/admin/activities-authoring/models/comment';
 import { createEmptyStep } from '@features/admin/activities-authoring/models/step.edit';
 import { createEmptyWorkshop } from '@features/admin/activities-authoring/models/workshop.edit';
 import { routesNames } from '@features/admin/activities-authoring/routes';
@@ -70,10 +72,14 @@ export function useActivityEdit() {
 
     const isChangingState = ref(false);
 
+    /** What users said of the activity once they ran it. Read only, and none for a new one. */
+    const comments = shallowRef<ActivityCommentData[]>([]);
+
     watch(
         () => route.params.id,
         async (id) => {
             newMaterials.value = [];
+            comments.value = [];
 
             if (typeof id !== 'string') {
                 original.value = null;
@@ -90,6 +96,7 @@ export function useActivityEdit() {
 
             original.value = structuredClone(read);
             activity.value = read;
+            comments.value = await commentsApi.ofActivity(id);
         },
         { immediate: true },
     );
@@ -234,6 +241,7 @@ export function useActivityEdit() {
         isLoading,
         isChangingState,
         transition,
+        comments,
         ageMin,
         ageMax,
         ageLabel,
