@@ -73,6 +73,7 @@
         },
         "fields": {
             "name": "Name",
+            "summary": "Summary",
             "picture": "Cover visual",
             "visualBrief": "Cover visual brief",
             "format": "Format",
@@ -98,7 +99,8 @@
             "unset": "Not specified"
         },
         "constraints": {
-            "picture": "PNG, JPEG and JPG formats. 2MB maximum"
+            "picture": "PNG, JPEG and JPG formats. 2MB maximum",
+            "summary": "{count} / {max} characters"
         },
         "format": {
             "SMALL_GAME": "Small game",

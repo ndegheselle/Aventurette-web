@@ -21,6 +21,7 @@ import {
     DEVELOPMENT_AXES,
     HostEffort,
     ImaginaryRule,
+    SUMMARY_MAX_LENGTH,
 } from '@features/activities/models/activity';
 import { type ActivityStepData } from '@features/activities/models/step';
 import { type ActivityWorkshopData } from '@features/activities/models/workshop';
@@ -237,6 +238,13 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <Field label="activities.fields.name" :error="errors.get('name')">
                         <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
                             v-model="activity.name" />
+                    </Field>
+                    <Field label="activities.fields.summary" :error="errors.get('summary')">
+                        <textarea class="textarea w-full" :class="{ 'textarea-error': !!errors.get('summary') }"
+                            :maxlength="SUMMARY_MAX_LENGTH" v-model="activity.summary"></textarea>
+                        <span class="label justify-end">
+                            {{ $t('activities.constraints.summary', { count: activity.summary.length, max: SUMMARY_MAX_LENGTH }) }}
+                        </span>
                     </Field>
                     <Field label="activities.fields.picture">
                         <FilesInput accept="image/*" @change="updateImage">

@@ -45,6 +45,7 @@ function back() {
 
         <template #header>
             <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold">{{ activity.name }}</h1>
+            <p v-if="activity.summary" class="text-lg opacity-80">{{ activity.summary }}</p>
             <span class="text-sm" v-html="activity.description"></span>
         </template>
 

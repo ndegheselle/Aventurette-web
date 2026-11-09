@@ -73,6 +73,7 @@
         },
         "fields": {
             "name": "Nom",
+            "summary": "Résumé",
             "picture": "Visuel principal",
             "visualBrief": "Brief du visuel principal",
             "format": "Format",
@@ -98,7 +99,8 @@
             "unset": "Non précisé"
         },
         "constraints": {
-            "picture": "Formats PNG, JPEG et JPG. Maximum 2MB"
+            "picture": "Formats PNG, JPEG et JPG. Maximum 2MB",
+            "summary": "{count} / {max} caractères"
         },
         "format": {
             "SMALL_GAME": "Petit jeu",

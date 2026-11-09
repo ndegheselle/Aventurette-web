@@ -203,6 +203,7 @@ export type ActivitiesRecord = {
 	seasons?: ActivitiesSeasonsOptions[]
 	state: ActivitiesStateOptions
 	steps?: RecordIdString[]
+	summary?: string
 	supervision_notes?: HTMLString
 	theme_tags?: RecordIdString[]
 	updated: IsoAutoDateString

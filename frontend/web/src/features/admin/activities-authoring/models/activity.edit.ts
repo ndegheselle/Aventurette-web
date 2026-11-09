@@ -28,6 +28,7 @@ export function createEmptyActivity(): ActivityData {
     // Typed as what the author fills in, so every family is checked; the record fills in the rest.
     const blank: Omit<ActivityData, 'id' | 'created' | 'updated' | 'collectionId' | 'collectionName' | 'user' | 'visual'> = {
         name: "",
+        summary: "",
         description: "",
         state: ActivityState.DRAFT,
         visualBrief: "",
