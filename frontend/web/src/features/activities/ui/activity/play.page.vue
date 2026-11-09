@@ -47,7 +47,9 @@ watch(index, () => window.scrollTo({ top: 0 }));
                     <Supplies :materials="current.materials" :resources="current.resources" />
                 </Panel>
 
-                <div class="flex gap-2 justify-center p-2">
+                <!-- Sticks above the mobile dock (`bottom-14`), as the activity page's actions do,
+                     so a long step never pushes the buttons out of view. -->
+                <div class="sticky bottom-14 md:bottom-0 z-10 flex gap-2 justify-center p-2">
                     <button type="button" class="btn btn-soft btn-square btn-lg"
                         :aria-label="$t('activities.play.previous')" :disabled="isFirst" @click="previous">
                         <ChevronLeftIcon />
