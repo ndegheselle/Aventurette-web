@@ -13,6 +13,12 @@ ssl_session_cache shared:SSL:10m;
 ssl_session_timeout 1d;
 ssl_session_tickets off;
 
+# Docker's own DNS. A deploy recreates front and api, and a recreated container comes back on a
+# new address: a `proxy_pass` naming a host outright is resolved once, when nginx starts, and
+# would keep sending to the old one — a 502 until nginx restarts. Through a variable, nginx asks
+# this resolver again instead, at most every 10s.
+resolver 127.0.0.11 valid=10s ipv6=off;
+
 # The site.
 server {
     listen 443 ssl;
@@ -25,7 +31,8 @@ server {
     # The built SPA lives in the front container, which owns the history-mode fallback
     # (see frontend/web/nginx.conf). Nothing is served from this container's filesystem.
     location / {
-        proxy_pass http://front:80;
+        set $front http://front:80;
+        proxy_pass $front;
         proxy_set_header Host              $host;
         proxy_set_header X-Real-IP         $remote_addr;
         proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
@@ -46,7 +53,10 @@ server {
     client_max_body_size 50M;
 
     location / {
-        proxy_pass http://api:8090/;  # keep the trailing slash
+        # Through a variable, the request URI is passed on as it came, which under `location /`
+        # is what the trailing slash in `http://api:8090/` used to do.
+        set $api http://api:8090;
+        proxy_pass $api;
 
         proxy_http_version 1.1;
         proxy_set_header Host              $host;
