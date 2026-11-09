@@ -70,6 +70,7 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             collectionId: activity.collectionId,
             collectionName: activity.collectionName,
             name: activity.name,
+            summary: activity.summary ?? "",
             description: activity.description,
             state: activity.state,
             user: activity.user,

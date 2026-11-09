@@ -21,6 +21,7 @@ import {
     DEVELOPMENT_AXES,
     HostEffort,
     ImaginaryRule,
+    SUMMARY_MAX_LENGTH,
 } from '@features/activities/models/activity';
 import { type ActivityStepData } from '@features/activities/models/step';
 import { type ActivityWorkshopData } from '@features/activities/models/workshop';
@@ -42,6 +43,7 @@ import {
     LibraryIcon,
     ListOrderedIcon,
     MapPinIcon,
+    MessageSquareIcon,
     PackageOpenIcon,
     PenIcon,
     PlusIcon,
@@ -51,6 +53,7 @@ import {
     ShieldAlertIcon,
     SparklesIcon,
     TableOfContentsIcon,
+    ThumbsUpIcon,
     TrashIcon,
     TriangleAlertIcon,
     UndoIcon,
@@ -66,6 +69,7 @@ const {
     isLoading,
     isChangingState,
     transition,
+    comments,
     ageMin,
     ageMax,
     ageLabel,
@@ -146,6 +150,7 @@ const sections: SectionEntry[] = [
     },
     { key: 'workshops', label: 'activities.workshops.title', icon: BookOpenIcon, anchor: 'section-workshops' },
     { key: 'steps', label: 'activities.authoring.steps.title', icon: ListOrderedIcon, anchor: 'section-steps' },
+    { key: 'comments', label: 'activities.authoring.comments.title', icon: MessageSquareIcon, anchor: 'section-comments' },
 ];
 
 function goTo(entry: SectionEntry) {
@@ -237,6 +242,13 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                     <Field label="activities.fields.name" :error="errors.get('name')">
                         <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
                             v-model="activity.name" />
+                    </Field>
+                    <Field label="activities.fields.summary" :error="errors.get('summary')">
+                        <textarea class="textarea w-full" :class="{ 'textarea-error': !!errors.get('summary') }"
+                            :maxlength="SUMMARY_MAX_LENGTH" v-model="activity.summary"></textarea>
+                        <span class="label justify-end">
+                            {{ $t('activities.constraints.summary', { count: activity.summary.length, max: SUMMARY_MAX_LENGTH }) }}
+                        </span>
                     </Field>
                     <Field label="activities.fields.picture">
                         <FilesInput accept="image/*" @change="updateImage">
@@ -536,6 +548,26 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                             </button>
                         </div>
                     </List>
+                </Panel>
+
+                <!-- Read only: users write their comments from the feedback screen, after a run. -->
+                <Panel id="section-comments" class="scroll-mt-16">
+                    <h2 class="text-2xl flex items-center gap-2">
+                        <MessageSquareIcon class="opacity-50" /> {{ $t('activities.authoring.comments.title') }}
+                        <span class="badge">{{ comments.length }}</span>
+                    </h2>
+                    <p v-if="!comments.length" class="opacity-50">{{ $t('activities.authoring.comments.empty') }}</p>
+                    <div v-for="comment in comments" :key="comment.id" class="card card-sm bg-base-100">
+                        <div class="card-body">
+                            <div class="flex items-center gap-2 text-sm opacity-60">
+                                <b>{{ $t('activities.authoring.comments.anonymous') }}</b>
+                                <span>· {{ $d(comment.updated) }}</span>
+                                <ThumbsUpIcon v-if="comment.liked" class="icon-sm text-primary fill-current ms-auto"
+                                    :aria-label="$t('activities.authoring.comments.liked')" />
+                            </div>
+                            <p class="whitespace-pre-line">{{ comment.comment }}</p>
+                        </div>
+                    </div>
                 </Panel>
             </div>
         </div>

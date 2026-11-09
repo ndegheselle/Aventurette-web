@@ -30,6 +30,8 @@ import type { ActivityWorkshopData } from "@features/activities/models/workshop"
 export type ActivityData = Pick<ActivitiesResponse,
     'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'
     | 'name' | 'description' | 'state' | 'user' | 'visual'> & {
+    /** A few plain sentences presenting the activity, under its title. */
+    summary: string;
     /** What the cover visual has to show, until there is one. */
     visualBrief: string;
 
@@ -45,6 +47,9 @@ export type ActivityData = Pick<ActivitiesResponse,
     materials: ActivityMaterialData[];
     workshops: ActivityWorkshopData[];
 };
+
+/** The summary stays a pitch; the description holds the rest. The collection refuses longer. */
+export const SUMMARY_MAX_LENGTH = 300;
 
 export const ActivityState = ActivitiesStateOptions;
 export type ActivityState = ActivitiesStateOptions;

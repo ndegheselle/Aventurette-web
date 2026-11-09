@@ -66,6 +66,12 @@
                 "next": "Suivant",
                 "back": "Précédent",
                 "confirm": "Importer"
+            },
+            "comments": {
+                "title": "Commentaires des utilisateurs",
+                "empty": "Aucun commentaire pour l'instant.",
+                "anonymous": "Utilisateur anonyme",
+                "liked": "A aimé l'activité"
             }
         },
         "workshops": {

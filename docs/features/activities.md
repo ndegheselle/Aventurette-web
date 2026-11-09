@@ -121,7 +121,7 @@ beside it is the only thing that holds both — see
 
 **The activity is grouped by family**
 ([ADR 0015](../adr/0015-activity-attributes-grouped-by-family.md)), the way the activity sheet
-template reads. What identifies it sits at the top: `name`, `description`, `state`, `user`,
+template reads. What identifies it sits at the top: `name`, `summary` (plain text, 300 characters at most, shown under the title), `description`, `state`, `user`,
 `visual`, `visualBrief`. The rest sits under `classification`, `imaginary`, `audience`,
 `supervision`, `place`, `safety` and `pedagogy`. The columns stay flat. The mapper builds the
 families on read and flattens them on write. An unset single choice is `null`; the mapper

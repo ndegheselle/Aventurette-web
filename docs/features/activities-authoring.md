@@ -159,6 +159,12 @@ it: unsaved form edits stay on screen, unsaved, and the save button is still the
 failure is an alert rather than a field error — no field on the form stands for the state.
 It is disabled on a new activity, which has no record to write the state to until it is saved.
 
+**User comments are read, never written, here.** The last panel lists what users said on the
+feedback screen after a run (`user_activity_feedback`), latest first, with whether they liked
+the activity. Each reads as from an anonymous user: the feedback's `user` is not expanded, and
+the users' view rule keeps an admin out of other users' records anyway. `commentsToRead` drops
+the feedback with no comment — a like alone, or a comment taken back.
+
 ## Data
 
 The types are not this feature's. `ActivityData`, `ActivityStepData` and their mappers stay in
