@@ -77,8 +77,12 @@ app's real catalogue, so assertions are on the copy a user would read.
   locale is allowed to lag. `fr` is the fallback, so a key missing from `en` renders in French.
 - **Destructure a composable** in `<script setup>` — a ref reached through an object is not
   unwrapped in a template.
-- Follow the global
-  ([coding guidelines](docs/coding-guidelines.md)).
+
+## Standards
+@standards/coding.md
+@standards/tests.md
+@standards/documentation.md
+@standards/structure.md
 
 ## Things that will bite
 
