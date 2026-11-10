@@ -271,8 +271,22 @@ Create the first superuser:
 docker compose exec api ./pocketbase superuser create admin@lubriciel.ovh 'a-long-password'
 ```
 
-Open `https://api.lubriciel.ovh/_/` and log in with it. Then, in *Settings > Application*,
-set the user IP proxy header to `X-Forwarded-For`. PocketBase is behind a reverse proxy, so
+Open `https://api.lubriciel.ovh/_/` and log in with it.
+
+**Configure *Settings > Application*.**
+
+| Field | Value |
+|---|---|
+| Application name | `Aventurette` |
+| Application URL | `https://api.lubriciel.ovh` |
+
+The name is `{APP_NAME}` in the email templates, so it is what users see in the subject and
+signature of their sign-in code. The URL is `{APP_URL}`, and the templates' links point to
+`{APP_URL}/_/…`, the PocketBase pages served on the API host. That is why it is the API
+domain and not the site's. Leave either one at its default and the emails say `Acme` and link
+to `http://localhost:8090`.
+
+Then set the user IP proxy header to `X-Forwarded-For`. PocketBase is behind a reverse proxy, so
 without this every request looks like it comes from the nginx container and rate limiting
 and logging are useless — see
 [the PocketBase docs](https://pocketbase.io/docs/going-to-production/#using-reverse-proxy).
@@ -286,8 +300,24 @@ records than the limit allows.
 While you are there, turn on *Settings > Backups* on a schedule.
 
 **Configure *Settings > Mail settings*.** Users sign in with a one-time code sent by email, so
-without an SMTP server nobody can log in. Set the sender name and address, enable *Use SMTP mail
-server*, and send yourself a test email from that page.
+without an SMTP server nobody can log in. Take the server details from your mail provider:
+
+| Field | Value |
+|---|---|
+| Sender name | `Aventurette` |
+| Sender address | an address on the domain, such as `no-reply@lubriciel.ovh` |
+| Use SMTP mail server | on |
+| SMTP server host | your provider's SMTP host |
+| Port | `465`, or `587` |
+| Username / Password | the mailbox's credentials |
+| TLS encryption | *Always* on port 465, *Auto (StartTLS)* on 587 |
+
+The sender address must be one the SMTP account is allowed to send as. Otherwise the provider
+refuses the message, or it lands in spam because the domain's SPF and DKIM records do not cover
+it. Save, then use *Send test email* on the same page and check that it reaches your inbox.
+
+Port 25 is blocked by most VPS providers, so do not use it. The api container needs no extra
+firewall rule: ufw only filters incoming traffic, and the SMTP connection is outgoing.
 
 **Add the beta testers.** Sign-up is closed: a tester is an account you create, in
 *Collections > users > New record*, with their email and any password (they never use it — the

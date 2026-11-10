@@ -13,7 +13,7 @@ export function useLoginForm() {
     const auth = useAuth();
     const router = useRouter();
 
-    const email = ref('test@example.com');
+    const email = ref('');
     const code = ref('');
     // Set once a code was sent: it is what the code is checked against.
     const otpId = ref<string | null>(null);
