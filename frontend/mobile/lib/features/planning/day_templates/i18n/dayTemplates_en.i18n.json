@@ -1,0 +1,7 @@
+{
+    "screens": {
+        "template": "Day template",
+        "edit": "Edit the day template",
+        "visibility": "Templates"
+    }
+}

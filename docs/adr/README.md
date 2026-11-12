@@ -28,6 +28,11 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0017](0017-an-activity-is-saved-in-one-batch.md) | An activity is saved in one batch, everything under it included | Accepted |
 | [0018](0018-safety-instructions-and-tips-are-catalogues.md) | Safety instructions and tips are catalogues of their own | Accepted |
 | [0019](0019-catalogues-are-prefixed.md) | Catalogues are prefixed `catalog_` | Accepted |
+| [0020](0020-clients-use-a-flutter-app.md) | Clients use a Flutter app; the Vue app becomes the back office | Accepted |
+| [0021](0021-the-mobile-app-mirrors-the-web-layers.md) | The mobile app mirrors the web's slices and layers | Accepted |
+| [0022](0022-mobile-specs-live-in-test.md) | Mobile specs live in `test/`, mirroring `lib/` | Accepted |
+| [0023](0023-unbuilt-screens-throw-at-the-api-seam.md) | A screen not built yet has its route, and says *Bientôt disponible* | Accepted |
+| [0024](0024-mobile-theme-reuses-joufflu-tokens.md) | The mobile theme reuses Joufflu's token concepts, as Mix tokens | Accepted |
 
 ## Writing a new one
 

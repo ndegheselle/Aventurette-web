@@ -6,6 +6,18 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "frontend"],
       "port": 5173
+    },
+    {
+      "name": "api",
+      "runtimeExecutable": "go",
+      "runtimeArgs": ["-C", "backend/api", "run", ".", "serve"],
+      "port": 8090
+    },
+    {
+      "name": "mobile-web",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd frontend\\mobile && flutter run -d web-server --web-port 8081 --dart-define=API_URL=http://127.0.0.1:8090"],
+      "port": 8081
     }
   ]
 }

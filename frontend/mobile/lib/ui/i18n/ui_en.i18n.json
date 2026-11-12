@@ -1,0 +1,27 @@
+{
+    "actions": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "back": "Back",
+        "close": "Close",
+        "retry": "Try again",
+        "apply": "Apply",
+        "reset": "Reset"
+    },
+    "comingSoon": {
+        "title": "Coming soon",
+        "body": "This screen is not built yet.",
+        "wireframe": "Wireframe {id}"
+    },
+    "errors": {
+        "generic": "Something went wrong."
+    },
+    "search": "Search",
+    "range": {
+        "any": "Any",
+        "from": "{min} and more",
+        "upTo": "Up to {max}",
+        "between": "From {min} to {max}",
+        "exactly": "{min}"
+    }
+}

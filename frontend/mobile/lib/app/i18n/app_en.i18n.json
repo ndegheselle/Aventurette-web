@@ -1,0 +1,9 @@
+{
+    "dock": {
+        "catalogue": "Catalogue",
+        "planning": "Planning",
+        "create": "Create",
+        "followUp": "Follow-up",
+        "pedagogy": "Pedagogy"
+    }
+}

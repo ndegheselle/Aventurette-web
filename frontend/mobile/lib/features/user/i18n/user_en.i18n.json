@@ -1,0 +1,74 @@
+{
+    "login": {
+        "title": "Sign in",
+        "email": "Email",
+        "code": "Sign-in code",
+        "sendCode": "Send me a code",
+        "codeSentTo": "A sign-in code was sent to {email}. It is valid for 10 minutes.",
+        "changeEmail": "Change email",
+        "codeNotSent": "The code could not be sent.",
+        "codeRejected": "Invalid or expired code."
+    },
+    "onboarding": {
+        "title": "Welcome!",
+        "intro": "Pick the catalogue's default filters. You can change them at any time in your preferences.",
+        "later": "Later"
+    },
+    "filterDefaults": {
+        "title": "Default filters",
+        "help": "What the catalogue filters on first.",
+        "age": "Age (years)",
+        "participants": "Number of children",
+        "locations": "Places"
+    },
+    "location(map)": {
+        "park": "Playground",
+        "house": "House",
+        "balcony": "Balcony",
+        "car": "Car",
+        "city": "City",
+        "campaign": "Countryside",
+        "forest": "Forest",
+        "mountain": "Mountain",
+        "pool": "Swimming pool",
+        "lake": "Lake",
+        "river": "River",
+        "bath": "Bath",
+        "meal": "Meal"
+    },
+    "menu": {
+        "title": "My space",
+        "contents": "My content",
+        "preferences": "My preferences",
+        "account": "My account",
+        "settings": "Settings",
+        "notifications": "Notifications",
+        "open": "Open my space"
+    },
+    "preferences": {
+        "title": "My preferences",
+        "language": "Language",
+        "theme": "Theme",
+        "saved": "Preferences saved",
+        "languages(map)": {
+            "device": "Device language",
+            "fr": "Français",
+            "en": "English"
+        },
+        "themes(map)": {
+            "auto": "Automatic",
+            "light": "Light",
+            "dark": "Dark"
+        }
+    },
+    "account": {
+        "title": "My account",
+        "name": "Name",
+        "email": "Email address",
+        "logout": "Sign out",
+        "logoutConfirm": "Do you really want to sign out?"
+    },
+    "contents": {
+        "title": "My content"
+    }
+}

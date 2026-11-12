@@ -1,0 +1,74 @@
+{
+    "login": {
+        "title": "Se connecter",
+        "email": "E-mail",
+        "code": "Code de connexion",
+        "sendCode": "Recevoir un code",
+        "codeSentTo": "Un code de connexion a été envoyé à {email}. Il est valable 10 minutes.",
+        "changeEmail": "Changer d'e-mail",
+        "codeNotSent": "Le code n'a pas pu être envoyé.",
+        "codeRejected": "Code invalide ou expiré."
+    },
+    "onboarding": {
+        "title": "Bienvenue !",
+        "intro": "Choisissez les filtres par défaut du catalogue. Vous pourrez les changer à tout moment dans vos préférences.",
+        "later": "Plus tard"
+    },
+    "filterDefaults": {
+        "title": "Filtres par défaut",
+        "help": "Ce que le catalogue filtre en premier.",
+        "age": "Âge (ans)",
+        "participants": "Nombre d'enfants",
+        "locations": "Lieux"
+    },
+    "location(map)": {
+        "park": "Parc de jeux",
+        "house": "Maison",
+        "balcony": "Balcon",
+        "car": "Voiture",
+        "city": "Ville",
+        "campaign": "Campagne",
+        "forest": "Forêt",
+        "mountain": "Montagne",
+        "pool": "Piscine",
+        "lake": "Lac",
+        "river": "Rivière",
+        "bath": "Bain",
+        "meal": "Repas"
+    },
+    "menu": {
+        "title": "Mon espace",
+        "contents": "Mes contenus",
+        "preferences": "Mes préférences",
+        "account": "Mon compte",
+        "settings": "Paramètres",
+        "notifications": "Notifications",
+        "open": "Ouvrir mon espace"
+    },
+    "preferences": {
+        "title": "Mes préférences",
+        "language": "Langue",
+        "theme": "Thème",
+        "saved": "Préférences enregistrées",
+        "languages(map)": {
+            "device": "Langue de l'appareil",
+            "fr": "Français",
+            "en": "English"
+        },
+        "themes(map)": {
+            "auto": "Automatique",
+            "light": "Clair",
+            "dark": "Sombre"
+        }
+    },
+    "account": {
+        "title": "Mon compte",
+        "name": "Nom",
+        "email": "Adresse e-mail",
+        "logout": "Se déconnecter",
+        "logoutConfirm": "Voulez-vous vraiment vous déconnecter ?"
+    },
+    "contents": {
+        "title": "Mes contenus"
+    }
+}

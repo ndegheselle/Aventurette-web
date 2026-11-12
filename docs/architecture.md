@@ -224,3 +224,75 @@ npm run test:coverage  # with a coverage report
 npm run lint:arch      # the rules above
 npm run check          # lint:arch + build + test — what CI runs
 ```
+
+## The mobile app
+
+`frontend/mobile/` is the clients' app, in Flutter: package `ajil`, no Material, no Cupertino
+([ADR 0020](adr/0020-clients-use-a-flutter-app.md)). It talks to the same PocketBase and shares
+no code with the web. What each screen does is in
+[business/features/mobile-app.md](business/features/mobile-app.md).
+
+It has the web's shape, layer for layer
+([ADR 0021](adr/0021-the-mobile-app-mirrors-the-web-layers.md)):
+
+```
+frontend/mobile/
+├── lib/
+│   ├── main.dart        reads the device's preferences and session, then starts the app
+│   ├── app/             composition root: WidgetsApp, the router, the dock shell
+│   ├── core/            the ports (= @chapelure/core): DataCrud, AuthProvider, EntityMapper, filters
+│   ├── backend/         backend.dart exposes the ports; pocketbase/ is the adapter
+│   ├── ui/              shared widgets (= @chapelure/ui), the theme, the generated strings
+│   └── features/<name>/ models/ · api/ · state/ · ui/ · i18n/ · routes.dart
+├── test/                specs, mirroring lib/; test/support/ is the toolkit (= frontend/tests)
+└── tool/check_architecture.dart
+```
+
+`state/` is the web's `composables/`: Riverpod notifiers, one per screen, without code
+generation. A feature may sit in a group folder: `features/planning/events/`.
+
+### Rules
+
+`dart run tool/check_architecture.dart` fails on any of these:
+
+| Rule | Why |
+|---|---|
+| `package:pocketbase` only under `lib/backend/pocketbase/` | Change backend = rewrite one folder |
+| `lib/backend/` only from a feature's `api/`, `lib/app/` and `main.dart` | Widgets and notifiers hold no client |
+| `models/` and `api/` import no Flutter; `models/` no Riverpod | Domain and data are plain Dart |
+| `models/` imports only `core/` and other `models/` | A rule never depends on how it is fetched |
+| `ui/` never imports an `api/` | A widget reaches data through `state/` |
+| `core/` imports nothing of ours and no package | The ports survive any change around them |
+| a feature never imports `lib/app/` | The app composes features |
+| `lib/ui/` imports no feature, no app, no backend | Shared means shared |
+| imports are `package:ajil/…`, never relative | One way to name a file |
+
+### Mechanics worth knowing
+
+- **The UI is Remix, on Naked UI and Mix.** Remix ships no theme: every call passes a style
+  from `ui/theme/styles.dart`, built on the tokens of
+  [ADR 0024](adr/0024-mobile-theme-reuses-joufflu-tokens.md). What Remix lacks — the dock, the
+  bottom sheet, the page frame — is in `ui/`, on Flutter's `widgets` library.
+- **Routes declare their page**: go_router's default page is Material's, so a route uses
+  `fullScreenRoute` (slides over the dock) or `tabPage` (inside a dock tab). The five tabs are a
+  `StatefulShellRoute`, each keeping its own history.
+- **The session gates the router**: `features/user/guard.dart` decides every redirect, from the
+  session alone.
+- **Strings are slang, one namespace per feature**: `features/activities/i18n/activities_fr.i18n.json`
+  is `t.activities`. `dart run slang` writes `lib/ui/i18n/strings.g.dart`; `fr` is the base and
+  the fallback, so `en` may lag. A choice's labels are a `(map)` keyed by the enum's name.
+- **Choices are spelled twice**: CONSTANT_CASE in PocketBase, camelCase in Dart. `enumOf` and
+  `constantOf` in `core/data/mapper.dart` translate; a value this version does not know reads
+  as none.
+- **A screen not built yet** has its route and shows *Bientôt disponible*; a call not built yet
+  throws `UnimplementedError` in `api/` ([ADR 0023](adr/0023-unbuilt-screens-throw-at-the-api-seam.md)).
+
+### Commands
+
+From `frontend/mobile/`:
+
+```bash
+flutter run --dart-define=API_URL=http://127.0.0.1:8090    # against a local PocketBase
+dart run slang                                              # after changing a .i18n.json
+dart run tool/check_architecture.dart && flutter analyze && flutter test    # the check
+```

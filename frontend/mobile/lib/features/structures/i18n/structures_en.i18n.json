@@ -1,0 +1,7 @@
+{
+    "screens": {
+        "settings": "Settings",
+        "structures": "Structures",
+        "permissions": "Permissions"
+    }
+}

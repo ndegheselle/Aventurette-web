@@ -11,6 +11,7 @@ it owns, the shape of its data, the rules that hold, and what is not finished.
 | [planning](planning.md) | The user's calendar of the activities they plan to run |
 | [user](user.md) | The account: signing in with an emailed code, the session, roles, the route guard, and settings |
 | [dashboard](dashboard.md) | The signed-in user's landing page — empty for now |
+| [mobile-app](mobile-app.md) | The clients' Flutter app: what is ported from the web, and every screen still to build |
 
 A feature's own layout, and the rules every feature follows, are in
 [ADR 0003](../adr/0003-features-are-vertical-slices.md). Where behaviour lives within one is

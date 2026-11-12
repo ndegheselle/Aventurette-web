@@ -1,7 +1,8 @@
 # Aventurette
 
-An npm workspace rooted in `frontend/`: the `frontend/web/` app on top of three
-`frontend/packages/`, and a PocketBase backend in `backend/api/`.
+Ajil — the clients' Flutter app in `frontend/mobile/`, the back office in `frontend/web/` (an npm
+workspace rooted in `frontend/`, on top of three `frontend/packages/`), and a PocketBase backend
+in `backend/api/` that both talk to.
 
 | | |
 |---|---|
@@ -54,6 +55,27 @@ npm run check          # all three — what CI runs
 ```
 
 The API runs separately, from `backend/api/` — see [backend/api/readme.md](backend/api/readme.md).
+
+## The mobile app
+
+Flutter 3.50 or later. From `frontend/mobile/`, once:
+
+```bash
+flutter pub get
+```
+
+Then, against a PocketBase running locally:
+
+```bash
+flutter run --dart-define=API_URL=http://127.0.0.1:8090
+```
+
+```bash
+dart run tool/check_architecture.dart && flutter analyze && flutter test
+```
+
+How it is built: [docs/architecture.md](docs/architecture.md#the-mobile-app). What it does:
+[docs/business/features/mobile-app.md](docs/business/features/mobile-app.md).
 
 # Deploy
 

@@ -1,0 +1,7 @@
+{
+    "screens": {
+        "dossier": "Contenu du dossier",
+        "preview": "Aperçu du dossier",
+        "link": "Partager un lien"
+    }
+}

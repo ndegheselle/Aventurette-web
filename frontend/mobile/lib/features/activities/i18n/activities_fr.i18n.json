@@ -1,0 +1,158 @@
+{
+    "minutes": "{minutes} min",
+    "catalogue": {
+        "title": "Catalogue",
+        "searchHint": "Un jeu, une idée, un objectif…",
+        "empty": "Aucune activité ne correspond à votre recherche. Essayez d'élargir vos filtres.",
+        "favoritesEmpty": "Aucune activité enregistrée pour l'instant. Touchez le cœur d'une activité pour la retrouver ici.",
+        "segments(map)": {
+            "all": "Toutes",
+            "favorites": "Favoris",
+            "mine": "Mes créations",
+            "shared": "Partagés avec moi"
+        }
+    },
+    "filters": {
+        "title": "Filtres",
+        "open": "Filtrer les activités",
+        "any": "Tous",
+        "locations": "{count} lieux",
+        "age": {
+            "from": "{min} ans et +",
+            "upTo": "Jusqu'à {max} ans",
+            "between": "{min}–{max} ans",
+            "exactly": "{min} ans"
+        },
+        "participants": {
+            "from": "{min} enfants et +",
+            "upTo": "Jusqu'à {max} enfants",
+            "between": "{min}–{max} enfants",
+            "exactly": "{min} enfants"
+        },
+        "profile": {
+            "title": "Appliquer mon profil",
+            "help": "L'âge, le nombre d'enfants et les lieux de vos préférences.",
+            "empty": "Vos préférences n'ont pas encore de filtres par défaut."
+        },
+        "quick(map)": {
+            "age": "Âge",
+            "participants": "Enfants",
+            "location": "Lieu"
+        }
+    },
+    "fields": {
+        "format": "Format",
+        "practices": "Pratique (atelier)",
+        "imaginaryRule": "Règle d'imaginaire",
+        "age": "Âge",
+        "participants": "Effectif recommandé",
+        "childrenPace": "Rythme des enfants",
+        "hostEffort": "Mobilisation de l'animateur",
+        "hosts": "Nombre d'animateurs requis",
+        "crossSupervision": "Surveillance transversale des ateliers",
+        "place": "Lieu",
+        "indoor": "Intérieur",
+        "outdoor": "Extérieur",
+        "locations": "Localisation détaillée",
+        "seasons": "Saisons",
+        "safetyInstructions": "Consignes de sécurité",
+        "preparationTime": "Temps de préparation",
+        "playTime": "Temps de jeu",
+        "totalTime": "Durée totale",
+        "themes": "Thème",
+        "universes": "Imaginaire",
+        "goals": "Tags pédagogiques",
+        "idealFor": "Idéal pour…",
+        "yes": "Oui"
+    },
+    "format(map)": {
+        "smallGame": "Petit jeu",
+        "bigGame": "Grand jeu",
+        "workshop": "Atelier"
+    },
+    "practice(map)": {
+        "manualCreation": "Création manuelle",
+        "expression": "Expression",
+        "cooking": "Cuisine",
+        "observation": "Observation",
+        "music": "Musique",
+        "experimentation": "Expérimentation"
+    },
+    "imaginaryRule(map)": {
+        "none": "Aucun imaginaire nécessaire",
+        "adaptable": "Habillage adaptable",
+        "required": "Imaginaire imposé"
+    },
+    "childrenPace(map)": {
+        "calm": "Calme",
+        "dynamic": "Dynamique"
+    },
+    "hostEffort(map)": {
+        "low": "Faible",
+        "medium": "Moyenne",
+        "high": "Importante"
+    },
+    "season(map)": {
+        "autumn": "Automne",
+        "winter": "Hiver",
+        "spring": "Printemps",
+        "summer": "Été"
+    },
+    "stepKind(map)": {
+        "prepare": "Préparer le jeu",
+        "custom": "Étape libre",
+        "conclusion": "Conclusion"
+    },
+    "sheet": {
+        "participants": "{count} joueurs",
+        "participantsRange": "{min}–{max} joueurs",
+        "hosts": "{count} animateur(s)",
+        "preparation": "Préparation et matériel",
+        "preparationHint": "Matériel, installation et ressources",
+        "details": "Caractéristiques",
+        "more": "Voir plus",
+        "less": "Voir moins",
+        "steps": "Déroulé",
+        "supplies": "Matériel et ressources",
+        "workshops": "Ateliers",
+        "adults": "{count} adulte(s)",
+        "quantity": "Quantité",
+        "openResource": "Ouvrir la ressource"
+    },
+    "actions": {
+        "share": "Partager",
+        "edit": "Modifier",
+        "save": "Enregistrer",
+        "saved": "Enregistrée",
+        "guided": "Mode guidé",
+        "quickMode": "Mode rapide"
+    },
+    "favorites": {
+        "added": "Activité enregistrée",
+        "removed": "Activité retirée des favoris",
+        "undo": "Annuler"
+    },
+    "run": {
+        "step": "Étape {current} / {total}",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "finish": "Terminer",
+        "empty": "Cette activité n'a pas encore d'étape.",
+        "instructions": "Consignes",
+        "tips": "Conseils",
+        "supplies": "Matériel de l'étape"
+    },
+    "feedback": {
+        "bravo": "Bravo !",
+        "finished": "Vous avez terminé « {name} ».",
+        "like": "J'aime cette activité",
+        "comment": "Un commentaire ?",
+        "commentPlaceholder": "Ce qui a plu, ce qui a coincé…",
+        "leave": "Quitter",
+        "saveRefused": "Votre avis n'a pas pu être enregistré."
+    },
+    "screens": {
+        "preparation": "Préparation",
+        "quick": "Mode rapide"
+    }
+}

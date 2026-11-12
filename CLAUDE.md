@@ -13,6 +13,15 @@ cd frontend && npm run check     # lint:arch + build (typecheck) + test
 All three must pass. `npm run build` typechecks the specs along with the app, so a spec that no
 longer compiles fails the build.
 
+In `frontend/mobile/`, the Flutter app has its own check, and the same rules carry over
+([architecture](docs/architecture.md#the-mobile-app)):
+
+```bash
+cd frontend/mobile && dart run tool/check_architecture.dart && flutter analyze && flutter test
+```
+
+After changing a `.i18n.json`, run `dart run slang` there: it writes `lib/ui/i18n/strings.g.dart`.
+
 ## Where code goes
 
 The one rule to internalise: **a component is wiring and markup.** Logic goes one or two layers

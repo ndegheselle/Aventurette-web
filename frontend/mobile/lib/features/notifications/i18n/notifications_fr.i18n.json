@@ -1,0 +1,6 @@
+{
+    "screens": {
+        "preferences": "Notifications",
+        "inbox": "Mes notifications"
+    }
+}

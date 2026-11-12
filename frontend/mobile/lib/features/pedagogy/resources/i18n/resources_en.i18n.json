@@ -1,0 +1,6 @@
+{
+    "screens": {
+        "list": "Resources",
+        "resource": "Resource"
+    }
+}

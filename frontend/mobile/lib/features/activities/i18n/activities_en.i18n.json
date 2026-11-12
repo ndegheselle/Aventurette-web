@@ -1,0 +1,158 @@
+{
+    "minutes": "{minutes} min",
+    "catalogue": {
+        "title": "Catalogue",
+        "searchHint": "A game, an idea, a goal…",
+        "empty": "No activity matches your search. Try widening your filters.",
+        "favoritesEmpty": "No saved activity yet. Tap an activity's heart to find it here.",
+        "segments(map)": {
+            "all": "All",
+            "favorites": "Favorites",
+            "mine": "My creations",
+            "shared": "Shared with me"
+        }
+    },
+    "filters": {
+        "title": "Filters",
+        "open": "Filter activities",
+        "any": "Any",
+        "locations": "{count} places",
+        "age": {
+            "from": "{min} years and up",
+            "upTo": "Up to {max} years",
+            "between": "{min}–{max} years",
+            "exactly": "{min} years"
+        },
+        "participants": {
+            "from": "{min} children and up",
+            "upTo": "Up to {max} children",
+            "between": "{min}–{max} children",
+            "exactly": "{min} children"
+        },
+        "profile": {
+            "title": "Apply my profile",
+            "help": "The age, number of children and places from your preferences.",
+            "empty": "Your preferences have no default filters yet."
+        },
+        "quick(map)": {
+            "age": "Age",
+            "participants": "Children",
+            "location": "Place"
+        }
+    },
+    "fields": {
+        "format": "Format",
+        "practices": "Practice (workshop)",
+        "imaginaryRule": "Imaginary rule",
+        "age": "Age",
+        "participants": "Recommended group size",
+        "childrenPace": "Children's pace",
+        "hostEffort": "Leader involvement",
+        "hosts": "Leaders required",
+        "crossSupervision": "Supervision across workshops",
+        "place": "Place",
+        "indoor": "Indoor",
+        "outdoor": "Outdoor",
+        "locations": "Detailed location",
+        "seasons": "Seasons",
+        "safetyInstructions": "Safety instructions",
+        "preparationTime": "Preparation time",
+        "playTime": "Play time",
+        "totalTime": "Total time",
+        "themes": "Theme",
+        "universes": "Imaginary",
+        "goals": "Pedagogical tags",
+        "idealFor": "Ideal for…",
+        "yes": "Yes"
+    },
+    "format(map)": {
+        "smallGame": "Small game",
+        "bigGame": "Big game",
+        "workshop": "Workshop"
+    },
+    "practice(map)": {
+        "manualCreation": "Crafts",
+        "expression": "Expression",
+        "cooking": "Cooking",
+        "observation": "Observation",
+        "music": "Music",
+        "experimentation": "Experimentation"
+    },
+    "imaginaryRule(map)": {
+        "none": "No imaginary needed",
+        "adaptable": "Adaptable setting",
+        "required": "Imaginary required"
+    },
+    "childrenPace(map)": {
+        "calm": "Calm",
+        "dynamic": "Lively"
+    },
+    "hostEffort(map)": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+    },
+    "season(map)": {
+        "autumn": "Autumn",
+        "winter": "Winter",
+        "spring": "Spring",
+        "summer": "Summer"
+    },
+    "stepKind(map)": {
+        "prepare": "Set up the game",
+        "custom": "Free step",
+        "conclusion": "Conclusion"
+    },
+    "sheet": {
+        "participants": "{count} players",
+        "participantsRange": "{min}–{max} players",
+        "hosts": "{count} leader(s)",
+        "preparation": "Preparation and materials",
+        "preparationHint": "Materials, set-up and resources",
+        "details": "Details",
+        "more": "Show more",
+        "less": "Show less",
+        "steps": "Steps",
+        "supplies": "Materials and resources",
+        "workshops": "Workshops",
+        "adults": "{count} adult(s)",
+        "quantity": "Quantity",
+        "openResource": "Open the resource"
+    },
+    "actions": {
+        "share": "Share",
+        "edit": "Edit",
+        "save": "Save",
+        "saved": "Saved",
+        "guided": "Guided mode",
+        "quickMode": "Quick mode"
+    },
+    "favorites": {
+        "added": "Activity saved",
+        "removed": "Activity removed from favorites",
+        "undo": "Undo"
+    },
+    "run": {
+        "step": "Step {current} / {total}",
+        "previous": "Previous",
+        "next": "Next",
+        "finish": "Finish",
+        "empty": "This activity has no step yet.",
+        "instructions": "Instructions",
+        "tips": "Tips",
+        "supplies": "Materials for this step"
+    },
+    "feedback": {
+        "bravo": "Well done!",
+        "finished": "You finished “{name}”.",
+        "like": "I like this activity",
+        "comment": "Any comment?",
+        "commentPlaceholder": "What worked, what didn't…",
+        "leave": "Leave",
+        "saveRefused": "Your feedback could not be saved."
+    },
+    "screens": {
+        "preparation": "Preparation",
+        "quick": "Quick mode"
+    }
+}

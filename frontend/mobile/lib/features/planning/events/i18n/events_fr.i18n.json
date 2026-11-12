@@ -1,0 +1,10 @@
+{
+    "screens": {
+        "tab": "Planning",
+        "create": "Créer un événement",
+        "event": "Événement",
+        "edit": "Modifier l'événement",
+        "newBlock": "Paramétrer le temps",
+        "coordination": "Coordination"
+    }
+}

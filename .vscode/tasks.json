@@ -14,7 +14,8 @@
       "label": "web",
       "type": "shell",
       "command": "npm run dev",
-      "options": { "cwd": "${workspaceFolder}/frontend" },
+      // vite.config.ts reads its port from PORT; "Web admin" in launch.json opens this one.
+      "options": { "cwd": "${workspaceFolder}/frontend", "env": { "PORT": "5173" } },
       "isBackground": true,
       // Lets VS Code know when Vite is ready, so a launch config can wait for it.
       "problemMatcher": {

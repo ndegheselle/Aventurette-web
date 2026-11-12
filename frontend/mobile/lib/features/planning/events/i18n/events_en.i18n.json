@@ -1,0 +1,10 @@
+{
+    "screens": {
+        "tab": "Planning",
+        "create": "New event",
+        "event": "Event",
+        "edit": "Edit the event",
+        "newBlock": "Set up the time",
+        "coordination": "Coordination"
+    }
+}

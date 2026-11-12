@@ -1,0 +1,7 @@
+{
+    "screens": {
+        "dossier": "Dossier contents",
+        "preview": "Dossier preview",
+        "link": "Share a link"
+    }
+}

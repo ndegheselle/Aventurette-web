@@ -1,0 +1,58 @@
+{
+  // Two profiles in the Run and Debug view: "API + Mobile" and "API + Web admin". Each piece can
+  // also be started on its own. Needs the Go, Dart/Flutter and (built-in) JavaScript debuggers.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/backend/api",
+      "cwd": "${workspaceFolder}/backend/api",
+      "args": ["serve"],
+      // The debug binary must sit in the temp folder: PocketBase then treats it as `go run`, so it
+      // keeps its data in backend/api/pb_data and prints sign-in codes instead of emailing them.
+      "windows": { "output": "${env:TEMP}/ajil-api-debug.exe" }
+    },
+    {
+      // Runs on the device picked in the status bar. An Android emulator reaches the API at
+      // 10.0.2.2: use the next configuration for it.
+      "name": "Mobile",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend/mobile",
+      "program": "lib/main.dart",
+      "toolArgs": ["--dart-define=API_URL=http://127.0.0.1:8090"]
+    },
+    {
+      "name": "Mobile (Android emulator)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend/mobile",
+      "program": "lib/main.dart",
+      "toolArgs": ["--dart-define=API_URL=http://10.0.2.2:8090"]
+    },
+    {
+      // Starts Vite (the "web" task) and opens Chrome on it, with breakpoints in the .vue files.
+      "name": "Web admin",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173/activities/authoring",
+      "webRoot": "${workspaceFolder}/frontend/web",
+      "preLaunchTask": "web"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "API + Mobile",
+      "configurations": ["API", "Mobile"],
+      "stopAll": true
+    },
+    {
+      "name": "API + Web admin",
+      "configurations": ["API", "Web admin"],
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+    "screens": {
+        "event": "Validate the event",
+        "adjust": "Ask for a change"
+    }
+}

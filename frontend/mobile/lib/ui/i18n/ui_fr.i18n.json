@@ -1,0 +1,27 @@
+{
+    "actions": {
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "back": "Retour",
+        "close": "Fermer",
+        "retry": "Réessayer",
+        "apply": "Appliquer",
+        "reset": "Réinitialiser"
+    },
+    "comingSoon": {
+        "title": "Bientôt disponible",
+        "body": "Cet écran n'est pas encore construit.",
+        "wireframe": "Maquette {id}"
+    },
+    "errors": {
+        "generic": "Une erreur est survenue."
+    },
+    "search": "Rechercher",
+    "range": {
+        "any": "Tous",
+        "from": "{min} et plus",
+        "upTo": "Jusqu'à {max}",
+        "between": "De {min} à {max}",
+        "exactly": "{min}"
+    }
+}

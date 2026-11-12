@@ -1,0 +1,6 @@
+{
+    "screens": {
+        "create": "New activity",
+        "edit": "Edit the activity"
+    }
+}

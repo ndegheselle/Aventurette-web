@@ -1,0 +1,11 @@
+# Each feature keeps its strings in its own `i18n/` folder: the namespace is the file name
+# (`activities_fr.i18n.json` is `t.activities`). The generated file lands in `lib/ui/i18n/`
+# because every feature imports it, and features may import `lib/ui/` but not `lib/app/`.
+base_locale: fr
+fallback_strategy: base_locale
+input_directory: lib
+input_file_pattern: .i18n.json
+output_directory: lib/ui/i18n
+output_file_name: strings.g.dart
+namespaces: true
+string_interpolation: braces
