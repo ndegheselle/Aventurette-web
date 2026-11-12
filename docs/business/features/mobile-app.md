@@ -153,4 +153,6 @@ Feature-owned: the day timeline, read-only and reorderable (B04, B07, B08, B18),
 - **The login's errors are one message per step**; the web showed the backend's per-field ones.
 - **No sign-in with Google, Microsoft or Apple**: the web's buttons did nothing either.
 - **Pictures are placeholders**, as on the web.
-- The Android and iOS application ids are still the template's (`com.example.mobile`).
+- **Only the web platform is set up** for now, to run the app in a browser.
+  `flutter create --platforms=android,ios .` in `frontend/mobile/` adds the phones back; their
+  application id then has to be set (the template's is `com.example.mobile`).

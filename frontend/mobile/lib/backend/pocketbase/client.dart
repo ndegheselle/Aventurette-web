@@ -2,8 +2,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pocketbase/pocketbase.dart';
 
-/// Set with `--dart-define=API_URL=…`. The default is a PocketBase running on this machine; an
-/// Android emulator reaches it at `http://10.0.2.2:8090` instead.
+/// Set with `--dart-define=API_URL=…`. The default is a PocketBase running on this machine.
 const apiUrl = String.fromEnvironment('API_URL', defaultValue: 'http://127.0.0.1:8090');
 
 const _sessionKey = 'pb_auth';

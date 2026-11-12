@@ -292,7 +292,7 @@ generation. A feature may sit in a group folder: `features/planning/events/`.
 From `frontend/mobile/`:
 
 ```bash
-flutter run --dart-define=API_URL=http://127.0.0.1:8090    # against a local PocketBase
+flutter run -d chrome --dart-define=API_URL=http://127.0.0.1:8090    # in Chrome, against a local PocketBase
 dart run slang                                              # after changing a .i18n.json
 dart run tool/check_architecture.dart && flutter analyze && flutter test    # the check
 ```

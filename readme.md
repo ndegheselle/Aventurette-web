@@ -67,7 +67,7 @@ flutter pub get
 Then, against a PocketBase running locally:
 
 ```bash
-flutter run --dart-define=API_URL=http://127.0.0.1:8090
+flutter run -d chrome --dart-define=API_URL=http://127.0.0.1:8090
 ```
 
 ```bash

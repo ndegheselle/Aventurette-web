@@ -16,22 +16,14 @@
       "windows": { "output": "${env:TEMP}/ajil-api-debug.exe" }
     },
     {
-      // Runs on the device picked in the status bar. An Android emulator reaches the API at
-      // 10.0.2.2: use the next configuration for it.
+      // In Chrome: the web is the only platform set up for now.
       "name": "Mobile",
       "type": "dart",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend/mobile",
       "program": "lib/main.dart",
+      "deviceId": "chrome",
       "toolArgs": ["--dart-define=API_URL=http://127.0.0.1:8090"]
-    },
-    {
-      "name": "Mobile (Android emulator)",
-      "type": "dart",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/frontend/mobile",
-      "program": "lib/main.dart",
-      "toolArgs": ["--dart-define=API_URL=http://10.0.2.2:8090"]
     },
     {
       // Starts Vite (the "web" task) and opens Chrome on it, with breakpoints in the .vue files.
