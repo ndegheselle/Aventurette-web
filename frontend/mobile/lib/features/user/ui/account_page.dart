@@ -4,11 +4,10 @@ import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/ui/overlays/sheet.dart';
 import 'package:ajil/ui/shell/page.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// *Mon compte* (E04): who is signed in, and signing out — what the web's settings held. Editing
 /// the name, the accesses and the account's security are not built yet.
@@ -24,11 +23,12 @@ class AccountPage extends ConsumerWidget {
       final confirmed = await showAppSheet<bool>(
         context,
         title: t.user.account.logout,
-        builder: (_) => StyledText(t.user.account.logoutConfirm, style: bodyText()),
-        actionsBuilder: (sheetContext) => RemixButton(
-          label: t.user.account.logout,
-          style: buttonStyle(variant: ButtonVariant.danger, size: ControlSize.lg).width(double.infinity),
-          onPressed: () => Navigator.of(sheetContext).pop(true),
+        builder: (_) => Text(t.user.account.logoutConfirm, style: context.bodyText),
+        actionsBuilder: (sheetContext) => FButton(
+          variant: .destructive,
+          size: .lg,
+          onPress: () => Navigator.of(sheetContext).pop(true),
+          child: Text(t.user.account.logout),
         ),
       );
       // The router sends a signed-out user to the login.
@@ -42,18 +42,19 @@ class AccountPage extends ConsumerWidget {
           if (user != null && user.name.isNotEmpty)
             LabeledField(
               label: t.user.account.name,
-              child: Panel(child: StyledText(user.name, style: bodyText())),
+              child: Panel(child: Text(user.name, style: context.bodyText)),
             ),
           if (user != null)
             LabeledField(
               label: t.user.account.email,
-              child: Panel(child: StyledText(user.email, style: bodyText())),
+              child: Panel(child: Text(user.email, style: context.bodyText)),
             ),
           Center(
-            child: RemixButton(
-              label: t.user.account.logout,
-              style: buttonStyle(variant: ButtonVariant.outline),
-              onPressed: logout,
+            child: FButton(
+              variant: .outline,
+              mainAxisSize: MainAxisSize.min,
+              onPress: logout,
+              child: Text(t.user.account.logout),
             ),
           ),
         ],

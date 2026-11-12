@@ -1,10 +1,8 @@
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// Renders an [AsyncValue]: a spinner while it loads, the data once it is there. A read the
 /// backend cannot answer yet (`UnimplementedError`, see ADR 0023) shows *Bientôt disponible*
@@ -34,7 +32,7 @@ class LoadingView extends StatelessWidget {
   Widget build(BuildContext context) => Center(
     child: Padding(
       padding: const EdgeInsets.all(32),
-      child: RemixSpinner(style: spinnerStyle()),
+      child: const FCircularProgress(),
     ),
   );
 }
@@ -53,13 +51,14 @@ class ErrorView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           spacing: 12,
           children: [
-            const Icon(LucideIcons.cloudAlert, size: 40),
-            StyledText(context.t.ui.errors.generic, style: bodyText()),
+            const Icon(FLucideIcons.cloudAlert, size: 40),
+            Text(context.t.ui.errors.generic, style: context.bodyText),
             if (onRetry != null)
-              RemixButton(
-                label: context.t.ui.actions.retry,
-                style: buttonStyle(variant: ButtonVariant.outline),
-                onPressed: onRetry,
+              FButton(
+                variant: .outline,
+                mainAxisSize: MainAxisSize.min,
+                onPress: onRetry,
+                child: Text(context.t.ui.actions.retry),
               ),
           ],
         ),
@@ -86,10 +85,10 @@ class ComingSoonView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           spacing: 8,
           children: [
-            const Icon(LucideIcons.hammer, size: 40),
-            StyledText(t.title, style: headingText()),
-            StyledText(t.body, style: captionText().textAlign(TextAlign.center)),
-            if (wireframe != null) StyledText(t.wireframe(id: wireframe!), style: overlineText()),
+            const Icon(FLucideIcons.hammer, size: 40),
+            Text(t.title, style: context.headingText),
+            Text(t.body, style: context.captionText, textAlign: TextAlign.center),
+            if (wireframe != null) Text(t.wireframe(id: wireframe!).toUpperCase(), style: context.overlineText),
           ],
         ),
       ),

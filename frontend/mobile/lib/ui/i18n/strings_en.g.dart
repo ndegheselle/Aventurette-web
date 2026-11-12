@@ -726,6 +726,9 @@ class _Translations$user$login$en extends Translations$user$login$fr {
 	@override String get changeEmail => 'Change email';
 	@override String get codeNotSent => 'The code could not be sent.';
 	@override String get codeRejected => 'Invalid or expired code.';
+	@override String get password => 'Password (debug)';
+	@override String get withPassword => 'Sign in with the password';
+	@override String get passwordRejected => 'Wrong email or password.';
 }
 
 // Path: user.onboarding
@@ -1049,6 +1052,9 @@ extension on TranslationsEn {
 			'user.login.changeEmail' => 'Change email',
 			'user.login.codeNotSent' => 'The code could not be sent.',
 			'user.login.codeRejected' => 'Invalid or expired code.',
+			'user.login.password' => 'Password (debug)',
+			'user.login.withPassword' => 'Sign in with the password',
+			'user.login.passwordRejected' => 'Wrong email or password.',
 			'user.onboarding.title' => 'Welcome!',
 			'user.onboarding.intro' => 'Pick the catalogue\'s default filters. You can change them at any time in your preferences.',
 			'user.onboarding.later' => 'Later',

@@ -1,17 +1,14 @@
 import 'package:ajil/features/user/state/login_form.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/ui/shell/page.dart';
-import 'package:ajil/ui/theme/app_theme.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
-import 'package:ajil/ui/theme/tokens.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// Signing in with a code sent by email. The router leaves this page once the session is set.
+/// A debug build also offers a password under the email, to sign in without a mailbox.
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
@@ -22,11 +19,13 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage> {
   final _email = TextEditingController();
   final _code = TextEditingController();
+  final _password = TextEditingController();
 
   @override
   void dispose() {
     _email.dispose();
     _code.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -39,68 +38,89 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final error = switch (form.error) {
       LoginError.codeNotSent => t.codeNotSent,
       LoginError.codeRejected => t.codeRejected,
+      LoginError.passwordRejected => t.passwordRejected,
       null => null,
     };
 
+    // Each error belongs to the one field that caused it, and shows under it.
+    Widget? errorFor(LoginError cause) => form.error == cause && error != null ? Text(error) : null;
+    // A busy form takes no second press, and says it is working.
+    final busy = form.busy ? const FCircularProgress() : null;
+
+    Widget icon(IconData data) => Icon(data, size: 18, color: context.theme.colors.mutedForeground);
+
     final steps = form.codeSent
         ? [
-            StyledText(t.codeSentTo(email: form.email), style: bodyText()),
-            LabeledField(
-              label: t.code,
-              child: RemixTextField(
-                controller: _code,
-                keyboardType: TextInputType.number,
-                autofillHints: const [AutofillHints.oneTimeCode],
-                leading: Icon(LucideIcons.keyRound, size: 18, color: context.muted),
-                error: form.error == LoginError.codeRejected,
-                onSubmitted: notifier.login,
-                style: textFieldStyle(),
-              ),
+            Text(t.codeSentTo(email: form.email), style: context.bodyText),
+            FTextField(
+              control: .managed(controller: _code),
+              label: Text(t.code),
+              error: errorFor(LoginError.codeRejected),
+              keyboardType: TextInputType.number,
+              autofillHints: const [AutofillHints.oneTimeCode],
+              prefixBuilder: (context, style, variants) =>
+                  FTextField.prefixIconBuilder(context, style, variants, icon(FLucideIcons.keyRound)),
+              onSubmit: notifier.login,
             ),
-            RemixButton(
-              label: t.title,
-              loading: form.busy,
-              style: buttonStyle(size: ControlSize.lg),
-              onPressed: () => notifier.login(_code.text),
+            FButton(
+              size: .lg,
+              prefix: busy,
+              onPress: form.busy ? null : () => notifier.login(_code.text),
+              child: Text(t.title),
             ),
-            RemixButton(
-              label: t.changeEmail,
-              style: buttonStyle(variant: ButtonVariant.ghost),
-              onPressed: () {
+            FButton(
+              variant: .ghost,
+              onPress: () {
                 _code.clear();
                 notifier.changeEmail();
               },
+              child: Text(t.changeEmail),
             ),
           ]
         : [
-            LabeledField(
-              label: t.email,
-              child: RemixTextField(
-                controller: _email,
-                keyboardType: TextInputType.emailAddress,
-                autofillHints: const [AutofillHints.email],
-                leading: Icon(LucideIcons.mail, size: 18, color: context.muted),
-                error: form.error == LoginError.codeNotSent,
-                onSubmitted: notifier.requestCode,
-                style: textFieldStyle(),
+            FTextField(
+              control: .managed(controller: _email),
+              label: Text(t.email),
+              error: errorFor(LoginError.codeNotSent),
+              keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
+              prefixBuilder: (context, style, variants) =>
+                  FTextField.prefixIconBuilder(context, style, variants, icon(FLucideIcons.mail)),
+              onSubmit: notifier.requestCode,
+            ),
+            FButton(
+              size: .lg,
+              prefix: busy,
+              onPress: form.busy ? null : () => notifier.requestCode(_email.text),
+              child: Text(t.sendCode),
+            ),
+            if (kDebugMode) ...[
+              FTextField(
+                control: .managed(controller: _password),
+                label: Text(t.password),
+                error: errorFor(LoginError.passwordRejected),
+                obscureText: true,
+                autofillHints: const [AutofillHints.password],
+                prefixBuilder: (context, style, variants) =>
+                    FTextField.prefixIconBuilder(context, style, variants, icon(FLucideIcons.lock)),
+                onSubmit: (password) => notifier.loginWithPassword(_email.text, password),
               ),
-            ),
-            RemixButton(
-              label: t.sendCode,
-              loading: form.busy,
-              style: buttonStyle(size: ControlSize.lg),
-              onPressed: () => notifier.requestCode(_email.text),
-            ),
+              FButton(
+                variant: .outline,
+                prefix: busy,
+                onPress: form.busy ? null : () => notifier.loginWithPassword(_email.text, _password.text),
+                child: Text(t.withPassword),
+              ),
+            ],
           ];
 
     return AppPage(
       header: const SizedBox(height: 32),
       body: PageScroll(
         children: [
-          StyledText('Ajil', style: titleText().fontSize(AppSizes.fontXl())),
-          StyledText(t.title, style: headingText()),
+          Text('Ajil', style: context.titleText),
+          Text(t.title, style: context.headingText),
           ...steps,
-          if (error != null) StyledText(error, style: captionText().color(AppColors.danger.fill())),
         ],
       ),
     );

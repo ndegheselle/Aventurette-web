@@ -2,20 +2,10 @@
 /// for content not designed yet.
 library;
 
-import 'package:ajil/ui/theme/app_theme.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:mix/mix.dart';
-
-BoxBorderMix _border(Color color) => BoxBorderMix.all(BorderSideMix(color: color, width: AppSizes.thickness()));
-
-BoxStyler _panelStyle() => BoxStyler()
-    .color(AppColors.display.base0())
-    .border(_border(AppColors.display.border0()))
-    .borderRadius(BorderRadiusGeometryMix.all(AppRadii.display()))
-    .padding(EdgeInsetsGeometryMix.all(AppSpaces.displayPadding()));
+import 'package:forui/forui.dart';
 
 /// A card: the display surface everything else sits on.
 class Panel extends StatelessWidget {
@@ -24,7 +14,13 @@ class Panel extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => Box(style: _panelStyle().width(double.infinity), child: child);
+  Widget build(BuildContext context) => SizedBox(
+    width: double.infinity,
+    child: FCard(
+      style: const .delta(padding: .value(EdgeInsets.all(AppSpaces.spacing))),
+      child: child,
+    ),
+  );
 }
 
 /// A card that opens something: a title followed by ›, and a line under it.
@@ -45,16 +41,16 @@ class LinkCard extends StatelessWidget {
         onTap: onTap,
         child: Panel(
           child: Row(
-            spacing: context.token(AppSpaces.spacing),
+            spacing: AppSpaces.spacing,
             children: [
-              if (leading != null) Icon(leading, color: context.muted),
+              if (leading != null) Icon(leading, color: context.theme.colors.mutedForeground),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 2,
                   children: [
-                    StyledText('$title  ›', style: headingText().fontSize(AppSizes.fontMd())),
-                    if (subtitle != null) StyledText(subtitle!, style: captionText()),
+                    Text('$title  ›', style: context.headingText.copyWith(fontSize: context.bodyText.fontSize)),
+                    if (subtitle != null) Text(subtitle!, style: context.captionText),
                   ],
                 ),
               ),
@@ -74,13 +70,14 @@ class HintBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(
-      style: BoxStyler()
-          .width(double.infinity)
-          .color(AppColors.display.base1())
-          .borderRadius(BorderRadiusGeometryMix.all(AppRadii.display()))
-          .padding(EdgeInsetsGeometryMix.all(AppSpaces.displayPadding())),
-      child: StyledText(text, style: captionText()),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpaces.spacing),
+      decoration: BoxDecoration(
+        color: context.theme.colors.muted,
+        borderRadius: context.theme.style.borderRadius.lg,
+      ),
+      child: Text(text, style: context.captionText),
     );
   }
 }
@@ -92,33 +89,26 @@ class Tag extends StatelessWidget {
   final String label;
 
   @override
-  Widget build(BuildContext context) {
-    return Box(
-      style: BoxStyler()
-          .color(AppColors.base2())
-          .borderRadius(BorderRadiusGeometryMix.all(AppRadii.pill()))
-          .padding(EdgeInsetsGeometryMix.symmetric(horizontal: 10, vertical: 3)),
-      child: StyledText(label, style: labelText().fontWeight(FontWeight.w500)),
-    );
-  }
+  Widget build(BuildContext context) => FBadge(variant: .secondary, child: Text(label));
 }
 
 /// Where a picture goes until activities have one.
 class ImagePlaceholder extends StatelessWidget {
-  const ImagePlaceholder({super.key, this.height = 96, this.icon = LucideIcons.image});
+  const ImagePlaceholder({super.key, this.height = 96, this.icon = FLucideIcons.image});
 
   final double height;
   final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return Box(
-      style: BoxStyler()
-          .height(height)
-          .width(double.infinity)
-          .color(AppColors.display.base1())
-          .alignment(Alignment.center),
-      child: Icon(icon, size: 28, color: context.muted),
+    final colors = context.theme.colors;
+
+    return Container(
+      height: height,
+      width: double.infinity,
+      color: colors.muted,
+      alignment: Alignment.center,
+      child: Icon(icon, size: 28, color: colors.mutedForeground),
     );
   }
 }
@@ -139,8 +129,12 @@ class EmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           spacing: 8,
           children: [
-            Icon(icon, size: 40, color: context.muted),
-            StyledText(message, style: captionText().fontSize(AppSizes.fontMd()).textAlign(TextAlign.center)),
+            Icon(icon, size: 40, color: context.theme.colors.mutedForeground),
+            Text(
+              message,
+              style: context.captionText.copyWith(fontSize: context.bodyText.fontSize),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

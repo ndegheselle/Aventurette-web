@@ -269,10 +269,12 @@ generation. A feature may sit in a group folder: `features/planning/events/`.
 
 ### Mechanics worth knowing
 
-- **The UI is Remix, on Naked UI and Mix.** Remix ships no theme: every call passes a style
-  from `ui/theme/styles.dart`, built on the tokens of
-  [ADR 0024](adr/0024-mobile-theme-reuses-joufflu-tokens.md). What Remix lacks — the dock, the
-  bottom sheet, the page frame — is in `ui/`, on Flutter's `widgets` library.
+- **The UI is forui.** A screen calls forui's widgets directly and picks their look at the call
+  site — `FButton(variant: .outline, size: .lg)` — the way the web writes daisyUI classes. The
+  theme is forui's neutral one, the icons are `FLucideIcons`
+  ([ADR 0024](adr/0024-mobile-app-uses-forui-theme.md)); text styles are
+  `context.headingText` and its siblings. What forui lacks — the page frame, the pills — is in
+  `ui/`, on Flutter's `widgets` library.
 - **Routes declare their page**: go_router's default page is Material's, so a route uses
   `fullScreenRoute` (slides over the dock) or `tabPage` (inside a dock tab). The five tabs are a
   `StatefulShellRoute`, each keeping its own history.

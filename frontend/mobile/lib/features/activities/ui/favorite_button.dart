@@ -3,12 +3,9 @@ import 'package:ajil/features/activities/state/favorites.dart';
 import 'package:ajil/ui/async/run_action.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/overlays/toast.dart';
-import 'package:ajil/ui/theme/styles.dart';
-import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// Adds the activity to the favorites, or takes it off, and says so. The toast for a removal
 /// offers to take it back, with no toast of its own: the user is undoing, not adding.
@@ -38,13 +35,13 @@ class FavoriteButton extends ConsumerWidget {
     final favorite = ref.read(favoritesProvider.notifier).isFavorite(activity.id);
     final t = context.t.activities.actions;
 
-    return RemixIconButton(
-      icon: LucideIcons.heart,
-      semanticLabel: favorite ? t.saved : t.save,
-      style: favorite
-          ? iconButtonStyle(variant: ButtonVariant.danger).iconFill(1).iconColor(AppColors.danger.fill())
-          : iconButtonStyle(),
-      onPressed: () => toggleFavorite(context, ref, activity),
+    return FButton.icon(
+      variant: .secondary,
+      semanticsLabel: favorite ? t.saved : t.save,
+      onPress: () => toggleFavorite(context, ref, activity),
+      child: favorite
+          ? Icon(FLucideIcons.heart, color: context.theme.colors.destructive)
+          : const Icon(FLucideIcons.heart),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:ajil/features/user/api/preferences_api.dart';
 import 'package:ajil/features/user/models/preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// The device's theme and language. The app reads them to pick the palette and the strings.
+/// The device's theme and language. The app reads them to pick the theme and the strings.
 class PreferencesNotifier extends Notifier<Preferences> {
   @override
   Preferences build() => ref.read(preferencesApiProvider).read();

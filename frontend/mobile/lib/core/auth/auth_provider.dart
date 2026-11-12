@@ -11,6 +11,10 @@ abstract interface class AuthProvider {
   /// expired. Resolves to the user record's session fields.
   Future<Payload> loginWithOtp(String otpId, String code);
 
+  /// Authenticate with an email and a password, and start a session. Throws if they do not
+  /// match. Debug builds only: the app signs in with a code.
+  Future<Payload> loginWithPassword(String email, String password);
+
   /// Revive an existing session, or resolve to null when there is none.
   Future<Payload?> refresh();
 

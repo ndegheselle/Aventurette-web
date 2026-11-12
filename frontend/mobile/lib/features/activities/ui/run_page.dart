@@ -10,13 +10,11 @@ import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/inputs/pills.dart';
 import 'package:ajil/ui/shell/page.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
 
 /// Guided mode (A07, A15): the steps the author wrote, one to a page. The step is in the route,
 /// and moving replaces it, so the whole run is one history entry: leaving it goes back to the
@@ -42,7 +40,7 @@ class RunPage extends ConsumerWidget {
     if (loaded.steps.isEmpty) {
       return AppPage(
         header: BackHeader(title: loaded.name),
-        body: EmptyState(icon: LucideIcons.circleQuestionMark, message: context.t.activities.run.empty),
+        body: EmptyState(icon: FLucideIcons.circleQuestionMark, message: context.t.activities.run.empty),
       );
     }
 
@@ -89,11 +87,8 @@ class _RunState extends State<_Run> {
         // A new scroll position for each step: it opens at its top.
         key: ValueKey(step.id),
         children: [
-          StyledText(
-            t.run.step(current: index + 1, total: steps.length),
-            style: overlineText(),
-          ),
-          StyledText(step.title.isEmpty ? t.stepKind[step.kind.name]! : step.title, style: titleText()),
+          Text(t.run.step(current: index + 1, total: steps.length).toUpperCase(), style: context.overlineText),
+          Text(step.title.isEmpty ? t.stepKind[step.kind.name]! : step.title, style: context.titleText),
           if (step.tips.isNotEmpty)
             PillTabs(
               values: _StepTab.values,
@@ -108,7 +103,7 @@ class _RunState extends State<_Run> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 10,
                 children: [
-                  StyledText(t.run.supplies, style: labelText()),
+                  Text(t.run.supplies, style: context.labelText),
                   Supplies(materials: step.materials, resources: step.resources),
                 ],
               ),
@@ -121,25 +116,21 @@ class _RunState extends State<_Run> {
             spacing: 8,
             children: [
               Expanded(
-                child: RemixButton(
-                  label: t.run.previous,
-                  enabled: index > 0,
-                  style: buttonStyle(variant: ButtonVariant.outline, size: ControlSize.lg),
-                  onPressed: () => _goTo(index - 1),
+                child: FButton(
+                  variant: .outline,
+                  size: .lg,
+                  onPress: index > 0 ? () => _goTo(index - 1) : null,
+                  child: Text(t.run.previous),
                 ),
               ),
               Expanded(
                 child: isLast
-                    ? RemixButton(
-                        label: t.run.finish,
-                        style: buttonStyle(size: ControlSize.lg),
-                        onPressed: () => context.replace(ActivitiesRoutes.feedback(widget.activity.id)),
+                    ? FButton(
+                        size: .lg,
+                        onPress: () => context.replace(ActivitiesRoutes.feedback(widget.activity.id)),
+                        child: Text(t.run.finish),
                       )
-                    : RemixButton(
-                        label: t.run.next,
-                        style: buttonStyle(size: ControlSize.lg),
-                        onPressed: () => _goTo(index + 1),
-                      ),
+                    : FButton(size: .lg, onPress: () => _goTo(index + 1), child: Text(t.run.next)),
               ),
             ],
           ),
@@ -149,7 +140,9 @@ class _RunState extends State<_Run> {
   }
 
   List<Widget> _content(ActivityStep step) => switch (_tab) {
-    _StepTab.instructions => [HtmlText(step.description, style: bodyText().fontSize(18))],
+    _StepTab.instructions => [
+      HtmlText(step.description, style: context.bodyText.copyWith(fontSize: context.headingText.fontSize)),
+    ],
     _StepTab.tips => [
       for (final tip in step.tips)
         Panel(
@@ -157,8 +150,8 @@ class _RunState extends State<_Run> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 4,
             children: [
-              StyledText(tip.name, style: labelText()),
-              HtmlText(tip.description, style: captionText()),
+              Text(tip.name, style: context.labelText),
+              HtmlText(tip.description, style: context.captionText),
             ],
           ),
         ),

@@ -20,6 +20,10 @@ class FakeAuth implements AuthProvider {
   Future<Payload> loginWithOtp(String otpId, String code) async => user ?? (throw StateError('Wrong code'));
 
   @override
+  Future<Payload> loginWithPassword(String email, String password) async =>
+      user ?? (throw StateError('Wrong password'));
+
+  @override
   Future<Payload?> refresh() async => user;
 
   @override

@@ -1,6 +1,5 @@
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
 
 const _entities = {'&nbsp;': ' ', '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'", '&apos;': "'"};
 
@@ -26,13 +25,13 @@ class HtmlText extends StatelessWidget {
   const HtmlText(this.html, {super.key, this.style});
 
   final String html;
-  final TextStyler? style;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
     final text = plainTextOf(html);
     if (text.isEmpty) return const SizedBox.shrink();
 
-    return StyledText(text, style: style ?? bodyText());
+    return Text(text, style: style ?? context.bodyText);
   }
 }

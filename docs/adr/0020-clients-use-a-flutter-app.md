@@ -19,8 +19,9 @@ is the back office, for admins only.
 
 The two apps share no code. Their contract is the PocketBase schema in `backend/api/`.
 
-The Flutter app uses no Material and no Cupertino: its widgets are Remix, on Naked UI and Mix,
-styled by our own tokens ([0024](0024-mobile-theme-reuses-joufflu-tokens.md)).
+The Flutter app's widgets, theme and icons are [forui](https://forui.dev)'s
+([0024](0024-mobile-app-uses-forui-theme.md)). The app is a `WidgetsApp`: its
+own code uses no Material and no Cupertino widget.
 
 ## Consequences
 
@@ -29,8 +30,10 @@ styled by our own tokens ([0024](0024-mobile-theme-reuses-joufflu-tokens.md)).
   both sides are the only guard.
 - The web's client screens — the library, the favorites, the run, the feedback, the planning —
   are now duplicates of the mobile app's, or replaced by it. Deleting them is its own change.
-- Without Material, a route's page, a bottom sheet, a toast and a snack bar are ours to write
-  (`lib/ui/`). The cost is a few hundred lines; the gain is a look that is ours on both
-  platforms, and no Material theme to fight.
-- Remix, Mix and Naked UI are in beta. Their versions are pinned exactly, and an upgrade is a
-  change of its own.
+- forui gives the controls, the bottom sheet, the dialog, the toasts and the dock. What it
+  lacks — a route's page, the page frame — is ours, in `lib/ui/`, on Flutter's `widgets`
+  library.
+- forui draws some controls with Material inside (a text field is a Material `TextField`), and
+  brings Material's localizations with its own. The app does not import Material, but ships it.
+- forui is before 1.0 and breaks its API between minor versions. An upgrade is a change of its
+  own.

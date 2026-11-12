@@ -18,6 +18,13 @@ int highOf(RangeBounds bounds, int? max) => max ?? bounds.ceiling;
 int? lowValue(RangeBounds bounds, int value) => value <= bounds.floor ? null : value;
 int? highValue(RangeBounds bounds, int value) => value >= bounds.ceiling ? null : value;
 
+/// Where [value] sits along the track, from 0 at the floor to 1 at the ceiling: what a slider
+/// reads and reports.
+double fractionOf(RangeBounds bounds, int value) => (value - bounds.floor) / (bounds.ceiling - bounds.floor);
+
+/// The whole value nearest [fraction] along the track.
+int valueAt(RangeBounds bounds, double fraction) => bounds.floor + (fraction * (bounds.ceiling - bounds.floor)).round();
+
 /// What a range reads as beside its label.
 sealed class RangeLabel {
   const RangeLabel();

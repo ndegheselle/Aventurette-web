@@ -1,31 +1,30 @@
-/// The text styles the screens use, from the font size scale. Render with `StyledText`.
+/// The text styles the screens use, from forui's touch typography: `Text(title, style: context.headingText)`.
 library;
 
-import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
+import 'package:forui/forui.dart';
 
-/// A tab page's title, and a full-screen view's subject ("Préparation", "Sortie SG").
-TextStyler titleText() =>
-    TextStyler().fontSize(AppSizes.fontXl()).fontWeight(FontWeight.w700).color(AppColors.foreground());
+extension AppText on BuildContext {
+  FTypeface get _body => theme.typography.body;
+  Color get _foreground => theme.colors.foreground;
+  Color get _muted => theme.colors.mutedForeground;
 
-/// A header's title, a card's title.
-TextStyler headingText() =>
-    TextStyler().fontSize(AppSizes.fontLg()).fontWeight(FontWeight.w700).color(AppColors.foreground());
+  /// A tab page's title, and a full-screen view's subject ("Préparation", "Sortie SG").
+  TextStyle get titleText => _body.xl.copyWith(fontWeight: FontWeight.w700, color: _foreground);
 
-TextStyler bodyText() => TextStyler().fontSize(AppSizes.fontMd()).color(AppColors.foreground());
+  /// A header's title, a card's title.
+  TextStyle get headingText => _body.sm.copyWith(fontWeight: FontWeight.w700, color: _foreground);
 
-/// A field's label, a facts line.
-TextStyler labelText() =>
-    TextStyler().fontSize(AppSizes.fontSm()).fontWeight(FontWeight.w600).color(AppColors.foreground());
+  TextStyle get bodyText => _body.xs.copyWith(color: _foreground);
 
-/// Hints, captions, a card's second line.
-TextStyler captionText() => TextStyler().fontSize(AppSizes.fontSm()).color(AppColors.muted());
+  /// A field's label, a facts line.
+  TextStyle get labelText => _body.xs2.copyWith(fontWeight: FontWeight.w600, color: _foreground);
 
-/// The small capitals above a card's title ("AVENTURE", "ÉTAPE 2 / 5").
-TextStyler overlineText() => TextStyler()
-    .fontSize(AppSizes.fontXs())
-    .fontWeight(FontWeight.w700)
-    .letterSpacing(0.6)
-    .uppercase()
-    .color(AppColors.muted());
+  /// Hints, captions, a card's second line.
+  TextStyle get captionText => _body.xs2.copyWith(color: _muted);
+
+  /// The small capitals above a card's title ("AVENTURE", "ÉTAPE 2 / 5"). The text is
+  /// upper-cased by the caller: a style cannot.
+  TextStyle get overlineText =>
+      _body.xs3.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.6, color: _muted);
+}

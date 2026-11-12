@@ -28,6 +28,12 @@ class PocketBaseAuth implements AuthProvider {
   }
 
   @override
+  Future<Payload> loginWithPassword(String email, String password) async {
+    final auth = await mapErrors(() => _collection.authWithPassword(email, password, fields: _fields));
+    return auth.record.toJson();
+  }
+
+  @override
   Future<Payload?> refresh() async {
     if (!_client.authStore.isValid) return null;
 

@@ -32,7 +32,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0021](0021-the-mobile-app-mirrors-the-web-layers.md) | The mobile app mirrors the web's slices and layers | Accepted |
 | [0022](0022-mobile-specs-live-in-test.md) | Mobile specs live in `test/`, mirroring `lib/` | Accepted |
 | [0023](0023-unbuilt-screens-throw-at-the-api-seam.md) | A screen not built yet has its route, and says *Bientôt disponible* | Accepted |
-| [0024](0024-mobile-theme-reuses-joufflu-tokens.md) | The mobile theme reuses Joufflu's token concepts, as Mix tokens | Accepted |
+| [0024](0024-mobile-app-uses-forui-theme.md) | The mobile app uses forui's own theme and icons | Accepted |
 
 ## Writing a new one
 

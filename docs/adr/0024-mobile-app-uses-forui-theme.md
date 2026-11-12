@@ -1,45 +1,39 @@
-# 0024. The mobile theme reuses Joufflu's token concepts, as Mix tokens
+# 0024. The mobile app uses forui's own theme and icons
 
 Status: Accepted.
 
 ## Context
 
-Remix ships no theme: a component with no style renders bare. The app needs a token set, and
-[Joufflu](https://github.com/ndegheselle/Joufflu/blob/main/docs/themes/tokens.md) — our WPF
-library — already has one that was thought through: few colours defined, the rest derived, so
-a palette is right in a light and a dark theme alike.
+forui ships a theme, `FThemeData`: a dozen colours (`FColors`), a typography and a style, from
+which every widget derives its look. It also bundles the Lucide icons, as `FLucideIcons`.
+
+The app first mapped [Joufflu](https://github.com/ndegheselle/Joufflu/blob/main/docs/themes/tokens.md)'s
+palette onto forui's colours, and drew its icons from `lucide_icons_flutter`. Both duplicated
+what forui already gives: a second palette to keep in step with forui's colour roles, and a
+second copy of the same icon font.
 
 ## Decision
 
-`lib/ui/theme/` declares Joufflu's concepts as Mix tokens:
+The theme is forui's neutral theme for touch, light or dark as the preferences say:
+`FTheme.neutral.light.touch` or `FTheme.neutral.dark.touch`, set in `lib/app/app.dart`. A widget
+reads its colours from `context.theme.colors` — `background`, `card`, `muted`, `border`,
+`mutedForeground`, `destructive` — never a colour value.
 
-- **Bases** — `base0` (the page, and what an action is filled with), `base1` (a card),
-  `base2` (a contrast inside one) — and `foreground`.
-- **Three categories** — display, input, action — each with `base0`, `base1`, `border0`,
-  `border1` and `interaction`. `border0` and `interaction` are the base mixed 10% toward the
-  foreground; `border1` is `border0` mixed again.
-- **Six accents** — primary, secondary, success, info, warning, danger — each defining a fill
-  and a foreground, and deriving `interaction`, `soft` and `softInteraction`. Secondary's soft
-  tint comes from its foreground, as in Joufflu.
-- **Opacities** — `disabledOpacity` for a disabled control, `mutedOpacity` for muted text.
-- **Dimensions** — a radius per category, the border thickness, the spacing, a display's
-  padding, an action's padding and a control's height per size, a font size scale.
+Icons are `FLucideIcons`, from `package:forui/forui.dart`, by their real names.
 
-Joufflu's Light palette is the light theme; the dark one inverts the bases and the primary.
+What forui's theme does not hold stays in `lib/ui/theme/`:
 
-Where Mix cannot do what Joufflu does, the token is derived up front instead:
+- **The spacing** (12) and **the page gutter** (16) are constants in `tokens.dart`.
+- **The text styles** (`context.titleText`, `context.captionText`…) are forui's typography with
+  our weights, in `text.dart`.
 
-- **Muted text** is a colour token (`foreground.muted`), computed once from `mutedOpacity`: a
-  Mix style cannot apply an opacity to another token.
-- **The page gutter** (`space.page`, 16) is a token of its own: Joufflu uses its spacing (12)
-  for page padding, which is tight on a phone.
-- **Sizes are touch sizes**: heights from 28 to 48, body text 14 — Joufflu's are desktop ones.
-- **A pill** has its own radius token, where Joufflu clamps a large radius to half the height.
+A widget's look is set at the call site, as forui intends: a variant
+(`FButton(variant: .outline)`), a size, or a style delta for the exception (a pill's radius).
 
 ## Consequences
 
-- A screen asks for `AppColors.action.border0()`, never a colour: changing the palette is
-  `palette.dart` alone.
-- The derivations are Joufflu's, so a palette designed for one carries to the other.
-- A style cannot compute with a token (`fontXl() * 0.8` reads garbage): a new value is a new
-  token.
+- No palette of our own: a change of colours is a forui theme — another preset, or one made
+  with `dart run forui theme create`.
+- forui has no success, info or warning colour. The safety warning is drawn in `destructive`;
+  a screen that needs the others needs a theme extension.
+- One icon font, versioned with forui: an icon Lucide adds reaches the app with a forui upgrade.

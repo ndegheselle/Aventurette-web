@@ -1,6 +1,5 @@
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:flutter/widgets.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// One row of pills, one of them selected: used both for tabs (*Toutes · Favoris…*) and for a
 /// single choice in a form (*Petit jeu · Grand jeu…*), since the wireframes draw them alike.
@@ -85,6 +84,11 @@ class _PillLayout extends StatelessWidget {
   }
 }
 
+/// A button rounded into a pill, for a tab or a chip. Selected is the primary.
+final FButtonStyleDelta pillStyle = .delta(
+  decoration: .delta([.all(.boxDelta(borderRadius: BorderRadius.all(Radius.circular(999))))]),
+);
+
 class _Pill extends StatelessWidget {
   const _Pill({required this.label, required this.selected, required this.onPressed});
 
@@ -96,10 +100,13 @@ class _Pill extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       selected: selected,
-      child: RemixButton(
-        label: label,
-        style: pillStyle(selected: selected),
-        onPressed: onPressed,
+      child: FButton(
+        variant: selected ? .primary : .outline,
+        size: .sm,
+        style: pillStyle,
+        mainAxisSize: MainAxisSize.min,
+        onPress: onPressed,
+        child: Text(label),
       ),
     );
   }

@@ -1,9 +1,8 @@
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/core/range.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:flutter/widgets.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// The generic wording of a range: "De 3 à 6". A feature with a unit writes its own.
 String rangeText(Translations t, RangeLabel label) => switch (label) {
@@ -39,15 +38,24 @@ class RangeField extends StatelessWidget {
     final rangeLabel = RangeLabel.of(min, max);
     final described = describe?.call(rangeLabel) ?? rangeText(context.t, rangeLabel);
 
-    final slider = RemixRangeSlider(
-      values: [lowOf(bounds, min).toDouble(), highOf(bounds, max).toDouble()],
-      min: bounds.floor.toDouble(),
-      max: bounds.ceiling.toDouble(),
-      snapDivisions: bounds.ceiling - bounds.floor,
-      style: sliderStyle(),
-      onChanged: (values) {
-        onChanged(lowValue(bounds, values.first.round()), highValue(bounds, values.last.round()));
-      },
+    final slider = FSlider(
+      control: .liftedDiscreteRange(
+        value: FSliderValue(
+          min: fractionOf(bounds, lowOf(bounds, min)),
+          max: fractionOf(bounds, highOf(bounds, max)),
+        ),
+        onChange: (value) => onChanged(
+          lowValue(bounds, valueAt(bounds, value.min)),
+          highValue(bounds, valueAt(bounds, value.max)),
+        ),
+      ),
+      // A discrete slider stops on its marks only: one per whole value.
+      marks: [
+        for (var value = bounds.floor; value <= bounds.ceiling; value++)
+          FSliderMark(value: fractionOf(bounds, value), tick: false),
+      ],
+      tooltipBuilder: (_, fraction) => Text('${valueAt(bounds, fraction)}'),
+      semanticValueFormatterCallback: (fraction) => '${valueAt(bounds, fraction)}',
     );
 
     return LabeledField(label: label ?? '', trailing: described, child: slider);

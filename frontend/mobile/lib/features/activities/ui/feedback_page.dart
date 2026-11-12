@@ -5,14 +5,11 @@ import 'package:ajil/features/activities/ui/favorite_button.dart';
 import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/async/run_action.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/ui/shell/page.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// After a run: well done, and what the user thought of the activity. It replaced the run, so
 /// *Quitter* goes back to the sheet. The wireframes' bilan (A08, A09) replaces it once
@@ -80,44 +77,36 @@ class _FeedbackState extends ConsumerState<_Feedback> {
       header: const SizedBox(height: 32),
       body: PageScroll(
         children: [
-          const Icon(LucideIcons.partyPopper, size: 72),
-          StyledText(t.bravo, style: titleText().textAlign(TextAlign.center)),
-          StyledText(t.finished(name: widget.activity.name), style: captionText().textAlign(TextAlign.center)),
+          const Icon(FLucideIcons.partyPopper, size: 72),
+          Text(t.bravo, style: context.titleText, textAlign: TextAlign.center),
+          Text(t.finished(name: widget.activity.name), style: context.captionText, textAlign: TextAlign.center),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 12,
             children: [
-              RemixIconButton(
-                icon: LucideIcons.thumbsUp,
-                semanticLabel: t.like,
-                style: liked
-                    ? iconButtonStyle(variant: ButtonVariant.primary, size: ControlSize.lg)
-                    : iconButtonStyle(variant: ButtonVariant.outline, size: ControlSize.lg),
-                onPressed: () => runAction(context, _notifier.toggleLike, failure: t.saveRefused),
+              FButton.icon(
+                variant: liked ? .primary : .outline,
+                size: .lg,
+                semanticsLabel: t.like,
+                onPress: () => runAction(context, _notifier.toggleLike, failure: t.saveRefused),
+                child: const Icon(FLucideIcons.thumbsUp),
               ),
               FavoriteButton(activity: widget.activity),
             ],
           ),
-          LabeledField(
-            label: t.comment,
-            child: RemixTextArea(
-              controller: _comment,
-              hintText: t.commentPlaceholder,
-              maxLength: 2000,
-              minLines: 4,
-              maxLines: 8,
-              style: textFieldStyle(multiline: true),
-            ),
+          FTextField.multiline(
+            control: .managed(controller: _comment),
+            label: Text(t.comment),
+            hint: t.commentPlaceholder,
+            maxLength: 2000,
+            minLines: 4,
+            maxLines: 8,
           ),
         ],
       ),
       actions: BottomActionBar(
         children: [
-          RemixButton(
-            label: t.leave,
-            style: buttonStyle(size: ControlSize.lg).width(double.infinity),
-            onPressed: _leave,
-          ),
+          FButton(size: .lg, onPress: _leave, child: Text(t.leave)),
         ],
       ),
     );

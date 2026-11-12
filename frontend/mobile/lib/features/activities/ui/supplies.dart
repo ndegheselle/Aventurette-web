@@ -2,13 +2,9 @@ import 'package:ajil/features/activities/models/step.dart';
 import 'package:ajil/ui/async/run_action.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/overlays/sheet.dart';
-import 'package:ajil/ui/theme/app_theme.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
-import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const _tileSize = 80.0;
@@ -36,13 +32,13 @@ class Supplies extends StatelessWidget {
             _Tile(
               name: material.name,
               detail: material.quantity,
-              picture: _Icon(LucideIcons.package),
+              picture: _Icon(FLucideIcons.package),
               onTap: () => _showMaterial(context, material),
             ),
           for (final resource in resources)
             _Tile(
               name: resource.name,
-              picture: pictureOf(resource).isEmpty ? _Icon(LucideIcons.fileText) : _Picture(pictureOf(resource)),
+              picture: pictureOf(resource).isEmpty ? _Icon(FLucideIcons.fileText) : _Picture(pictureOf(resource)),
               onTap: () => _showResource(context, resource),
             ),
         ],
@@ -58,10 +54,10 @@ class Supplies extends StatelessWidget {
       builder: (_) => Column(
         spacing: 12,
         children: [
-          SizedBox.square(dimension: 128, child: _Icon(LucideIcons.package, size: 56)),
+          SizedBox.square(dimension: 128, child: _Icon(FLucideIcons.package, size: 56)),
           if (material.quantity.isNotEmpty) ...[
-            StyledText(t.quantity, style: captionText()),
-            StyledText(material.quantity, style: bodyText()),
+            Text(t.quantity, style: context.captionText),
+            Text(material.quantity, style: context.bodyText),
           ],
         ],
       ),
@@ -74,16 +70,16 @@ class Supplies extends StatelessWidget {
       context,
       title: resource.name,
       builder: (_) => picture.isEmpty
-          ? SizedBox.square(dimension: 128, child: _Icon(LucideIcons.fileText, size: 56))
+          ? SizedBox.square(dimension: 128, child: _Icon(FLucideIcons.fileText, size: 56))
           : ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(picture, fit: BoxFit.contain),
             ),
-      actionsBuilder: (sheetContext) => RemixButton(
-        label: sheetContext.t.activities.sheet.openResource,
-        leadingIcon: LucideIcons.externalLink,
-        style: buttonStyle(size: ControlSize.lg).width(double.infinity),
-        onPressed: () => runAction(sheetContext, () => launchUrl(Uri.parse(resource.url))),
+      actionsBuilder: (sheetContext) => FButton(
+        size: .lg,
+        prefix: const Icon(FLucideIcons.externalLink),
+        onPress: () => runAction(sheetContext, () => launchUrl(Uri.parse(resource.url))),
+        child: Text(sheetContext.t.activities.sheet.openResource),
       ),
     );
   }
@@ -111,8 +107,14 @@ class _Tile extends StatelessWidget {
             spacing: 4,
             children: [
               SizedBox.square(dimension: _tileSize, child: picture),
-              StyledText(name, style: labelText().fontWeight(FontWeight.w500).maxLines(1)),
-              if (detail.isNotEmpty) StyledText(detail, style: captionText().maxLines(1)),
+              Text(
+                name,
+                style: context.labelText.copyWith(fontWeight: FontWeight.w500),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (detail.isNotEmpty)
+                Text(detail, style: context.captionText, maxLines: 1, overflow: TextOverflow.ellipsis),
             ],
           ),
         ),
@@ -129,13 +131,12 @@ class _Icon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.token(AppColors.base2),
-        borderRadius: BorderRadius.all(context.token(AppRadii.display)),
-      ),
+      decoration: BoxDecoration(color: colors.muted, borderRadius: context.theme.style.borderRadius.lg),
       child: Center(
-        child: Icon(icon, size: size, color: context.muted),
+        child: Icon(icon, size: size, color: colors.mutedForeground),
       ),
     );
   }
@@ -148,7 +149,7 @@ class _Picture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.all(context.token(AppRadii.display)),
+    borderRadius: context.theme.style.borderRadius.lg,
     child: Image.network(url, fit: BoxFit.cover),
   );
 }

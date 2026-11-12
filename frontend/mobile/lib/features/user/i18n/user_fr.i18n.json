@@ -7,7 +7,10 @@
         "codeSentTo": "Un code de connexion a été envoyé à {email}. Il est valable 10 minutes.",
         "changeEmail": "Changer d'e-mail",
         "codeNotSent": "Le code n'a pas pu être envoyé.",
-        "codeRejected": "Code invalide ou expiré."
+        "codeRejected": "Code invalide ou expiré.",
+        "password": "Mot de passe (debug)",
+        "withPassword": "Se connecter avec le mot de passe",
+        "passwordRejected": "E-mail ou mot de passe incorrect."
     },
     "onboarding": {
         "title": "Bienvenue !",

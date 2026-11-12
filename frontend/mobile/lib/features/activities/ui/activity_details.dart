@@ -1,10 +1,9 @@
 import 'package:ajil/features/activities/models/activity.dart';
 import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/widgets.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// One line of the details: what it is, and its value — a text or tags.
 class _Row {
@@ -79,14 +78,16 @@ class _ActivityDetailsState extends State<ActivityDetails> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 10,
         children: [
-          StyledText(t.activities.sheet.details, style: headingText()),
+          Text(t.activities.sheet.details, style: context.headingText),
           for (final row in rows) _DetailRow(row: row),
           if (more.isNotEmpty)
             Center(
-              child: RemixButton(
-                label: _showMore ? t.activities.sheet.less : t.activities.sheet.more,
-                style: buttonStyle(variant: ButtonVariant.ghost, size: ControlSize.sm),
-                onPressed: () => setState(() => _showMore = !_showMore),
+              child: FButton(
+                variant: .ghost,
+                size: .sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: () => setState(() => _showMore = !_showMore),
+                child: Text(_showMore ? t.activities.sheet.less : t.activities.sheet.more),
               ),
             ),
         ],
@@ -108,10 +109,10 @@ class _DetailRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 12,
       children: [
-        Expanded(child: StyledText(row.label, style: captionText())),
+        Expanded(child: Text(row.label, style: context.captionText)),
         Flexible(
           child: value != null
-              ? StyledText(value, style: bodyText().textAlign(TextAlign.end))
+              ? Text(value, style: context.bodyText, textAlign: TextAlign.end)
               : Wrap(
                   alignment: WrapAlignment.end,
                   spacing: 4,

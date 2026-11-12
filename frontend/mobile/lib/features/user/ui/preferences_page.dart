@@ -10,11 +10,10 @@ import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/ui/inputs/pills.dart';
 import 'package:ajil/ui/overlays/toast.dart';
 import 'package:ajil/ui/shell/page.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// The languages the app has strings for. Null follows the device.
 const _languages = <String?>[null, 'fr', 'en'];
@@ -70,8 +69,8 @@ class PreferencesPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 12,
               children: [
-                StyledText(t.user.filterDefaults.title, style: headingText()),
-                StyledText(t.user.filterDefaults.help, style: captionText()),
+                Text(t.user.filterDefaults.title, style: context.headingText),
+                Text(t.user.filterDefaults.help, style: context.captionText),
                 AsyncView(
                   value: defaults,
                   data: (value) => FilterDefaultsFields(defaults: value, onChanged: defaultsNotifier.edit),
@@ -83,11 +82,10 @@ class PreferencesPage extends ConsumerWidget {
       ),
       actions: BottomActionBar(
         children: [
-          RemixButton(
-            label: t.ui.actions.save,
-            enabled: defaults.hasValue,
-            style: buttonStyle(size: ControlSize.lg).width(double.infinity),
-            onPressed: saveDefaults,
+          FButton(
+            size: .lg,
+            onPress: defaults.hasValue ? saveDefaults : null,
+            child: Text(t.ui.actions.save),
           ),
         ],
       ),

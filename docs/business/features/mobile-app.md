@@ -30,6 +30,8 @@ They keep the web's rules — the catalogue's filters and profile, the favorites
 activity at a time with an undo, one feedback per user and activity — as described in
 [activities](activities.md) and [user](user.md). What differs:
 
+- **The login** also takes a password in a debug build (`flutter run`), to sign in to a local
+  PocketBase without a mailbox. A release build asks for the emailed code only.
 - **The catalogue** is one list with its segments above it. The search and the filters belong
   to *Toutes*; *Favoris* lists the favorites as the web's tab did. A filter sheet edits a copy:
   *Appliquer* keeps it, closing the sheet drops it.

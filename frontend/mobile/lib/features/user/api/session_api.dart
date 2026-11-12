@@ -25,6 +25,9 @@ class SessionApi {
   Future<SessionUser> loginWithOtp(String otpId, String code) async =>
       sessionUserOf(await _auth.loginWithOtp(otpId, code));
 
+  Future<SessionUser> loginWithPassword(String email, String password) async =>
+      sessionUserOf(await _auth.loginWithPassword(email, password));
+
   Future<SessionUser?> refresh() async {
     final record = await _auth.refresh();
     return record == null ? null : sessionUserOf(record);

@@ -12,7 +12,7 @@ class Preferences {
   final String? language;
 }
 
-/// Whether the dark palette applies: chosen, or left to the device and the device is dark.
+/// Whether the dark theme applies: chosen, or left to the device and the device is dark.
 bool isDark(ThemeChoice choice, {required bool deviceIsDark}) => switch (choice) {
   ThemeChoice.auto => deviceIsDark,
   ThemeChoice.light => false,

@@ -1,13 +1,10 @@
 import 'dart:async';
 
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/theme/app_theme.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// A label above any input, and an optional value at the end of the label's line.
 class LabeledField extends StatelessWidget {
@@ -25,8 +22,8 @@ class LabeledField extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: StyledText(label, style: labelText())),
-            if (trailing != null) StyledText(trailing!, style: captionText()),
+            Expanded(child: Text(label, style: context.labelText)),
+            if (trailing != null) Text(trailing!, style: context.captionText),
           ],
         ),
         child,
@@ -67,21 +64,20 @@ class _SearchFieldState extends State<SearchField> {
 
   @override
   Widget build(BuildContext context) {
-    final field = RemixTextField(
-      controller: _controller,
-      hintText: widget.hintText ?? context.t.ui.search,
-      semanticLabel: widget.label ?? context.t.ui.search,
+    final label = widget.label;
+    final field = FTextField(
+      control: .managed(controller: _controller, onChange: (value) => _changed(value.text)),
+      label: label == null ? null : Text(label),
+      hint: widget.hintText ?? context.t.ui.search,
       textInputAction: TextInputAction.search,
-      leading: Icon(LucideIcons.search, size: 18, color: context.muted),
-      onChanged: _changed,
-      onSubmitted: (value) {
+      prefixBuilder: (context, style, variants) =>
+          FTextField.prefixIconBuilder(context, style, variants, const Icon(FLucideIcons.search)),
+      onSubmit: (value) {
         _debounce?.cancel();
         widget.onSearch(value.trim());
       },
-      style: textFieldStyle(),
     );
 
-    final label = widget.label;
-    return label == null ? field : LabeledField(label: label, child: field);
+    return label == null ? Semantics(label: context.t.ui.search, child: field) : field;
   }
 }

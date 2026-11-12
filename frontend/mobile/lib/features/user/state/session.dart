@@ -16,6 +16,11 @@ class SessionNotifier extends AsyncNotifier<SessionUser?> {
     state = AsyncData(user);
   }
 
+  Future<void> loginWithPassword(String email, String password) async {
+    final user = await _api.loginWithPassword(email, password);
+    state = AsyncData(user);
+  }
+
   /// Read the session again: after the onboarding, so the router knows it was seen.
   Future<void> reload() async {
     state = AsyncData(await _api.refresh());

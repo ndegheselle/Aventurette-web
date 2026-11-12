@@ -8,10 +8,9 @@ import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/ui/inputs/pills.dart';
 import 'package:ajil/ui/inputs/range_field.dart';
 import 'package:ajil/ui/overlays/sheet.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:flutter/widgets.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// A range with its unit: "8–11 ans", "Jusqu'à 6 enfants".
 String quickRangeText(Translations t, QuickFilter quick, RangeLabel range) {
@@ -146,18 +145,18 @@ class _FiltersSheetState extends State<_FiltersSheet> {
           children: [
             if (all)
               Expanded(
-                child: RemixButton(
-                  label: t.ui.actions.reset,
-                  enabled: activeFilterCount(_draft) > 0,
-                  style: buttonStyle(variant: ButtonVariant.outline, size: ControlSize.lg),
-                  onPressed: () => _edit(const CatalogueFilters()),
+                child: FButton(
+                  variant: .outline,
+                  size: .lg,
+                  onPress: activeFilterCount(_draft) > 0 ? () => _edit(const CatalogueFilters()) : null,
+                  child: Text(t.ui.actions.reset),
                 ),
               ),
             Expanded(
-              child: RemixButton(
-                label: t.ui.actions.apply,
-                style: buttonStyle(size: ControlSize.lg),
-                onPressed: () => Navigator.of(context).pop(_draft),
+              child: FButton(
+                size: .lg,
+                onPress: () => Navigator.of(context).pop(_draft),
+                child: Text(t.ui.actions.apply),
               ),
             ),
           ],
@@ -217,19 +216,18 @@ class _ProfileToggle extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              StyledText(t.title, style: labelText()),
-              StyledText(hasProfile ? t.help : t.empty, style: captionText()),
+              Text(t.title, style: context.labelText),
+              Text(hasProfile ? t.help : t.empty, style: context.captionText),
             ],
           ),
         ),
-        RemixCheckbox(
-          selected: matchesProfile(draft, defaults),
+        FCheckbox(
+          value: matchesProfile(draft, defaults),
           enabled: hasProfile,
-          semanticLabel: t.title,
-          style: checkboxStyle(),
-          onChanged: (on) {
+          semanticsLabel: t.title,
+          onChange: (on) {
             if (defaults == null) return;
-            onChanged((on ?? false) ? withProfile(draft, defaults) : withoutProfile(draft));
+            onChanged(on ? withProfile(draft, defaults) : withoutProfile(draft));
           },
         ),
       ],

@@ -14,14 +14,11 @@ import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/overlays/sheet.dart';
 import 'package:ajil/ui/shell/page.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
-import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
 
 /// An activity's sheet (A03): what it is, what it takes, how it runs. Full screen, its actions
 /// at the bottom; *Mode guidé* is the only way into a run.
@@ -72,9 +69,10 @@ class _ActivitySheet extends ConsumerWidget {
       ),
       body: PageScroll(
         children: [
-          StyledText(factsOf(t, activity), style: labelText()),
+          Text(factsOf(t, activity), style: context.labelText),
           if (place.isNotEmpty) Wrap(spacing: 6, children: [for (final where in place) Tag(where)]),
-          if (activity.summary.isNotEmpty) StyledText(activity.summary, style: bodyText().fontSize(AppSizes.fontLg())),
+          if (activity.summary.isNotEmpty)
+            Text(activity.summary, style: context.bodyText.copyWith(fontSize: context.headingText.fontSize)),
           HtmlText(activity.description),
           LinkCard(
             title: t.activities.sheet.preparation,
@@ -99,11 +97,11 @@ class _ActivitySheet extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 2,
                       children: [
-                        StyledText(
+                        Text(
                           workshop.theme.isEmpty ? workshop.name : '${workshop.name} · ${workshop.theme}',
-                          style: labelText(),
+                          style: context.labelText,
                         ),
-                        HtmlText(workshop.challenges, style: captionText()),
+                        HtmlText(workshop.challenges, style: context.captionText),
                         if (workshop.adultsRequired > 0) Tag(t.activities.sheet.adults(count: workshop.adultsRequired)),
                       ],
                     ),
@@ -122,23 +120,23 @@ class _ActivitySheet extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 12,
                       children: [
-                        StyledText(
+                        Text(
                           (index + 1).toString().padLeft(2, '0'),
-                          style: titleText().fontWeight(FontWeight.w300),
+                          style: context.titleText.copyWith(fontWeight: FontWeight.w300),
                         ),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             spacing: 2,
                             children: [
-                              StyledText(
+                              Text(
                                 [
                                   step.title.isEmpty ? t.activities.stepKind[step.kind.name]! : step.title,
                                   if (step.duration > 0) t.activities.minutes(minutes: step.duration),
                                 ].join(' · '),
-                                style: labelText(),
+                                style: context.labelText,
                               ),
-                              HtmlText(step.description, style: captionText()),
+                              HtmlText(step.description, style: context.captionText),
                             ],
                           ),
                         ),
@@ -155,20 +153,20 @@ class _ActivitySheet extends ConsumerWidget {
             spacing: 8,
             children: [
               Expanded(
-                child: RemixButton(
-                  label: t.activities.actions.share,
-                  leadingIcon: LucideIcons.share2,
-                  style: buttonStyle(variant: ButtonVariant.outline),
+                child: FButton(
+                  variant: .outline,
+                  prefix: const Icon(FLucideIcons.share2),
                   // A10, the share sheet, is not built yet.
-                  onPressed: () => runAction<void>(context, () => throw UnimplementedError('A10')),
+                  onPress: () => runAction<void>(context, () => throw UnimplementedError('A10')),
+                  child: Text(t.activities.actions.share),
                 ),
               ),
               Expanded(
-                child: RemixButton(
-                  label: saved ? t.activities.actions.saved : t.activities.actions.save,
-                  leadingIcon: LucideIcons.heart,
-                  style: buttonStyle(variant: ButtonVariant.outline),
-                  onPressed: () => toggleFavorite(context, ref, activity),
+                child: FButton(
+                  variant: .outline,
+                  prefix: const Icon(FLucideIcons.heart),
+                  onPress: () => toggleFavorite(context, ref, activity),
+                  child: Text(saved ? t.activities.actions.saved : t.activities.actions.save),
                 ),
               ),
             ],
@@ -177,19 +175,18 @@ class _ActivitySheet extends ConsumerWidget {
             spacing: 8,
             children: [
               Expanded(
-                child: RemixButton(
-                  label: t.activities.actions.edit,
-                  leadingIcon: LucideIcons.pencil,
-                  style: buttonStyle(variant: ButtonVariant.outline),
-                  onPressed: () => context.push(ActivityEditorRoutes.edit(activity.id)),
+                child: FButton(
+                  variant: .outline,
+                  prefix: const Icon(FLucideIcons.pencil),
+                  onPress: () => context.push(ActivityEditorRoutes.edit(activity.id)),
+                  child: Text(t.activities.actions.edit),
                 ),
               ),
               Expanded(
-                child: RemixButton(
-                  label: t.activities.actions.guided,
-                  leadingIcon: LucideIcons.play,
-                  style: buttonStyle(),
-                  onPressed: () => context.push(ActivitiesRoutes.run(activity.id, 1)),
+                child: FButton(
+                  prefix: const Icon(FLucideIcons.play),
+                  onPress: () => context.push(ActivitiesRoutes.run(activity.id, 1)),
+                  child: Text(t.activities.actions.guided),
                 ),
               ),
             ],
@@ -212,7 +209,7 @@ class _Section extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 10,
       children: [
-        StyledText(title, style: headingText()),
+        Text(title, style: context.headingText),
         child,
       ],
     ),
@@ -229,11 +226,10 @@ class _SafetyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = context.t.activities.fields.safetyInstructions;
 
-    return RemixIconButton(
-      icon: LucideIcons.triangleAlert,
-      semanticLabel: title,
-      style: iconButtonStyle().color(AppColors.warning.fill()).iconColor(AppColors.warning.foreground()),
-      onPressed: () => showAppSheet<void>(
+    return FButton.icon(
+      variant: .ghost,
+      semanticsLabel: title,
+      onPress: () => showAppSheet<void>(
         context,
         title: title,
         builder: (_) => Column(
@@ -246,14 +242,15 @@ class _SafetyButton extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 4,
                   children: [
-                    StyledText(instruction.name, style: labelText()),
-                    HtmlText(instruction.description, style: captionText()),
+                    Text(instruction.name, style: context.labelText),
+                    HtmlText(instruction.description, style: context.captionText),
                   ],
                 ),
               ),
           ],
         ),
       ),
+      child: Icon(FLucideIcons.triangleAlert, color: context.theme.colors.destructive),
     );
   }
 }

@@ -11,13 +11,10 @@ import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/ui/inputs/pills.dart';
 import 'package:ajil/ui/shell/page.dart';
-import 'package:ajil/ui/theme/app_theme.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// The catalogue's segments (A01, A02, A16, A14): one page, the segment choosing what lists.
 enum CatalogueSegment { all, favorites, mine, shared }
@@ -37,7 +34,6 @@ class _CataloguePageState extends State<CataloguePage> {
   @override
   Widget build(BuildContext context) {
     final t = context.t.activities.catalogue;
-    final gutter = context.token(AppSpaces.page);
 
     final body = switch (_segment) {
       CatalogueSegment.all => const _Library(),
@@ -52,7 +48,7 @@ class _CataloguePageState extends State<CataloguePage> {
         children: [
           TabHeader(title: t.title),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: gutter),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page),
             child: PillTabs(
               values: CatalogueSegment.values,
               selected: _segment,
@@ -75,13 +71,12 @@ class _Library extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final feed = ref.watch(libraryFeedProvider);
-    final gutter = context.token(AppSpaces.page);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: gutter),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 8,
@@ -97,7 +92,7 @@ class _Library extends ConsumerWidget {
         const SizedBox(height: 8),
         Expanded(
           child: feed.empty
-              ? EmptyState(icon: LucideIcons.searchX, message: context.t.activities.catalogue.empty)
+              ? EmptyState(icon: FLucideIcons.searchX, message: context.t.activities.catalogue.empty)
               : _ActivityList(
                   items: feed.items,
                   loading: feed.loading,
@@ -136,19 +131,25 @@ class _QuickFilters extends ConsumerWidget {
       child: Row(
         spacing: 8,
         children: [
-          RemixButton(
-            label: count > 0 ? '${t.activities.filters.title} · $count' : t.activities.filters.title,
-            leadingIcon: LucideIcons.slidersHorizontal,
-            style: pillStyle(selected: count > 0),
-            semanticLabel: t.activities.filters.open,
-            onPressed: open,
+          FButton(
+            variant: count > 0 ? .primary : .outline,
+            size: .sm,
+            style: pillStyle,
+            mainAxisSize: MainAxisSize.min,
+            semanticsLabel: t.activities.filters.open,
+            prefix: const Icon(FLucideIcons.slidersHorizontal),
+            onPress: open,
+            child: Text(count > 0 ? '${t.activities.filters.title} · $count' : t.activities.filters.title),
           ),
           for (final quick in QuickFilter.values)
-            RemixButton(
-              label: quickFilterText(t, filters, quick),
-              trailingIcon: LucideIcons.chevronDown,
-              style: pillStyle(selected: isQuickFilterSet(filters, quick)),
-              onPressed: () => open(only: quick),
+            FButton(
+              variant: isQuickFilterSet(filters, quick) ? .primary : .outline,
+              size: .sm,
+              style: pillStyle,
+              mainAxisSize: MainAxisSize.min,
+              suffix: const Icon(FLucideIcons.chevronDown),
+              onPress: () => open(only: quick),
+              child: Text(quickFilterText(t, filters, quick)),
             ),
         ],
       ),
@@ -166,7 +167,7 @@ class _Favorites extends ConsumerWidget {
       value: ref.watch(favoritesProvider),
       onRetry: () => ref.invalidate(favoritesProvider),
       data: (favorites) => favorites.isEmpty
-          ? EmptyState(icon: LucideIcons.heart, message: context.t.activities.catalogue.favoritesEmpty)
+          ? EmptyState(icon: FLucideIcons.heart, message: context.t.activities.catalogue.favoritesEmpty)
           : _ActivityList(items: favorites),
     );
   }
@@ -190,9 +191,6 @@ class _ActivityList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gutter = context.token(AppSpaces.page);
-    final spacing = context.token(AppSpaces.spacing);
-
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         final nearEnd = notification.metrics.extentAfter < 400;
@@ -200,9 +198,9 @@ class _ActivityList extends StatelessWidget {
         return false;
       },
       child: ListView.separated(
-        padding: EdgeInsets.fromLTRB(gutter, 4, gutter, gutter),
+        padding: const EdgeInsets.fromLTRB(AppSpaces.page, 4, AppSpaces.page, AppSpaces.page),
         itemCount: items.length + 1,
-        separatorBuilder: (_, _) => SizedBox(height: spacing),
+        separatorBuilder: (_, _) => const SizedBox(height: AppSpaces.spacing),
         itemBuilder: (context, index) {
           if (index < items.length) return ActivityCard(activity: items[index]);
           if (loading) return const LoadingView();

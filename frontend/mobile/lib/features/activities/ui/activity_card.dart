@@ -4,10 +4,9 @@ import 'package:ajil/features/activities/ui/favorite_button.dart';
 import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/theme/text.dart';
-import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:remix/remix.dart';
 
 /// "8–20 joueurs", or nothing when the activity sets no bound.
 String? participantsText(Translations t, ActivityAudience audience) {
@@ -45,19 +44,21 @@ class ActivityCard extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => context.push(ActivitiesRoutes.activity(activity.id)),
-        child: Box(
-          style: BoxStyler()
-              .color(AppColors.display.base0())
-              .border(BoxBorderMix.all(BorderSideMix(color: AppColors.display.border0(), width: AppSizes.thickness())))
-              .borderRadius(BorderRadiusGeometryMix.all(AppRadii.display()))
-              .clipBehavior(Clip.antiAlias),
+        child: FCard(
+          clipBehavior: Clip.antiAlias,
+          style: const .delta(padding: .value(EdgeInsets.zero)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Stack(
                 children: [
                   const ImagePlaceholder(),
-                  if (family != null) Positioned(left: 12, top: 10, child: StyledText(family, style: overlineText())),
+                  if (family != null)
+                    Positioned(
+                      left: 12,
+                      top: 10,
+                      child: Text(family.toUpperCase(), style: context.overlineText),
+                    ),
                   Positioned(right: 6, top: 6, child: FavoriteButton(activity: activity)),
                 ],
               ),
@@ -67,8 +68,8 @@ class ActivityCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 2,
                   children: [
-                    StyledText(activity.name, style: headingText()),
-                    StyledText(factsOf(t, activity), style: captionText()),
+                    Text(activity.name, style: context.headingText),
+                    Text(factsOf(t, activity), style: context.captionText),
                   ],
                 ),
               ),

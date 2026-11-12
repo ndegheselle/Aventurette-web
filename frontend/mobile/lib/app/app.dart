@@ -2,12 +2,9 @@ import 'package:ajil/app/router.dart';
 import 'package:ajil/features/user/models/preferences.dart';
 import 'package:ajil/features/user/state/preferences.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/theme/app_theme.dart';
-import 'package:ajil/ui/theme/palette.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// Shows the strings of [language], or the device's when it is null.
 void applyLanguage(String? language) {
@@ -18,7 +15,8 @@ void applyLanguage(String? language) {
   }
 }
 
-/// The app: no Material, no Cupertino. A `WidgetsApp` with our theme, our toasts and our router.
+/// The app: a `WidgetsApp`, not a `MaterialApp` — forui draws every control. forui's neutral
+/// theme, its toaster and our router.
 class AjilApp extends ConsumerWidget {
   const AjilApp({super.key});
 
@@ -31,22 +29,27 @@ class AjilApp extends ConsumerWidget {
 
     return WidgetsApp.router(
       title: 'Ajil',
-      color: Palette.light.primary.fill,
+      color: FColors.neutralLight.primary,
       routerConfig: ref.watch(routerProvider),
       locale: TranslationProvider.of(context).flutterLocale,
       supportedLocales: AppLocaleUtils.supportedLocales,
+      localizationsDelegates: FLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
         final deviceIsDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-        final palette = isDark(theme, deviceIsDark: deviceIsDark) ? Palette.dark : Palette.light;
+        final data = isDark(theme, deviceIsDark: deviceIsDark) ? FTheme.neutral.dark.touch : FTheme.neutral.light.touch;
 
-        return AppTheme(
-          palette: palette,
-          child: Overlay.wrap(
-            child: RemixToastScope(
-              placement: RemixToastPlacement.bottomCenter,
-              inset: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 96),
-              style: toastStyle(),
+        return FTheme(
+          data: data,
+          // forui styles its own icons; this is for the ones drawn outside its widgets.
+          child: IconTheme(
+            data: IconThemeData(color: data.colors.foreground, size: 20),
+            // At the bottom, above the dock.
+            child: FToaster(
+              style: const .delta(
+                toastAlignment: .bottomCenter,
+                padding: .value(EdgeInsets.fromLTRB(16, 16, 16, 96)),
+              ),
               child: child ?? const SizedBox.shrink(),
             ),
           ),

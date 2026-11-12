@@ -2,13 +2,10 @@
 library;
 
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/theme/app_theme.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
+import 'package:forui/forui.dart';
 
 /// A screen: the page colour, the safe area, a header, the body and an optional action bar.
 class AppPage extends StatelessWidget {
@@ -23,7 +20,7 @@ class AppPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: context.token(AppColors.base0),
+      color: context.theme.colors.background,
       child: SafeArea(
         bottom: actions != null,
         child: Column(
@@ -61,14 +58,12 @@ class TabHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gutter = context.token(AppSpaces.page);
-
     return Padding(
-      padding: EdgeInsets.fromLTRB(gutter, 12, gutter, 8),
+      padding: const EdgeInsets.fromLTRB(AppSpaces.page, 12, AppSpaces.page, 8),
       child: Row(
         spacing: 8,
         children: [
-          Expanded(child: StyledText(title, style: titleText())),
+          Expanded(child: Text(title, style: context.titleText)),
           ...TabHeaderActions.of(context),
         ],
       ),
@@ -86,20 +81,18 @@ class BackHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gutter = context.token(AppSpaces.page);
-
     return Padding(
-      padding: EdgeInsets.fromLTRB(gutter - 8, 8, gutter, 8),
+      padding: const EdgeInsets.fromLTRB(AppSpaces.page - 8, 8, AppSpaces.page, 8),
       child: Row(
         spacing: 4,
         children: [
-          RemixIconButton(
-            icon: LucideIcons.chevronLeft,
-            semanticLabel: context.t.ui.actions.back,
-            style: iconButtonStyle().color(const Color(0x00000000)),
-            onPressed: onBack ?? () => Navigator.of(context).maybePop(),
+          FButton.icon(
+            variant: .ghost,
+            semanticsLabel: context.t.ui.actions.back,
+            onPress: onBack ?? () => Navigator.of(context).maybePop(),
+            child: const Icon(FLucideIcons.chevronLeft),
           ),
-          Expanded(child: StyledText(title, style: headingText().fontSize(AppSizes.fontLg()).maxLines(1))),
+          Expanded(child: Text(title, style: context.headingText, maxLines: 1, overflow: TextOverflow.ellipsis)),
           ...trailing,
         ],
       ),
@@ -116,13 +109,14 @@ class BottomActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gutter = context.token(AppSpaces.page);
+    final colors = context.theme.colors;
 
-    return Box(
-      style: BoxStyler()
-          .color(AppColors.base0())
-          .border(BoxBorderMix.top(BorderSideMix(color: AppColors.display.border0(), width: AppSizes.thickness())))
-          .padding(EdgeInsetsGeometryMix.symmetric(horizontal: gutter, vertical: 12)),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page, vertical: 12),
+      decoration: BoxDecoration(
+        color: colors.background,
+        border: Border(top: BorderSide(color: colors.border, width: context.theme.style.borderWidth)),
+      ),
       child: Column(mainAxisSize: MainAxisSize.min, spacing: 8, children: children),
     );
   }
@@ -137,14 +131,12 @@ class PageScroll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gutter = context.token(AppSpaces.page);
-
     return SingleChildScrollView(
       controller: controller,
-      padding: EdgeInsets.fromLTRB(gutter, 4, gutter, gutter),
+      padding: const EdgeInsets.fromLTRB(AppSpaces.page, 4, AppSpaces.page, AppSpaces.page),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: context.token(AppSpaces.spacing),
+        spacing: AppSpaces.spacing,
         children: children,
       ),
     );

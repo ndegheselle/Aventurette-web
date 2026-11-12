@@ -2,7 +2,7 @@ import 'package:ajil/features/user/api/session_api.dart';
 import 'package:ajil/features/user/state/session.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum LoginError { codeNotSent, codeRejected }
+enum LoginError { codeNotSent, codeRejected, passwordRejected }
 
 /// The sign-in, in two steps: the email, to which a one-time code is sent, then that code. Each
 /// step has its own error, so an error on one never shows on the other.
@@ -44,6 +44,17 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       state = LoginFormState(email: state.email, otpId: otpId);
     } catch (_) {
       state = LoginFormState(email: state.email, otpId: otpId, error: LoginError.codeRejected);
+    }
+  }
+
+  /// Signs in with a password, from the email step. Debug builds only.
+  Future<void> loginWithPassword(String email, String password) async {
+    state = LoginFormState(email: email, busy: true);
+    try {
+      await ref.read(sessionProvider.notifier).loginWithPassword(email.trim(), password);
+      state = LoginFormState(email: email);
+    } catch (_) {
+      state = LoginFormState(email: email, error: LoginError.passwordRejected);
     }
   }
 

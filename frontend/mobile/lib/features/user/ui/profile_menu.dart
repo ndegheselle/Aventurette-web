@@ -5,12 +5,10 @@ import 'package:ajil/features/user/state/session.dart';
 import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/overlays/menu_card.dart';
-import 'package:ajil/ui/theme/styles.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:remix/remix.dart';
 
 /// The avatar at the end of every tab page's header. Opens *Mon espace* (E01).
 class ProfileMenuButton extends ConsumerWidget {
@@ -21,11 +19,10 @@ class ProfileMenuButton extends ConsumerWidget {
     final t = context.t.user.menu;
     final user = ref.watch(sessionProvider).value;
 
-    return RemixIconButton(
-      icon: LucideIcons.circleUserRound,
-      semanticLabel: t.open,
-      style: iconButtonStyle(),
-      onPressed: () => showMenuCard(
+    return FButton.icon(
+      variant: .secondary,
+      semanticsLabel: t.open,
+      onPress: () => showMenuCard(
         context,
         title: t.title,
         subtitle: (user?.name.isNotEmpty ?? false) ? user!.name : user?.email,
@@ -48,6 +45,7 @@ class ProfileMenuButton extends ConsumerWidget {
           );
         },
       ),
+      child: const Icon(FLucideIcons.circleUserRound),
     );
   }
 }

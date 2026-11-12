@@ -197,6 +197,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  forui:
+    dependency: "direct main"
+    description:
+      name: forui
+      sha256: af6dcb2f57467c39bc808b6576d6dfdad19be7caf788bdd89d8b2fe3b6a521a2
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
+  forui_lucide:
+    dependency: transitive
+    description:
+      name: forui_lucide
+      sha256: "63c660e4213309d9558cfc1c10ec52c13dab88cc2794dc41b8be769a7c86206c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.0"
   go_router:
     dependency: "direct main"
     description:
@@ -317,14 +333,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
-  lucide_icons_flutter:
-    dependency: "direct main"
-    description:
-      name: lucide_icons_flutter
-      sha256: d2ad72b8059ee0ad578d0aeb72bf4e7841c0126f360a8aa37f06e305e1fc7e4b
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.3"
   matcher:
     dependency: transitive
     description:
@@ -357,30 +365,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.0"
-  mix:
-    dependency: "direct main"
-    description:
-      name: mix
-      sha256: "2a3b4398dfb6164ebc9dad3745503113c796ae1a68292f812076daa6432c1eff"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0"
-  mix_annotations:
-    dependency: transitive
-    description:
-      name: mix_annotations
-      sha256: "13e574f43b98d38b6a94733b6222f2a5a26b0e00a8854dacb27fed1b2e9f2721"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
-  naked_ui:
-    dependency: "direct main"
-    description:
-      name: naked_ui
-      sha256: f09a58f6ffb3f68438ceebfb0049a7dba1ab7c6b8a653f48ca02eb2ec20a8004
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0-rc.1"
   objective_c:
     dependency: transitive
     description:
@@ -493,14 +477,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  remix:
-    dependency: "direct main"
-    description:
-      name: remix
-      sha256: e815021229525e853028974f05cd6df63a42947dc7ebe74de6957d61130f963a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0-beta.18"
   riverpod:
     dependency: "direct main"
     description:
@@ -634,6 +610,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  sugar:
+    dependency: transitive
+    description:
+      name: sugar
+      sha256: a0a97f1d3552a3ef4cbec7c6e62c7b52c151cd5c11e984e8311700a918f73dc5
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   term_glyph:
     dependency: transitive
     description:
