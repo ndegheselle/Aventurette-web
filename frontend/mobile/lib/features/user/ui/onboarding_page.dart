@@ -1,5 +1,5 @@
 import 'package:ajil/features/user/state/filter_defaults.dart';
-import 'package:ajil/features/user/ui/filter_defaults_fields.dart';
+import 'package:ajil/features/user/ui/me/prefs/filter_defaults_fields.dart';
 import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/async/run_action.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';

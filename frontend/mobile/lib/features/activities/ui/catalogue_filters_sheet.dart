@@ -2,7 +2,7 @@ import 'package:ajil/core/range.dart';
 import 'package:ajil/features/activities/models/activity.dart';
 import 'package:ajil/features/activities/models/catalogue_filters.dart';
 import 'package:ajil/features/user/models/user.dart';
-import 'package:ajil/features/user/ui/filter_defaults_fields.dart';
+import 'package:ajil/features/user/ui/me/prefs/filter_defaults_fields.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/ui/inputs/pills.dart';

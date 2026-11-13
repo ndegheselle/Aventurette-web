@@ -9,6 +9,11 @@ Test super user :
 admin@test.local
 test1234admin
 ```
+Test user :
+```
+test@example.local
+12345678
+```
 
 The login screen signs in with a one-time code sent by email. Running from source with no SMTP
 server configured, the code is printed in the terminal instead (`hooks/otp_dev.go`). The account

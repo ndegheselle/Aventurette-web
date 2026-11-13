@@ -70,6 +70,12 @@ Then, against a PocketBase running locally:
 flutter run -d chrome --dart-define=API_URL=http://127.0.0.1:8090
 ```
 
+Or in a Windows window, which needs Visual Studio with the *Desktop development with C++* workload:
+
+```bash
+flutter run -d windows --dart-define=API_URL=http://127.0.0.1:8090
+```
+
 ```bash
 dart run tool/check_architecture.dart && flutter analyze && flutter test
 ```

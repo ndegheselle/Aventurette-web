@@ -21,21 +21,14 @@ enum CatalogueSegment { all, favorites, mine, shared }
 
 /// The Catalogue tab: the activities, searched and filtered, or the user's favorites. *Mes
 /// créations* and *Partagés avec moi* need data that does not exist yet.
-class CataloguePage extends StatefulWidget {
+class CataloguePage extends StatelessWidget {
   const CataloguePage({super.key});
-
-  @override
-  State<CataloguePage> createState() => _CataloguePageState();
-}
-
-class _CataloguePageState extends State<CataloguePage> {
-  var _segment = CatalogueSegment.all;
 
   @override
   Widget build(BuildContext context) {
     final t = context.t.activities.catalogue;
 
-    final body = switch (_segment) {
+    Widget body(CatalogueSegment segment) => switch (segment) {
       CatalogueSegment.all => const _Library(),
       CatalogueSegment.favorites => const _Favorites(),
       CatalogueSegment.mine => const ComingSoonView(wireframe: 'A16'),
@@ -43,23 +36,19 @@ class _CataloguePageState extends State<CataloguePage> {
     };
 
     return AppPage(
-      header: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TabHeader(title: t.title),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page),
-            child: PillTabs(
-              values: CatalogueSegment.values,
-              selected: _segment,
-              labelOf: (segment) => t.segments[segment.name]!,
-              onChanged: (segment) => setState(() => _segment = segment),
-            ),
-          ),
-          const SizedBox(height: 8),
-        ],
+      header: TabHeader(title: t.title),
+      // The gutter is the tabs': it insets their bar and every segment alike.
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page),
+        child: FTabs(
+          expands: true,
+          scrollable: true,
+          children: [
+            for (final segment in CatalogueSegment.values)
+              .entry(label: Text(t.segments[segment.name]!), child: body(segment)),
+          ],
+        ),
       ),
-      body: body,
     );
   }
 }
@@ -75,20 +64,12 @@ class _Library extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 8,
-            children: [
-              SearchField(
-                hintText: context.t.activities.catalogue.searchHint,
-                onSearch: ref.read(catalogueQueryProvider.notifier).search,
-              ),
-              const _QuickFilters(),
-            ],
-          ),
+        SearchField(
+          hintText: context.t.activities.catalogue.searchHint,
+          onSearch: ref.read(catalogueQueryProvider.notifier).search,
         ),
+        const SizedBox(height: 8),
+        const _QuickFilters(),
         const SizedBox(height: 8),
         Expanded(
           child: feed.empty
@@ -198,7 +179,7 @@ class _ActivityList extends StatelessWidget {
         return false;
       },
       child: ListView.separated(
-        padding: const EdgeInsets.fromLTRB(AppSpaces.page, 4, AppSpaces.page, AppSpaces.page),
+        padding: const EdgeInsets.only(top: 4, bottom: AppSpaces.page),
         itemCount: items.length + 1,
         separatorBuilder: (_, _) => const SizedBox(height: AppSpaces.spacing),
         itemBuilder: (context, index) {

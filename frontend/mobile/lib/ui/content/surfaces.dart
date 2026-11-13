@@ -17,8 +17,7 @@ class Panel extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
     width: double.infinity,
     child: FCard(
-      style: const .delta(padding: .value(EdgeInsets.all(AppSpaces.spacing))),
-      child: child,
+      child: Padding(padding: .all(AppSpaces.spacing), child: child),
     ),
   );
 }

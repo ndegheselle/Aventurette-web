@@ -2,7 +2,6 @@ import 'package:ajil/features/activities/models/activity.dart';
 import 'package:ajil/features/activities/state/favorites.dart';
 import 'package:ajil/ui/async/run_action.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/overlays/toast.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -17,10 +16,22 @@ Future<void> toggleFavorite(BuildContext context, WidgetRef ref, ActivityData ac
   if (change == null || !context.mounted) return;
 
   if (change == FavoriteChange.added) {
-    showToast(context, t.added);
+    showFToast(context: context, title: Text(t.added));
     return;
   }
-  showToast(context, t.removed, actionLabel: t.undo, onAction: () => runAction(context, () => notifier.add(activity)));
+  showFToast(
+    context: context,
+    title: Text(t.removed),
+    suffixBuilder: (toastContext, entry) => FButton(
+      size: .sm,
+      mainAxisSize: MainAxisSize.min,
+      onPress: () {
+        entry.dismiss();
+        runAction(context, () => notifier.add(activity));
+      },
+      child: Text(t.undo),
+    ),
+  );
 }
 
 /// The heart on a card.

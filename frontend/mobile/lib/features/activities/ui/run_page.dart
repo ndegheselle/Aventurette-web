@@ -8,9 +8,9 @@ import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/content/html_text.dart';
 import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/inputs/pills.dart';
 import 'package:ajil/ui/shell/page.dart';
 import 'package:ajil/ui/theme/text.dart';
+import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -49,54 +49,41 @@ class RunPage extends ConsumerWidget {
   }
 }
 
-class _Run extends StatefulWidget {
+class _Run extends StatelessWidget {
   const _Run({required this.activity, required this.index});
 
   final ActivityData activity;
   final int index;
 
   @override
-  State<_Run> createState() => _RunState();
-}
-
-enum _StepTab { instructions, tips }
-
-class _RunState extends State<_Run> {
-  var _tab = _StepTab.instructions;
-
-  @override
-  void didUpdateWidget(_Run oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Each step opens on its instructions.
-    if (oldWidget.index != widget.index) _tab = _StepTab.instructions;
-  }
-
-  void _goTo(int index) => context.replace(ActivitiesRoutes.run(widget.activity.id, index + 1));
-
-  @override
   Widget build(BuildContext context) {
     final t = context.t.activities;
-    final steps = widget.activity.steps;
-    final index = widget.index;
+    final steps = activity.steps;
     final step = steps[index];
     final isLast = index == steps.length - 1;
 
+    void goTo(int index) => context.replace(ActivitiesRoutes.run(activity.id, index + 1));
+
     return AppPage(
-      header: BackHeader(title: widget.activity.name),
+      header: BackHeader(title: activity.name),
       body: PageScroll(
-        // A new scroll position for each step: it opens at its top.
+        // A new scroll position for each step: it opens at its top, on its instructions.
         key: ValueKey(step.id),
         children: [
-          Text(t.run.step(current: index + 1, total: steps.length).toUpperCase(), style: context.overlineText),
+          Text(
+            t.run.step(current: index + 1, total: steps.length).toUpperCase(),
+            style: context.overlineText,
+          ),
           Text(step.title.isEmpty ? t.stepKind[step.kind.name]! : step.title, style: context.titleText),
-          if (step.tips.isNotEmpty)
-            PillTabs(
-              values: _StepTab.values,
-              selected: _tab,
-              labelOf: (tab) => tab == _StepTab.instructions ? t.run.instructions : t.run.tips,
-              onChanged: (tab) => setState(() => _tab = tab),
+          if (step.tips.isEmpty)
+            _Instructions(step)
+          else
+            FTabs(
+              children: [
+                .entry(label: Text(t.run.instructions), child: _Instructions(step)),
+                .entry(label: Text(t.run.tips), child: _Tips(step)),
+              ],
             ),
-          ..._content(step),
           if (step.materials.isNotEmpty || step.resources.isNotEmpty)
             Panel(
               child: Column(
@@ -119,7 +106,7 @@ class _RunState extends State<_Run> {
                 child: FButton(
                   variant: .outline,
                   size: .lg,
-                  onPress: index > 0 ? () => _goTo(index - 1) : null,
+                  onPress: index > 0 ? () => goTo(index - 1) : null,
                   child: Text(t.run.previous),
                 ),
               ),
@@ -127,10 +114,10 @@ class _RunState extends State<_Run> {
                 child: isLast
                     ? FButton(
                         size: .lg,
-                        onPress: () => context.replace(ActivitiesRoutes.feedback(widget.activity.id)),
+                        onPress: () => context.replace(ActivitiesRoutes.feedback(activity.id)),
                         child: Text(t.run.finish),
                       )
-                    : FButton(size: .lg, onPress: () => _goTo(index + 1), child: Text(t.run.next)),
+                    : FButton(size: .lg, onPress: () => goTo(index + 1), child: Text(t.run.next)),
               ),
             ],
           ),
@@ -138,23 +125,42 @@ class _RunState extends State<_Run> {
       ),
     );
   }
+}
 
-  List<Widget> _content(ActivityStep step) => switch (_tab) {
-    _StepTab.instructions => [
-      HtmlText(step.description, style: context.bodyText.copyWith(fontSize: context.headingText.fontSize)),
-    ],
-    _StepTab.tips => [
-      for (final tip in step.tips)
-        Panel(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 4,
-            children: [
-              Text(tip.name, style: context.labelText),
-              HtmlText(tip.description, style: context.captionText),
-            ],
+class _Instructions extends StatelessWidget {
+  const _Instructions(this.step);
+
+  final ActivityStep step;
+
+  @override
+  Widget build(BuildContext context) {
+    return HtmlText(step.description, style: context.bodyText.copyWith(fontSize: context.headingText.fontSize));
+  }
+}
+
+class _Tips extends StatelessWidget {
+  const _Tips(this.step);
+
+  final ActivityStep step;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: AppSpaces.spacing,
+      children: [
+        for (final tip in step.tips)
+          Panel(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                Text(tip.name, style: context.labelText),
+                HtmlText(tip.description, style: context.captionText),
+              ],
+            ),
           ),
-        ),
-    ],
-  };
+      ],
+    );
+  }
 }

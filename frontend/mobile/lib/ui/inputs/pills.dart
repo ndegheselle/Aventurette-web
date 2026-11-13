@@ -1,37 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
-/// One row of pills, one of them selected: used both for tabs (*Toutes · Favoris…*) and for a
-/// single choice in a form (*Petit jeu · Grand jeu…*), since the wireframes draw them alike.
+/// Pills any number of which may be chosen: places, formats, needs. Tabs are forui's `FTabs`.
 /// On one line that scrolls sideways, or wrapped onto several with [wrap].
-class PillTabs<T> extends StatelessWidget {
-  const PillTabs({
-    super.key,
-    required this.values,
-    required this.selected,
-    required this.labelOf,
-    required this.onChanged,
-    this.wrap = false,
-  });
-
-  final List<T> values;
-  final T? selected;
-  final String Function(T value) labelOf;
-  final ValueChanged<T> onChanged;
-  final bool wrap;
-
-  @override
-  Widget build(BuildContext context) {
-    final pills = [
-      for (final value in values)
-        _Pill(label: labelOf(value), selected: value == selected, onPressed: () => onChanged(value)),
-    ];
-
-    return _PillLayout(wrap: wrap, children: pills);
-  }
-}
-
-/// Pills any number of which may be chosen: places, formats, needs.
 class MultiPills<T> extends StatelessWidget {
   const MultiPills({
     super.key,

@@ -22,9 +22,8 @@ the dock. Nobody signed in sees the login; a user who never saw the onboarding s
 | A03 An activity's sheet | `/activities/:id` | `activity.page.vue` |
 | A07 · A15 Guided mode, one step to a page | `/activities/:id/run/:step` | `play.page.vue` |
 | After a run: like, favourite, comment | `/activities/:id/feedback` | `feedback.page.vue` |
-| E01 *Mon espace*, the avatar's menu | — | the dock's profile entry |
-| E03 *Mes préférences*: language, theme, default filters | `/me/preferences` | `Settings.page.vue`, `Profile.page.vue` |
-| E04 *Mon compte*: who is signed in, signing out | `/me/account` | `Settings.page.vue` |
+| E01 *Mon espace*: language, theme, the pages about the user, who is signed in, signing out | `/me` | the dock's profile entry, `Settings.page.vue` |
+| E03 *Mes préférences*: default filters | `/me/preferences` | `Profile.page.vue` |
 
 They keep the web's rules — the catalogue's filters and profile, the favorites written one
 activity at a time with an undo, one feedback per user and activity — as described in
@@ -32,9 +31,9 @@ activity at a time with an undo, one feedback per user and activity — as descr
 
 - **The login** also takes a password in a debug build (`flutter run`), to sign in to a local
   PocketBase without a mailbox. A release build asks for the emailed code only.
-- **The catalogue** is one list with its segments above it. The search and the filters belong
-  to *Toutes*; *Favoris* lists the favorites as the web's tab did. A filter sheet edits a copy:
-  *Appliquer* keeps it, closing the sheet drops it.
+- **The catalogue** is one list with its segments above it, as tabs that also swipe. The search
+  and the filters belong to *Toutes*; *Favoris* lists the favorites as the web's tab did. A
+  filter sheet edits a copy: *Appliquer* keeps it, closing the sheet drops it.
 - **The sheet** follows A03: the facts under the title, *Préparation et matériel* (A05, not built),
   the details behind *Voir plus*, the materials and resources, the workshops, the steps, and four
   actions at the bottom — *Partager* (A10, not built), *Enregistrer* (the favorite), *Modifier*
@@ -155,6 +154,6 @@ Feature-owned: the day timeline, read-only and reorderable (B04, B07, B08, B18),
 - **The login's errors are one message per step**; the web showed the backend's per-field ones.
 - **No sign-in with Google, Microsoft or Apple**: the web's buttons did nothing either.
 - **Pictures are placeholders**, as on the web.
-- **Only the web platform is set up** for now, to run the app in a browser.
-  `flutter create --platforms=android,ios .` in `frontend/mobile/` adds the phones back; their
+- **Only the web and Windows platforms are set up** for now, to run the app in a browser or a
+  desktop window. `flutter create --platforms=android,ios .` in `frontend/mobile/` adds the phones back; their
   application id then has to be set (the template's is `com.example.mobile`).

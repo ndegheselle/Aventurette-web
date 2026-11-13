@@ -10,7 +10,7 @@ class QuickModeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => FButton.icon(
-    variant: .secondary,
+    variant: .ghost,
     semanticsLabel: context.t.activities.actions.quickMode,
     onPress: () => context.push(ActivitiesRoutes.quick),
     child: const Icon(FLucideIcons.zap),

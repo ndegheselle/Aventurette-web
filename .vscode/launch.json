@@ -16,13 +16,22 @@
       "windows": { "output": "${env:TEMP}/ajil-api-debug.exe" }
     },
     {
-      // In Chrome: the web is the only platform set up for now.
+      // In Chrome: with Windows, the only platforms set up for now.
       "name": "Mobile",
       "type": "dart",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend/mobile",
       "program": "lib/main.dart",
       "deviceId": "chrome",
+      "toolArgs": ["--dart-define=API_URL=http://127.0.0.1:8090"]
+    },
+    {
+      "name": "Mobile (Windows)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend/mobile",
+      "program": "lib/main.dart",
+      "deviceId": "windows",
       "toolArgs": ["--dart-define=API_URL=http://127.0.0.1:8090"]
     },
     {

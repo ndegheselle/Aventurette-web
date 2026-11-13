@@ -295,6 +295,7 @@ From `frontend/mobile/`:
 
 ```bash
 flutter run -d chrome --dart-define=API_URL=http://127.0.0.1:8090    # in Chrome, against a local PocketBase
+flutter run -d windows --dart-define=API_URL=http://127.0.0.1:8090   # the same, in a Windows window
 dart run slang                                              # after changing a .i18n.json
 dart run tool/check_architecture.dart && flutter analyze && flutter test    # the check
 ```

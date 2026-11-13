@@ -1,5 +1,5 @@
 import 'package:ajil/features/activities/ui/quick_mode_button.dart';
-import 'package:ajil/features/user/ui/profile_menu.dart';
+import 'package:ajil/features/user/ui/me/button.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/shell/page.dart';
 import 'package:flutter/widgets.dart';

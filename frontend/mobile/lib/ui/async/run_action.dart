@@ -1,6 +1,6 @@
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/overlays/toast.dart';
 import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 
 /// Runs a button's async handler and says when it failed, so a page never holds a try/catch.
 /// A call the backend cannot answer yet (`UnimplementedError`) says *Bientôt disponible*; any
@@ -12,9 +12,9 @@ Future<T?> runAction<T>(BuildContext context, Future<T> Function() action, {Stri
   try {
     return await action();
   } on UnimplementedError {
-    if (context.mounted) showToast(context, t.comingSoon.title);
+    if (context.mounted) showFToast(context: context, title: Text(t.comingSoon.title));
   } catch (_) {
-    if (context.mounted) showToast(context, failure ?? t.errors.generic);
+    if (context.mounted) showFToast(context: context, title: Text(failure ?? t.errors.generic));
   }
   return null;
 }
