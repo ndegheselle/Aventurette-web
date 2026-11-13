@@ -74,10 +74,11 @@ class _ActivitySheet extends ConsumerWidget {
           if (activity.summary.isNotEmpty)
             Text(activity.summary, style: context.bodyText.copyWith(fontSize: context.headingText.fontSize)),
           HtmlText(activity.description),
-          LinkCard(
-            title: t.activities.sheet.preparation,
-            subtitle: t.activities.sheet.preparationHint,
-            onTap: () => context.push(ActivitiesRoutes.preparation(activity.id)),
+          FTile(
+            title: Text(t.activities.sheet.preparation),
+            subtitle: Text(t.activities.sheet.preparationHint),
+            suffix: const Icon(FLucideIcons.chevronRight),
+            onPress: () => context.push(ActivitiesRoutes.preparation(activity.id)),
           ),
           ActivityDetails(activity: activity),
           if (activity.materials.isNotEmpty || resources.isNotEmpty)
@@ -109,41 +110,28 @@ class _ActivitySheet extends ConsumerWidget {
               ),
             ),
           if (activity.steps.isNotEmpty)
-            _Section(
-              title: t.activities.sheet.steps,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 12,
-                children: [
-                  for (final (index, step) in activity.steps.indexed)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 12,
-                      children: [
-                        Text(
-                          (index + 1).toString().padLeft(2, '0'),
-                          style: context.titleText.copyWith(fontWeight: FontWeight.w300),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 2,
-                            children: [
-                              Text(
-                                [
-                                  step.title.isEmpty ? t.activities.stepKind[step.kind.name]! : step.title,
-                                  if (step.duration > 0) t.activities.minutes(minutes: step.duration),
-                                ].join(' · '),
-                                style: context.labelText,
-                              ),
-                              HtmlText(step.description, style: context.captionText),
-                            ],
-                          ),
-                        ),
-                      ],
+            FTileGroup(
+              label: Text(t.activities.sheet.steps),
+              children: [
+                for (final (index, step) in activity.steps.indexed)
+                  .tile(
+                    prefix: Text(
+                      (index + 1).toString().padLeft(2, '0'),
+                      style: context.titleText.copyWith(fontWeight: FontWeight.w300),
                     ),
-                ],
-              ),
+                    title: Text(
+                      [
+                        step.title.isEmpty ? t.activities.stepKind[step.kind.name]! : step.title,
+                        if (step.duration > 0) t.activities.minutes(minutes: step.duration),
+                      ].join(' · '),
+                    ),
+                    // The tile cuts its subtitle to one line; this shows the whole description.
+                    subtitle: DefaultTextStyle.merge(
+                      overflow: TextOverflow.visible,
+                      child: HtmlText(step.description, style: context.captionText),
+                    ),
+                  ),
+              ],
             ),
         ],
       ),
@@ -151,42 +139,30 @@ class _ActivitySheet extends ConsumerWidget {
         children: [
           Row(
             spacing: 8,
+            mainAxisSize: .min,
             children: [
-              Expanded(
-                child: FButton(
-                  variant: .outline,
-                  prefix: const Icon(FLucideIcons.share2),
+              FTooltip(
+                tipBuilder: (context, _) => Text(t.activities.actions.share),
+                child: FButton.icon(
+                variant: .outline,
                   // A10, the share sheet, is not built yet.
-                  onPress: () => runAction<void>(context, () => throw UnimplementedError('A10')),
-                  child: Text(t.activities.actions.share),
+                onPress: () => runAction<void>(context, () => throw UnimplementedError('A10')),
+                  child: const Icon(FLucideIcons.share2),
                 ),
               ),
-              Expanded(
-                child: FButton(
+              FTooltip(
+                tipBuilder: (context, _) => Text(saved ? t.activities.actions.saved : t.activities.actions.save),
+                child: FButton.icon(
                   variant: .outline,
-                  prefix: const Icon(FLucideIcons.heart),
                   onPress: () => toggleFavorite(context, ref, activity),
-                  child: Text(saved ? t.activities.actions.saved : t.activities.actions.save),
+                  child: const Icon(FLucideIcons.heart),
                 ),
               ),
-            ],
-          ),
-          Row(
-            spacing: 8,
-            children: [
-              Expanded(
-                child: FButton(
-                  variant: .outline,
-                  prefix: const Icon(FLucideIcons.pencil),
-                  onPress: () => context.push(ActivityEditorRoutes.edit(activity.id)),
-                  child: Text(t.activities.actions.edit),
-                ),
-              ),
-              Expanded(
-                child: FButton(
-                  prefix: const Icon(FLucideIcons.play),
+              FTooltip(
+                tipBuilder: (context, _) => Text(t.activities.actions.guided),
+                child: FButton.icon(
                   onPress: () => context.push(ActivitiesRoutes.run(activity.id, 1)),
-                  child: Text(t.activities.actions.guided),
+                  child: const Icon(FLucideIcons.play),
                 ),
               ),
             ],

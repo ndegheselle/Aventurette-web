@@ -1,7 +1,6 @@
 import 'package:ajil/features/activities/models/activity.dart';
-import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/theme/text.dart';
+import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
@@ -71,56 +70,57 @@ class _ActivityDetailsState extends State<ActivityDetails> {
         _Row(fields.idealFor, tags: [for (final tag in activity.pedagogy.idealFor) tag.name]),
     ];
 
-    final rows = [...essentials, if (_showMore) ...more];
-
-    return Panel(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 10,
-        children: [
-          Text(t.activities.sheet.details, style: context.headingText),
-          for (final row in rows) _DetailRow(row: row),
-          if (more.isNotEmpty)
-            Center(
-              child: FButton(
-                variant: .ghost,
-                size: .sm,
-                mainAxisSize: MainAxisSize.min,
-                onPress: () => setState(() => _showMore = !_showMore),
-                child: Text(_showMore ? t.activities.sheet.less : t.activities.sheet.more),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 10,
+      children: [
+        FTileGroup(
+          label: Text(t.activities.sheet.details),
+          children: [
+            for (final row in [...essentials, if (_showMore) ...more])
+              .tile(
+                title: Text(row.label),
+                details: _RowValue(row: row),
+              ),
+          ],
+        ),
+        if (more.isNotEmpty)
+          Center(
+            child: FButton(
+              variant: .secondary,
+              size: .xs,
+              mainAxisSize: MainAxisSize.min,
+              onPress: () => setState(() => _showMore = !_showMore),
+              child: Row(
+                spacing: AppSpaces.spacing,
+                children: [
+                  Icon(_showMore ? FLucideIcons.chevronUp : FLucideIcons.chevronDown),
+                  Text(_showMore ? t.activities.sheet.less : t.activities.sheet.more),
+                ],
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
 
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.row});
+/// The row's value: its text, or its tags.
+class _RowValue extends StatelessWidget {
+  const _RowValue({required this.row});
 
   final _Row row;
 
   @override
   Widget build(BuildContext context) {
     final value = row.value;
+    if (value != null) return Text(value, textAlign: TextAlign.end);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 12,
-      children: [
-        Expanded(child: Text(row.label, style: context.captionText)),
-        Flexible(
-          child: value != null
-              ? Text(value, style: context.bodyText, textAlign: TextAlign.end)
-              : Wrap(
-                  alignment: WrapAlignment.end,
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: [for (final tag in row.tags) Tag(tag)],
-                ),
-        ),
-      ],
+    return Wrap(
+      alignment: WrapAlignment.end,
+      spacing: 4,
+      runSpacing: 4,
+      children: [for (final tag in row.tags) FBadge(variant: .secondary, child: Text(tag))],
     );
   }
 }

@@ -12,9 +12,24 @@ Future<T?> runAction<T>(BuildContext context, Future<T> Function() action, {Stri
   try {
     return await action();
   } on UnimplementedError {
-    if (context.mounted) showFToast(context: context, title: Text(t.comingSoon.title));
+    if (context.mounted) {
+      showFToast(
+          context: context,
+          icon: Icon(FLucideIcons.trafficCone),
+          title: Text(t.comingSoon.title),
+          swipeToDismiss: const [.right],
+        );
+    }
   } catch (_) {
-    if (context.mounted) showFToast(context: context, title: Text(failure ?? t.errors.generic));
+    if (context.mounted) {
+      showFToast(
+          context: context,
+          icon: Icon(FLucideIcons.bug),
+          title: const Text("Oops"),
+          description: Text(failure ?? t.errors.generic),
+          swipeToDismiss: const [.right],
+        );
+    } showFToast(context: context, title: Text(failure ?? t.errors.generic));
   }
   return null;
 }
