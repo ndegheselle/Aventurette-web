@@ -34,12 +34,15 @@ class _Sheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const gutter = AppSpaces.page;
-    final radius = context.theme.style.borderRadius.lg.topLeft;
+    final colors = context.theme.colors;
+    final style = context.theme.style;
+    final radius = style.borderRadius.md;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.theme.colors.background,
-        borderRadius: BorderRadius.only(topLeft: radius, topRight: radius),
+        color: colors.background,
+        border: Border(top: BorderSide(color: colors.border, width: style.borderWidth)),
+        borderRadius: BorderRadius.only(topLeft: radius.topLeft, topRight: radius.topRight),
       ),
       child: SafeArea(
         top: false,
@@ -48,15 +51,39 @@ class _Sheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(gutter, 12, gutter - 8, 4),
-              child: Row(
+              padding: const EdgeInsets.only(top: 8),
+              child: Center(
+                child: Container(
+                  width: 40,
+                  height: 6,
+                  decoration: BoxDecoration(color: colors.border, borderRadius: radius),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(gutter - 8, 4, gutter - 8, 4),
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  Expanded(child: Text(title, style: context.headingText)),
-                  FButton.icon(
-                    variant: .ghost,
-                    semanticsLabel: context.t.ui.actions.close,
-                    onPress: () => Navigator.of(context).pop(),
-                    child: const Icon(FLucideIcons.x),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: FButton.icon(
+                      variant: .ghost,
+                      semanticsLabel: context.t.ui.actions.close,
+                      onPress: () => Navigator.of(context).pop(),
+                      child: const Icon(FLucideIcons.x, size: 18),
+                    ),
+                  ),
+                  // The side padding keeps a long title clear of the close button.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 48),
+                    child: Text(
+                      title,
+                      style: context.titleText,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),

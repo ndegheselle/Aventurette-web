@@ -6,7 +6,10 @@
         "close": "Close",
         "retry": "Try again",
         "apply": "Apply",
-        "reset": "Reset"
+        "reset": "Reset",
+        "results": {
+            "saved": "Saved"
+        }
     },
     "comingSoon": {
         "title": "Coming soon",

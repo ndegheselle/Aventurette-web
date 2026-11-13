@@ -1,6 +1,6 @@
 import 'package:ajil/features/activities/models/activity.dart';
 import 'package:ajil/features/activities/routes.dart';
-import 'package:ajil/features/activities/ui/favorite_button.dart';
+import 'package:ajil/features/activities/ui/_parts/favorite_button.dart';
 import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/theme/text.dart';

@@ -1,7 +1,7 @@
-import 'package:ajil/features/activities/ui/activity_page.dart';
-import 'package:ajil/features/activities/ui/catalogue_page.dart';
-import 'package:ajil/features/activities/ui/feedback_page.dart';
-import 'package:ajil/features/activities/ui/run_page.dart';
+import 'package:ajil/features/activities/ui/activity/activity_page.dart';
+import 'package:ajil/features/activities/ui/catalogue/catalogue_page.dart';
+import 'package:ajil/features/activities/ui/run/feedback_page.dart';
+import 'package:ajil/features/activities/ui/run/run_page.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/shell/coming_soon_page.dart';
 import 'package:ajil/ui/shell/pages.dart';

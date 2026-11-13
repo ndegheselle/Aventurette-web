@@ -911,6 +911,8 @@ class Translations$ui$actions$fr {
 
 	/// fr: 'Réinitialiser'
 	String get reset => 'Réinitialiser';
+
+	late final Translations$ui$actions$results$fr results = Translations$ui$actions$results$fr.internal(_root);
 }
 
 // Path: ui.comingSoon
@@ -1224,6 +1226,18 @@ class Translations$activities$filters$profile$fr {
 	String get empty => 'Vos préférences n\'ont pas encore de filtres par défaut.';
 }
 
+// Path: ui.actions.results
+class Translations$ui$actions$results$fr {
+	Translations$ui$actions$results$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Enregistré'
+	String get saved => 'Enregistré';
+}
+
 /// The flat map containing all translations for locale <fr>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -1389,6 +1403,7 @@ extension on Translations {
 			'ui.actions.retry' => 'Réessayer',
 			'ui.actions.apply' => 'Appliquer',
 			'ui.actions.reset' => 'Réinitialiser',
+			'ui.actions.results.saved' => 'Enregistré',
 			'ui.comingSoon.title' => 'Bientôt disponible',
 			'ui.comingSoon.body' => 'Cet écran n\'est pas encore construit.',
 			'ui.comingSoon.wireframe' => ({required Object id}) => 'Maquette ${id}',

@@ -6,9 +6,9 @@ in `backend/api/` that both talk to.
 
 | | |
 |---|---|
-| [ARCHITECTURE.md](ARCHITECTURE.md) | the layout, and the boundaries between the parts |
+| [docs/business/](docs/business/README.md) | what the clients' app does, screen by screen, whatever it is built with |
+| [docs/architecture.md](docs/architecture.md) | how the parts talk, and how to change the mobile app's technology |
 | [docs/adr/](docs/adr/README.md) | why it is that way — one file per decision |
-| [docs/features/](docs/features/README.md) | what each feature does, and what is not finished |
 | [docs/coding-guidelines.md](docs/coding-guidelines.md) | how to write code that stays simple to read |
 | [docs/testing.md](docs/testing.md) | how to test any of it |
 | [backend/DEPLOYMENT.md](backend/DEPLOYMENT.md) | putting it on a server |
@@ -81,7 +81,7 @@ dart run tool/check_architecture.dart && flutter analyze && flutter test
 ```
 
 How it is built: [docs/architecture.md](docs/architecture.md#the-mobile-app). What it does:
-[docs/business/features/mobile-app.md](docs/business/features/mobile-app.md).
+[docs/business/](docs/business/README.md).
 
 # Deploy
 

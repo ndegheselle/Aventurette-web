@@ -26,7 +26,15 @@ class PreferencesPage extends ConsumerWidget {
         await defaultsNotifier.save();
         return true;
       });
-      if (saved == true && context.mounted) showFToast(context: context, title: Text(t.user.preferences.saved));
+      if (saved == true && context.mounted) {
+        showFToast(
+          context: context,
+          icon: Icon(FLucideIcons.save),
+          title: Text(t.ui.actions.results.saved),
+          description: Text(t.user.preferences.saved),
+          swipeToDismiss: const [.right],
+        );
+      }
     }
 
     return AppPage(

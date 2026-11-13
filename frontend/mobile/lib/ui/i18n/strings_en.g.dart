@@ -673,6 +673,7 @@ class _Translations$ui$actions$en extends Translations$ui$actions$fr {
 	@override String get retry => 'Try again';
 	@override String get apply => 'Apply';
 	@override String get reset => 'Reset';
+	@override late final _Translations$ui$actions$results$en results = _Translations$ui$actions$results$en._(_root);
 }
 
 // Path: ui.comingSoon
@@ -869,6 +870,16 @@ class _Translations$activities$filters$profile$en extends Translations$activitie
 	@override String get empty => 'Your preferences have no default filters yet.';
 }
 
+// Path: ui.actions.results
+class _Translations$ui$actions$results$en extends Translations$ui$actions$results$fr {
+	_Translations$ui$actions$results$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get saved => 'Saved';
+}
+
 /// The flat map containing all translations for locale <en>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -1034,6 +1045,7 @@ extension on TranslationsEn {
 			'ui.actions.retry' => 'Try again',
 			'ui.actions.apply' => 'Apply',
 			'ui.actions.reset' => 'Reset',
+			'ui.actions.results.saved' => 'Saved',
 			'ui.comingSoon.title' => 'Coming soon',
 			'ui.comingSoon.body' => 'This screen is not built yet.',
 			'ui.comingSoon.wireframe' => ({required Object id}) => 'Wireframe ${id}',

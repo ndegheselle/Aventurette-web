@@ -47,119 +47,143 @@ Future<CatalogueFilters?> showCatalogueFilters(
   QuickFilter? only,
 }) {
   final t = context.t.activities.filters;
+  // Shared by the scrolling filters and the buttons pinned under them, which the sheet builds apart.
+  final draft = ValueNotifier(applied);
+  void edit(CatalogueFilters filters) => draft.value = filters;
 
   return showAppSheet<CatalogueFilters>(
     context,
     title: only == null ? t.title : t.quick[only.name]!,
-    builder: (_) => _FiltersSheet(initial: applied, defaults: defaults, only: only),
-  );
+    builder: (_) => ValueListenableBuilder(
+      valueListenable: draft,
+      builder: (_, value, _) => _Filters(draft: value, defaults: defaults, only: only, onChanged: edit),
+    ),
+    actionsBuilder: (sheetContext) => ValueListenableBuilder(
+      valueListenable: draft,
+      builder: (_, value, _) => _FiltersActions(
+        draft: value,
+        canReset: only == null,
+        onChanged: edit,
+        onApply: () => Navigator.of(sheetContext).pop(value),
+      ),
+    ),
+  ).whenComplete(draft.dispose);
 }
 
-class _FiltersSheet extends StatefulWidget {
-  const _FiltersSheet({required this.initial, required this.defaults, required this.only});
+class _Filters extends StatelessWidget {
+  const _Filters({required this.draft, required this.defaults, required this.only, required this.onChanged});
 
-  final CatalogueFilters initial;
+  final CatalogueFilters draft;
   final FilterDefaults? defaults;
   final QuickFilter? only;
+  final ValueChanged<CatalogueFilters> onChanged;
 
-  @override
-  State<_FiltersSheet> createState() => _FiltersSheetState();
-}
-
-class _FiltersSheetState extends State<_FiltersSheet> {
-  late CatalogueFilters _draft = widget.initial;
-
-  void _edit(CatalogueFilters filters) => setState(() => _draft = filters);
-
-  bool _shows(QuickFilter quick) => widget.only == null || widget.only == quick;
+  bool _shows(QuickFilter quick) => only == null || only == quick;
 
   @override
   Widget build(BuildContext context) {
     final t = context.t;
-    final all = widget.only == null;
-    final defaults = widget.defaults;
+    final all = only == null;
+    final defaults = this.defaults;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 20,
       children: [
-        if (all) _ProfileToggle(draft: _draft, defaults: defaults, onChanged: _edit),
+        if (all) _ProfileToggle(draft: draft, defaults: defaults, onChanged: onChanged),
         if (_shows(QuickFilter.age))
           RangeField(
             label: all ? t.activities.filters.quick['age'] : null,
             bounds: ageBounds,
-            min: _draft.ageMin,
-            max: _draft.ageMax,
+            min: draft.ageMin,
+            max: draft.ageMax,
             describe: (range) => quickRangeText(t, QuickFilter.age, range),
-            onChanged: (min, max) => _edit(_draft.copyWith(ageMin: () => min, ageMax: () => max)),
+            onChanged: (min, max) => onChanged(draft.copyWith(ageMin: () => min, ageMax: () => max)),
           ),
         if (_shows(QuickFilter.participants))
           RangeField(
             label: all ? t.activities.filters.quick['participants'] : null,
             bounds: participantsBounds,
-            min: _draft.participantsMin,
-            max: _draft.participantsMax,
+            min: draft.participantsMin,
+            max: draft.participantsMax,
             describe: (range) => quickRangeText(t, QuickFilter.participants, range),
-            onChanged: (min, max) => _edit(_draft.copyWith(participantsMin: () => min, participantsMax: () => max)),
+            onChanged: (min, max) => onChanged(draft.copyWith(participantsMin: () => min, participantsMax: () => max)),
           ),
         if (_shows(QuickFilter.location))
           _Choices(
             label: all ? t.activities.filters.quick['location']! : '',
             values: Location.values,
-            chosen: _draft.locations,
+            chosen: draft.locations,
             labelOf: (location) => t.user.location[location.name]!,
-            onChanged: (locations) => _edit(_draft.copyWith(locations: locations)),
+            onChanged: (locations) => onChanged(draft.copyWith(locations: locations)),
           ),
         if (all) ...[
           _Choices(
             label: t.activities.fields.format,
             values: ActivityFormat.values,
-            chosen: _draft.formats,
+            chosen: draft.formats,
             labelOf: (format) => t.activities.format[format.name]!,
-            onChanged: (formats) => _edit(_draft.copyWith(formats: formats)),
+            onChanged: (formats) => onChanged(draft.copyWith(formats: formats)),
           ),
           _Choices(
             label: t.activities.fields.practices,
             values: ActivityPractice.values,
-            chosen: _draft.practices,
+            chosen: draft.practices,
             labelOf: (practice) => t.activities.practice[practice.name]!,
-            onChanged: (practices) => _edit(_draft.copyWith(practices: practices)),
+            onChanged: (practices) => onChanged(draft.copyWith(practices: practices)),
           ),
           _Choices(
             label: t.activities.fields.childrenPace,
             values: ChildrenPace.values,
-            chosen: _draft.childrenPaces,
+            chosen: draft.childrenPaces,
             labelOf: (pace) => t.activities.childrenPace[pace.name]!,
-            onChanged: (paces) => _edit(_draft.copyWith(childrenPaces: paces)),
+            onChanged: (paces) => onChanged(draft.copyWith(childrenPaces: paces)),
           ),
           _Choices(
             label: t.activities.fields.seasons,
             values: Season.values,
-            chosen: _draft.seasons,
+            chosen: draft.seasons,
             labelOf: (season) => t.activities.season[season.name]!,
-            onChanged: (seasons) => _edit(_draft.copyWith(seasons: seasons)),
+            onChanged: (seasons) => onChanged(draft.copyWith(seasons: seasons)),
           ),
         ],
-        Row(
-          spacing: 8,
-          children: [
-            if (all)
-              Expanded(
-                child: FButton(
-                  variant: .outline,
-                  size: .lg,
-                  onPress: activeFilterCount(_draft) > 0 ? () => _edit(const CatalogueFilters()) : null,
-                  child: Text(t.ui.actions.reset),
-                ),
-              ),
-            Expanded(
-              child: FButton(
-                size: .lg,
-                onPress: () => Navigator.of(context).pop(_draft),
-                child: Text(t.ui.actions.apply),
-              ),
+      ],
+    );
+  }
+}
+
+/// *Appliquer*, and *Réinitialiser* beside it when every filter shows.
+class _FiltersActions extends StatelessWidget {
+  const _FiltersActions({
+    required this.draft,
+    required this.canReset,
+    required this.onChanged,
+    required this.onApply,
+  });
+
+  final CatalogueFilters draft;
+  final bool canReset;
+  final ValueChanged<CatalogueFilters> onChanged;
+  final VoidCallback onApply;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.t.ui.actions;
+
+    return Row(
+      spacing: 8,
+      children: [
+        if (canReset)
+          Expanded(
+            child: FButton(
+              variant: .outline,
+              size: .lg,
+              onPress: activeFilterCount(draft) > 0 ? () => onChanged(const CatalogueFilters()) : null,
+              child: Text(t.reset),
             ),
-          ],
+          ),
+        Expanded(
+          child: FButton(size: .lg, onPress: onApply, child: Text(t.apply)),
         ),
       ],
     );
@@ -209,28 +233,18 @@ class _ProfileToggle extends StatelessWidget {
     final defaults = this.defaults;
     final hasProfile = !isProfileEmpty(defaults);
 
-    return Row(
-      spacing: 12,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(t.title, style: context.labelText),
-              Text(hasProfile ? t.help : t.empty, style: context.captionText),
-            ],
-          ),
-        ),
-        FCheckbox(
-          value: matchesProfile(draft, defaults),
-          enabled: hasProfile,
-          semanticsLabel: t.title,
-          onChange: (on) {
-            if (defaults == null) return;
-            onChanged(on ? withProfile(draft, defaults) : withoutProfile(draft));
-          },
-        ),
-      ],
+    return FTile(
+      title: Text(t.title, style: context.labelText),
+      subtitle: Text(hasProfile ? t.help : t.empty, style: context.captionText),
+      suffix: FSwitch(
+        value: matchesProfile(draft, defaults),
+        enabled: hasProfile,
+        semanticsLabel: t.title,
+        onChange: (on) {
+          if (defaults == null) return;
+          onChanged(on ? withProfile(draft, defaults) : withoutProfile(draft));
+        },
+      ),
     );
   }
 }

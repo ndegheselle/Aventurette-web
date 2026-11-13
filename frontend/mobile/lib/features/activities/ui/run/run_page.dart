@@ -3,7 +3,7 @@ import 'package:ajil/features/activities/models/run.dart';
 import 'package:ajil/features/activities/models/step.dart';
 import 'package:ajil/features/activities/routes.dart';
 import 'package:ajil/features/activities/state/catalogue.dart';
-import 'package:ajil/features/activities/ui/supplies.dart';
+import 'package:ajil/features/activities/ui/_parts/supplies.dart';
 import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/content/html_text.dart';
 import 'package:ajil/ui/content/surfaces.dart';

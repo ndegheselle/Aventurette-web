@@ -1,301 +1,149 @@
 # Architecture
 
-An npm workspace rooted in `frontend/`: one app (`frontend/web/`) on top of three packages
-(`frontend/packages/`), next to a PocketBase backend in `backend/`. The npm commands below run
-from `frontend/`. `npm run lint:arch` checks the rules below on every build.
+Two apps, one backend. The clients' app (Ajil, `frontend/mobile/`) and the back office
+(`frontend/web/`, admins only) both talk to the same PocketBase. **They share no code: their only
+contract is the backend's schema and rules** ([ADR 0020](adr/0020-clients-use-a-flutter-app.md)).
+What the clients' app does is in [business/](business/README.md).
 
-This describes the code as it stands. *Why* it is this way is in
-[docs/adr/](docs/adr/README.md) — one file per decision, including the costs each one accepts.
-What each feature does is in [docs/features/](docs/features/README.md), and how to test any of
-it is in [docs/testing.md](docs/testing.md).
+```mermaid
+flowchart LR
+    phone["Ajil — clients' app<br/>frontend/mobile"]
+    browser["Back office — admins<br/>frontend/web"]
+    nginx["nginx<br/>TLS, routing by host"]
+    api["PocketBase<br/>backend/api"]
+    spa["Back office files"]
+    smtp["Mail server"]
 
-```
-Aventurette-web/
-├── frontend/                                 the npm workspace root (package.json, vitest.config.ts)
-│   ├── web/           @aventurette/front     the app
-│   ├── packages/
-│   │   ├── core/          @chapelure/core        contracts. no framework, no backend, no deps
-│   │   ├── pocketbase/    @chapelure/pocketbase  the backend adapter
-│   │   └── ui/            @chapelure/ui          shared behaviour (Vue): modals, lists, forms
-│   └── tests/                                the test toolkit: builders, fakes, mount helpers
-├── backend/
-│   ├── api/                                  PocketBase data and migrations
-│   ├── nginx/                                TLS termination and API proxy
-│   ├── scripts/                              alias map, architecture lint, certificate script
-│   └── compose.yml                           the production stack (+ compose.local.yml, .env)
-├── docs/                                     ADRs, feature docs, testing guide
-└── ARCHITECTURE.md, CLAUDE.md, readme.md
+    phone -- "HTTPS, api domain" --> nginx
+    browser -- "HTTPS, both domains" --> nginx
+    nginx --> api
+    nginx --> spa
+    api -- "sign-in codes" --> smtp
 ```
 
-## Dependency direction
+The deployment itself is in [the readme](../readme.md#deploy).
 
-```
-web/app  ──►  web/features  ──►  @chapelure/ui  ──►  @chapelure/core
-                      │                                        ▲
-                      └──► web/backend ──► @chapelure/pocketbase
-```
+## Signing in
 
-Within a feature, the same applies one level down:
+```mermaid
+sequenceDiagram
+    participant App
+    participant API as PocketBase
+    participant Mail as Mail server
 
-```
-ui/ ──► composables/ ──► api/ ──► @/backend
-              └────────► models/
-```
-
-Nothing points left. `core` imports nothing of ours; `ui` never learns which backend exists;
-the app's `backend/` folder is the only thing that does.
-
-## Where things live
-
-### `frontend/web/src`
-
-| Folder | Holds | Notes |
-|---|---|---|
-| `app/` | `main.ts`, `router.ts`, `i18n.ts`, `App.vue`, `Default.layout.vue`, `Auth.layout.vue`, `locales/`, `styles/` | Composition root. Wiring, no logic. |
-| `backend/` | `index.ts`, `schema.g.ts` | The backend seam, and the pocketbase-typegen output. |
-| `features/<name>/` | one vertical slice | Same shape every time, see below. May sit in a group folder: `features/admin/<name>/`. |
-
-Every feature has the same shape, so you never have to guess:
-
-| | |
-|---|---|
-| `models/` | types, factories, domain rules — **no framework imports** |
-| `api/` | `*.api.ts` — the only place `@/backend` may be imported — and `*.mapper.ts` |
-| `composables/` | Vue state and orchestration — reaches the backend only through `api/` |
-| `ui/` | the feature's Vue files: route targets (`Name.page.vue`) and the components they use |
-| `tests/` | the feature's specs, and the only place they may live |
-| `locales/` | translations, and nothing else |
-| `routes.ts` | the route records plus a `routesNames` map |
-
-Where behaviour goes between these is the one thing worth reading before writing any:
-`models/` holds rules that hold whatever renders them, `composables/` holds reactive state, and
-a component is wiring and markup. [ADR 0009](docs/adr/0009-logic-lives-outside-components.md)
-has the reasoning; a feature with no logic needs no composable.
-
-Within a folder the unit is an **entity or a screen, not a concept**: `models/activity.ts` holds
-the activity's types, its state enum and what the read screens derive from it, and
-`useActivitiesList` owns the list screen — its results and its search. Splitting finer than
-that was tried and produced `models/benefit.ts`, three lines long. The exception is the backend
-seam: an entity's payload type and mapper sit in `api/<entity>.mapper.ts`, so the model reads
-as the domain alone.
-
-Specs do **not** sit beside what they cover. They live in the feature's `tests/`, and there are
-fewer of them than there were — [ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)
-says which code earns one.
-
-#### `ui/`
-
-Every `.vue` file of a feature is in `ui/`, pages and components together, so the files that
-make up one screen sit side by side. A route target is `Name.page.vue`, and that is the whole
-convention: `routes.ts` names it as a `component`. A page that is only a wrapper around one
-component is that component — the login form is `Login.page.vue`, not a page holding a
-`<LoginForm>`. A subfolder groups the components of one entity when there are several:
-`activities/ui/activity/card.vue`.
-
-A feature may import another feature's `ui/`, as it may its `models/` and `composables/`.
-
-### `frontend/packages/ui`
-
-`modals/`, `alerts/`, `dropdown/`, `data/`, `files/`, `forms/`, `settings/`, `layout/`,
-`styles/` and `locales/`. There is no barrel: components and composables are deep-imported
-alike.
-
-A folder is one family and holds everything that family is made of — `modals/` has `Modal.vue`
-next to `useModal`, `dropdown/` has the `v-click-outside` directive it is the only user of.
-There is no `composables/` or `directives/` folder: a composable sits with the components it
-drives, which is also where you look for it.
-
-This is not a design system — it is the behaviour the app should not hand-write twice:
-`<Modal>` owning a promise, `<FilesInput>` validating what was dropped on it, `<Pagination>`
-and its two-way page state, `useEditModal` sequencing a create-or-update.
-
-Styling is not its job. A component whose whole body was a daisyUI class with a props table
-in front of it does not belong here, however typed that props table was: `<Button
-variant="primary" size="sm">` mapped to `btn btn-primary btn-sm` and bought only the
-indirection, so the app writes the classes. What survives in `layout/` and `forms/` is
-there for something else — `<Panel>` for a surface repeated a dozen times, `<PasswordInput>`
-for its reveal toggle, `<TextEditor>` for the tiptap instance it owns and tears down.
-
-Components are deep-imported so bundlers can drop what is unused:
-
-```ts
-import Modal from '@chapelure/ui/modals/Modal.vue';
-```
-
-Icons come straight from `lucide-vue-next`, by their real names, everywhere:
-
-```ts
-import { XIcon } from 'lucide-vue-next';
-```
-
-## The rules, and what each one buys
-
-| Rule | Migration it enables |
-|---|---|
-| `@chapelure/pocketbase` is imported only by `frontend/web/src/backend/index.ts` | Change backend = rewrite one file plus one package |
-| The `pocketbase` SDK appears only inside `frontend/packages/pocketbase` | ditto |
-| `@/backend` is imported only from `features/*/api/**` | Components never hold a backend client |
-| `features/*/composables` never import `@/backend` | A composable is Vue, but still not where a client belongs |
-| `frontend/packages/core` imports no `vue`, no SDK, no app | Contracts survive any framework or backend change |
-| `features/*/models` and `features/*/api` import no framework | Domain and data survive a framework change |
-| `frontend/packages/ui` imports neither the app nor the adapter | The design system stays reusable |
-| `features/*` never import `@/app` | The app composes features, never the other way round |
-| Nothing that ships imports `@tests` or the SDK test double | Builders and fakes stay out of the bundle |
-| A feature's `.spec.ts` files are all under its `tests/` | Source folders list source, not half tests |
-| `backend/scripts/aliases.mjs` and the `paths` in `frontend/web/tsconfig.json` agree | The two resolvers cannot drift apart |
-
-Three deliberate compromises:
-
-- **daisyUI classes are written where they are used**, component classes (`btn`, `modal`,
-  `card`…) included. Confining them to `frontend/packages/ui` was a lint rule once, and it held — by
-  breeding wrapper components that existed only to hold the class being hidden. Twenty of them
-  were deleted and their classes inlined, `<Button>` and its 50 call sites included. The cost
-  is real: a variant is a class you have to know rather than a prop autocomplete offers you,
-  and swapping the CSS library became a find-and-replace across the app instead of a
-  `frontend/packages/ui` job. The gain is that a component reads as the markup it produces, and that
-  `frontend/packages/ui` now holds only behaviour — which is what it is actually good at.
-- **`lucide-vue-next` is imported wherever an icon is used.** A re-export barrel would confine
-  it to one file, but it also hides which icons exist: with the real names in the imports, an
-  icon is findable by its own name, in this codebase and in lucide's documentation alike.
-  Swapping icon sets is a find-and-replace over the import lines.
-- **The view layer is Vue, and stays Vue.** The achievable goal is that `core/`,
-  `features/*/models` and `features/*/api` are framework-free — roughly the part of a
-  framework migration that is worth protecting. Components would be rewritten either way.
-
-## Mechanics worth knowing
-
-- **Packages are source-only.** No per-package build step: `exports` and the aliases point at
-  `src/`, so `vue-tsc` typechecks them with the app and HMR works across package boundaries.
-  The alias map lives in `backend/scripts/aliases.mjs` and is imported by `frontend/web/vite.config.ts` and
-  `frontend/vitest.config.ts`. TypeScript cannot read a JS module for its `paths`, so
-  `frontend/web/tsconfig.json` repeats it — and `lint:arch` fails if the two disagree.
-- **Each entity maps its own payload.** The backend's shape stops inside the api layer:
-  `api/<entity>.mapper.ts` declares an `EntityMapper<Payload, Data>` holding the relations to
-  fetch, a `toEntity` that
-  inlines them and turns stored file names into urls, and a `toPayload` that turns related
-  entities back into ids. The adapter applies it on every read and write, so `activity.steps`
-  is the steps and `resource.url` is a url everywhere above `api/`. Saving a parent still
-  persists ids only — see [ADR 0007](docs/adr/0007-models-map-their-own-payloads.md).
-
-- **Tailwind v4 ignores `node_modules`,** and workspace packages are symlinked there. So
-  `frontend/web/src/app/styles/index.css` declares `@source "../../../../packages/ui/src"`. Remove
-  it and every class used only inside the design system silently vanishes from the bundle.
-  Check with `grep modal-box frontend/web/dist/assets/*.css`.
-- **i18n**: the design system ships `frontend/packages/ui/src/locales/*.json` and the app imports it
-  explicitly; the app's own and every feature's translations are globbed from `src/**/locales/*.json`. The merge
-  is recursive, so two files sharing a top-level key do not clobber each other.
-- **Docker builds the front from the repository root**, not `frontend/web/`, because the app
-  needs `frontend/packages/` and `backend/scripts/aliases.mjs`:
-  `docker build -f frontend/web/Dockerfile .`
-
-## Tests
-
-Vitest on happy-dom, with Vue Test Utils. The suite is component-level: no browser, no running
-backend, seconds to run — see [ADR 0010](docs/adr/0010-component-tests-over-end-to-end.md) for
-what that covers and what it does not.
-
-Three things about it are unusual enough to mention here, all deliberate:
-
-- **There are fewer specs than you may expect, and coverage is not a target.** A spec is
-  written for code with a decision in it — a branch, a dedup, a limit, an ordering constraint.
-  Formatters, factories, type aliases, `api/` wrappers and components get none
-  ([ADR 0013](docs/adr/0013-specs-live-in-a-feature-tests-folder.md)).
-- **Vue warnings fail the test that produced them.** A prop of the wrong type or a missing
-  injection is a failure, not console noise.
-- **Components mount against the app's real translations**, so an assertion reads as what a
-  user would see. Completeness is not enforced: locales may be uneven and an untranslated key
-  renders as its own path
-  ([ADR 0011](docs/adr/0011-tests-fail-on-vue-warnings.md)).
-
-The toolkit — builders, in-memory fakes for the `@chapelure/core` ports, and the mount
-helpers — is in `frontend/tests/`, imported as `@tests`, and cannot reach the bundle.
-[docs/testing.md](docs/testing.md) is the guide.
-
-## Commands
-
-From `frontend/`:
-
-```bash
-npm run dev            # dev server
-npm run build          # vue-tsc -b && vite build, typechecks packages and specs too
-npm run test           # the suite
-npm run test:watch     # the suite, while working
-npm run test:coverage  # with a coverage report
-npm run lint:arch      # the rules above
-npm run check          # lint:arch + build + test — what CI runs
+    App->>API: ask for a code (email)
+    API->>Mail: send a 6-digit code, only if the account exists
+    API-->>App: the same answer, account or not
+    App->>API: sign in (code)
+    API-->>App: a session, valid 7 days, renewable
+    App->>App: keep it in the device's secure storage
+    Note over App,API: at the next start, the app renews the stored session, or shows the login
 ```
 
 ## The mobile app
 
-`frontend/mobile/` is the clients' app, in Flutter: package `ajil`, no Material, no Cupertino
-([ADR 0020](adr/0020-clients-use-a-flutter-app.md)). It talks to the same PocketBase and shares
-no code with the web. What each screen does is in
-[business/features/mobile-app.md](business/features/mobile-app.md).
+`frontend/mobile/` is Flutter, on [forui](https://forui.dev)'s widgets
+([ADR 0020](adr/0020-clients-use-a-flutter-app.md), [0024](adr/0024-mobile-app-uses-forui-theme.md)).
+It has the web's shape, layer for layer ([ADR 0021](adr/0021-the-mobile-app-mirrors-the-web-layers.md)):
 
-It has the web's shape, layer for layer
-([ADR 0021](adr/0021-the-mobile-app-mirrors-the-web-layers.md)):
+```mermaid
+flowchart LR
+    app["app/<br/>frame, tabs, router, sign-in gate"]
+    subgraph feature["features/&lt;name&gt;/"]
+        ui["ui/<br/>screens"] --> state["state/<br/>one notifier per screen"]
+        state --> api_["api/<br/>calls and mappers"]
+        state --> models["models/<br/>rules, plain Dart"]
+        api_ --> models
+    end
+    shared["ui/ (shared)<br/>widgets, theme, strings"]
+    core["core/<br/>ports: crud, auth, mapper, filters"]
+    backend["backend/<br/>PocketBase adapter"]
 
+    app --> feature
+    ui --> shared
+    api_ --> core
+    backend --> core
+    app --> backend
 ```
-frontend/mobile/
-├── lib/
-│   ├── main.dart        reads the device's preferences and session, then starts the app
-│   ├── app/             composition root: WidgetsApp, the router, the dock shell
-│   ├── core/            the ports (= @chapelure/core): DataCrud, AuthProvider, EntityMapper, filters
-│   ├── backend/         backend.dart exposes the ports; pocketbase/ is the adapter
-│   ├── ui/              shared widgets (= @chapelure/ui), the theme, the generated strings
-│   └── features/<name>/ models/ · api/ · state/ · ui/ · i18n/ · routes.dart
-├── test/                specs, mirroring lib/; test/support/ is the toolkit (= frontend/tests)
-└── tool/check_architecture.dart
-```
 
-`state/` is the web's `composables/`: Riverpod notifiers, one per screen, without code
-generation. A feature may sit in a group folder: `features/planning/events/`.
+- **Only `backend/pocketbase/` knows PocketBase.** Changing backend means rewriting that folder.
+- **`models/` and `api/` import no Flutter.** The rules are plain Dart.
+- `dart run tool/check_architecture.dart` fails when a boundary is crossed.
+- A screen not built yet has its route and says *Bientôt disponible*
+  ([ADR 0023](adr/0023-unbuilt-screens-throw-at-the-api-seam.md)).
+- Specs live in `test/`, mirroring `lib/` ([ADR 0022](adr/0022-mobile-specs-live-in-test.md)).
 
-### Rules
+How to run and check it: [the readme](../readme.md#the-mobile-app).
 
-`dart run tool/check_architecture.dart` fails on any of these:
+## Changing the mobile app's technology
 
-| Rule | Why |
-|---|---|
-| `package:pocketbase` only under `lib/backend/pocketbase/` | Change backend = rewrite one folder |
-| `lib/backend/` only from a feature's `api/`, `lib/app/` and `main.dart` | Widgets and notifiers hold no client |
-| `models/` and `api/` import no Flutter; `models/` no Riverpod | Domain and data are plain Dart |
-| `models/` imports only `core/` and other `models/` | A rule never depends on how it is fetched |
-| `ui/` never imports an `api/` | A widget reaches data through `state/` |
-| `core/` imports nothing of ours and no package | The ports survive any change around them |
-| a feature never imports `lib/app/` | The app composes features |
-| `lib/ui/` imports no feature, no app, no backend | Shared means shared |
-| imports are `package:ajil/…`, never relative | One way to name a file |
+**Rewrite the screens, port the rules, keep the backend.** Nothing on the server changes, and the
+back office is not touched.
 
-### Mechanics worth knowing
+### What carries over as it is
 
-- **The UI is forui.** A screen calls forui's widgets directly and picks their look at the call
-  site — `FButton(variant: .outline, size: .lg)` — the way the web writes daisyUI classes. The
-  theme is forui's neutral one, the icons are `FLucideIcons`
-  ([ADR 0024](adr/0024-mobile-app-uses-forui-theme.md)); text styles are
-  `context.headingText` and its siblings. What forui lacks — the page frame, the pills — is in
-  `ui/`, on Flutter's `widgets` library.
-- **Routes declare their page**: go_router's default page is Material's, so a route uses
-  `fullScreenRoute` (slides over the dock) or `tabPage` (inside a dock tab). The five tabs are a
-  `StatefulShellRoute`, each keeping its own history.
-- **The session gates the router**: `features/user/guard.dart` decides every redirect, from the
-  session alone.
-- **Strings are slang, one namespace per feature**: `features/activities/i18n/activities_fr.i18n.json`
-  is `t.activities`. `dart run slang` writes `lib/ui/i18n/strings.g.dart`; `fr` is the base and
-  the fallback, so `en` may lag. A choice's labels are a `(map)` keyed by the enum's name.
-- **Choices are spelled twice**: CONSTANT_CASE in PocketBase, camelCase in Dart. `enumOf` and
-  `constantOf` in `core/data/mapper.dart` translate; a value this version does not know reads
-  as none.
-- **A screen not built yet** has its route and shows *Bientôt disponible*; a call not built yet
-  throws `UnimplementedError` in `api/` ([ADR 0023](adr/0023-unbuilt-screens-throw-at-the-api-seam.md)).
+| What | Where | Why it survives |
+|---|---|---|
+| What the app does | [business/](business/README.md) | Written without technical terms, with each screen's status. |
+| The backend and its rules | `backend/api/` | It is the contract. The back office relies on it too. |
+| The wording | `frontend/mobile/lib/**/i18n/*.i18n.json` | JSON, one namespace per feature, `fr` the fallback. `(map)` keys and `{param}` are slang's syntax and need converting. |
+| The screen ids | the wireframes | `A03`, `B07`… name the same screen in the design, the docs and the code. |
 
-### Commands
+### What is rewritten
 
-From `frontend/mobile/`:
+The screens, the navigation and the state: everything under `app/`, `ui/`, and each feature's
+`ui/` and `state/`. The rules under `models/` and `api/` are plain Dart and short: port them line
+by line, with their specs.
 
-```bash
-flutter run -d chrome --dart-define=API_URL=http://127.0.0.1:8090    # in Chrome, against a local PocketBase
-flutter run -d windows --dart-define=API_URL=http://127.0.0.1:8090   # the same, in a Windows window
-dart run slang                                              # after changing a .i18n.json
-dart run tool/check_architecture.dart && flutter analyze && flutter test    # the check
-```
+### What a client must honour
+
+These are not visible in the screens, and the current app's specs assert them. A new client gets
+them wrong unless it reproduces them.
+
+| Rule | Today in | Asserted by |
+|---|---|---|
+| **An activity is read in one request with its relations expanded**: its steps with their tips and resources, its material links with the catalogue material, its workshops, its tag relations, its safety instructions. A relation that was not expanded reads as empty, never as ids. | `features/activities/api/activity_mapper.dart`, `step_mapper.dart` | `activity_mapper_test.dart` |
+| **An activity's columns are flat, its model grouped by family** ([ADR 0015](adr/0015-activity-attributes-grouped-by-family.md)). Tags are one collection, read into their family by relation ([ADR 0014](adr/0014-activity-tags-are-one-collection.md)). | `activity_mapper.dart` | `activity_mapper_test.dart` |
+| **A file is stored as a name**; its url is built from the record. | `core/files/file_url_resolver.dart` | `activity_mapper_test.dart` |
+| **A choice is stored in CONSTANT_CASE**; an empty one is unset, and a value this version does not know reads as unset. | `core/data/mapper.dart` | `activity_mapper_test.dart` |
+| **A range bound of 0 is unset**, on an activity and on the user's defaults; an unset bound is written as 0. | `activity_mapper.dart`, `features/user/api/filter_defaults_mapper.dart` | `activity_mapper_test.dart`, `user_test.dart` |
+| **The catalogue filter**: a range keeps an activity whose range overlaps, an unset upper bound being no limit; a multiple choice is compared value by value (`:each`), any one being enough. | `activity_mapper.dart`, `models/catalogue_filters.dart` | `activity_mapper_test.dart`, `catalogue_filters_test.dart` |
+| **A favourite is added or removed one at a time** (`favorites+`, `favorites-`), never by writing the list. Two writes in flight must not cancel each other. | `features/activities/api/activities_api.dart` | `favorites_test.dart` |
+| **One feedback per user and activity**, under a unique index: update it when it exists; a second tap while saving creates nothing. | `state/feedback.dart`, `models/feedback.dart` | `feedback_test.dart` |
+| **Pages are appended**; a new search starts over and drops a page that answers the previous one. | `state/catalogue.dart` | `library_feed_test.dart` |
+| **The router waits for the session**, sends nobody signed in to the login, a user not onboarded to the onboarding (`onboarded` on the user), and a signed-in user away from the login. | `features/user/guard.dart` | `user_test.dart` |
+| **The session is kept in the device's secure storage**, not in plain preferences. | `backend/pocketbase/client.dart` | — |
+
+Paths are under `frontend/mobile/lib/` and `frontend/mobile/test/features/`.
+
+### What the design asks of the platform
+
+To weigh a technology against. Each line points to the screens that need it.
+
+- **Phones, and a link opened in a browser.** Store apps for iOS and Android; and "code or link →
+  catalogue → sheet → guided mode, with no account" as the first priority
+  ([business](business/README.md#not-decided)). A link has to open the right screen.
+- **Navigation**: five tabs each keeping its history, full-screen pages over them, panels from the
+  bottom, immersive modes, the phone's back button behaving as the arrow
+  ([the frame](business/README.md#the-frame)).
+- **A secure session on the device** ([signing in](business/account.md#signing-in)).
+- **Rich lists and inputs**: blocks reordered by dragging (B08, B18), a calendar by day, week,
+  month and year (B01), a time grid across units (B14), bars of a breakdown (C05).
+- **PDF export and printing** of a chosen folder, with a preview (A11, A12).
+- **Notifications** that open the right screen (E08, E10).
+- **Light and dark themes, French and English, fewer animations on request** (E03).
+
+Not in the design, but worth weighing: the guided mode is used during the activity, often
+outdoors, where the network may be poor.
+
+### Doing it
+
+1. Write an ADR that replaces [0020](adr/0020-clients-use-a-flutter-app.md), and
+   [0021](adr/0021-the-mobile-app-mirrors-the-web-layers.md) to
+   [0024](adr/0024-mobile-app-uses-forui-theme.md) where they no longer hold.
+2. Build the new app beside `frontend/mobile/`, against the same backend.
+3. Port the built screens first, in the order a user meets them: signing in and the onboarding,
+   the catalogue, the sheet, the guided mode, *Mon espace*. Port each rule above with its spec.
+4. Copy the wording over.
+5. Delete `frontend/mobile/` once the new app covers the same screens, and update the readme,
+   `CLAUDE.md` and this file.

@@ -1,6 +1,6 @@
 import 'package:ajil/features/user/ui/login/page.dart';
-import 'package:ajil/features/user/ui/me/page.dart';
-import 'package:ajil/features/user/ui/me/prefs/page.dart';
+import 'package:ajil/features/user/ui/me/me_page.dart';
+import 'package:ajil/features/user/ui/me/prefs/prefs_page.dart';
 import 'package:ajil/features/user/ui/onboarding_page.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/shell/coming_soon_page.dart';

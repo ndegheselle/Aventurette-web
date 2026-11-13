@@ -6,7 +6,10 @@
         "close": "Fermer",
         "retry": "Réessayer",
         "apply": "Appliquer",
-        "reset": "Réinitialiser"
+        "reset": "Réinitialiser",
+        "results": {
+            "saved": "Enregistré"
+        }
     },
     "comingSoon": {
         "title": "Bientôt disponible",

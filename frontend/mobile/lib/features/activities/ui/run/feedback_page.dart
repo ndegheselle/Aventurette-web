@@ -1,7 +1,7 @@
 import 'package:ajil/features/activities/models/activity.dart';
 import 'package:ajil/features/activities/state/catalogue.dart';
 import 'package:ajil/features/activities/state/feedback.dart';
-import 'package:ajil/features/activities/ui/favorite_button.dart';
+import 'package:ajil/features/activities/ui/_parts/favorite_button.dart';
 import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/async/run_action.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';

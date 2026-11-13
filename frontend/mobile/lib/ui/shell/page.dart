@@ -59,9 +59,9 @@ class TabHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpaces.page, 12, AppSpaces.page, 8),
+      padding: const .fromLTRB(AppSpaces.page, AppSpaces.page, AppSpaces.page, 0),
       child: Row(
-        spacing: 8,
+        spacing: AppSpaces.spacing,
         children: [
           Expanded(child: Text(title, style: context.titleText)),
           ...TabHeaderActions.of(context),
@@ -82,9 +82,9 @@ class BackHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpaces.page - 8, 8, AppSpaces.page, 8),
+      padding: const .fromLTRB(AppSpaces.page, AppSpaces.page, AppSpaces.page, 0),
       child: Row(
-        spacing: 4,
+        spacing: AppSpaces.spacing,
         children: [
           FButton.icon(
             variant: .ghost,
@@ -112,7 +112,7 @@ class BottomActionBar extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page, vertical: 12),
+      padding: const .symmetric(horizontal: AppSpaces.page, vertical: AppSpaces.spacing),
       decoration: BoxDecoration(
         color: colors.background,
         border: Border(top: BorderSide(color: colors.border, width: context.theme.style.borderWidth)),
@@ -133,7 +133,7 @@ class PageScroll extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       controller: controller,
-      padding: const EdgeInsets.fromLTRB(AppSpaces.page, 4, AppSpaces.page, AppSpaces.page),
+      padding: const .symmetric(horizontal: AppSpaces.page, vertical: AppSpaces.spacing),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpaces.spacing,
