@@ -69,6 +69,8 @@ flowchart LR
 - **Only `backend/pocketbase/` knows PocketBase.** Changing backend means rewriting that folder.
 - **`models/` and `api/` import no Flutter.** The rules are plain Dart.
 - `dart run tool/check_architecture.dart` fails when a boundary is crossed.
+- **Every toast goes through `showAppToast`** (`ui/overlays/toast.dart`): at the bottom, over any
+  sheet, dismissed by a swipe right. The check fails on a `showFToast` anywhere else.
 - A screen not built yet has its route and says *Bientôt disponible*
   ([ADR 0023](adr/0023-unbuilt-screens-throw-at-the-api-seam.md)).
 - Specs live in `test/`, mirroring `lib/` ([ADR 0022](adr/0022-mobile-specs-live-in-test.md)).

@@ -1,4 +1,5 @@
 import 'package:ajil/ui/i18n/strings.g.dart';
+import 'package:ajil/ui/overlays/toast.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
@@ -12,24 +13,11 @@ Future<T?> runAction<T>(BuildContext context, Future<T> Function() action, {Stri
   try {
     return await action();
   } on UnimplementedError {
-    if (context.mounted) {
-      showFToast(
-          context: context,
-          icon: Icon(FLucideIcons.trafficCone),
-          title: Text(t.comingSoon.title),
-          swipeToDismiss: const [.right],
-        );
-    }
+    if (context.mounted) showAppToast(context, icon: FLucideIcons.trafficCone, title: t.comingSoon.title);
   } catch (_) {
     if (context.mounted) {
-      showFToast(
-          context: context,
-          icon: Icon(FLucideIcons.bug),
-          title: const Text("Oops"),
-          description: Text(failure ?? t.errors.generic),
-          swipeToDismiss: const [.right],
-        );
-    } showFToast(context: context, title: Text(failure ?? t.errors.generic));
+      showAppToast(context, icon: FLucideIcons.bug, title: 'Oops', description: failure ?? t.errors.generic);
+    }
   }
   return null;
 }
