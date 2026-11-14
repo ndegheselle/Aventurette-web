@@ -18,6 +18,12 @@
       "runtimeExecutable": "cmd",
       "runtimeArgs": ["/c", "cd frontend\\mobile && flutter run -d web-server --web-port 8081 --dart-define=API_URL=http://127.0.0.1:8090"],
       "port": 8081
+    },
+    {
+      "name": "mobile-android",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd frontend\\mobile && flutter emulators --launch Pixel_2_API_33 && flutter run -d emulator-5554 --device-timeout 180 --host-vmservice-port 8182 --disable-service-auth-codes --dart-define=API_URL=http://10.0.2.2:8090"],
+      "port": 8182
     }
   ]
 }

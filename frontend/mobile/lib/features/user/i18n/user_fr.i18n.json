@@ -8,7 +8,7 @@
         "changeEmail": "Changer d'e-mail",
         "codeNotSent": "Le code n'a pas pu être envoyé.",
         "codeRejected": "Code invalide ou expiré.",
-        "password": "Mot de passe (debug)",
+        "password": "Mot de passe",
         "withPassword": "Se connecter avec le mot de passe",
         "passwordRejected": "E-mail ou mot de passe incorrect."
     },

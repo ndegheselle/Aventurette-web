@@ -1,6 +1,7 @@
 {
-  // Two profiles in the Run and Debug view: "API + Mobile" and "API + Web admin". Each piece can
-  // also be started on its own. Needs the Go, Dart/Flutter and (built-in) JavaScript debuggers.
+  // Three profiles in the Run and Debug view: "API + Mobile", "API + Mobile (Android)" and
+  // "API + Web admin". Each piece can also be started on its own. Needs the Go, Dart/Flutter and
+  // (built-in) JavaScript debuggers.
   "version": "0.2.0",
   "configurations": [
     {
@@ -16,7 +17,7 @@
       "windows": { "output": "${env:TEMP}/ajil-api-debug.exe" }
     },
     {
-      // In Chrome: with Windows, the only platforms set up for now.
+      // In Chrome. Windows and Android have their own entries below.
       "name": "Mobile",
       "type": "dart",
       "request": "launch",
@@ -33,6 +34,16 @@
       "program": "lib/main.dart",
       "deviceId": "windows",
       "toolArgs": ["--dart-define=API_URL=http://127.0.0.1:8090"]
+    },
+    {
+      // Starts the emulator if it is not running (`flutter emulators` lists the ids). The emulator
+      // reaches the computer at 10.0.2.2.
+      "name": "Mobile (Android)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend/mobile",
+      "program": "lib/main.dart",
+      "toolArgs": ["--dart-define=API_URL=http://10.0.2.2:8090"]
     },
     {
       // Starts Vite (the "web" task) and opens Chrome on it, with breakpoints in the .vue files.

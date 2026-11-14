@@ -39,7 +39,7 @@ class CataloguePage extends StatelessWidget {
       header: TabHeader(title: t.title),
       // The gutter is the tabs': it insets their bar and every segment alike.
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page),
+        padding: const EdgeInsets.fromLTRB(AppSpaces.page, AppSpaces.spacing, AppSpaces.page, 0),
         child: FTabs(
           expands: true,
           scrollable: true,
@@ -63,14 +63,13 @@ class _Library extends ConsumerWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: AppSpaces.spacing,
       children: [
         SearchField(
           hintText: context.t.activities.catalogue.searchHint,
           onSearch: ref.read(catalogueQueryProvider.notifier).search,
         ),
-        const SizedBox(height: 8),
         const _QuickFilters(),
-        const SizedBox(height: 8),
         Expanded(
           child: feed.empty
               ? EmptyState(icon: FLucideIcons.searchX, message: context.t.activities.catalogue.empty)
@@ -179,7 +178,7 @@ class _ActivityList extends StatelessWidget {
         return false;
       },
       child: ListView.separated(
-        padding: const EdgeInsets.only(top: 4, bottom: AppSpaces.page),
+        padding: const EdgeInsets.only(bottom: AppSpaces.page),
         itemCount: items.length + 1,
         separatorBuilder: (_, _) => const SizedBox(height: AppSpaces.spacing),
         itemBuilder: (context, index) {

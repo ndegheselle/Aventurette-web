@@ -28,7 +28,7 @@ Signing in and the onboarding are not in the wireframes; they come from the earl
 - **The session is kept on the device and renewed** as long as it is used within 7 days. There is
   no *Rester connecté*.
 - Someone signed out sees only this screen; someone signed in never sees it.
-- A development version also accepts a password, to sign in without a mailbox.
+- A password also signs in, without a mailbox.
 - There is no sign-in with Google, Microsoft or Apple.
 
 ## Onboarding

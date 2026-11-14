@@ -4,7 +4,7 @@ library;
 
 abstract final class AppSpaces {
   /// The gap between sibling elements.
-  static const spacing = 12.0;
+  static const spacing = 8.0;
 
   /// The page's side gutter.
   static const page = 16.0;

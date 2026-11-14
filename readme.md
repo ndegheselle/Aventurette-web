@@ -76,6 +76,17 @@ Or in a Windows window, which needs Visual Studio with the *Desktop development 
 flutter run -d windows --dart-define=API_URL=http://127.0.0.1:8090
 ```
 
+Or on Android, which needs Android Studio with an SDK and an emulator (or a phone with USB
+debugging). The emulator reaches the computer at `10.0.2.2`; a phone needs the computer's
+address on the local network, with PocketBase started on `--http=0.0.0.0:8090`. `flutter devices`
+lists the device id; the first emulator is `emulator-5554`:
+
+```bash
+flutter run -d emulator-5554 --dart-define=API_URL=http://10.0.2.2:8090
+```
+
+Plain `http` is only allowed in debug builds; a release build needs an `https` API.
+
 ```bash
 dart run tool/check_architecture.dart && flutter analyze && flutter test
 ```

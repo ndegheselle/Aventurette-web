@@ -8,7 +8,7 @@
         "changeEmail": "Change email",
         "codeNotSent": "The code could not be sent.",
         "codeRejected": "Invalid or expired code.",
-        "password": "Password (debug)",
+        "password": "Password",
         "withPassword": "Sign in with the password",
         "passwordRejected": "Wrong email or password."
     },

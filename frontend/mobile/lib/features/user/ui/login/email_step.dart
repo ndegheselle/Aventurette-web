@@ -1,13 +1,11 @@
 import 'package:ajil/features/user/state/login_form.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/theme/tokens.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 
-/// The login's first step: the email a code is sent to. A debug build also offers a password
-/// under it, to sign in without a mailbox.
+/// The login's first step: the email a code is sent to, or a password to sign in without a mailbox.
 class LoginEmailStep extends ConsumerStatefulWidget {
   const LoginEmailStep({super.key});
 
@@ -51,24 +49,22 @@ class _LoginEmailStepState extends ConsumerState<LoginEmailStep> {
               FTextField.prefixIconBuilder(context, style, variants, icon(FLucideIcons.mail)),
           onSubmit: notifier.requestCode,
         ),
-        if (kDebugMode) ...[
-          FTextField(
-            control: .managed(controller: _password),
-            label: Text(t.password),
-            error: form.error == LoginError.passwordRejected ? Text(t.passwordRejected) : null,
-            obscureText: true,
-            autofillHints: const [AutofillHints.password],
-            prefixBuilder: (context, style, variants) =>
-                FTextField.prefixIconBuilder(context, style, variants, icon(FLucideIcons.lock)),
-            onSubmit: (password) => notifier.loginWithPassword(_email.text, password),
-          ),
-          FButton(
-            variant: .outline,
-            prefix: busy,
-            onPress: form.busy ? null : () => notifier.loginWithPassword(_email.text, _password.text),
-            child: Text(t.withPassword),
-          ),
-        ],
+        FTextField(
+          control: .managed(controller: _password),
+          label: Text(t.password),
+          error: form.error == LoginError.passwordRejected ? Text(t.passwordRejected) : null,
+          obscureText: true,
+          autofillHints: const [AutofillHints.password],
+          prefixBuilder: (context, style, variants) =>
+              FTextField.prefixIconBuilder(context, style, variants, icon(FLucideIcons.lock)),
+          onSubmit: (password) => notifier.loginWithPassword(_email.text, password),
+        ),
+        FButton(
+          variant: .outline,
+          prefix: busy,
+          onPress: form.busy ? null : () => notifier.loginWithPassword(_email.text, _password.text),
+          child: Text(t.withPassword),
+        ),
         FButton(
           size: .lg,
           prefix: busy,

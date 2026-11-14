@@ -6,6 +6,7 @@ import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/shell/page.dart';
 import 'package:ajil/ui/theme/text.dart';
+import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -44,7 +45,7 @@ class PreferencesPage extends ConsumerWidget {
           Panel(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: 12,
+              spacing: AppSpaces.spacing,
               children: [
                 Text(t.user.filterDefaults.title, style: context.headingText),
                 Text(t.user.filterDefaults.help, style: context.captionText),

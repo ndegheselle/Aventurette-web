@@ -119,12 +119,8 @@ class _ActivitySheet extends ConsumerWidget {
                       (index + 1).toString().padLeft(2, '0'),
                       style: context.titleText.copyWith(fontWeight: FontWeight.w300),
                     ),
-                    title: Text(
-                      [
-                        step.title.isEmpty ? t.activities.stepKind[step.kind.name]! : step.title,
-                        if (step.duration > 0) t.activities.minutes(minutes: step.duration),
-                      ].join(' · '),
-                    ),
+                    title: Text(step.title.isEmpty ? t.activities.stepKind[step.kind.name]! : step.title,),
+                    suffix: step.duration > 0 ? Text(t.activities.minutes(minutes: step.duration)) : null,
                     // The tile cuts its subtitle to one line; this shows the whole description.
                     subtitle: DefaultTextStyle.merge(
                       overflow: TextOverflow.visible,
@@ -152,15 +148,12 @@ class _ActivitySheet extends ConsumerWidget {
               ),
               FTooltip(
                 tipBuilder: (context, _) => Text(saved ? t.activities.actions.saved : t.activities.actions.save),
-                child: FButton.icon(
-                  variant: .outline,
-                  onPress: () => toggleFavorite(context, ref, activity),
-                  child: const Icon(FLucideIcons.heart),
-                ),
+                child: FavoriteButton(activity: activity),
               ),
               FTooltip(
                 tipBuilder: (context, _) => Text(t.activities.actions.guided),
                 child: FButton.icon(
+                  variant: .primary,
                   onPress: () => context.push(ActivitiesRoutes.run(activity.id, 1)),
                   child: const Icon(FLucideIcons.play),
                 ),

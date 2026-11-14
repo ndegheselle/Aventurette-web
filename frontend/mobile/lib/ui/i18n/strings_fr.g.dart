@@ -1001,8 +1001,8 @@ class Translations$user$login$fr {
 	/// fr: 'Code invalide ou expiré.'
 	String get codeRejected => 'Code invalide ou expiré.';
 
-	/// fr: 'Mot de passe (debug)'
-	String get password => 'Mot de passe (debug)';
+	/// fr: 'Mot de passe'
+	String get password => 'Mot de passe';
 
 	/// fr: 'Se connecter avec le mot de passe'
 	String get withPassword => 'Se connecter avec le mot de passe';
@@ -1422,7 +1422,7 @@ extension on Translations {
 			'user.login.changeEmail' => 'Changer d\'e-mail',
 			'user.login.codeNotSent' => 'Le code n\'a pas pu être envoyé.',
 			'user.login.codeRejected' => 'Code invalide ou expiré.',
-			'user.login.password' => 'Mot de passe (debug)',
+			'user.login.password' => 'Mot de passe',
 			'user.login.withPassword' => 'Se connecter avec le mot de passe',
 			'user.login.passwordRejected' => 'E-mail ou mot de passe incorrect.',
 			'user.onboarding.title' => 'Bienvenue !',
