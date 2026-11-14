@@ -1,5 +1,6 @@
 import 'package:ajil/features/activities/ui/activity/activity_page.dart';
 import 'package:ajil/features/activities/ui/catalogue/catalogue_page.dart';
+import 'package:ajil/features/activities/ui/preparation/preparation_page.dart';
 import 'package:ajil/features/activities/ui/run/feedback_page.dart';
 import 'package:ajil/features/activities/ui/run/run_page.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
@@ -34,11 +35,11 @@ final activitiesRoutes = <GoRoute>[
     '/activities/:id/feedback',
     (context, state) => FeedbackPage(activityId: state.pathParameters['id']!),
   ),
-  // Not built yet (ADR 0023).
   fullScreenRoute(
     '/activities/:id/preparation',
-    (context, state) => ComingSoonPage(title: context.t.activities.screens.preparation, wireframe: 'A05'),
+    (context, state) => PreparationPage(activityId: state.pathParameters['id']!),
   ),
+  // Not built yet (ADR 0023).
   fullScreenRoute(
     ActivitiesRoutes.quick,
     (context, state) => ComingSoonPage(title: context.t.activities.screens.quick, wireframe: 'A06'),

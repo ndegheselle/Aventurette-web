@@ -151,8 +151,25 @@
         "leave": "Quitter",
         "saveRefused": "Votre avis n'a pas pu être enregistré."
     },
+    "preparation": {
+        "title": "Préparation",
+        "tabs(map)": {
+            "materials": "Matériel",
+            "setup": "Installation",
+            "advice": "Conseils"
+        },
+        "workshop": "Atelier · {name}",
+        "resources": "Ressources",
+        "setupTotal": "Installation · {minutes} min",
+        "safety": "Sécurité",
+        "tips": "Conseils",
+        "noMaterials": "Cette activité ne demande pas de matériel.",
+        "noSetup": "Rien à installer avant le jeu.",
+        "noAdvice": "Pas de conseil particulier pour cette activité.",
+        "hint": "Ces préparatifs alimentent les tâches de l'événement, attribuées depuis Planning.",
+        "back": "Retour à la fiche"
+    },
     "screens": {
-        "preparation": "Préparation",
         "quick": "Mode rapide"
     }
 }

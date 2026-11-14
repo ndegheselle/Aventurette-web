@@ -15,7 +15,7 @@ User journeys (`UF-01`…) are those of *02 — User Flows*.
 |---|---|---|
 | [Account and my space](account.md) | sign-in, onboarding, E01–E10 | Sign-in, onboarding and part of E01, E03, E04 built |
 | [Catalogue](catalogue.md) | A01 A02 A14 A16 | *Toutes* and *Favoris* built |
-| [Activity sheet](activity-sheet.md) | A03 A05 | Sheet built, preparation not |
+| [Activity sheet](activity-sheet.md) | A03 A05 | Built |
 | [Running an activity](running-an-activity.md) | A06 A07 A08 A09 A15 | Guided steps built; its ending differs; quick mode not built |
 | [Creating an activity](activity-authoring.md) | B05 A04 A19 | Not built |
 | [Sharing and exporting](sharing.md) | A10–A13 | Not built |
