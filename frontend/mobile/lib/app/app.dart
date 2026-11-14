@@ -44,9 +44,10 @@ class AjilApp extends ConsumerWidget {
           // forui styles its own icons; this is for the ones drawn outside its widgets.
           child: IconTheme(
             data: IconThemeData(color: data.colors.foreground, size: 20),
-            // At the top, under the status bar: the toaster keeps out of the safe area itself.
+            // At the bottom, where the sheets open, and over them: the toaster keeps out of the
+            // safe area itself. Every toast goes through `showAppToast`.
             child: FToaster(
-              style: const .delta(toastAlignment: .topCenter, padding: .value(EdgeInsets.all(16))),
+              style: const .delta(toastAlignment: .bottomCenter, padding: .value(EdgeInsets.all(16))),
               child: child ?? const SizedBox.shrink(),
             ),
           ),

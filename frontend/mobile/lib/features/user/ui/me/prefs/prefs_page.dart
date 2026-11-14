@@ -4,6 +4,7 @@ import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/async/run_action.dart';
 import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
+import 'package:ajil/ui/overlays/toast.dart';
 import 'package:ajil/ui/shell/page.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:ajil/ui/theme/tokens.dart';
@@ -28,12 +29,11 @@ class PreferencesPage extends ConsumerWidget {
         return true;
       });
       if (saved == true && context.mounted) {
-        showFToast(
-          context: context,
-          icon: Icon(FLucideIcons.save),
-          title: Text(t.ui.actions.results.saved),
-          description: Text(t.user.preferences.saved),
-          swipeToDismiss: const [.right],
+        showAppToast(
+          context,
+          icon: FLucideIcons.save,
+          title: t.ui.actions.results.saved,
+          description: t.user.preferences.saved,
         );
       }
     }

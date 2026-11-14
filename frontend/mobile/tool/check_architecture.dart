@@ -92,6 +92,10 @@ final _rules = <_Rule>[
       : 'imports are non-relative: package:ajil/…',
 ];
 
+/// The one file that calls forui's toasts: every other one goes through `showAppToast`.
+const _toast = 'lib/ui/overlays/toast.dart';
+final _rawToast = RegExp(r'\bshow(?:Raw)?FToast\s*[<(]');
+
 void main() {
   final violations = <String>[];
 
@@ -102,7 +106,11 @@ void main() {
 
   for (final file in files) {
     final place = _Place(file.path.replaceAll(r'\', '/'));
-    for (final match in _import.allMatches(file.readAsStringSync())) {
+    final source = file.readAsStringSync();
+    if (place.path != _toast && _rawToast.hasMatch(source)) {
+      violations.add('${place.path}: showFToast — a toast goes through showAppToast ($_toast), so all look alike');
+    }
+    for (final match in _import.allMatches(source)) {
       final import = match[1]!;
       for (final rule in _rules) {
         final message = rule(place, import);
