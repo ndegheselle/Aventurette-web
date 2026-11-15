@@ -6,5 +6,65 @@
         "edit": "Edit the event",
         "newBlock": "Set up the time",
         "coordination": "Coordination"
+    },
+    "segments(map)": {
+        "calendar": "Calendar",
+        "events": "Events",
+        "templates": "Day templates"
+    },
+    "create": "+ New event",
+    "calendar": {
+        "group": "Group",
+        "allGroups": "All groups",
+        "empty": "No event on that day.",
+        "hint": "Statuses show here. The validations to handle are gathered in Follow-up.",
+        "date": "Day"
+    },
+    "list": {
+        "searchLabel": "Search for an event",
+        "searchHint": "Name or period…",
+        "segments(map)": {
+            "mine": "My events",
+            "shared": "Shared"
+        },
+        "empty": "No event.",
+        "allGroups": "all units"
+    },
+    "status(map)": {
+        "draft": "Draft",
+        "preparing": "Being prepared",
+        "ready": "Ready"
+    },
+    "dates": {
+        "weekdays": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ],
+        "months": [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ],
+        "day": "{month} {day}",
+        "fullDay": "{weekday}, {month} {day}",
+        "dayRange": "{month} {from}–{to}",
+        "range": "{from} – {to}",
+        "hour": "{hours}:00",
+        "time": "{hours}:{minutes}",
+        "times": "{from}–{to}"
     }
 }

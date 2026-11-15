@@ -161,6 +161,23 @@ class Translations$dayTemplates$fr {
 
 	// Translations
 	late final Translations$dayTemplates$screens$fr screens = Translations$dayTemplates$screens$fr.internal(_root);
+	Map<String, String> get sources => {
+		'ajil': 'Ajil',
+		'structure': 'Ma structure',
+		'personal': 'Personnelles',
+	};
+
+	/// fr: 'Rechercher une trame'
+	String get searchLabel => 'Rechercher une trame';
+
+	/// fr: 'Durée, groupe…'
+	String get searchHint => 'Durée, groupe…';
+
+	/// fr: 'Aucune journée type.'
+	String get empty => 'Aucune journée type.';
+
+	/// fr: 'La structure peut remplacer ou masquer les modèles Ajil. Vos modèles personnels restent accessibles selon les droits.'
+	String get hint => 'La structure peut remplacer ou masquer les modèles Ajil. Vos modèles personnels restent accessibles selon les droits.';
 }
 
 // Path: events
@@ -171,6 +188,23 @@ class Translations$events$fr {
 
 	// Translations
 	late final Translations$events$screens$fr screens = Translations$events$screens$fr.internal(_root);
+	Map<String, String> get segments => {
+		'calendar': 'Calendrier',
+		'events': 'Événements',
+		'templates': 'Journées types',
+	};
+
+	/// fr: '+ Créer un événement'
+	String get create => '+ Créer un événement';
+
+	late final Translations$events$calendar$fr calendar = Translations$events$calendar$fr.internal(_root);
+	late final Translations$events$list$fr list = Translations$events$list$fr.internal(_root);
+	Map<String, String> get status => {
+		'draft': 'Brouillon',
+		'preparing': 'Préparation en cours',
+		'ready': 'Prêt',
+	};
+	late final Translations$events$dates$fr dates = Translations$events$dates$fr.internal(_root);
 }
 
 // Path: followUp
@@ -780,6 +814,109 @@ class Translations$events$screens$fr {
 
 	/// fr: 'Coordination'
 	String get coordination => 'Coordination';
+}
+
+// Path: events.calendar
+class Translations$events$calendar$fr {
+	Translations$events$calendar$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Groupe'
+	String get group => 'Groupe';
+
+	/// fr: 'Tous les groupes'
+	String get allGroups => 'Tous les groupes';
+
+	/// fr: 'Aucun événement ce jour-là.'
+	String get empty => 'Aucun événement ce jour-là.';
+
+	/// fr: 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.'
+	String get hint => 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.';
+
+	/// fr: 'Jour'
+	String get date => 'Jour';
+}
+
+// Path: events.list
+class Translations$events$list$fr {
+	Translations$events$list$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Rechercher un événement'
+	String get searchLabel => 'Rechercher un événement';
+
+	/// fr: 'Nom ou période…'
+	String get searchHint => 'Nom ou période…';
+
+	Map<String, String> get segments => {
+		'mine': 'Mes événements',
+		'shared': 'Partagés',
+	};
+
+	/// fr: 'Aucun événement.'
+	String get empty => 'Aucun événement.';
+
+	/// fr: 'toutes les unités'
+	String get allGroups => 'toutes les unités';
+}
+
+// Path: events.dates
+class Translations$events$dates$fr {
+	Translations$events$dates$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	List<String> get weekdays => [
+		'Lundi',
+		'Mardi',
+		'Mercredi',
+		'Jeudi',
+		'Vendredi',
+		'Samedi',
+		'Dimanche',
+	];
+	List<String> get months => [
+		'janvier',
+		'février',
+		'mars',
+		'avril',
+		'mai',
+		'juin',
+		'juillet',
+		'août',
+		'septembre',
+		'octobre',
+		'novembre',
+		'décembre',
+	];
+
+	/// fr: '{day} {month}'
+	String day({required Object day, required Object month}) => '${day} ${month}';
+
+	/// fr: '{weekday} {day} {month}'
+	String fullDay({required Object weekday, required Object day, required Object month}) => '${weekday} ${day} ${month}';
+
+	/// fr: '{from}–{to} {month}'
+	String dayRange({required Object from, required Object to, required Object month}) => '${from}–${to} ${month}';
+
+	/// fr: '{from} – {to}'
+	String range({required Object from, required Object to}) => '${from} – ${to}';
+
+	/// fr: '{hours}h'
+	String hour({required Object hours}) => '${hours}h';
+
+	/// fr: '{hours}h{minutes}'
+	String time({required Object hours, required Object minutes}) => '${hours}h${minutes}';
+
+	/// fr: '{from}–{to}'
+	String times({required Object from, required Object to}) => '${from}–${to}';
 }
 
 // Path: followUp.screens
@@ -1430,12 +1567,63 @@ extension on Translations {
 			'dayTemplates.screens.template' => 'Journée type',
 			'dayTemplates.screens.edit' => 'Modifier la journée type',
 			'dayTemplates.screens.visibility' => 'Modèles',
+			'dayTemplates.sources.ajil' => 'Ajil',
+			'dayTemplates.sources.structure' => 'Ma structure',
+			'dayTemplates.sources.personal' => 'Personnelles',
+			'dayTemplates.searchLabel' => 'Rechercher une trame',
+			'dayTemplates.searchHint' => 'Durée, groupe…',
+			'dayTemplates.empty' => 'Aucune journée type.',
+			'dayTemplates.hint' => 'La structure peut remplacer ou masquer les modèles Ajil. Vos modèles personnels restent accessibles selon les droits.',
 			'events.screens.tab' => 'Planning',
 			'events.screens.create' => 'Créer un événement',
 			'events.screens.event' => 'Événement',
 			'events.screens.edit' => 'Modifier l\'événement',
 			'events.screens.newBlock' => 'Paramétrer le temps',
 			'events.screens.coordination' => 'Coordination',
+			'events.segments.calendar' => 'Calendrier',
+			'events.segments.events' => 'Événements',
+			'events.segments.templates' => 'Journées types',
+			'events.create' => '+ Créer un événement',
+			'events.calendar.group' => 'Groupe',
+			'events.calendar.allGroups' => 'Tous les groupes',
+			'events.calendar.empty' => 'Aucun événement ce jour-là.',
+			'events.calendar.hint' => 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.',
+			'events.calendar.date' => 'Jour',
+			'events.list.searchLabel' => 'Rechercher un événement',
+			'events.list.searchHint' => 'Nom ou période…',
+			'events.list.segments.mine' => 'Mes événements',
+			'events.list.segments.shared' => 'Partagés',
+			'events.list.empty' => 'Aucun événement.',
+			'events.list.allGroups' => 'toutes les unités',
+			'events.status.draft' => 'Brouillon',
+			'events.status.preparing' => 'Préparation en cours',
+			'events.status.ready' => 'Prêt',
+			'events.dates.weekdays.0' => 'Lundi',
+			'events.dates.weekdays.1' => 'Mardi',
+			'events.dates.weekdays.2' => 'Mercredi',
+			'events.dates.weekdays.3' => 'Jeudi',
+			'events.dates.weekdays.4' => 'Vendredi',
+			'events.dates.weekdays.5' => 'Samedi',
+			'events.dates.weekdays.6' => 'Dimanche',
+			'events.dates.months.0' => 'janvier',
+			'events.dates.months.1' => 'février',
+			'events.dates.months.2' => 'mars',
+			'events.dates.months.3' => 'avril',
+			'events.dates.months.4' => 'mai',
+			'events.dates.months.5' => 'juin',
+			'events.dates.months.6' => 'juillet',
+			'events.dates.months.7' => 'août',
+			'events.dates.months.8' => 'septembre',
+			'events.dates.months.9' => 'octobre',
+			'events.dates.months.10' => 'novembre',
+			'events.dates.months.11' => 'décembre',
+			'events.dates.day' => ({required Object day, required Object month}) => '${day} ${month}',
+			'events.dates.fullDay' => ({required Object weekday, required Object day, required Object month}) => '${weekday} ${day} ${month}',
+			'events.dates.dayRange' => ({required Object from, required Object to, required Object month}) => '${from}–${to} ${month}',
+			'events.dates.range' => ({required Object from, required Object to}) => '${from} – ${to}',
+			'events.dates.hour' => ({required Object hours}) => '${hours}h',
+			'events.dates.time' => ({required Object hours, required Object minutes}) => '${hours}h${minutes}',
+			'events.dates.times' => ({required Object from, required Object to}) => '${from}–${to}',
 			'followUp.screens.tab' => 'Suivi',
 			'inventory.screens.inventory' => 'Inventaire',
 			'notifications.screens.preferences' => 'Notifications',
