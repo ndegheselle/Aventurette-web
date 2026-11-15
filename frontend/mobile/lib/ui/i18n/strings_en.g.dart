@@ -605,20 +605,12 @@ class _Translations$events$calendar$en extends Translations$events$calendar$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override Map<String, String> get scales => {
-		'day': 'Day',
-		'week': 'Week',
-		'month': 'Month',
-		'year': 'Year',
-	};
 	@override String get group => 'Group';
 	@override String get allGroups => 'All groups';
-	@override String get previous => 'Previous period';
-	@override String get next => 'Next period';
-	@override String get today => 'Today';
-	@override String get empty => 'No event in this period.';
-	@override String eventCount({required Object count}) => '${count} events';
+	@override String get empty => 'No event on that day.';
 	@override String get hint => 'Statuses show here. The validations to handle are gathered in Follow-up.';
+	@override String get showMonth => 'Show the month';
+	@override String get hideMonth => 'Show the week';
 }
 
 // Path: events.list
@@ -654,24 +646,6 @@ class _Translations$events$dates$en extends Translations$events$dates$fr {
 		'Saturday',
 		'Sunday',
 	];
-	@override List<String> get weekdaysShort => [
-		'Mon',
-		'Tue',
-		'Wed',
-		'Thu',
-		'Fri',
-		'Sat',
-		'Sun',
-	];
-	@override List<String> get weekdaysLetter => [
-		'M',
-		'T',
-		'W',
-		'T',
-		'F',
-		'S',
-		'S',
-	];
 	@override List<String> get months => [
 		'January',
 		'February',
@@ -686,22 +660,7 @@ class _Translations$events$dates$en extends Translations$events$dates$fr {
 		'November',
 		'December',
 	];
-	@override List<String> get monthsShort => [
-		'Jan',
-		'Feb',
-		'Mar',
-		'Apr',
-		'May',
-		'Jun',
-		'Jul',
-		'Aug',
-		'Sep',
-		'Oct',
-		'Nov',
-		'Dec',
-	];
 	@override String day({required Object month, required Object day}) => '${month} ${day}';
-	@override String monthYear({required Object month, required Object year}) => '${month} ${year}';
 	@override String fullDay({required Object weekday, required Object month, required Object day}) => '${weekday}, ${month} ${day}';
 	@override String dayRange({required Object month, required Object from, required Object to}) => '${month} ${from}–${to}';
 	@override String range({required Object from, required Object to}) => '${from} – ${to}';
@@ -1203,18 +1162,12 @@ extension on TranslationsEn {
 			'events.segments.events' => 'Events',
 			'events.segments.templates' => 'Day templates',
 			'events.create' => '+ New event',
-			'events.calendar.scales.day' => 'Day',
-			'events.calendar.scales.week' => 'Week',
-			'events.calendar.scales.month' => 'Month',
-			'events.calendar.scales.year' => 'Year',
 			'events.calendar.group' => 'Group',
 			'events.calendar.allGroups' => 'All groups',
-			'events.calendar.previous' => 'Previous period',
-			'events.calendar.next' => 'Next period',
-			'events.calendar.today' => 'Today',
-			'events.calendar.empty' => 'No event in this period.',
-			'events.calendar.eventCount' => ({required Object count}) => '${count} events',
+			'events.calendar.empty' => 'No event on that day.',
 			'events.calendar.hint' => 'Statuses show here. The validations to handle are gathered in Follow-up.',
+			'events.calendar.showMonth' => 'Show the month',
+			'events.calendar.hideMonth' => 'Show the week',
 			'events.list.searchLabel' => 'Search for an event',
 			'events.list.searchHint' => 'Name or period…',
 			'events.list.segments.mine' => 'My events',
@@ -1231,20 +1184,6 @@ extension on TranslationsEn {
 			'events.dates.weekdays.4' => 'Friday',
 			'events.dates.weekdays.5' => 'Saturday',
 			'events.dates.weekdays.6' => 'Sunday',
-			'events.dates.weekdaysShort.0' => 'Mon',
-			'events.dates.weekdaysShort.1' => 'Tue',
-			'events.dates.weekdaysShort.2' => 'Wed',
-			'events.dates.weekdaysShort.3' => 'Thu',
-			'events.dates.weekdaysShort.4' => 'Fri',
-			'events.dates.weekdaysShort.5' => 'Sat',
-			'events.dates.weekdaysShort.6' => 'Sun',
-			'events.dates.weekdaysLetter.0' => 'M',
-			'events.dates.weekdaysLetter.1' => 'T',
-			'events.dates.weekdaysLetter.2' => 'W',
-			'events.dates.weekdaysLetter.3' => 'T',
-			'events.dates.weekdaysLetter.4' => 'F',
-			'events.dates.weekdaysLetter.5' => 'S',
-			'events.dates.weekdaysLetter.6' => 'S',
 			'events.dates.months.0' => 'January',
 			'events.dates.months.1' => 'February',
 			'events.dates.months.2' => 'March',
@@ -1257,20 +1196,7 @@ extension on TranslationsEn {
 			'events.dates.months.9' => 'October',
 			'events.dates.months.10' => 'November',
 			'events.dates.months.11' => 'December',
-			'events.dates.monthsShort.0' => 'Jan',
-			'events.dates.monthsShort.1' => 'Feb',
-			'events.dates.monthsShort.2' => 'Mar',
-			'events.dates.monthsShort.3' => 'Apr',
-			'events.dates.monthsShort.4' => 'May',
-			'events.dates.monthsShort.5' => 'Jun',
-			'events.dates.monthsShort.6' => 'Jul',
-			'events.dates.monthsShort.7' => 'Aug',
-			'events.dates.monthsShort.8' => 'Sep',
-			'events.dates.monthsShort.9' => 'Oct',
-			'events.dates.monthsShort.10' => 'Nov',
-			'events.dates.monthsShort.11' => 'Dec',
 			'events.dates.day' => ({required Object month, required Object day}) => '${month} ${day}',
-			'events.dates.monthYear' => ({required Object month, required Object year}) => '${month} ${year}',
 			'events.dates.fullDay' => ({required Object weekday, required Object month, required Object day}) => '${weekday}, ${month} ${day}',
 			'events.dates.dayRange' => ({required Object month, required Object from, required Object to}) => '${month} ${from}–${to}',
 			'events.dates.range' => ({required Object from, required Object to}) => '${from} – ${to}',

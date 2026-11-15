@@ -823,12 +823,6 @@ class Translations$events$calendar$fr {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-	Map<String, String> get scales => {
-		'day': 'Jour',
-		'week': 'Semaine',
-		'month': 'Mois',
-		'year': 'Année',
-	};
 
 	/// fr: 'Groupe'
 	String get group => 'Groupe';
@@ -836,23 +830,17 @@ class Translations$events$calendar$fr {
 	/// fr: 'Tous les groupes'
 	String get allGroups => 'Tous les groupes';
 
-	/// fr: 'Période précédente'
-	String get previous => 'Période précédente';
-
-	/// fr: 'Période suivante'
-	String get next => 'Période suivante';
-
-	/// fr: 'Aujourd'hui'
-	String get today => 'Aujourd\'hui';
-
-	/// fr: 'Aucun événement sur cette période.'
-	String get empty => 'Aucun événement sur cette période.';
-
-	/// fr: '{count} évén.'
-	String eventCount({required Object count}) => '${count} évén.';
+	/// fr: 'Aucun événement ce jour-là.'
+	String get empty => 'Aucun événement ce jour-là.';
 
 	/// fr: 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.'
 	String get hint => 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.';
+
+	/// fr: 'Afficher le mois'
+	String get showMonth => 'Afficher le mois';
+
+	/// fr: 'Afficher la semaine'
+	String get hideMonth => 'Afficher la semaine';
 }
 
 // Path: events.list
@@ -897,24 +885,6 @@ class Translations$events$dates$fr {
 		'Samedi',
 		'Dimanche',
 	];
-	List<String> get weekdaysShort => [
-		'Lun.',
-		'Mar.',
-		'Mer.',
-		'Jeu.',
-		'Ven.',
-		'Sam.',
-		'Dim.',
-	];
-	List<String> get weekdaysLetter => [
-		'L',
-		'M',
-		'M',
-		'J',
-		'V',
-		'S',
-		'D',
-	];
 	List<String> get months => [
 		'janvier',
 		'février',
@@ -929,26 +899,9 @@ class Translations$events$dates$fr {
 		'novembre',
 		'décembre',
 	];
-	List<String> get monthsShort => [
-		'janv.',
-		'févr.',
-		'mars',
-		'avr.',
-		'mai',
-		'juin',
-		'juil.',
-		'août',
-		'sept.',
-		'oct.',
-		'nov.',
-		'déc.',
-	];
 
 	/// fr: '{day} {month}'
 	String day({required Object day, required Object month}) => '${day} ${month}';
-
-	/// fr: '{month} {year}'
-	String monthYear({required Object month, required Object year}) => '${month} ${year}';
 
 	/// fr: '{weekday} {day} {month}'
 	String fullDay({required Object weekday, required Object day, required Object month}) => '${weekday} ${day} ${month}';
@@ -1634,18 +1587,12 @@ extension on Translations {
 			'events.segments.events' => 'Événements',
 			'events.segments.templates' => 'Journées types',
 			'events.create' => '+ Créer un événement',
-			'events.calendar.scales.day' => 'Jour',
-			'events.calendar.scales.week' => 'Semaine',
-			'events.calendar.scales.month' => 'Mois',
-			'events.calendar.scales.year' => 'Année',
 			'events.calendar.group' => 'Groupe',
 			'events.calendar.allGroups' => 'Tous les groupes',
-			'events.calendar.previous' => 'Période précédente',
-			'events.calendar.next' => 'Période suivante',
-			'events.calendar.today' => 'Aujourd\'hui',
-			'events.calendar.empty' => 'Aucun événement sur cette période.',
-			'events.calendar.eventCount' => ({required Object count}) => '${count} évén.',
+			'events.calendar.empty' => 'Aucun événement ce jour-là.',
 			'events.calendar.hint' => 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.',
+			'events.calendar.showMonth' => 'Afficher le mois',
+			'events.calendar.hideMonth' => 'Afficher la semaine',
 			'events.list.searchLabel' => 'Rechercher un événement',
 			'events.list.searchHint' => 'Nom ou période…',
 			'events.list.segments.mine' => 'Mes événements',
@@ -1662,20 +1609,6 @@ extension on Translations {
 			'events.dates.weekdays.4' => 'Vendredi',
 			'events.dates.weekdays.5' => 'Samedi',
 			'events.dates.weekdays.6' => 'Dimanche',
-			'events.dates.weekdaysShort.0' => 'Lun.',
-			'events.dates.weekdaysShort.1' => 'Mar.',
-			'events.dates.weekdaysShort.2' => 'Mer.',
-			'events.dates.weekdaysShort.3' => 'Jeu.',
-			'events.dates.weekdaysShort.4' => 'Ven.',
-			'events.dates.weekdaysShort.5' => 'Sam.',
-			'events.dates.weekdaysShort.6' => 'Dim.',
-			'events.dates.weekdaysLetter.0' => 'L',
-			'events.dates.weekdaysLetter.1' => 'M',
-			'events.dates.weekdaysLetter.2' => 'M',
-			'events.dates.weekdaysLetter.3' => 'J',
-			'events.dates.weekdaysLetter.4' => 'V',
-			'events.dates.weekdaysLetter.5' => 'S',
-			'events.dates.weekdaysLetter.6' => 'D',
 			'events.dates.months.0' => 'janvier',
 			'events.dates.months.1' => 'février',
 			'events.dates.months.2' => 'mars',
@@ -1688,20 +1621,7 @@ extension on Translations {
 			'events.dates.months.9' => 'octobre',
 			'events.dates.months.10' => 'novembre',
 			'events.dates.months.11' => 'décembre',
-			'events.dates.monthsShort.0' => 'janv.',
-			'events.dates.monthsShort.1' => 'févr.',
-			'events.dates.monthsShort.2' => 'mars',
-			'events.dates.monthsShort.3' => 'avr.',
-			'events.dates.monthsShort.4' => 'mai',
-			'events.dates.monthsShort.5' => 'juin',
-			'events.dates.monthsShort.6' => 'juil.',
-			'events.dates.monthsShort.7' => 'août',
-			'events.dates.monthsShort.8' => 'sept.',
-			'events.dates.monthsShort.9' => 'oct.',
-			'events.dates.monthsShort.10' => 'nov.',
-			'events.dates.monthsShort.11' => 'déc.',
 			'events.dates.day' => ({required Object day, required Object month}) => '${day} ${month}',
-			'events.dates.monthYear' => ({required Object month, required Object year}) => '${month} ${year}',
 			'events.dates.fullDay' => ({required Object weekday, required Object day, required Object month}) => '${weekday} ${day} ${month}',
 			'events.dates.dayRange' => ({required Object from, required Object to, required Object month}) => '${from}–${to} ${month}',
 			'events.dates.range' => ({required Object from, required Object to}) => '${from} – ${to}',

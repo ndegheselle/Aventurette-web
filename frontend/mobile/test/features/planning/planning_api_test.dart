@@ -2,7 +2,6 @@ import 'package:ajil/core/data/mapper.dart';
 import 'package:ajil/features/planning/day_templates/models/day_template.dart';
 import 'package:ajil/features/planning/day_templates/state/day_templates.dart';
 import 'package:ajil/features/planning/events/api/event_mapper.dart';
-import 'package:ajil/features/planning/events/models/calendar.dart';
 import 'package:ajil/features/planning/events/state/planning.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,24 +18,38 @@ Payload eventRecord(String id, DateTime start, DateTime end, {String owner = 'u1
 };
 
 void main() {
-  test("the calendar reads the user's events taking part of the period, and no one else's", () async {
+  test("the calendar reads the user's events around the month shown, and no one else's", () async {
     final crud = FakeCrudFactory({
       'events': [
-        eventRecord('before', DateTime(2026, 11, 14, 10), DateTime(2026, 11, 14, 12)),
-        eventRecord('spills in', DateTime(2026, 11, 15, 18), DateTime(2026, 11, 16, 12)),
+        eventRecord('too early', DateTime(2026, 9, 30, 10), DateTime(2026, 9, 30, 12)),
+        eventRecord('spills in', DateTime(2026, 9, 30, 18), DateTime(2026, 10, 1, 12)),
+        eventRecord('ends as it starts', DateTime(2026, 9, 30, 10), DateTime(2026, 10)),
         eventRecord('saturday', DateTime(2026, 11, 21, 9, 30), DateTime(2026, 11, 21, 17, 30)),
-        eventRecord('ends as it starts', DateTime(2026, 11, 15, 10), DateTime(2026, 11, 16)),
-        eventRecord('next week', DateTime(2026, 11, 23, 10), DateTime(2026, 11, 23, 12)),
+        eventRecord('last of the window', DateTime(2026, 12, 31, 10), DateTime(2026, 12, 31, 12)),
+        eventRecord('too late', DateTime(2027, 1, 1, 10), DateTime(2027, 1, 1, 12)),
         eventRecord('not mine', DateTime(2026, 11, 21, 10), DateTime(2026, 11, 21, 12), owner: 'u2'),
       ],
     });
     final container = await signedInContainer(crud: crud);
-    container.read(calendarProvider.notifier).openDay(DateTime(2026, 11, 18));
-    container.read(calendarProvider.notifier).zoom(CalendarScale.week);
+    container.read(calendarProvider.notifier).select(DateTime(2026, 11, 18));
 
     final events = await container.read(calendarEventsProvider.future);
 
-    expect([for (final event in events) event.id], ['spills in', 'saturday']);
+    expect([for (final event in events) event.id], ['spills in', 'saturday', 'last of the window']);
+  });
+
+  test('paging the month calendar keeps the day chosen; closing it comes back to its month', () async {
+    final container = await signedInContainer();
+    final calendar = container.read(calendarProvider.notifier)..select(DateTime(2026, 11, 18));
+
+    calendar
+      ..toggleExpanded()
+      ..browse(DateTime(2027, 2, 1));
+    expect(container.read(calendarProvider).selected, DateTime(2026, 11, 18));
+    expect(container.read(calendarProvider).month, DateTime(2027, 2));
+
+    calendar.toggleExpanded();
+    expect(container.read(calendarProvider).month, DateTime(2026, 11));
   });
 
   test('a date is written in UTC and read back in the device time', () {

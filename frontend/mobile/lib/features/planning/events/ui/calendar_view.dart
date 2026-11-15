@@ -1,31 +1,28 @@
 import 'package:ajil/features/planning/events/models/calendar.dart';
 import 'package:ajil/features/planning/events/models/event.dart';
-import 'package:ajil/features/planning/events/routes.dart';
 import 'package:ajil/features/planning/events/state/planning.dart';
 import 'package:ajil/features/planning/events/ui/create_event_button.dart';
 import 'package:ajil/features/planning/events/ui/event_text.dart';
+import 'package:ajil/features/planning/events/ui/event_tile.dart';
 import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
-import 'package:ajil/ui/inputs/pills.dart';
 import 'package:ajil/ui/theme/text.dart';
 import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 
-/// The *Calendrier* (B01): a scale, a group, the period with a way to step through it, and the
-/// events in it, each with its status.
+/// The *Calendrier* (B01): a group, a line of days or the whole month to choose a day on, and the
+/// events of that day, each with its status. The month calendar's header pages through months
+/// and years.
 class CalendarView extends ConsumerWidget {
   const CalendarView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = context.t.events;
+    final t = context.t;
     final view = ref.watch(calendarProvider);
-    final calendar = ref.read(calendarProvider.notifier);
-    final period = view.period;
     final events = ref.watch(calendarEventsProvider);
     // The marks on the days follow the list; while it loads, the days are drawn bare.
     final shown = forGroup(events.value ?? const [], view.group);
@@ -33,35 +30,43 @@ class CalendarView extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: AppSpaces.page),
       children: [
-        ChoicePills(
-          values: CalendarScale.values,
-          selected: period.scale,
-          labelOf: (scale) => t.calendar.scales[scale.name]!,
-          onSelected: calendar.zoom,
-        ),
-        const SizedBox(height: AppSpaces.spacing),
         const _GroupSelect(),
         const SizedBox(height: AppSpaces.spacing),
-        _PeriodHeader(period: period),
+        Row(
+          children: [
+            // On one line, shrunk rather than wrapped beside the button.
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(dayTitle(t, view.selected), style: context.titleText, maxLines: 1),
+              ),
+            ),
+            FButton(
+              variant: .ghost,
+              size: .sm,
+              mainAxisSize: MainAxisSize.min,
+              prefix: Icon(view.expanded ? FLucideIcons.calendarRange : FLucideIcons.calendarDays),
+              onPress: ref.read(calendarProvider.notifier).toggleExpanded,
+              child: Text(view.expanded ? t.events.calendar.hideMonth : t.events.calendar.showMonth),
+            ),
+          ],
+        ),
         const SizedBox(height: AppSpaces.spacing),
-        switch (period.scale) {
-          CalendarScale.day => const SizedBox.shrink(),
-          CalendarScale.week => _WeekStrip(period: period, events: shown),
-          CalendarScale.month => _MonthGrid(period: period, events: shown),
-          CalendarScale.year => _YearGrid(year: period.start.year, events: shown),
-        },
+        if (view.expanded)
+          _MonthCalendar(selected: view.selected, events: shown)
+        else
+          _LineCalendar(selected: view.selected, events: shown),
         const SizedBox(height: AppSpaces.spacing),
-        // A year lists by month, above: a card per event would bury them.
-        if (period.scale != CalendarScale.year)
-          AsyncView(
-            value: events,
-            onRetry: () => ref.invalidate(calendarEventsProvider),
-            data: (_) => _EventCards(events: sortedByStart(shown)),
-          ),
+        AsyncView(
+          value: events,
+          onRetry: () => ref.invalidate(calendarEventsProvider),
+          data: (_) => _DayEvents(day: view.selected, events: eventsOn(shown, view.selected)),
+        ),
         const SizedBox(height: AppSpaces.spacing),
         const CreateEventButton(),
         const SizedBox(height: AppSpaces.spacing),
-        HintBox(t.calendar.hint),
+        HintBox(t.events.calendar.hint),
       ],
     );
   }
@@ -91,221 +96,120 @@ class _GroupSelect extends ConsumerWidget {
   }
 }
 
-/// The period's name, between the buttons going to the one before and the one after.
-class _PeriodHeader extends ConsumerWidget {
-  const _PeriodHeader({required this.period});
+/// A dot under a day that has events, over forui's own drawing of it.
+Widget _marked(Widget day, {required bool busy, required Color color}) => Stack(
+  children: [
+    Positioned.fill(child: day),
+    if (busy)
+      Positioned(
+        bottom: 4,
+        left: 0,
+        right: 0,
+        child: Center(
+          child: Container(
+            width: 4,
+            height: 4,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+        ),
+      ),
+  ],
+);
 
-  final CalendarPeriod period;
+/// The days on one line that scrolls, centred on the day chosen.
+class _LineCalendar extends ConsumerWidget {
+  const _LineCalendar({required this.selected, required this.events});
+
+  final DateTime selected;
+  final List<PlanningEvent> events;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = context.t;
     final calendar = ref.read(calendarProvider.notifier);
-    final showsToday = period.contains(ref.watch(todayProvider));
 
-    return Row(
-      spacing: 4,
-      children: [
-        // On one line, shrunk rather than wrapped when *Aujourd'hui* takes its room.
-        Expanded(
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(periodTitle(t, period), style: context.titleText, maxLines: 1),
-          ),
-        ),
-        if (!showsToday)
-          FButton(
-            variant: .ghost,
-            size: .sm,
-            mainAxisSize: MainAxisSize.min,
-            onPress: calendar.today,
-            child: Text(t.events.calendar.today),
-          ),
-        FButton.icon(
-          variant: .ghost,
-          semanticsLabel: t.events.calendar.previous,
-          onPress: calendar.previous,
-          child: const Icon(FLucideIcons.chevronLeft),
-        ),
-        FButton.icon(
-          variant: .ghost,
-          semanticsLabel: t.events.calendar.next,
-          onPress: calendar.next,
-          child: const Icon(FLucideIcons.chevronRight),
-        ),
-      ],
+    return FLineCalendar(
+      control: .lifted(
+        date: toCalendarDate(selected),
+        onChange: (date) {
+          if (date != null) calendar.select(fromCalendarDate(date));
+        },
+      ),
+      scrollControl: .managed(
+        initialDate: toCalendarDate(selected),
+        today: toCalendarDate(ref.watch(todayProvider)),
+        initialAlignment: AlignmentDirectional.center,
+      ),
+      builder: (context, data, child) => _marked(
+        child!,
+        busy: eventsOn(events, fromCalendarDate(data.date)).isNotEmpty,
+        color: context.theme.colors.primary,
+      ),
     );
   }
 }
 
-/// One day of a strip or a grid: today stands out, a day with events carries a dot, and a tap
-/// opens it alone.
-class _DayCell extends ConsumerWidget {
-  const _DayCell({required this.day, required this.label, required this.busy});
+/// The whole month, with the day chosen; its header pages through months and opens a month or a
+/// year picker. Paging reads the events of the month shown, to mark its days.
+class _MonthCalendar extends ConsumerStatefulWidget {
+  const _MonthCalendar({required this.selected, required this.events});
+
+  final DateTime selected;
+  final List<PlanningEvent> events;
+
+  @override
+  ConsumerState<_MonthCalendar> createState() => _MonthCalendarState();
+}
+
+class _MonthCalendarState extends ConsumerState<_MonthCalendar> {
+  late final FGridCalendarController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = FGridCalendarController(
+      initial: toCalendarDate(widget.selected),
+      today: toCalendarDate(ref.read(todayProvider)),
+    );
+    _controller.addListener(_paged);
+  }
+
+  void _paged() => ref.read(calendarProvider.notifier).browse(fromCalendarDate(_controller.currentMonth));
+
+  @override
+  void dispose() {
+    _controller
+      ..removeListener(_paged)
+      ..dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final calendar = ref.read(calendarProvider.notifier);
+
+    return FCalendar.grid(
+      control: FGridCalendarControl(controller: _controller),
+      selectionControl: .liftedSingle(
+        value: toCalendarDate(widget.selected),
+        toggleable: false,
+        onChange: (date) {
+          if (date != null) calendar.select(fromCalendarDate(date));
+        },
+      ),
+      dayBuilder: (context, styles, localizations, date, variants) => _marked(
+        FCalendar.defaultDayBuilder(context, styles, localizations, date, variants),
+        busy: eventsOn(widget.events, fromCalendarDate(date)).isNotEmpty,
+        color: context.theme.colors.primary,
+      ),
+    );
+  }
+}
+
+/// The events of the day chosen, in a tile group.
+class _DayEvents extends StatelessWidget {
+  const _DayEvents({required this.day, required this.events});
 
   final DateTime day;
-  final String label;
-  final bool busy;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.theme.colors;
-    final isToday = day == ref.watch(todayProvider);
-
-    return Semantics(
-      button: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => ref.read(calendarProvider.notifier).openDay(day),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          decoration: BoxDecoration(
-            color: isToday ? colors.secondary : colors.muted,
-            borderRadius: context.theme.style.borderRadius.md,
-          ),
-          child: Column(
-            spacing: 2,
-            children: [
-              Text(
-                label,
-                style: (isToday ? context.labelText : context.bodyText).copyWith(fontSize: context.labelText.fontSize),
-                textAlign: TextAlign.center,
-              ),
-              Container(
-                width: 5,
-                height: 5,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: busy ? colors.primary : const Color(0x00000000),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The week's seven days: *L 16* to *D 22*.
-class _WeekStrip extends StatelessWidget {
-  const _WeekStrip({required this.period, required this.events});
-
-  final CalendarPeriod period;
-  final List<PlanningEvent> events;
-
-  @override
-  Widget build(BuildContext context) {
-    final letters = context.t.events.dates.weekdaysLetter;
-
-    return Row(
-      spacing: 4,
-      children: [
-        for (final day in period.days)
-          Expanded(
-            child: _DayCell(
-              day: day,
-              label: '${letters[day.weekday - 1]} ${day.day}',
-              busy: eventsOn(events, day).isNotEmpty,
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-/// The month, a week to a line, from Monday.
-class _MonthGrid extends StatelessWidget {
-  const _MonthGrid({required this.period, required this.events});
-
-  final CalendarPeriod period;
-  final List<PlanningEvent> events;
-
-  @override
-  Widget build(BuildContext context) {
-    final letters = context.t.events.dates.weekdaysLetter;
-
-    return Column(
-      spacing: 4,
-      children: [
-        Row(
-          children: [
-            for (final letter in letters)
-              Expanded(
-                child: Text(letter, style: context.captionText, textAlign: TextAlign.center),
-              ),
-          ],
-        ),
-        for (final week in monthGrid(period.start))
-          Row(
-            spacing: 4,
-            children: [
-              for (final day in week)
-                Expanded(
-                  child: day == null
-                      ? const SizedBox.shrink()
-                      : _DayCell(day: day, label: '${day.day}', busy: eventsOn(events, day).isNotEmpty),
-                ),
-            ],
-          ),
-      ],
-    );
-  }
-}
-
-/// The twelve months, three to a line, each with how many events it holds.
-class _YearGrid extends ConsumerWidget {
-  const _YearGrid({required this.year, required this.events});
-
-  final int year;
-  final List<PlanningEvent> events;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final t = context.t;
-    final counts = eventCountsByMonth(events, year);
-
-    Widget month(int month) => Expanded(
-      child: Semantics(
-        button: true,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => ref.read(calendarProvider.notifier).openMonth(DateTime(year, month)),
-          child: Panel(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2,
-              children: [
-                Text(shortMonthText(t, month), style: context.headingText),
-                Text(
-                  counts[month - 1] == 0 ? '–' : t.events.calendar.eventCount(count: counts[month - 1]),
-                  style: context.captionText,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return Column(
-      spacing: AppSpaces.spacing,
-      children: [
-        for (var row = 0; row < 4; row++)
-          Row(
-            spacing: AppSpaces.spacing,
-            children: [for (var column = 1; column <= 3; column++) month(row * 3 + column)],
-          ),
-      ],
-    );
-  }
-}
-
-/// The period's events, as cards opening each.
-class _EventCards extends StatelessWidget {
-  const _EventCards({required this.events});
-
   final List<PlanningEvent> events;
 
   @override
@@ -318,16 +222,8 @@ class _EventCards extends StatelessWidget {
       );
     }
 
-    return Column(
-      spacing: AppSpaces.spacing,
-      children: [
-        for (final event in events)
-          LinkCard(
-            title: calendarTitle(t, event),
-            subtitle: calendarSubtitle(t, event),
-            onTap: () => context.push(EventsRoutes.event(event.id)),
-          ),
-      ],
+    return FTileGroup(
+      children: [for (final event in events) eventTile(context, event, subtitle: calendarSubtitle(t, event))],
     );
   }
 }

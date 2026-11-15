@@ -123,7 +123,7 @@ void main() {
     expect(find.text('Préparation et matériel'), findsOneWidget, reason: 'back on the sheet');
   });
 
-  testWidgets("the Planning tab shows this week's events, the user's events and Ajil's day templates", (tester) async {
+  testWidgets("the Planning tab shows today's events, the user's events and Ajil's day templates", (tester) async {
     final today = DateTime.now();
     await pumpApp(
       tester,
@@ -151,14 +151,14 @@ void main() {
     await tester.tap(find.text('Planning').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Semaine'), findsOneWidget);
-    expect(find.textContaining('Sortie SG'), findsOneWidget);
-    expect(find.textContaining('9h30–17h30 · Préparation en cours'), findsOneWidget);
+    expect(find.byType(FLineCalendar), findsOneWidget, reason: "today's line of days");
+    expect(find.text('Sortie SG'), findsOneWidget);
+    expect(find.text('9h30–17h30 · Préparation en cours'), findsOneWidget);
 
     await tester.tap(find.text('Événements'));
     await tester.pumpAndSettle();
     expect(find.text('Mes événements'), findsOneWidget);
-    expect(find.textContaining('Sortie SG'), findsOneWidget);
+    expect(find.text('Sortie SG'), findsOneWidget);
 
     await tester.tap(find.text('Journées types'));
     await tester.pumpAndSettle();

@@ -1,10 +1,9 @@
 import 'package:ajil/features/planning/events/models/event.dart';
-import 'package:ajil/features/planning/events/routes.dart';
 import 'package:ajil/features/planning/events/state/planning.dart';
 import 'package:ajil/features/planning/events/ui/create_event_button.dart';
 import 'package:ajil/features/planning/events/ui/event_text.dart';
+import 'package:ajil/features/planning/events/ui/event_tile.dart';
 import 'package:ajil/ui/async/async_view.dart';
-import 'package:ajil/ui/content/surfaces.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/inputs/fields.dart';
 import 'package:ajil/ui/inputs/pills.dart';
@@ -12,7 +11,7 @@ import 'package:ajil/ui/theme/text.dart';
 import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:forui/forui.dart';
 
 /// The *Événements* (B02): the user's events, or those shared with them, searched by name, each
 /// with its dates and status.
@@ -64,16 +63,8 @@ class _EventList extends StatelessWidget {
       );
     }
 
-    return Column(
-      spacing: AppSpaces.spacing,
-      children: [
-        for (final event in events)
-          LinkCard(
-            title: event.name,
-            subtitle: listSubtitle(t, event),
-            onTap: () => context.push(EventsRoutes.event(event.id)),
-          ),
-      ],
+    return FTileGroup(
+      children: [for (final event in events) eventTile(context, event, subtitle: listSubtitle(t, event))],
     );
   }
 }

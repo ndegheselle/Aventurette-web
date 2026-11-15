@@ -14,20 +14,12 @@
     },
     "create": "+ New event",
     "calendar": {
-        "scales(map)": {
-            "day": "Day",
-            "week": "Week",
-            "month": "Month",
-            "year": "Year"
-        },
         "group": "Group",
         "allGroups": "All groups",
-        "previous": "Previous period",
-        "next": "Next period",
-        "today": "Today",
-        "empty": "No event in this period.",
-        "eventCount": "{count} events",
-        "hint": "Statuses show here. The validations to handle are gathered in Follow-up."
+        "empty": "No event on that day.",
+        "hint": "Statuses show here. The validations to handle are gathered in Follow-up.",
+        "showMonth": "Show the month",
+        "hideMonth": "Show the week"
     },
     "list": {
         "searchLabel": "Search for an event",
@@ -45,13 +37,30 @@
         "ready": "Ready"
     },
     "dates": {
-        "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        "weekdaysShort": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        "weekdaysLetter": ["M", "T", "W", "T", "F", "S", "S"],
-        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        "monthsShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        "weekdays": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ],
+        "months": [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ],
         "day": "{month} {day}",
-        "monthYear": "{month} {year}",
         "fullDay": "{weekday}, {month} {day}",
         "dayRange": "{month} {from}–{to}",
         "range": "{from} – {to}",

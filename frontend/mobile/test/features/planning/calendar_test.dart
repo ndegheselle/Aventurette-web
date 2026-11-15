@@ -6,36 +6,18 @@ PlanningEvent event(DateTime start, DateTime end, {String group = ''}) =>
     PlanningEvent(id: 'e', owner: 'u1', name: 'Sortie', start: start, end: end, group: group);
 
 void main() {
-  group('a period', () {
-    test('a week runs from Monday to the next Monday, whatever day it is asked from', () {
-      final week = CalendarPeriod.of(CalendarScale.week, DateTime(2026, 11, 21, 15));
+  test('the events read while a month is shown run from the month before to the end of the next', () {
+    final window = calendarWindow(DateTime(2026, 12));
 
-      expect(week.start, DateTime(2026, 11, 16));
-      expect(week.end, DateTime(2026, 11, 23));
-      expect(week.days, hasLength(7));
-    });
+    expect(window.from, DateTime(2026, 11));
+    expect(window.until, DateTime(2027, 2));
+  });
 
-    test('a week across two months keeps its seven days', () {
-      final week = CalendarPeriod.of(CalendarScale.week, DateTime(2026, 12, 1));
+  test("forui's calendar dates are UTC midnights, the app's local ones", () {
+    final day = DateTime(2026, 11, 21);
 
-      expect(week.start, DateTime(2026, 11, 30));
-      expect(week.days.last, DateTime(2026, 12, 6));
-    });
-
-    test('stepping a month from December goes to January of the next year', () {
-      final december = CalendarPeriod.of(CalendarScale.month, DateTime(2026, 12, 15));
-
-      expect(december.shift(1).start, DateTime(2027, 1));
-      expect(december.shift(1).end, DateTime(2027, 2));
-      expect(december.shift(-12).start, DateTime(2025, 12));
-    });
-
-    test('a day across a change of clock is still one day', () {
-      // Europe moves its clocks on the last Sunday of October.
-      final day = CalendarPeriod.of(CalendarScale.day, DateTime(2026, 10, 25));
-
-      expect(day.shift(1).start, DateTime(2026, 10, 26));
-    });
+    expect(toCalendarDate(day), DateTime.utc(2026, 11, 21));
+    expect(fromCalendarDate(toCalendarDate(day)), day);
   });
 
   group('an event', () {
@@ -60,26 +42,6 @@ void main() {
       expect(eventsOn([weekend], DateTime(2026, 11, 29)), [weekend]);
       expect(eventsOn([weekend], DateTime(2026, 11, 30)), isEmpty);
     });
-
-    test('is counted in each month it takes part of', () {
-      final camp = event(DateTime(2026, 7, 28), DateTime(2026, 8, 10, 12));
-
-      final counts = eventCountsByMonth([camp], 2026);
-
-      expect(counts[6], 1, reason: 'July');
-      expect(counts[7], 1, reason: 'August');
-      expect(counts.reduce((a, b) => a + b), 2);
-    });
-  });
-
-  test('a month grid starts on Monday and fills its last week', () {
-    // November 2026 starts on a Sunday.
-    final weeks = monthGrid(DateTime(2026, 11));
-
-    expect(weeks.first.take(6), everyElement(isNull));
-    expect(weeks.first.last, DateTime(2026, 11, 1));
-    expect(weeks.every((week) => week.length == 7), isTrue);
-    expect(weeks.expand((week) => week).whereType<DateTime>(), hasLength(30));
   });
 
   test("a group's calendar keeps the events for every group", () {

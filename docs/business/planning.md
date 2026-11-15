@@ -35,12 +35,12 @@ Each view ends with *+ Créer un événement*. *Mon planning*, reached from
 
 ### What the views do
 
-- **The calendar opens on this week, for every group.** A week runs from Monday. The arrows step
-  to the period before or after; *Aujourd'hui* comes back to the one holding today. Changing the
-  scale keeps today when it is in view, and the period's first day otherwise.
-- **A day of the week or of the month opens that day; a month of the year opens that month.**
-  Today stands out; a day with an event carries a dot. The year shows how many events each month
-  holds, rather than a card per event.
+- **The calendar opens on today, as a line of days, for every group.** *Afficher le mois* draws
+  the whole month instead; its header pages through months and opens a month or a year picker.
+  There is no Jour / Semaine / Mois / Année choice: the calendar is how a user moves.
+- **The events listed are the chosen day's.** Today stands out; a day with an event carries a dot.
+  Paging the month calendar marks the days of the month shown without changing the day chosen;
+  going back to the line of days comes back to that day.
 - **An event is on every day it takes part of.** One ending at midnight ends the day before.
 - **The group** lists the groups the user's events name. **An event for every group shows in each
   group's calendar.** The list is hidden while no event names a group.
@@ -57,7 +57,8 @@ Each view ends with *+ Créer un événement*. *Mon planning*, reached from
   shows its status only — *Brouillon*, *Préparation en cours*, *Prêt*.
 - **The group is the event's own text.** Groups and structures do not exist yet, so the choices
   are drawn from the user's events rather than from their structure.
-- **The calendar has arrows and *Aujourd'hui***; the wireframe draws one week with no way to move.
+- **A day's events, not a week's.** The wireframe lists a week's events under the week; the app
+  lists the chosen day's, on a line of days or a month calendar, with no scale to choose.
 - ***Partagés* and *Ma structure* say *Bientôt disponible***: nothing is shared yet, and
   structures do not exist.
 

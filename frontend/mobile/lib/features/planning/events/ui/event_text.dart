@@ -1,7 +1,6 @@
 /// How dates, times and events read, in the app's language.
 library;
 
-import 'package:ajil/features/planning/events/models/calendar.dart';
 import 'package:ajil/features/planning/events/models/event.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 
@@ -36,44 +35,20 @@ String eventDatesText(Translations t, PlanningEvent event) {
 String? statusText(Translations t, PlanningEvent event) =>
     event.status == null ? null : t.events.status[event.status!.name];
 
-/// A calendar card's title: *Sam. 21 · Sortie SG*.
-String calendarTitle(Translations t, PlanningEvent event) =>
-    '${t.events.dates.weekdaysShort[event.start.weekday - 1]} ${event.start.day} · ${event.name}';
-
-/// A calendar card's line: *9h30–17h30 · Préparation en cours*.
+/// An event's line under the day chosen: *9h30–17h30 · Préparation en cours*.
 String calendarSubtitle(Translations t, PlanningEvent event) => [
   spanOf(event) == EventSpan.oneDay ? timesText(t, event.start, event.end) : eventDatesText(t, event),
   ?statusText(t, event),
 ].join(' · ');
 
-/// An *Événements* card's lines: its dates and group, then its status.
+/// An *Événements* tile's lines: its dates and group, then its status.
 String listSubtitle(Translations t, PlanningEvent event) => [
   '${eventDatesText(t, event)} · ${event.group.isEmpty ? t.events.list.allGroups : event.group}',
   ?statusText(t, event),
 ].join('\n');
 
-/// The period the calendar shows: *Samedi 21 novembre*, *Novembre 2026*, *2026*.
-String periodTitle(Translations t, CalendarPeriod period) {
+/// The day chosen on the calendar: *Samedi 21 novembre*.
+String dayTitle(Translations t, DateTime day) {
   final dates = t.events.dates;
-  final start = period.start;
-  String monthYear(DateTime day) => dates.monthYear(month: _capitalised(_month(t, day)), year: day.year);
-
-  return switch (period.scale) {
-    CalendarScale.day => _capitalised(
-      dates.fullDay(weekday: dates.weekdays[start.weekday - 1], day: start.day, month: _month(t, start)),
-    ),
-    CalendarScale.week => () {
-      final last = period.days.last;
-      if (last.month == start.month) return monthYear(start);
-      return dates.range(
-        from: _capitalised(dates.monthsShort[start.month - 1]),
-        to: '${dates.monthsShort[last.month - 1]} ${last.year}',
-      );
-    }(),
-    CalendarScale.month => monthYear(start),
-    CalendarScale.year => '${start.year}',
-  };
+  return _capitalised(dates.fullDay(weekday: dates.weekdays[day.weekday - 1], day: day.day, month: _month(t, day)));
 }
-
-/// A month's name in the year view: *Nov.*
-String shortMonthText(Translations t, int month) => _capitalised(t.events.dates.monthsShort[month - 1]);
