@@ -5,6 +5,7 @@ import 'package:ajil/features/user/api/preferences_api.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/container.dart';
@@ -74,6 +75,52 @@ void main() {
 
     expect(find.text('Mode guidé'), findsOneWidget);
     expect(find.text('Pédagogie'), findsNothing, reason: 'a sheet is full screen, over the dock');
+  });
+
+  testWidgets("a sheet opens its preparation, whose material can be ticked, and goes back to it", (tester) async {
+    await pumpApp(
+      tester,
+      user: sessionRecord(),
+      seeds: {
+        'users': [
+          {'id': 'u1', 'favorites': <String>[]},
+        ],
+        'activities': [
+          {
+            'id': 'a1',
+            'name': 'La quête du remède',
+            'state': 'PUBLISHED',
+            'expand': {
+              'materials': [
+                {
+                  'id': 'm1',
+                  'quantity': 'Un par équipe',
+                  'expand': {
+                    'material': {'id': 'c1', 'name': 'Foulards'},
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    );
+
+    await tester.tap(find.text('La quête du remède'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Préparation et matériel'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Préparation'), findsOneWidget);
+    expect(find.text('Un par équipe'), findsOneWidget);
+
+    await tester.tap(find.text('Foulards'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<FCheckbox>(find.byType(FCheckbox)).value, isTrue);
+
+    await tester.tap(find.text('Retour à la fiche'));
+    await tester.pumpAndSettle();
+    expect(find.text('Préparation et matériel'), findsOneWidget, reason: 'back on the sheet');
   });
 
   testWidgets('a dock tab that is not built yet says so', (tester) async {

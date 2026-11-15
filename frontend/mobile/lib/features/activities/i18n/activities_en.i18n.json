@@ -151,8 +151,25 @@
         "leave": "Leave",
         "saveRefused": "Your feedback could not be saved."
     },
+    "preparation": {
+        "title": "Preparation",
+        "tabs(map)": {
+            "materials": "Materials",
+            "setup": "Set-up",
+            "advice": "Advice"
+        },
+        "workshop": "Workshop · {name}",
+        "resources": "Resources",
+        "setupTotal": "Set-up · {minutes} min",
+        "safety": "Safety",
+        "tips": "Tips",
+        "noMaterials": "This activity needs no materials.",
+        "noSetup": "Nothing to set up before the game.",
+        "noAdvice": "No particular advice for this activity.",
+        "hint": "This preparation feeds the event's tasks, assigned from Planning.",
+        "back": "Back to the sheet"
+    },
     "screens": {
-        "preparation": "Preparation",
         "quick": "Quick mode"
     }
 }

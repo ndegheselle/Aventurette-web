@@ -119,6 +119,7 @@ class Translations$activities$fr {
 	late final Translations$activities$favorites$fr favorites = Translations$activities$favorites$fr.internal(_root);
 	late final Translations$activities$run$fr run = Translations$activities$run$fr.internal(_root);
 	late final Translations$activities$feedback$fr feedback = Translations$activities$feedback$fr.internal(_root);
+	late final Translations$activities$preparation$fr preparation = Translations$activities$preparation$fr.internal(_root);
 	late final Translations$activities$screens$fr screens = Translations$activities$screens$fr.internal(_root);
 }
 
@@ -625,6 +626,54 @@ class Translations$activities$feedback$fr {
 	String get saveRefused => 'Votre avis n\'a pas pu être enregistré.';
 }
 
+// Path: activities.preparation
+class Translations$activities$preparation$fr {
+	Translations$activities$preparation$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Préparation'
+	String get title => 'Préparation';
+
+	Map<String, String> get tabs => {
+		'materials': 'Matériel',
+		'setup': 'Installation',
+		'advice': 'Conseils',
+	};
+
+	/// fr: 'Atelier · {name}'
+	String workshop({required Object name}) => 'Atelier · ${name}';
+
+	/// fr: 'Ressources'
+	String get resources => 'Ressources';
+
+	/// fr: 'Installation · {minutes} min'
+	String setupTotal({required Object minutes}) => 'Installation · ${minutes} min';
+
+	/// fr: 'Sécurité'
+	String get safety => 'Sécurité';
+
+	/// fr: 'Conseils'
+	String get tips => 'Conseils';
+
+	/// fr: 'Cette activité ne demande pas de matériel.'
+	String get noMaterials => 'Cette activité ne demande pas de matériel.';
+
+	/// fr: 'Rien à installer avant le jeu.'
+	String get noSetup => 'Rien à installer avant le jeu.';
+
+	/// fr: 'Pas de conseil particulier pour cette activité.'
+	String get noAdvice => 'Pas de conseil particulier pour cette activité.';
+
+	/// fr: 'Ces préparatifs alimentent les tâches de l'événement, attribuées depuis Planning.'
+	String get hint => 'Ces préparatifs alimentent les tâches de l\'événement, attribuées depuis Planning.';
+
+	/// fr: 'Retour à la fiche'
+	String get back => 'Retour à la fiche';
+}
+
 // Path: activities.screens
 class Translations$activities$screens$fr {
 	Translations$activities$screens$fr.internal(this._root);
@@ -632,9 +681,6 @@ class Translations$activities$screens$fr {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-
-	/// fr: 'Préparation'
-	String get preparation => 'Préparation';
 
 	/// fr: 'Mode rapide'
 	String get quick => 'Mode rapide';
@@ -1358,7 +1404,20 @@ extension on Translations {
 			'activities.feedback.commentPlaceholder' => 'Ce qui a plu, ce qui a coincé…',
 			'activities.feedback.leave' => 'Quitter',
 			'activities.feedback.saveRefused' => 'Votre avis n\'a pas pu être enregistré.',
-			'activities.screens.preparation' => 'Préparation',
+			'activities.preparation.title' => 'Préparation',
+			'activities.preparation.tabs.materials' => 'Matériel',
+			'activities.preparation.tabs.setup' => 'Installation',
+			'activities.preparation.tabs.advice' => 'Conseils',
+			'activities.preparation.workshop' => ({required Object name}) => 'Atelier · ${name}',
+			'activities.preparation.resources' => 'Ressources',
+			'activities.preparation.setupTotal' => ({required Object minutes}) => 'Installation · ${minutes} min',
+			'activities.preparation.safety' => 'Sécurité',
+			'activities.preparation.tips' => 'Conseils',
+			'activities.preparation.noMaterials' => 'Cette activité ne demande pas de matériel.',
+			'activities.preparation.noSetup' => 'Rien à installer avant le jeu.',
+			'activities.preparation.noAdvice' => 'Pas de conseil particulier pour cette activité.',
+			'activities.preparation.hint' => 'Ces préparatifs alimentent les tâches de l\'événement, attribuées depuis Planning.',
+			'activities.preparation.back' => 'Retour à la fiche',
 			'activities.screens.quick' => 'Mode rapide',
 			'activityEditor.screens.create' => 'Créer une activité',
 			'activityEditor.screens.edit' => 'Modifier l\'activité',

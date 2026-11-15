@@ -114,6 +114,7 @@ class _Translations$activities$en extends Translations$activities$fr {
 	@override late final _Translations$activities$favorites$en favorites = _Translations$activities$favorites$en._(_root);
 	@override late final _Translations$activities$run$en run = _Translations$activities$run$en._(_root);
 	@override late final _Translations$activities$feedback$en feedback = _Translations$activities$feedback$en._(_root);
+	@override late final _Translations$activities$preparation$en preparation = _Translations$activities$preparation$en._(_root);
 	@override late final _Translations$activities$screens$en screens = _Translations$activities$screens$en._(_root);
 }
 
@@ -477,6 +478,31 @@ class _Translations$activities$feedback$en extends Translations$activities$feedb
 	@override String get saveRefused => 'Your feedback could not be saved.';
 }
 
+// Path: activities.preparation
+class _Translations$activities$preparation$en extends Translations$activities$preparation$fr {
+	_Translations$activities$preparation$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Preparation';
+	@override Map<String, String> get tabs => {
+		'materials': 'Materials',
+		'setup': 'Set-up',
+		'advice': 'Advice',
+	};
+	@override String workshop({required Object name}) => 'Workshop · ${name}';
+	@override String get resources => 'Resources';
+	@override String setupTotal({required Object minutes}) => 'Set-up · ${minutes} min';
+	@override String get safety => 'Safety';
+	@override String get tips => 'Tips';
+	@override String get noMaterials => 'This activity needs no materials.';
+	@override String get noSetup => 'Nothing to set up before the game.';
+	@override String get noAdvice => 'No particular advice for this activity.';
+	@override String get hint => 'This preparation feeds the event\'s tasks, assigned from Planning.';
+	@override String get back => 'Back to the sheet';
+}
+
 // Path: activities.screens
 class _Translations$activities$screens$en extends Translations$activities$screens$fr {
 	_Translations$activities$screens$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -484,7 +510,6 @@ class _Translations$activities$screens$en extends Translations$activities$screen
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get preparation => 'Preparation';
 	@override String get quick => 'Quick mode';
 }
 
@@ -1000,7 +1025,20 @@ extension on TranslationsEn {
 			'activities.feedback.commentPlaceholder' => 'What worked, what didn\'t…',
 			'activities.feedback.leave' => 'Leave',
 			'activities.feedback.saveRefused' => 'Your feedback could not be saved.',
-			'activities.screens.preparation' => 'Preparation',
+			'activities.preparation.title' => 'Preparation',
+			'activities.preparation.tabs.materials' => 'Materials',
+			'activities.preparation.tabs.setup' => 'Set-up',
+			'activities.preparation.tabs.advice' => 'Advice',
+			'activities.preparation.workshop' => ({required Object name}) => 'Workshop · ${name}',
+			'activities.preparation.resources' => 'Resources',
+			'activities.preparation.setupTotal' => ({required Object minutes}) => 'Set-up · ${minutes} min',
+			'activities.preparation.safety' => 'Safety',
+			'activities.preparation.tips' => 'Tips',
+			'activities.preparation.noMaterials' => 'This activity needs no materials.',
+			'activities.preparation.noSetup' => 'Nothing to set up before the game.',
+			'activities.preparation.noAdvice' => 'No particular advice for this activity.',
+			'activities.preparation.hint' => 'This preparation feeds the event\'s tasks, assigned from Planning.',
+			'activities.preparation.back' => 'Back to the sheet',
 			'activities.screens.quick' => 'Quick mode',
 			'activityEditor.screens.create' => 'New activity',
 			'activityEditor.screens.edit' => 'Edit the activity',

@@ -6,7 +6,7 @@ planning, the quick mode. It opens full screen, without the tabs.
 | Screen | | Status |
 |---|---|---|
 | A03 | The sheet | Built |
-| A05 | *Préparation*: material, setup, advice | Not built |
+| A05 | *Préparation*: material, setup, advice | Built |
 
 ## The sheet (A03)
 
@@ -75,6 +75,9 @@ Three tabs: *Matériel*, *Installation*, *Conseils*.
 - *Installation*: what to set up, and how long it takes (*15 min*).
 - *Conseils*: safety (*vérifier les limites et les zones interdites*), and the other variant
   (*réduire la zone et adapter les déplacements*).
+- **Ticking material is a checklist for the user, nothing more**: it changes no stock and is
+  saved nowhere.
+- At the bottom, *Retour à la fiche*.
 
 When the activity is placed in an event, this material and preparation become the event's
 [tasks](preparation.md).
@@ -86,3 +89,12 @@ When the activity is placed in an event, this material and preparation become th
 - **Rich text shows as plain paragraphs and bullets**, without bold or links.
 - **Pictures are placeholders.**
 - ***Partager* and *Modifier* only say they are not available yet.**
+- **In *Préparation*:**
+  - a material shows its name, and its quantity as the line under it: an activity's material has
+    no note of its own;
+  - a workshop's material is listed apart, under the workshop's name, and the files the steps use
+    under *Ressources*;
+  - *Installation* is the steps that prepare the game, each with its duration;
+  - *Conseils* is the safety instructions and the tips of every step. The other variant's advice
+    (*Variante intérieure*) is not there: an activity does not describe its variants;
+  - the ticks last until the app is closed.
