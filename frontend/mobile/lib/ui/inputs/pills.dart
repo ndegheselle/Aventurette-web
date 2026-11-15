@@ -30,6 +30,34 @@ class MultiPills<T> extends StatelessWidget {
   }
 }
 
+/// Pills exactly one of which is chosen: a calendar's scale, whose items a list shows. On one line
+/// that scrolls sideways.
+class ChoicePills<T> extends StatelessWidget {
+  const ChoicePills({
+    super.key,
+    required this.values,
+    required this.selected,
+    required this.labelOf,
+    required this.onSelected,
+  });
+
+  final List<T> values;
+  final T selected;
+  final String Function(T value) labelOf;
+  final ValueChanged<T> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return _PillLayout(
+      wrap: false,
+      children: [
+        for (final value in values)
+          _Pill(label: labelOf(value), selected: value == selected, onPressed: () => onSelected(value)),
+      ],
+    );
+  }
+}
+
 /// [values] with [value] taken off if it was in it, added at the end otherwise.
 List<T> toggled<T>(List<T> values, T value) => values.contains(value)
     ? [

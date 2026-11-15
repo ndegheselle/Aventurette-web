@@ -6,5 +6,57 @@
         "edit": "Modifier l'événement",
         "newBlock": "Paramétrer le temps",
         "coordination": "Coordination"
+    },
+    "segments(map)": {
+        "calendar": "Calendrier",
+        "events": "Événements",
+        "templates": "Journées types"
+    },
+    "create": "+ Créer un événement",
+    "calendar": {
+        "scales(map)": {
+            "day": "Jour",
+            "week": "Semaine",
+            "month": "Mois",
+            "year": "Année"
+        },
+        "group": "Groupe",
+        "allGroups": "Tous les groupes",
+        "previous": "Période précédente",
+        "next": "Période suivante",
+        "today": "Aujourd'hui",
+        "empty": "Aucun événement sur cette période.",
+        "eventCount": "{count} évén.",
+        "hint": "Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi."
+    },
+    "list": {
+        "searchLabel": "Rechercher un événement",
+        "searchHint": "Nom ou période…",
+        "segments(map)": {
+            "mine": "Mes événements",
+            "shared": "Partagés"
+        },
+        "empty": "Aucun événement.",
+        "allGroups": "toutes les unités"
+    },
+    "status(map)": {
+        "draft": "Brouillon",
+        "preparing": "Préparation en cours",
+        "ready": "Prêt"
+    },
+    "dates": {
+        "weekdays": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+        "weekdaysShort": ["Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam.", "Dim."],
+        "weekdaysLetter": ["L", "M", "M", "J", "V", "S", "D"],
+        "months": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+        "monthsShort": ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+        "day": "{day} {month}",
+        "monthYear": "{month} {year}",
+        "fullDay": "{weekday} {day} {month}",
+        "dayRange": "{from}–{to} {month}",
+        "range": "{from} – {to}",
+        "hour": "{hours}h",
+        "time": "{hours}h{minutes}",
+        "times": "{from}–{to}"
     }
 }

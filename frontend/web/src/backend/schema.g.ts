@@ -19,6 +19,8 @@ export const Collections = {
 	CatalogSafetyInstructions: "catalog_safety_instructions",
 	CatalogTags: "catalog_tags",
 	CatalogTips: "catalog_tips",
+	DayTemplates: "day_templates",
+	Events: "events",
 	StepsResources: "steps_resources",
 	UserActivityFeedback: "user_activity_feedback",
 	UserActivityHistory: "user_activity_history",
@@ -311,6 +313,37 @@ export type CatalogTipsRecord = {
 	updated: IsoAutoDateString
 }
 
+export type DayTemplatesRecord = {
+	created: IsoAutoDateString
+	endMinutes?: number
+	id: string
+	name: string
+	owner?: RecordIdString
+	startMinutes?: number
+	summary?: string
+	updated: IsoAutoDateString
+}
+
+export const EventsStatusOptions = {
+	"DRAFT": "DRAFT",
+	"PREPARING": "PREPARING",
+	"READY": "READY",
+} as const
+export type EventsStatusOptions = typeof EventsStatusOptions[keyof typeof EventsStatusOptions]
+export type EventsRecord = {
+	created: IsoAutoDateString
+	end: IsoDateString
+	group?: string
+	id: string
+	name: string
+	overnight?: boolean
+	owner: RecordIdString
+	place?: string
+	start: IsoDateString
+	status?: EventsStatusOptions
+	updated: IsoAutoDateString
+}
+
 export type StepsResourcesRecord = {
 	created: IsoAutoDateString
 	file?: FileNameString
@@ -354,6 +387,12 @@ export const UsersTypeOptions = {
 } as const
 export type UsersTypeOptions = typeof UsersTypeOptions[keyof typeof UsersTypeOptions]
 
+export const UsersRoleOptions = {
+	"USER": "USER",
+	"ADMIN": "ADMIN",
+} as const
+export type UsersRoleOptions = typeof UsersRoleOptions[keyof typeof UsersRoleOptions]
+
 export const UsersDefaultLocationsOptions = {
 	"PARK": "PARK",
 	"HOUSE": "HOUSE",
@@ -370,12 +409,6 @@ export const UsersDefaultLocationsOptions = {
 	"MEAL": "MEAL",
 } as const
 export type UsersDefaultLocationsOptions = typeof UsersDefaultLocationsOptions[keyof typeof UsersDefaultLocationsOptions]
-
-export const UsersRoleOptions = {
-	"USER": "USER",
-	"ADMIN": "ADMIN",
-} as const
-export type UsersRoleOptions = typeof UsersRoleOptions[keyof typeof UsersRoleOptions]
 export type UsersRecord = {
 	avatar?: FileNameString
 	created: IsoAutoDateString
@@ -412,6 +445,8 @@ export type CatalogMaterialsResponse<Texpand = unknown> = Required<CatalogMateri
 export type CatalogSafetyInstructionsResponse<Texpand = unknown> = Required<CatalogSafetyInstructionsRecord> & BaseSystemFields<Texpand>
 export type CatalogTagsResponse<Texpand = unknown> = Required<CatalogTagsRecord> & BaseSystemFields<Texpand>
 export type CatalogTipsResponse<Texpand = unknown> = Required<CatalogTipsRecord> & BaseSystemFields<Texpand>
+export type DayTemplatesResponse<Texpand = unknown> = Required<DayTemplatesRecord> & BaseSystemFields<Texpand>
+export type EventsResponse<Texpand = unknown> = Required<EventsRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UserActivityFeedbackResponse<Texpand = unknown> = Required<UserActivityFeedbackRecord> & BaseSystemFields<Texpand>
 export type UserActivityHistoryResponse<Texpand = unknown> = Required<UserActivityHistoryRecord> & BaseSystemFields<Texpand>
@@ -434,6 +469,8 @@ export type CollectionRecords = {
 	catalog_safety_instructions: CatalogSafetyInstructionsRecord
 	catalog_tags: CatalogTagsRecord
 	catalog_tips: CatalogTipsRecord
+	day_templates: DayTemplatesRecord
+	events: EventsRecord
 	steps_resources: StepsResourcesRecord
 	user_activity_feedback: UserActivityFeedbackRecord
 	user_activity_history: UserActivityHistoryRecord
@@ -455,6 +492,8 @@ export type CollectionResponses = {
 	catalog_safety_instructions: CatalogSafetyInstructionsResponse
 	catalog_tags: CatalogTagsResponse
 	catalog_tips: CatalogTipsResponse
+	day_templates: DayTemplatesResponse
+	events: EventsResponse
 	steps_resources: StepsResourcesResponse
 	user_activity_feedback: UserActivityFeedbackResponse
 	user_activity_history: UserActivityHistoryResponse

@@ -123,6 +123,52 @@ void main() {
     expect(find.text('Préparation et matériel'), findsOneWidget, reason: 'back on the sheet');
   });
 
+  testWidgets("the Planning tab shows this week's events, the user's events and Ajil's day templates", (tester) async {
+    final today = DateTime.now();
+    await pumpApp(
+      tester,
+      user: sessionRecord(),
+      seeds: {
+        'users': [
+          {'id': 'u1', 'favorites': <String>[]},
+        ],
+        'events': [
+          {
+            'id': 'e1',
+            'owner': 'u1',
+            'name': 'Sortie SG',
+            'start': DateTime(today.year, today.month, today.day, 9, 30).toUtc().toIso8601String(),
+            'end': DateTime(today.year, today.month, today.day, 17, 30).toUtc().toIso8601String(),
+            'status': 'PREPARING',
+          },
+        ],
+        'day_templates': [
+          {'id': 't1', 'owner': '', 'name': 'Journée de camp', 'summary': 'Repas, repos, veillée et nuit'},
+        ],
+      },
+    );
+
+    await tester.tap(find.text('Planning').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Semaine'), findsOneWidget);
+    expect(find.textContaining('Sortie SG'), findsOneWidget);
+    expect(find.textContaining('9h30–17h30 · Préparation en cours'), findsOneWidget);
+
+    await tester.tap(find.text('Événements'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mes événements'), findsOneWidget);
+    expect(find.textContaining('Sortie SG'), findsOneWidget);
+
+    await tester.tap(find.text('Journées types'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Journée de camp'), findsOneWidget);
+
+    await tester.tap(find.text('Ma structure'));
+    await tester.pumpAndSettle();
+    expect(find.text('Bientôt disponible'), findsOneWidget, reason: 'structures do not exist yet');
+  });
+
   testWidgets('a dock tab that is not built yet says so', (tester) async {
     await pumpApp(
       tester,

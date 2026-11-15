@@ -3,5 +3,14 @@
         "template": "Journée type",
         "edit": "Modifier la journée type",
         "visibility": "Modèles"
-    }
+    },
+    "sources(map)": {
+        "ajil": "Ajil",
+        "structure": "Ma structure",
+        "personal": "Personnelles"
+    },
+    "searchLabel": "Rechercher une trame",
+    "searchHint": "Durée, groupe…",
+    "empty": "Aucune journée type.",
+    "hint": "La structure peut remplacer ou masquer les modèles Ajil. Vos modèles personnels restent accessibles selon les droits."
 }

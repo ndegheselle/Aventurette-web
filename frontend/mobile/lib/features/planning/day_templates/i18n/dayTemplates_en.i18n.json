@@ -3,5 +3,14 @@
         "template": "Day template",
         "edit": "Edit the day template",
         "visibility": "Templates"
-    }
+    },
+    "sources(map)": {
+        "ajil": "Ajil",
+        "structure": "My structure",
+        "personal": "Personal"
+    },
+    "searchLabel": "Search for a template",
+    "searchHint": "Length, group…",
+    "empty": "No day template.",
+    "hint": "Your structure may replace or hide Ajil's templates. Your personal templates stay available as your rights allow."
 }

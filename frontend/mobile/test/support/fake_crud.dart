@@ -12,8 +12,9 @@ class FakeFiles implements FileUrlResolver {
 }
 
 /// One in-memory collection behind the [DataCrud] port: records are payloads, read back through
-/// the mapper as the real adapter does. Filters compare with `=` only — enough for the specs —
-/// and anything else is refused, so a spec cannot pass on a filter the fake ignored.
+/// the mapper as the real adapter does. Filters compare with `=`, and with `<`, `<=`, `>`, `>=` on
+/// strings and numbers — enough for the specs — and anything else is refused, so a spec cannot
+/// pass on a filter the fake ignored. A date compares as the backend's text, as it does there.
 class FakeCrud<T> implements DataCrud<T> {
   FakeCrud(this.mapper, this.records, this.writes);
 
@@ -89,9 +90,19 @@ class FakeCrud<T> implements DataCrud<T> {
     (node) => switch (node) {
       final FilterGroup nested => _matches(record, nested),
       final Filter filter when filter.operator == FilterOperator.equals => record[filter.key] == filter.value,
-      Filter() => throw UnsupportedError('FakeCrud filters with = only'),
+      final Filter filter when _ordered.containsKey(filter.operator) => _ordered[filter.operator]!(
+        Comparable.compare(record[filter.key] as Comparable<Object?>, filter.value as Comparable<Object?>),
+      ),
+      Filter() => throw UnsupportedError('FakeCrud filters with =, <, <=, > and >= only'),
     },
   );
+
+  static final _ordered = <FilterOperator, bool Function(int)>{
+    FilterOperator.lessThan: (order) => order < 0,
+    FilterOperator.lessOrEquals: (order) => order <= 0,
+    FilterOperator.greaterThan: (order) => order > 0,
+    FilterOperator.greaterOrEquals: (order) => order >= 0,
+  };
 }
 
 /// Hands each collection to its specs, seeded from [seeds]. Two mappers over one collection —

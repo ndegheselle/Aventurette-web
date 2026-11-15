@@ -19,7 +19,7 @@ User journeys (`UF-01`…) are those of *02 — User Flows*.
 | [Running an activity](running-an-activity.md) | A06 A07 A08 A09 A15 | Guided steps built; its ending differs; quick mode not built |
 | [Creating an activity](activity-authoring.md) | B05 A04 A19 | Not built |
 | [Sharing and exporting](sharing.md) | A10–A13 | Not built |
-| [Planning](planning.md) | B01–B14 B16–B18 | Not built |
+| [Planning](planning.md) | B01–B14 B16–B18 | *Calendrier*, *Événements* and *Journées types* built |
 | [Preparation and inventory](preparation.md) | B15 B19 B20 C02 | Not built |
 | [Follow-up](follow-up.md) | C01 C03–C09 | Not built |
 | [Pedagogy](pedagogy.md) | D01–D11 | Not built |

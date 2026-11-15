@@ -156,6 +156,15 @@ class _Translations$dayTemplates$en extends Translations$dayTemplates$fr {
 
 	// Translations
 	@override late final _Translations$dayTemplates$screens$en screens = _Translations$dayTemplates$screens$en._(_root);
+	@override Map<String, String> get sources => {
+		'ajil': 'Ajil',
+		'structure': 'My structure',
+		'personal': 'Personal',
+	};
+	@override String get searchLabel => 'Search for a template';
+	@override String get searchHint => 'Length, group…';
+	@override String get empty => 'No day template.';
+	@override String get hint => 'Your structure may replace or hide Ajil\'s templates. Your personal templates stay available as your rights allow.';
 }
 
 // Path: events
@@ -166,6 +175,20 @@ class _Translations$events$en extends Translations$events$fr {
 
 	// Translations
 	@override late final _Translations$events$screens$en screens = _Translations$events$screens$en._(_root);
+	@override Map<String, String> get segments => {
+		'calendar': 'Calendar',
+		'events': 'Events',
+		'templates': 'Day templates',
+	};
+	@override String get create => '+ New event';
+	@override late final _Translations$events$calendar$en calendar = _Translations$events$calendar$en._(_root);
+	@override late final _Translations$events$list$en list = _Translations$events$list$en._(_root);
+	@override Map<String, String> get status => {
+		'draft': 'Draft',
+		'preparing': 'Being prepared',
+		'ready': 'Ready',
+	};
+	@override late final _Translations$events$dates$en dates = _Translations$events$dates$en._(_root);
 }
 
 // Path: followUp
@@ -573,6 +596,118 @@ class _Translations$events$screens$en extends Translations$events$screens$fr {
 	@override String get edit => 'Edit the event';
 	@override String get newBlock => 'Set up the time';
 	@override String get coordination => 'Coordination';
+}
+
+// Path: events.calendar
+class _Translations$events$calendar$en extends Translations$events$calendar$fr {
+	_Translations$events$calendar$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override Map<String, String> get scales => {
+		'day': 'Day',
+		'week': 'Week',
+		'month': 'Month',
+		'year': 'Year',
+	};
+	@override String get group => 'Group';
+	@override String get allGroups => 'All groups';
+	@override String get previous => 'Previous period';
+	@override String get next => 'Next period';
+	@override String get today => 'Today';
+	@override String get empty => 'No event in this period.';
+	@override String eventCount({required Object count}) => '${count} events';
+	@override String get hint => 'Statuses show here. The validations to handle are gathered in Follow-up.';
+}
+
+// Path: events.list
+class _Translations$events$list$en extends Translations$events$list$fr {
+	_Translations$events$list$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get searchLabel => 'Search for an event';
+	@override String get searchHint => 'Name or period…';
+	@override Map<String, String> get segments => {
+		'mine': 'My events',
+		'shared': 'Shared',
+	};
+	@override String get empty => 'No event.';
+	@override String get allGroups => 'all units';
+}
+
+// Path: events.dates
+class _Translations$events$dates$en extends Translations$events$dates$fr {
+	_Translations$events$dates$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override List<String> get weekdays => [
+		'Monday',
+		'Tuesday',
+		'Wednesday',
+		'Thursday',
+		'Friday',
+		'Saturday',
+		'Sunday',
+	];
+	@override List<String> get weekdaysShort => [
+		'Mon',
+		'Tue',
+		'Wed',
+		'Thu',
+		'Fri',
+		'Sat',
+		'Sun',
+	];
+	@override List<String> get weekdaysLetter => [
+		'M',
+		'T',
+		'W',
+		'T',
+		'F',
+		'S',
+		'S',
+	];
+	@override List<String> get months => [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+	];
+	@override List<String> get monthsShort => [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'May',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec',
+	];
+	@override String day({required Object month, required Object day}) => '${month} ${day}';
+	@override String monthYear({required Object month, required Object year}) => '${month} ${year}';
+	@override String fullDay({required Object weekday, required Object month, required Object day}) => '${weekday}, ${month} ${day}';
+	@override String dayRange({required Object month, required Object from, required Object to}) => '${month} ${from}–${to}';
+	@override String range({required Object from, required Object to}) => '${from} – ${to}';
+	@override String hour({required Object hours}) => '${hours}:00';
+	@override String time({required Object hours, required Object minutes}) => '${hours}:${minutes}';
+	@override String times({required Object from, required Object to}) => '${from}–${to}';
 }
 
 // Path: followUp.screens
@@ -1051,12 +1186,97 @@ extension on TranslationsEn {
 			'dayTemplates.screens.template' => 'Day template',
 			'dayTemplates.screens.edit' => 'Edit the day template',
 			'dayTemplates.screens.visibility' => 'Templates',
+			'dayTemplates.sources.ajil' => 'Ajil',
+			'dayTemplates.sources.structure' => 'My structure',
+			'dayTemplates.sources.personal' => 'Personal',
+			'dayTemplates.searchLabel' => 'Search for a template',
+			'dayTemplates.searchHint' => 'Length, group…',
+			'dayTemplates.empty' => 'No day template.',
+			'dayTemplates.hint' => 'Your structure may replace or hide Ajil\'s templates. Your personal templates stay available as your rights allow.',
 			'events.screens.tab' => 'Planning',
 			'events.screens.create' => 'New event',
 			'events.screens.event' => 'Event',
 			'events.screens.edit' => 'Edit the event',
 			'events.screens.newBlock' => 'Set up the time',
 			'events.screens.coordination' => 'Coordination',
+			'events.segments.calendar' => 'Calendar',
+			'events.segments.events' => 'Events',
+			'events.segments.templates' => 'Day templates',
+			'events.create' => '+ New event',
+			'events.calendar.scales.day' => 'Day',
+			'events.calendar.scales.week' => 'Week',
+			'events.calendar.scales.month' => 'Month',
+			'events.calendar.scales.year' => 'Year',
+			'events.calendar.group' => 'Group',
+			'events.calendar.allGroups' => 'All groups',
+			'events.calendar.previous' => 'Previous period',
+			'events.calendar.next' => 'Next period',
+			'events.calendar.today' => 'Today',
+			'events.calendar.empty' => 'No event in this period.',
+			'events.calendar.eventCount' => ({required Object count}) => '${count} events',
+			'events.calendar.hint' => 'Statuses show here. The validations to handle are gathered in Follow-up.',
+			'events.list.searchLabel' => 'Search for an event',
+			'events.list.searchHint' => 'Name or period…',
+			'events.list.segments.mine' => 'My events',
+			'events.list.segments.shared' => 'Shared',
+			'events.list.empty' => 'No event.',
+			'events.list.allGroups' => 'all units',
+			'events.status.draft' => 'Draft',
+			'events.status.preparing' => 'Being prepared',
+			'events.status.ready' => 'Ready',
+			'events.dates.weekdays.0' => 'Monday',
+			'events.dates.weekdays.1' => 'Tuesday',
+			'events.dates.weekdays.2' => 'Wednesday',
+			'events.dates.weekdays.3' => 'Thursday',
+			'events.dates.weekdays.4' => 'Friday',
+			'events.dates.weekdays.5' => 'Saturday',
+			'events.dates.weekdays.6' => 'Sunday',
+			'events.dates.weekdaysShort.0' => 'Mon',
+			'events.dates.weekdaysShort.1' => 'Tue',
+			'events.dates.weekdaysShort.2' => 'Wed',
+			'events.dates.weekdaysShort.3' => 'Thu',
+			'events.dates.weekdaysShort.4' => 'Fri',
+			'events.dates.weekdaysShort.5' => 'Sat',
+			'events.dates.weekdaysShort.6' => 'Sun',
+			'events.dates.weekdaysLetter.0' => 'M',
+			'events.dates.weekdaysLetter.1' => 'T',
+			'events.dates.weekdaysLetter.2' => 'W',
+			'events.dates.weekdaysLetter.3' => 'T',
+			'events.dates.weekdaysLetter.4' => 'F',
+			'events.dates.weekdaysLetter.5' => 'S',
+			'events.dates.weekdaysLetter.6' => 'S',
+			'events.dates.months.0' => 'January',
+			'events.dates.months.1' => 'February',
+			'events.dates.months.2' => 'March',
+			'events.dates.months.3' => 'April',
+			'events.dates.months.4' => 'May',
+			'events.dates.months.5' => 'June',
+			'events.dates.months.6' => 'July',
+			'events.dates.months.7' => 'August',
+			'events.dates.months.8' => 'September',
+			'events.dates.months.9' => 'October',
+			'events.dates.months.10' => 'November',
+			'events.dates.months.11' => 'December',
+			'events.dates.monthsShort.0' => 'Jan',
+			'events.dates.monthsShort.1' => 'Feb',
+			'events.dates.monthsShort.2' => 'Mar',
+			'events.dates.monthsShort.3' => 'Apr',
+			'events.dates.monthsShort.4' => 'May',
+			'events.dates.monthsShort.5' => 'Jun',
+			'events.dates.monthsShort.6' => 'Jul',
+			'events.dates.monthsShort.7' => 'Aug',
+			'events.dates.monthsShort.8' => 'Sep',
+			'events.dates.monthsShort.9' => 'Oct',
+			'events.dates.monthsShort.10' => 'Nov',
+			'events.dates.monthsShort.11' => 'Dec',
+			'events.dates.day' => ({required Object month, required Object day}) => '${month} ${day}',
+			'events.dates.monthYear' => ({required Object month, required Object year}) => '${month} ${year}',
+			'events.dates.fullDay' => ({required Object weekday, required Object month, required Object day}) => '${weekday}, ${month} ${day}',
+			'events.dates.dayRange' => ({required Object month, required Object from, required Object to}) => '${month} ${from}–${to}',
+			'events.dates.range' => ({required Object from, required Object to}) => '${from} – ${to}',
+			'events.dates.hour' => ({required Object hours}) => '${hours}:00',
+			'events.dates.time' => ({required Object hours, required Object minutes}) => '${hours}:${minutes}',
+			'events.dates.times' => ({required Object from, required Object to}) => '${from}–${to}',
 			'followUp.screens.tab' => 'Follow-up',
 			'inventory.screens.inventory' => 'Inventory',
 			'notifications.screens.preferences' => 'Notifications',
