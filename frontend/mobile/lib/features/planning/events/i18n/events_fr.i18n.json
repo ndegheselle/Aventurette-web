@@ -18,8 +18,7 @@
         "allGroups": "Tous les groupes",
         "empty": "Aucun événement ce jour-là.",
         "hint": "Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.",
-        "showMonth": "Afficher le mois",
-        "hideMonth": "Afficher la semaine"
+        "date": "Jour"
     },
     "list": {
         "searchLabel": "Rechercher un événement",

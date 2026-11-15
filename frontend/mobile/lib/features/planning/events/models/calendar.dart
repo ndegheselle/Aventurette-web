@@ -1,4 +1,4 @@
-/// The *Calendrier* (B01): a day chosen on a calendar, and the events on it.
+/// The *Calendrier* (B01): a day chosen, the week it is in, and the events on it.
 library;
 
 import 'package:ajil/features/planning/events/models/event.dart';
@@ -6,8 +6,11 @@ import 'package:ajil/features/planning/events/models/event.dart';
 /// The first day of [day]'s month.
 DateTime monthOf(DateTime day) => DateTime(day.year, day.month);
 
-/// The days whose events are read while [month] is shown: from the month before it to the end
-/// of the month after, so the days a calendar draws beside the month carry their marks too.
+/// The Monday of [day]'s week.
+DateTime weekOf(DateTime day) => DateTime(day.year, day.month, day.day - (day.weekday - DateTime.monday));
+
+/// The days whose events are read while a day of [month] is chosen: from the month before it to
+/// the end of the month after, so a week across two months carries its marks on both sides.
 ({DateTime from, DateTime until}) calendarWindow(DateTime month) =>
     (from: DateTime(month.year, month.month - 1), until: DateTime(month.year, month.month + 2));
 

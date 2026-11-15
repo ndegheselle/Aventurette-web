@@ -609,8 +609,7 @@ class _Translations$events$calendar$en extends Translations$events$calendar$fr {
 	@override String get allGroups => 'All groups';
 	@override String get empty => 'No event on that day.';
 	@override String get hint => 'Statuses show here. The validations to handle are gathered in Follow-up.';
-	@override String get showMonth => 'Show the month';
-	@override String get hideMonth => 'Show the week';
+	@override String get date => 'Day';
 }
 
 // Path: events.list
@@ -1166,8 +1165,7 @@ extension on TranslationsEn {
 			'events.calendar.allGroups' => 'All groups',
 			'events.calendar.empty' => 'No event on that day.',
 			'events.calendar.hint' => 'Statuses show here. The validations to handle are gathered in Follow-up.',
-			'events.calendar.showMonth' => 'Show the month',
-			'events.calendar.hideMonth' => 'Show the week',
+			'events.calendar.date' => 'Day',
 			'events.list.searchLabel' => 'Search for an event',
 			'events.list.searchHint' => 'Name or period…',
 			'events.list.segments.mine' => 'My events',

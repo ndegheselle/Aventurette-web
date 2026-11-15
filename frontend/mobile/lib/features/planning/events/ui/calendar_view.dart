@@ -13,9 +13,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 
-/// The *Calendrier* (B01): a group, a line of days or the whole month to choose a day on, and the
-/// events of that day, each with its status. The month calendar's header pages through months
-/// and years.
+/// The *Calendrier* (B01): a group, the day chosen — another is picked on the date field's
+/// calendar —, its week on one line, and the events of that day, each with its status.
 class CalendarView extends ConsumerWidget {
   const CalendarView({super.key});
 
@@ -32,36 +31,15 @@ class CalendarView extends ConsumerWidget {
       children: [
         const _GroupSelect(),
         const SizedBox(height: AppSpaces.spacing),
-        Row(
-          children: [
-            // On one line, shrunk rather than wrapped beside the button.
-            Expanded(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(dayTitle(t, view.selected), style: context.titleText, maxLines: 1),
-              ),
-            ),
-            FButton(
-              variant: .ghost,
-              size: .sm,
-              mainAxisSize: MainAxisSize.min,
-              prefix: Icon(view.expanded ? FLucideIcons.calendarRange : FLucideIcons.calendarDays),
-              onPress: ref.read(calendarProvider.notifier).toggleExpanded,
-              child: Text(view.expanded ? t.events.calendar.hideMonth : t.events.calendar.showMonth),
-            ),
-          ],
-        ),
+        _DateField(selected: view.selected),
         const SizedBox(height: AppSpaces.spacing),
-        if (view.expanded)
-          _MonthCalendar(selected: view.selected, events: shown)
-        else
-          _LineCalendar(selected: view.selected, events: shown),
+        // A new week is a new line: forui's line calendar scrolls to its first date only once.
+        _WeekLine(key: ValueKey(weekOf(view.selected)), selected: view.selected, events: shown),
         const SizedBox(height: AppSpaces.spacing),
         AsyncView(
           value: events,
           onRetry: () => ref.invalidate(calendarEventsProvider),
-          data: (_) => _DayEvents(day: view.selected, events: eventsOn(shown, view.selected)),
+          data: (_) => _DayEvents(events: eventsOn(shown, view.selected)),
         ),
         const SizedBox(height: AppSpaces.spacing),
         const CreateEventButton(),
@@ -116,9 +94,35 @@ Widget _marked(Widget day, {required bool busy, required Color color}) => Stack(
   ],
 );
 
-/// The days on one line that scrolls, centred on the day chosen.
-class _LineCalendar extends ConsumerWidget {
-  const _LineCalendar({required this.selected, required this.events});
+/// The day chosen, written out; tapping it opens a calendar to pick another.
+class _DateField extends ConsumerWidget {
+  const _DateField({required this.selected});
+
+  final DateTime selected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.t;
+    final calendar = ref.read(calendarProvider.notifier);
+
+    return FDateField.calendar(
+      label: Text(t.events.calendar.date),
+      format: (context, date, _) => dayTitle(t, fromCalendarDate(date)),
+      selectionControl: .liftedSingle(
+        value: toCalendarDate(selected),
+        toggleable: false,
+        onChange: (date) {
+          if (date != null) calendar.select(fromCalendarDate(date));
+        },
+      ),
+    );
+  }
+}
+
+/// The chosen day's week, Monday to Sunday, on one line that fits the width rather than
+/// scrolls: forui sizes a day by its height, so the spacing inside a day is what makes seven fit.
+class _WeekLine extends ConsumerWidget {
+  const _WeekLine({super.key, required this.selected, required this.events});
 
   final DateTime selected;
   final List<PlanningEvent> events;
@@ -126,80 +130,41 @@ class _LineCalendar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final calendar = ref.read(calendarProvider.notifier);
+    final style = context.theme.lineCalendarStyle;
+    final scale = MediaQuery.textScalerOf(context);
+    final textHeight =
+        scale.scale(style.dateTextStyle.resolve(const {}).fontSize ?? 0) +
+        scale.scale(style.weekdayTextStyle.resolve(const {}).fontSize ?? 0) +
+        style.contentSpacing;
 
-    return FLineCalendar(
-      control: .lifted(
-        date: toCalendarDate(selected),
-        onChange: (date) {
-          if (date != null) calendar.select(fromCalendarDate(date));
-        },
-      ),
-      scrollControl: .managed(
-        initialDate: toCalendarDate(selected),
-        today: toCalendarDate(ref.watch(todayProvider)),
-        initialAlignment: AlignmentDirectional.center,
-      ),
-      builder: (context, data, child) => _marked(
-        child!,
-        busy: eventsOn(events, fromCalendarDate(data.date)).isNotEmpty,
-        color: context.theme.colors.primary,
-      ),
-    );
-  }
-}
-
-/// The whole month, with the day chosen; its header pages through months and opens a month or a
-/// year picker. Paging reads the events of the month shown, to mark its days.
-class _MonthCalendar extends ConsumerStatefulWidget {
-  const _MonthCalendar({required this.selected, required this.events});
-
-  final DateTime selected;
-  final List<PlanningEvent> events;
-
-  @override
-  ConsumerState<_MonthCalendar> createState() => _MonthCalendarState();
-}
-
-class _MonthCalendarState extends ConsumerState<_MonthCalendar> {
-  late final FGridCalendarController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = FGridCalendarController(
-      initial: toCalendarDate(widget.selected),
-      today: toCalendarDate(ref.read(todayProvider)),
-    );
-    _controller.addListener(_paged);
-  }
-
-  void _paged() => ref.read(calendarProvider.notifier).browse(fromCalendarDate(_controller.currentMonth));
-
-  @override
-  void dispose() {
-    _controller
-      ..removeListener(_paged)
-      ..dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final calendar = ref.read(calendarProvider.notifier);
-
-    return FCalendar.grid(
-      control: FGridCalendarControl(controller: _controller),
-      selectionControl: .liftedSingle(
-        value: toCalendarDate(widget.selected),
-        toggleable: false,
-        onChange: (date) {
-          if (date != null) calendar.select(fromCalendarDate(date));
-        },
-      ),
-      dayBuilder: (context, styles, localizations, date, variants) => _marked(
-        FCalendar.defaultDayBuilder(context, styles, localizations, date, variants),
-        busy: eventsOn(widget.events, fromCalendarDate(date)).isNotEmpty,
-        color: context.theme.colors.primary,
+    return LayoutBuilder(
+      builder: (context, constraints) => FLineCalendar(
+        style: .delta(
+          contentEdgeSpacing: ((constraints.maxWidth / DateTime.daysPerWeek - textHeight) / 2).clamp(
+            2,
+            style.contentEdgeSpacing,
+          ),
+        ),
+        physics: const NeverScrollableScrollPhysics(),
+        control: .lifted(
+          date: toCalendarDate(selected),
+          onChange: (date) {
+            if (date != null) calendar.select(fromCalendarDate(date));
+          },
+        ),
+        scrollControl: .managed(
+          initialDate: toCalendarDate(weekOf(selected)),
+          initialAlignment: AlignmentDirectional.centerStart,
+          today: toCalendarDate(ref.watch(todayProvider)),
+        ),
+        builder: (context, data, child) => _marked(
+          child!,
+          busy: eventsOn(events, fromCalendarDate(data.date)).isNotEmpty,
+          // Light on the chosen day, which is drawn in the primary colour.
+          color: data.variants.contains(FLineCalendarItemVariant.selected)
+              ? context.theme.colors.primaryForeground
+              : context.theme.colors.primary,
+        ),
       ),
     );
   }
@@ -207,9 +172,8 @@ class _MonthCalendarState extends ConsumerState<_MonthCalendar> {
 
 /// The events of the day chosen, in a tile group.
 class _DayEvents extends StatelessWidget {
-  const _DayEvents({required this.day, required this.events});
+  const _DayEvents({required this.events});
 
-  final DateTime day;
   final List<PlanningEvent> events;
 
   @override

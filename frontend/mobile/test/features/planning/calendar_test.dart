@@ -13,6 +13,13 @@ void main() {
     expect(window.until, DateTime(2027, 2));
   });
 
+  test("a day's week starts on Monday, across a month or a year", () {
+    expect(weekOf(DateTime(2026, 11, 21)), DateTime(2026, 11, 16));
+    expect(weekOf(DateTime(2026, 11, 16)), DateTime(2026, 11, 16));
+    expect(weekOf(DateTime(2026, 11, 15)), DateTime(2026, 11, 9), reason: 'a Sunday ends its week');
+    expect(weekOf(DateTime(2027, 1, 2)), DateTime(2026, 12, 28));
+  });
+
   test("forui's calendar dates are UTC midnights, the app's local ones", () {
     final day = DateTime(2026, 11, 21);
 

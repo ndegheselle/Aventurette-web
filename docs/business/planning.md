@@ -35,12 +35,13 @@ Each view ends with *+ Créer un événement*. *Mon planning*, reached from
 
 ### What the views do
 
-- **The calendar opens on today, as a line of days, for every group.** *Afficher le mois* draws
-  the whole month instead; its header pages through months and opens a month or a year picker.
-  There is no Jour / Semaine / Mois / Année choice: the calendar is how a user moves.
-- **The events listed are the chosen day's.** Today stands out; a day with an event carries a dot.
-  Paging the month calendar marks the days of the month shown without changing the day chosen;
-  going back to the line of days comes back to that day.
+- **The calendar opens on today, for every group.** A date field shows the day chosen, written
+  out; tapping it opens a calendar, whose header pages through months and years, to pick another.
+  There is no Jour / Semaine / Mois / Année choice.
+- **Under it, the chosen day's week**, Monday to Sunday, on one line that fits the screen. Tapping
+  a day chooses it; another week is reached through the date field. Today stands out; a day with
+  an event carries a dot.
+- **The events listed are the chosen day's.**
 - **An event is on every day it takes part of.** One ending at midnight ends the day before.
 - **The group** lists the groups the user's events name. **An event for every group shows in each
   group's calendar.** The list is hidden while no event names a group.
@@ -58,7 +59,7 @@ Each view ends with *+ Créer un événement*. *Mon planning*, reached from
 - **The group is the event's own text.** Groups and structures do not exist yet, so the choices
   are drawn from the user's events rather than from their structure.
 - **A day's events, not a week's.** The wireframe lists a week's events under the week; the app
-  lists the chosen day's, on a line of days or a month calendar, with no scale to choose.
+  lists the chosen day's, picked on the week's line or the date field, with no scale to choose.
 - ***Partagés* and *Ma structure* say *Bientôt disponible***: nothing is shared yet, and
   structures do not exist.
 

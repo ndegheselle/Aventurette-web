@@ -18,8 +18,7 @@
         "allGroups": "All groups",
         "empty": "No event on that day.",
         "hint": "Statuses show here. The validations to handle are gathered in Follow-up.",
-        "showMonth": "Show the month",
-        "hideMonth": "Show the week"
+        "date": "Day"
     },
     "list": {
         "searchLabel": "Search for an event",

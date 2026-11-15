@@ -38,20 +38,6 @@ void main() {
     expect([for (final event in events) event.id], ['spills in', 'saturday', 'last of the window']);
   });
 
-  test('paging the month calendar keeps the day chosen; closing it comes back to its month', () async {
-    final container = await signedInContainer();
-    final calendar = container.read(calendarProvider.notifier)..select(DateTime(2026, 11, 18));
-
-    calendar
-      ..toggleExpanded()
-      ..browse(DateTime(2027, 2, 1));
-    expect(container.read(calendarProvider).selected, DateTime(2026, 11, 18));
-    expect(container.read(calendarProvider).month, DateTime(2027, 2));
-
-    calendar.toggleExpanded();
-    expect(container.read(calendarProvider).month, DateTime(2026, 11));
-  });
-
   test('a date is written in UTC and read back in the device time', () {
     final moment = DateTime(2026, 11, 21, 9, 30);
 

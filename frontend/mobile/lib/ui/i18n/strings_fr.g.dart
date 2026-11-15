@@ -836,11 +836,8 @@ class Translations$events$calendar$fr {
 	/// fr: 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.'
 	String get hint => 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.';
 
-	/// fr: 'Afficher le mois'
-	String get showMonth => 'Afficher le mois';
-
-	/// fr: 'Afficher la semaine'
-	String get hideMonth => 'Afficher la semaine';
+	/// fr: 'Jour'
+	String get date => 'Jour';
 }
 
 // Path: events.list
@@ -1591,8 +1588,7 @@ extension on Translations {
 			'events.calendar.allGroups' => 'Tous les groupes',
 			'events.calendar.empty' => 'Aucun événement ce jour-là.',
 			'events.calendar.hint' => 'Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.',
-			'events.calendar.showMonth' => 'Afficher le mois',
-			'events.calendar.hideMonth' => 'Afficher la semaine',
+			'events.calendar.date' => 'Jour',
 			'events.list.searchLabel' => 'Rechercher un événement',
 			'events.list.searchHint' => 'Nom ou période…',
 			'events.list.segments.mine' => 'Mes événements',

@@ -7,53 +7,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Today, at midnight. A provider so a spec can say which day it is.
 final todayProvider = Provider<DateTime>((ref) => dayOf(DateTime.now()));
 
-/// What the *Calendrier* (B01) shows: the day chosen, the month being browsed, whether the whole
-/// month is drawn or a line of days, and the group, null for all.
+/// What the *Calendrier* (B01) shows: the day chosen, whose week is drawn, and the group, null
+/// for all.
 class CalendarView {
-  const CalendarView({required this.selected, required this.month, this.expanded = false, this.group});
+  const CalendarView({required this.selected, this.group});
 
   /// A local midnight.
   final DateTime selected;
-
-  /// The first day of the month the calendar is on: the selected day's, until the user pages.
-  final DateTime month;
-  final bool expanded;
   final String? group;
-
-  CalendarView copyWith({DateTime? selected, DateTime? month, bool? expanded, String? Function()? group}) =>
-      CalendarView(
-        selected: selected ?? this.selected,
-        month: month ?? this.month,
-        expanded: expanded ?? this.expanded,
-        group: group == null ? this.group : group(),
-      );
 }
 
-/// The calendar opens on today, as a line of days, for every group.
+/// The calendar opens on today, for every group.
 class CalendarNotifier extends Notifier<CalendarView> {
   @override
-  CalendarView build() {
-    final today = ref.read(todayProvider);
-    return CalendarView(selected: today, month: monthOf(today));
-  }
+  CalendarView build() => CalendarView(selected: ref.read(todayProvider));
 
-  void select(DateTime day) => state = state.copyWith(selected: dayOf(day), month: monthOf(day));
+  void select(DateTime day) => state = CalendarView(selected: dayOf(day), group: state.group);
 
-  /// The month calendar paged to another month, without choosing a day.
-  void browse(DateTime month) => state = state.copyWith(month: monthOf(month));
-
-  /// Back to the line of days, the browsed month is the chosen day's again.
-  void toggleExpanded() => state = state.copyWith(expanded: !state.expanded, month: monthOf(state.selected));
-
-  void selectGroup(String? group) => state = state.copyWith(group: () => group);
+  void selectGroup(String? group) => state = CalendarView(selected: state.selected, group: group);
 }
 
 final calendarProvider = NotifierProvider<CalendarNotifier, CalendarView>(CalendarNotifier.new);
 
-/// The user's events around the month browsed, for every group: choosing a day in it, or a
+/// The user's events around the chosen day's month, for every group: another day of it, or a
 /// group, reads nothing again.
 final calendarEventsProvider = FutureProvider.autoDispose<List<PlanningEvent>>((ref) async {
-  final window = calendarWindow(ref.watch(calendarProvider.select((view) => view.month)));
+  final window = calendarWindow(ref.watch(calendarProvider.select((view) => monthOf(view.selected))));
   final events = await ref.read(eventsApiProvider).between(ref.watch(currentUserIdProvider), window.from, window.until);
   return [
     for (final event in events)

@@ -151,7 +151,8 @@ void main() {
     await tester.tap(find.text('Planning').last);
     await tester.pumpAndSettle();
 
-    expect(find.byType(FLineCalendar), findsOneWidget, reason: "today's line of days");
+    expect(find.byWidgetPredicate((widget) => widget is FDateField), findsOneWidget, reason: 'the day chosen, today');
+    expect(find.byType(FLineCalendar), findsOneWidget, reason: "today's week");
     expect(find.text('Sortie SG'), findsOneWidget);
     expect(find.text('9h30–17h30 · Préparation en cours'), findsOneWidget);
 
