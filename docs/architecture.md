@@ -5,6 +5,11 @@ Two apps, one backend. The clients' app (Ajil, `frontend/mobile/`) and the back 
 contract is the backend's schema and rules** ([ADR 0020](adr/0020-clients-use-a-flutter-app.md)).
 What the clients' app does is in [business/](business/README.md).
 
+The end objective is to have the following :
+- A mobile app that focus on the user **doing** the activities.
+- A desktop / web app that focus on the management (planning, shifts, events, structures).
+- A administration app that allow the Ajil team to add content, unrelated to the two previous app.
+
 ```mermaid
 flowchart LR
     phone["Ajil — clients' app<br/>frontend/mobile"]
@@ -113,8 +118,7 @@ them wrong unless it reproduces them.
 | **A favourite is added or removed one at a time** (`favorites+`, `favorites-`), never by writing the list. Two writes in flight must not cancel each other. | `features/activities/api/activities_api.dart` | `favorites_test.dart` |
 | **One feedback per user and activity**, under a unique index: update it when it exists; a second tap while saving creates nothing. | `state/feedback.dart`, `models/feedback.dart` | `feedback_test.dart` |
 | **Pages are appended**; a new search starts over and drops a page that answers the previous one. | `state/catalogue.dart` | `library_feed_test.dart` |
-| **A date is stored in UTC and read in the device's time.** The calendar asks for the user's events starting before the window ends and ending as or after it starts — the month shown, with the month before and after — then keeps those that overlap it. forui's calendars count days as UTC midnights; the app converts them to local days. | `features/planning/events/api/` | `planning_api_test.dart`, `calendar_test.dart` |
-| **A day template with no owner is Ajil's**; one with an owner is that user's. Its times are minutes since midnight, 0 being unset. | `features/planning/day_templates/api/` | `planning_api_test.dart` |
+| **A date is stored in UTC and read in the device's time.** The planning asks for the user's events starting before the period ends and ending as or after it starts, then keeps those that overlap it. forui's calendars count days as UTC midnights; the app converts them to local days. | `features/planning/api/`, `models/period.dart` | `planning_test.dart`, `period_test.dart` |
 | **The router waits for the session**, sends nobody signed in to the login, a user not onboarded to the onboarding (`onboarded` on the user), and a signed-in user away from the login. | `features/user/guard.dart` | `user_test.dart` |
 | **The session is kept in the device's secure storage**, not in plain preferences. | `backend/pocketbase/client.dart` | — |
 

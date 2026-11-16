@@ -7,28 +7,14 @@
         "newBlock": "Paramétrer le temps",
         "coordination": "Coordination"
     },
-    "segments(map)": {
-        "calendar": "Calendrier",
-        "events": "Événements",
-        "templates": "Journées types"
-    },
     "create": "+ Créer un événement",
-    "calendar": {
-        "group": "Groupe",
-        "allGroups": "Tous les groupes",
-        "empty": "Aucun événement ce jour-là.",
-        "hint": "Les statuts sont visibles ici. Les validations à traiter sont regroupées dans Suivi.",
-        "date": "Jour"
-    },
-    "list": {
-        "searchLabel": "Rechercher un événement",
-        "searchHint": "Nom ou période…",
-        "segments(map)": {
-            "mine": "Mes événements",
-            "shared": "Partagés"
-        },
-        "empty": "Aucun événement.",
-        "allGroups": "toutes les unités"
+    "empty": "Aucun événement.",
+    "range": "Afficher par",
+    "ranges(map)": {
+        "day": "Jour",
+        "week": "Semaine",
+        "month": "Mois",
+        "year": "Année"
     },
     "status(map)": {
         "draft": "Brouillon",
@@ -63,6 +49,7 @@
         "fullDay": "{weekday} {day} {month}",
         "dayRange": "{from}–{to} {month}",
         "range": "{from} – {to}",
+        "withYear": "{date} {year}",
         "hour": "{hours}h",
         "time": "{hours}h{minutes}",
         "times": "{from}–{to}"

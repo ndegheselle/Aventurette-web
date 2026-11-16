@@ -71,7 +71,7 @@ class HintBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpaces.spacing),
+      padding: const EdgeInsets.all(AppSpaces.page),
       decoration: BoxDecoration(
         color: context.theme.colors.muted,
         borderRadius: context.theme.style.borderRadius.lg,

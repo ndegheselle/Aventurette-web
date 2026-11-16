@@ -43,12 +43,11 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$activityEditor$en activityEditor = _Translations$activityEditor$en._(_root);
 	@override late final _Translations$app$en app = _Translations$app$en._(_root);
 	@override late final _Translations$create$en create = _Translations$create$en._(_root);
-	@override late final _Translations$dayTemplates$en dayTemplates = _Translations$dayTemplates$en._(_root);
-	@override late final _Translations$events$en events = _Translations$events$en._(_root);
 	@override late final _Translations$followUp$en followUp = _Translations$followUp$en._(_root);
 	@override late final _Translations$inventory$en inventory = _Translations$inventory$en._(_root);
 	@override late final _Translations$notifications$en notifications = _Translations$notifications$en._(_root);
 	@override late final _Translations$pedagogy$en pedagogy = _Translations$pedagogy$en._(_root);
+	@override late final _Translations$planning$en planning = _Translations$planning$en._(_root);
 	@override late final _Translations$resources$en resources = _Translations$resources$en._(_root);
 	@override late final _Translations$reviews$en reviews = _Translations$reviews$en._(_root);
 	@override late final _Translations$sharing$en sharing = _Translations$sharing$en._(_root);
@@ -148,49 +147,6 @@ class _Translations$create$en extends Translations$create$fr {
 	@override late final _Translations$create$screens$en screens = _Translations$create$screens$en._(_root);
 }
 
-// Path: dayTemplates
-class _Translations$dayTemplates$en extends Translations$dayTemplates$fr {
-	_Translations$dayTemplates$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override late final _Translations$dayTemplates$screens$en screens = _Translations$dayTemplates$screens$en._(_root);
-	@override Map<String, String> get sources => {
-		'ajil': 'Ajil',
-		'structure': 'My structure',
-		'personal': 'Personal',
-	};
-	@override String get searchLabel => 'Search for a template';
-	@override String get searchHint => 'Length, group…';
-	@override String get empty => 'No day template.';
-	@override String get hint => 'Your structure may replace or hide Ajil\'s templates. Your personal templates stay available as your rights allow.';
-}
-
-// Path: events
-class _Translations$events$en extends Translations$events$fr {
-	_Translations$events$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override late final _Translations$events$screens$en screens = _Translations$events$screens$en._(_root);
-	@override Map<String, String> get segments => {
-		'calendar': 'Calendar',
-		'events': 'Events',
-		'templates': 'Day templates',
-	};
-	@override String get create => '+ New event';
-	@override late final _Translations$events$calendar$en calendar = _Translations$events$calendar$en._(_root);
-	@override late final _Translations$events$list$en list = _Translations$events$list$en._(_root);
-	@override Map<String, String> get status => {
-		'draft': 'Draft',
-		'preparing': 'Being prepared',
-		'ready': 'Ready',
-	};
-	@override late final _Translations$events$dates$en dates = _Translations$events$dates$en._(_root);
-}
-
 // Path: followUp
 class _Translations$followUp$en extends Translations$followUp$fr {
 	_Translations$followUp$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -229,6 +185,31 @@ class _Translations$pedagogy$en extends Translations$pedagogy$fr {
 
 	// Translations
 	@override late final _Translations$pedagogy$screens$en screens = _Translations$pedagogy$screens$en._(_root);
+}
+
+// Path: planning
+class _Translations$planning$en extends Translations$planning$fr {
+	_Translations$planning$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$planning$screens$en screens = _Translations$planning$screens$en._(_root);
+	@override String get create => '+ New event';
+	@override String get empty => 'No event.';
+	@override String get range => 'Show by';
+	@override Map<String, String> get ranges => {
+		'day': 'Day',
+		'week': 'Week',
+		'month': 'Month',
+		'year': 'Year',
+	};
+	@override Map<String, String> get status => {
+		'draft': 'Draft',
+		'preparing': 'Being prepared',
+		'ready': 'Ready',
+	};
+	@override late final _Translations$planning$dates$en dates = _Translations$planning$dates$en._(_root);
 }
 
 // Path: resources
@@ -571,103 +552,6 @@ class _Translations$create$screens$en extends Translations$create$screens$fr {
 	@override String get tab => 'Create';
 }
 
-// Path: dayTemplates.screens
-class _Translations$dayTemplates$screens$en extends Translations$dayTemplates$screens$fr {
-	_Translations$dayTemplates$screens$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get template => 'Day template';
-	@override String get edit => 'Edit the day template';
-	@override String get visibility => 'Templates';
-}
-
-// Path: events.screens
-class _Translations$events$screens$en extends Translations$events$screens$fr {
-	_Translations$events$screens$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get tab => 'Planning';
-	@override String get create => 'New event';
-	@override String get event => 'Event';
-	@override String get edit => 'Edit the event';
-	@override String get newBlock => 'Set up the time';
-	@override String get coordination => 'Coordination';
-}
-
-// Path: events.calendar
-class _Translations$events$calendar$en extends Translations$events$calendar$fr {
-	_Translations$events$calendar$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get group => 'Group';
-	@override String get allGroups => 'All groups';
-	@override String get empty => 'No event on that day.';
-	@override String get hint => 'Statuses show here. The validations to handle are gathered in Follow-up.';
-	@override String get date => 'Day';
-}
-
-// Path: events.list
-class _Translations$events$list$en extends Translations$events$list$fr {
-	_Translations$events$list$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get searchLabel => 'Search for an event';
-	@override String get searchHint => 'Name or period…';
-	@override Map<String, String> get segments => {
-		'mine': 'My events',
-		'shared': 'Shared',
-	};
-	@override String get empty => 'No event.';
-	@override String get allGroups => 'all units';
-}
-
-// Path: events.dates
-class _Translations$events$dates$en extends Translations$events$dates$fr {
-	_Translations$events$dates$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override List<String> get weekdays => [
-		'Monday',
-		'Tuesday',
-		'Wednesday',
-		'Thursday',
-		'Friday',
-		'Saturday',
-		'Sunday',
-	];
-	@override List<String> get months => [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December',
-	];
-	@override String day({required Object month, required Object day}) => '${month} ${day}';
-	@override String fullDay({required Object weekday, required Object month, required Object day}) => '${weekday}, ${month} ${day}';
-	@override String dayRange({required Object month, required Object from, required Object to}) => '${month} ${from}–${to}';
-	@override String range({required Object from, required Object to}) => '${from} – ${to}';
-	@override String hour({required Object hours}) => '${hours}:00';
-	@override String time({required Object hours, required Object minutes}) => '${hours}:${minutes}';
-	@override String times({required Object from, required Object to}) => '${from}–${to}';
-}
-
 // Path: followUp.screens
 class _Translations$followUp$screens$en extends Translations$followUp$screens$fr {
 	_Translations$followUp$screens$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -707,6 +591,61 @@ class _Translations$pedagogy$screens$en extends Translations$pedagogy$screens$fr
 
 	// Translations
 	@override String get tab => 'Pedagogy';
+}
+
+// Path: planning.screens
+class _Translations$planning$screens$en extends Translations$planning$screens$fr {
+	_Translations$planning$screens$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get tab => 'Planning';
+	@override String get create => 'New event';
+	@override String get event => 'Event';
+	@override String get edit => 'Edit the event';
+	@override String get newBlock => 'Set up the time';
+	@override String get coordination => 'Coordination';
+}
+
+// Path: planning.dates
+class _Translations$planning$dates$en extends Translations$planning$dates$fr {
+	_Translations$planning$dates$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override List<String> get weekdays => [
+		'Monday',
+		'Tuesday',
+		'Wednesday',
+		'Thursday',
+		'Friday',
+		'Saturday',
+		'Sunday',
+	];
+	@override List<String> get months => [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+	];
+	@override String day({required Object month, required Object day}) => '${month} ${day}';
+	@override String fullDay({required Object weekday, required Object month, required Object day}) => '${weekday}, ${month} ${day}';
+	@override String dayRange({required Object month, required Object from, required Object to}) => '${month} ${from}–${to}';
+	@override String range({required Object from, required Object to}) => '${from} – ${to}';
+	@override String withYear({required Object date, required Object year}) => '${date}, ${year}';
+	@override String hour({required Object hours}) => '${hours}:00';
+	@override String time({required Object hours, required Object minutes}) => '${hours}:${minutes}';
+	@override String times({required Object from, required Object to}) => '${from}–${to}';
 }
 
 // Path: resources.screens
@@ -1141,71 +1080,54 @@ extension on TranslationsEn {
 			'app.dock.followUp' => 'Follow-up',
 			'app.dock.pedagogy' => 'Pedagogy',
 			'create.screens.tab' => 'Create',
-			'dayTemplates.screens.template' => 'Day template',
-			'dayTemplates.screens.edit' => 'Edit the day template',
-			'dayTemplates.screens.visibility' => 'Templates',
-			'dayTemplates.sources.ajil' => 'Ajil',
-			'dayTemplates.sources.structure' => 'My structure',
-			'dayTemplates.sources.personal' => 'Personal',
-			'dayTemplates.searchLabel' => 'Search for a template',
-			'dayTemplates.searchHint' => 'Length, group…',
-			'dayTemplates.empty' => 'No day template.',
-			'dayTemplates.hint' => 'Your structure may replace or hide Ajil\'s templates. Your personal templates stay available as your rights allow.',
-			'events.screens.tab' => 'Planning',
-			'events.screens.create' => 'New event',
-			'events.screens.event' => 'Event',
-			'events.screens.edit' => 'Edit the event',
-			'events.screens.newBlock' => 'Set up the time',
-			'events.screens.coordination' => 'Coordination',
-			'events.segments.calendar' => 'Calendar',
-			'events.segments.events' => 'Events',
-			'events.segments.templates' => 'Day templates',
-			'events.create' => '+ New event',
-			'events.calendar.group' => 'Group',
-			'events.calendar.allGroups' => 'All groups',
-			'events.calendar.empty' => 'No event on that day.',
-			'events.calendar.hint' => 'Statuses show here. The validations to handle are gathered in Follow-up.',
-			'events.calendar.date' => 'Day',
-			'events.list.searchLabel' => 'Search for an event',
-			'events.list.searchHint' => 'Name or period…',
-			'events.list.segments.mine' => 'My events',
-			'events.list.segments.shared' => 'Shared',
-			'events.list.empty' => 'No event.',
-			'events.list.allGroups' => 'all units',
-			'events.status.draft' => 'Draft',
-			'events.status.preparing' => 'Being prepared',
-			'events.status.ready' => 'Ready',
-			'events.dates.weekdays.0' => 'Monday',
-			'events.dates.weekdays.1' => 'Tuesday',
-			'events.dates.weekdays.2' => 'Wednesday',
-			'events.dates.weekdays.3' => 'Thursday',
-			'events.dates.weekdays.4' => 'Friday',
-			'events.dates.weekdays.5' => 'Saturday',
-			'events.dates.weekdays.6' => 'Sunday',
-			'events.dates.months.0' => 'January',
-			'events.dates.months.1' => 'February',
-			'events.dates.months.2' => 'March',
-			'events.dates.months.3' => 'April',
-			'events.dates.months.4' => 'May',
-			'events.dates.months.5' => 'June',
-			'events.dates.months.6' => 'July',
-			'events.dates.months.7' => 'August',
-			'events.dates.months.8' => 'September',
-			'events.dates.months.9' => 'October',
-			'events.dates.months.10' => 'November',
-			'events.dates.months.11' => 'December',
-			'events.dates.day' => ({required Object month, required Object day}) => '${month} ${day}',
-			'events.dates.fullDay' => ({required Object weekday, required Object month, required Object day}) => '${weekday}, ${month} ${day}',
-			'events.dates.dayRange' => ({required Object month, required Object from, required Object to}) => '${month} ${from}–${to}',
-			'events.dates.range' => ({required Object from, required Object to}) => '${from} – ${to}',
-			'events.dates.hour' => ({required Object hours}) => '${hours}:00',
-			'events.dates.time' => ({required Object hours, required Object minutes}) => '${hours}:${minutes}',
-			'events.dates.times' => ({required Object from, required Object to}) => '${from}–${to}',
 			'followUp.screens.tab' => 'Follow-up',
 			'inventory.screens.inventory' => 'Inventory',
 			'notifications.screens.preferences' => 'Notifications',
 			'notifications.screens.inbox' => 'My notifications',
 			'pedagogy.screens.tab' => 'Pedagogy',
+			'planning.screens.tab' => 'Planning',
+			'planning.screens.create' => 'New event',
+			'planning.screens.event' => 'Event',
+			'planning.screens.edit' => 'Edit the event',
+			'planning.screens.newBlock' => 'Set up the time',
+			'planning.screens.coordination' => 'Coordination',
+			'planning.create' => '+ New event',
+			'planning.empty' => 'No event.',
+			'planning.range' => 'Show by',
+			'planning.ranges.day' => 'Day',
+			'planning.ranges.week' => 'Week',
+			'planning.ranges.month' => 'Month',
+			'planning.ranges.year' => 'Year',
+			'planning.status.draft' => 'Draft',
+			'planning.status.preparing' => 'Being prepared',
+			'planning.status.ready' => 'Ready',
+			'planning.dates.weekdays.0' => 'Monday',
+			'planning.dates.weekdays.1' => 'Tuesday',
+			'planning.dates.weekdays.2' => 'Wednesday',
+			'planning.dates.weekdays.3' => 'Thursday',
+			'planning.dates.weekdays.4' => 'Friday',
+			'planning.dates.weekdays.5' => 'Saturday',
+			'planning.dates.weekdays.6' => 'Sunday',
+			'planning.dates.months.0' => 'January',
+			'planning.dates.months.1' => 'February',
+			'planning.dates.months.2' => 'March',
+			'planning.dates.months.3' => 'April',
+			'planning.dates.months.4' => 'May',
+			'planning.dates.months.5' => 'June',
+			'planning.dates.months.6' => 'July',
+			'planning.dates.months.7' => 'August',
+			'planning.dates.months.8' => 'September',
+			'planning.dates.months.9' => 'October',
+			'planning.dates.months.10' => 'November',
+			'planning.dates.months.11' => 'December',
+			'planning.dates.day' => ({required Object month, required Object day}) => '${month} ${day}',
+			'planning.dates.fullDay' => ({required Object weekday, required Object month, required Object day}) => '${weekday}, ${month} ${day}',
+			'planning.dates.dayRange' => ({required Object month, required Object from, required Object to}) => '${month} ${from}–${to}',
+			'planning.dates.range' => ({required Object from, required Object to}) => '${from} – ${to}',
+			'planning.dates.withYear' => ({required Object date, required Object year}) => '${date}, ${year}',
+			'planning.dates.hour' => ({required Object hours}) => '${hours}:00',
+			'planning.dates.time' => ({required Object hours, required Object minutes}) => '${hours}:${minutes}',
+			'planning.dates.times' => ({required Object from, required Object to}) => '${from}–${to}',
 			'resources.screens.list' => 'Resources',
 			'resources.screens.resource' => 'Resource',
 			'reviews.screens.review' => 'Review',

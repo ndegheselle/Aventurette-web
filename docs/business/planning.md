@@ -1,13 +1,14 @@
 # Planning
 
-The second tab: events in a calendar, the events themselves, and the day templates they start
-from. The tab's three views are built; an event and a template do not open yet. The earlier web
+The second tab: the user's events over a day, a week, a month or a year. The tab is built as one
+simple page; an event does not open yet, and day templates are not built. The earlier web
 app planned single activities on dates; events replace that, and it is not carried over.
 
 | Screen | | Status |
 |---|---|---|
-| B01, B02 | *Calendrier* and *Événements* | Built; *Partagés* not built |
-| B03 | *Journées types* | Built; *Ma structure* not built |
+| B01 | The planning: a period and its events | Built, simplified |
+| B02 | *Événements* | Not built |
+| B03 | *Journées types* | Not built |
 | B04 | A day template | Not built |
 | B06 | *Créer un événement* | Not built |
 | B07 | An event | Not built |
@@ -18,50 +19,30 @@ app planned single activities on dates; events replace that, and it is not carri
 | B16 | *Dupliquer l'événement* | Not built |
 | B17, B18 | Saving an event as a day template, editing a template | Not built |
 
-## The three views
+## The planning page
 
-Three segments at the top of the tab.
-
-- ***Calendrier*** (B01): by day, week, month or year, for a group (*Scouts-Guides ▾*). Each event
-  shows its status: *2 activités à valider*, *Préparation en cours*. **Statuses show here; the
-  validations to handle are in [Suivi](follow-up.md#validations).**
-- ***Événements*** (B02): a search by name or period, *Mes événements* and *Partagés*, each event
-  with its dates and status (*brouillon*, *préparation en cours*).
-- ***Journées types*** (B03): Ajil's, the structure's and the user's own; a search by duration or
-  group. **A structure may replace or hide Ajil's templates** ([Modèles](account.md#settings)).
-
-Each view ends with *+ Créer un événement*. *Mon planning*, reached from
-[Mon espace](account.md#my-space), is the same calendar showing only what concerns the user.
-
-### What the views do
-
-- **The calendar opens on today, for every group.** A date field shows the day chosen, written
-  out; tapping it opens a calendar, whose header pages through months and years, to pick another.
-  There is no Jour / Semaine / Mois / Année choice.
-- **Under it, the chosen day's week**, Monday to Sunday, on one line that fits the screen. Tapping
-  a day chooses it; another week is reached through the date field. Today stands out; a day with
-  an event carries a dot.
-- **The events listed are the chosen day's.**
-- **An event is on every day it takes part of.** One ending at midnight ends the day before.
-- **The group** lists the groups the user's events name. **An event for every group shows in each
-  group's calendar.** The list is hidden while no event names a group.
-- ***Événements*** lists the user's events in the order they start, searched by name. An event
-  reads *21 novembre · 9h30–17h30* on one day, *28–29 novembre* over days of a month,
-  *30 novembre – 2 décembre* across months, then its group (*toutes les unités* when none) and
-  its status.
-- ***Journées types*** lists Ajil's templates or the user's own, by name, searched by name or by
-  the line that says what the day holds. A template's times follow its name when it has some.
+- **A period, written out**: *Samedi 21 novembre 2026*, *16–22 novembre 2026*, *Novembre 2026*,
+  *2026*. Tapping it opens a calendar showing the period; a day tapped picks the period holding
+  it, of the same range.
+- **Beside it, the range** to show by, in a menu: *Jour*, *Semaine*, *Mois*, *Année*. **The
+  planning opens on today's week.** Another range keeps the day chosen: from the week of the 18th,
+  *Mois* shows that month.
+- **The events are grouped**: a week's by day, a month's by week, a year's by month; a day's are
+  not grouped. A group with no event is left out; with none at all, *Aucun événement.*
+- **A month's weeks start on Monday and are cut at the month's edges**: November 2026 starts with
+  the 1st alone.
+- **An event is in every group it takes part of.** One ending at midnight ends the day before.
+- An event reads its times on one day — *9h30–17h30* —, its days otherwise — *28–29 novembre* —,
+  then its status.
+- *+ Créer un événement* ends the page.
 
 ### Differs from the design
 
+- **One page, not three views.** The wireframes draw *Calendrier*, *Événements* and *Journées
+  types* as segments; the app has the planning alone, until the other two are rebuilt.
+- **No group filter.** Groups and structures do not exist yet.
 - **No *2 activités à valider* on an event.** Blocks and validations do not exist yet: an event
   shows its status only — *Brouillon*, *Préparation en cours*, *Prêt*.
-- **The group is the event's own text.** Groups and structures do not exist yet, so the choices
-  are drawn from the user's events rather than from their structure.
-- **A day's events, not a week's.** The wireframe lists a week's events under the week; the app
-  lists the chosen day's, picked on the week's line or the date field, with no scale to choose.
-- ***Partagés* and *Ma structure* say *Bientôt disponible***: nothing is shared yet, and
-  structures do not exist.
 
 ## An event
 
@@ -157,7 +138,9 @@ event.** *Préparation de l'équipe* assigns tasks per group.
 
 ## Not finished
 
-- An event (B07), creating one (B06) and a template (B04) open on *Bientôt disponible*.
+- An event (B07) and creating one (B06) open on *Bientôt disponible*.
+- *Événements* (B02) and *Journées types* (B03) were removed with the simple planning page, and
+  are to be rebuilt.
 - An event's status is set only from the dashboard: nothing in the app changes it yet.
 - *Mon planning* in Mon espace does not open the calendar yet.
 

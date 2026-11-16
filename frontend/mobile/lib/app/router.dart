@@ -6,8 +6,7 @@ import 'package:ajil/features/follow_up/routes.dart';
 import 'package:ajil/features/inventory/routes.dart';
 import 'package:ajil/features/notifications/routes.dart';
 import 'package:ajil/features/pedagogy/home/routes.dart';
-import 'package:ajil/features/planning/day_templates/routes.dart';
-import 'package:ajil/features/planning/events/routes.dart';
+import 'package:ajil/features/planning/routes.dart';
 import 'package:ajil/features/reviews/routes.dart';
 import 'package:ajil/features/sharing/routes.dart';
 import 'package:ajil/features/structures/routes.dart';
@@ -55,7 +54,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
           StatefulShellBranch(routes: [catalogueTab]),
-          StatefulShellBranch(routes: [eventsTab]),
+          StatefulShellBranch(routes: [planningTab]),
           StatefulShellBranch(routes: [createTab]),
           StatefulShellBranch(routes: [followUpTab]),
           StatefulShellBranch(routes: [pedagogyTab(_rootNavigatorKey)]),
@@ -65,8 +64,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Before the activities: `/activities/new` is not an activity's id.
       ...activityEditorRoutes,
       ...activitiesRoutes,
-      ...eventsRoutes,
-      ...dayTemplatesRoutes,
+      ...planningRoutes,
       ...tasksRoutes,
       ...inventoryRoutes,
       ...validationsRoutes,

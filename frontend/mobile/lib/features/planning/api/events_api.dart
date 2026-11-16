@@ -1,8 +1,8 @@
 import 'package:ajil/backend/backend.dart';
 import 'package:ajil/core/data/crud.dart';
 import 'package:ajil/core/data/filters.dart';
-import 'package:ajil/features/planning/events/api/event_mapper.dart';
-import 'package:ajil/features/planning/events/models/event.dart';
+import 'package:ajil/features/planning/api/event_mapper.dart';
+import 'package:ajil/features/planning/models/event.dart';
 import 'package:riverpod/riverpod.dart';
 
 /// A user's events. The `events` rules keep each to its owner.
@@ -26,21 +26,6 @@ class EventsApi {
     );
     return found.items;
   }
-
-  /// The user's events whose name matches [search], in the order they start.
-  Future<List<PlanningEvent>> mine(String owner, String search) async {
-    final found = await _events.filter(
-      FilterGroup([
-        Filter('owner', owner, operator: FilterOperator.equals),
-        if (search.isNotEmpty) searchFilter(search, ['name']),
-      ]),
-      const PageRequest(page: 1, perPage: _limit, sort: 'start'),
-    );
-    return found.items;
-  }
-
-  /// Who sees a shared event is not decided, and there is nothing to share them with yet.
-  Future<List<PlanningEvent>> shared(String search) => throw UnimplementedError('Shared events (B02)');
 }
 
 final eventsApiProvider = Provider(

@@ -1,6 +1,6 @@
 import 'package:ajil/core/data/mapper.dart';
 import 'package:ajil/core/files/file_url_resolver.dart';
-import 'package:ajil/features/planning/events/models/event.dart';
+import 'package:ajil/features/planning/models/event.dart';
 
 /// A date as PocketBase stores and compares it: UTC, with a space between the day and the time.
 String backendDate(DateTime moment) => moment.toUtc().toIso8601String().replaceFirst('T', ' ');

@@ -123,7 +123,7 @@ void main() {
     expect(find.text('Préparation et matériel'), findsOneWidget, reason: 'back on the sheet');
   });
 
-  testWidgets("the Planning tab shows today's events, the user's events and Ajil's day templates", (tester) async {
+  testWidgets("the Planning tab shows the week's events by day, and another range on demand", (tester) async {
     final today = DateTime.now();
     await pumpApp(
       tester,
@@ -142,32 +142,22 @@ void main() {
             'status': 'PREPARING',
           },
         ],
-        'day_templates': [
-          {'id': 't1', 'owner': '', 'name': 'Journée de camp', 'summary': 'Repas, repos, veillée et nuit'},
-        ],
       },
     );
 
     await tester.tap(find.text('Planning').last);
     await tester.pumpAndSettle();
 
-    expect(find.byWidgetPredicate((widget) => widget is FDateField), findsOneWidget, reason: 'the day chosen, today');
-    expect(find.byType(FLineCalendar), findsOneWidget, reason: "today's week");
     expect(find.text('Sortie SG'), findsOneWidget);
     expect(find.text('9h30–17h30 · Préparation en cours'), findsOneWidget);
+    expect(find.text('+ Créer un événement'), findsOneWidget);
 
-    await tester.tap(find.text('Événements'));
+    await tester.tap(find.bySemanticsLabel('Afficher par'));
     await tester.pumpAndSettle();
-    expect(find.text('Mes événements'), findsOneWidget);
+    await tester.tap(find.text('Année'));
+    await tester.pumpAndSettle();
+    expect(find.text('${today.year}'), findsOneWidget, reason: 'the period shown is the year');
     expect(find.text('Sortie SG'), findsOneWidget);
-
-    await tester.tap(find.text('Journées types'));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('Journée de camp'), findsOneWidget);
-
-    await tester.tap(find.text('Ma structure'));
-    await tester.pumpAndSettle();
-    expect(find.text('Bientôt disponible'), findsOneWidget, reason: 'structures do not exist yet');
   });
 
   testWidgets('a dock tab that is not built yet says so', (tester) async {

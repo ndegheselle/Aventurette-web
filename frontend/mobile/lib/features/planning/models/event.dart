@@ -38,18 +38,8 @@ class PlanningEvent implements Identified {
   final EventStatus? status;
 }
 
-/// How an event's dates read: on one day with its times, over days of one month, or across
-/// months.
-enum EventSpan { oneDay, sameMonth, acrossMonths }
-
-/// The span of [event]. An event ending at midnight ends the day before.
-EventSpan spanOf(PlanningEvent event) {
-  final first = dayOf(event.start);
-  final last = lastDayOf(event);
-  if (first == last) return EventSpan.oneDay;
-  if (first.year == last.year && first.month == last.month) return EventSpan.sameMonth;
-  return EventSpan.acrossMonths;
-}
+/// Whether [event] starts and ends on the same day. One ending at midnight ends the day before.
+bool onOneDay(PlanningEvent event) => dayOf(event.start) == lastDayOf(event);
 
 /// The day a moment falls on, at midnight.
 DateTime dayOf(DateTime moment) => DateTime(moment.year, moment.month, moment.day);
@@ -70,17 +60,6 @@ bool overlaps(PlanningEvent event, DateTime from, DateTime until) {
   return event.end == event.start && !event.start.isBefore(from);
 }
 
-/// The events of [group], or all of them when [group] is null. An event for every group is in
-/// every group's.
-List<PlanningEvent> forGroup(List<PlanningEvent> events, String? group) => group == null
-    ? events
-    : [
-        for (final event in events)
-          if (event.group.isEmpty || event.group == group) event,
-      ];
-
-/// The groups the events name, once each, sorted.
-List<String> groupsOf(List<PlanningEvent> events) => {
-  for (final event in events)
-    if (event.group.isNotEmpty) event.group,
-}.toList()..sort();
+/// [events] in the order they start.
+List<PlanningEvent> sortedByStart(Iterable<PlanningEvent> events) =>
+    [...events]..sort((a, b) => a.start.compareTo(b.start));

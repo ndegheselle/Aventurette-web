@@ -7,28 +7,14 @@
         "newBlock": "Set up the time",
         "coordination": "Coordination"
     },
-    "segments(map)": {
-        "calendar": "Calendar",
-        "events": "Events",
-        "templates": "Day templates"
-    },
     "create": "+ New event",
-    "calendar": {
-        "group": "Group",
-        "allGroups": "All groups",
-        "empty": "No event on that day.",
-        "hint": "Statuses show here. The validations to handle are gathered in Follow-up.",
-        "date": "Day"
-    },
-    "list": {
-        "searchLabel": "Search for an event",
-        "searchHint": "Name or period…",
-        "segments(map)": {
-            "mine": "My events",
-            "shared": "Shared"
-        },
-        "empty": "No event.",
-        "allGroups": "all units"
+    "empty": "No event.",
+    "range": "Show by",
+    "ranges(map)": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month",
+        "year": "Year"
     },
     "status(map)": {
         "draft": "Draft",
@@ -63,6 +49,7 @@
         "fullDay": "{weekday}, {month} {day}",
         "dayRange": "{month} {from}–{to}",
         "range": "{from} – {to}",
+        "withYear": "{date}, {year}",
         "hour": "{hours}:00",
         "time": "{hours}:{minutes}",
         "times": "{from}–{to}"
