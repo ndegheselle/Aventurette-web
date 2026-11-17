@@ -853,8 +853,8 @@ class Translations$planning$mode$fr {
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
 
-	/// fr: 'À planifier'
-	String get toPlan => 'À planifier';
+	/// fr: 'Valider'
+	String get confirm => 'Valider';
 
 	/// fr: 'Ajouter au planning'
 	String get add => 'Ajouter au planning';
@@ -879,6 +879,9 @@ class Translations$planning$plan$fr {
 
 	/// fr: 'Aucune activité choisie. Ajoutez-en depuis le catalogue.'
 	String get empty => 'Aucune activité choisie. Ajoutez-en depuis le catalogue.';
+
+	/// fr: 'Ajouter'
+	String get add => 'Ajouter';
 
 	/// fr: 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.'
 	String get hint => 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.';
@@ -1583,12 +1586,13 @@ extension on Translations {
 			'planning.mode.count' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, zero: 'aucune activité', one: '${n} activité', other: '${n} activités', ), 
 			'planning.mode.replacing' => ({required Object name}) => 'Remplacer « ${name} »',
 			'planning.mode.cancel' => 'Annuler',
-			'planning.mode.toPlan' => 'À planifier',
+			'planning.mode.confirm' => 'Valider',
 			'planning.mode.add' => 'Ajouter au planning',
 			'planning.mode.remove' => 'Retirer du planning',
 			'planning.mode.replace' => 'Remplacer',
 			'planning.plan.title' => 'Planning de la journée',
 			'planning.plan.empty' => 'Aucune activité choisie. Ajoutez-en depuis le catalogue.',
+			'planning.plan.add' => 'Ajouter',
 			'planning.plan.hint' => 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.',
 			'planning.plan.startTitle' => 'Heure de début',
 			'planning.plan.startHint' => 'La première activité commence à cette heure ; les suivantes s\'enchaînent.',

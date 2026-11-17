@@ -144,3 +144,16 @@ List<TimelineSlot> timelineOf(List<PlannedActivity> activities, {int minimumMinu
   if (cluster.isNotEmpty) closeCluster();
   return slots;
 }
+
+/// How many of [activities] are wholly out of the minutes [from] to [until] in view: above them,
+/// and below them. Each is as tall as it is drawn, at least [minimumMinutes].
+({int above, int below}) outOfView(
+  List<PlannedActivity> activities,
+  double from,
+  double until, {
+  int minimumMinutes = defaultActivityMinutes,
+}) {
+  final above = activities.where((activity) => activity.start + max(activity.minutes, minimumMinutes) <= from);
+  final below = activities.where((activity) => activity.start >= until);
+  return (above: above.length, below: below.length);
+}

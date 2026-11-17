@@ -60,7 +60,7 @@ that activity — and enters planning mode when outside it. **Once the activity 
 takes it out instead** (*Retirer du planning*, shown on a long press, as each icon's label).
 
 **In planning mode**, the catalogue and the sheets end with a bar: *Planification en cours ·
-2 activités*, *Annuler*, which drops the plan, and *À planifier*, which opens the plan.
+2 activités*, *Annuler*, which drops the plan, and *Valider*, which opens the plan.
 
 **The plan** shows the day's hours, 0h to 24h, down the left, and each activity as a card at its
 time: its name and *9h30–10h15*.
@@ -72,8 +72,11 @@ time: its name and *9h30–10h15*.
   30 minutes**, and a short one is drawn half an hour tall, so the cards stay readable.
 - **Everything stays within the day.** An activity that would run past midnight ends at
   midnight instead.
-- **An activity added once the times are set goes after the one ending last.**
+- **An activity added once the times are set goes after the one ending last.** ***Ajouter***,
+  at the bottom of the plan, goes back to the catalogue to pick more.
 - **Overlapping activities are drawn side by side**; nothing prevents an overlap.
+- **Activities scrolled wholly out of view are counted** in a badge at the top (*↑ 2 activités*)
+  or the bottom of the timeline.
 - **Tapping a card** opens a panel: its time on a wheel, applied as it turns; *Remplacer*;
   *Retirer*. **Holding a card** moves it up or down; it lands on the nearest five minutes.
 - ***Remplacer*** goes back to the catalogue. The bar then names the activity being replaced,

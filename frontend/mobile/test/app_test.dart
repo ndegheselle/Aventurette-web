@@ -186,7 +186,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Planification en cours · 1 activité'), findsOneWidget);
     expect(find.byIcon(FLucideIcons.calendarMinus), findsOneWidget, reason: 'it is in the plan now: the button takes it out');
-    await tester.tap(find.text('À planifier'));
+    await tester.tap(find.text('Valider'));
     await tester.pumpAndSettle();
 
     expect(find.text('Heure de début'), findsOneWidget, reason: 'asked the first time');

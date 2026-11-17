@@ -625,7 +625,7 @@ class _Translations$planning$mode$en extends Translations$planning$mode$fr {
 	);
 	@override String replacing({required Object name}) => 'Replacing “${name}”';
 	@override String get cancel => 'Cancel';
-	@override String get toPlan => 'To plan';
+	@override String get confirm => 'Confirm';
 	@override String get add => 'Add to planning';
 	@override String get remove => 'Remove from planning';
 	@override String get replace => 'Replace';
@@ -640,6 +640,7 @@ class _Translations$planning$plan$en extends Translations$planning$plan$fr {
 	// Translations
 	@override String get title => 'The day\'s planning';
 	@override String get empty => 'No activity picked. Add some from the catalogue.';
+	@override String get add => 'Add';
 	@override String get hint => 'Tap an activity to change its time, or hold it to move it.';
 	@override String get startTitle => 'Start time';
 	@override String get startHint => 'The first activity starts at this time; the others follow on.';
@@ -1142,12 +1143,13 @@ extension on TranslationsEn {
 			'planning.mode.count' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, zero: 'no activity', one: '${n} activity', other: '${n} activities', ), 
 			'planning.mode.replacing' => ({required Object name}) => 'Replacing “${name}”',
 			'planning.mode.cancel' => 'Cancel',
-			'planning.mode.toPlan' => 'To plan',
+			'planning.mode.confirm' => 'Confirm',
 			'planning.mode.add' => 'Add to planning',
 			'planning.mode.remove' => 'Remove from planning',
 			'planning.mode.replace' => 'Replace',
 			'planning.plan.title' => 'The day\'s planning',
 			'planning.plan.empty' => 'No activity picked. Add some from the catalogue.',
+			'planning.plan.add' => 'Add',
 			'planning.plan.hint' => 'Tap an activity to change its time, or hold it to move it.',
 			'planning.plan.startTitle' => 'Start time',
 			'planning.plan.startHint' => 'The first activity starts at this time; the others follow on.',

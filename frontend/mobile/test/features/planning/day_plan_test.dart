@@ -57,6 +57,17 @@ void main() {
 
       expect([for (final slot in slots) slot.lanes], [2, 2]);
     });
+
+    test('counts the activities wholly out of view, a short one by the length it is drawn at', () {
+      final morning = planned(1, start: 480, minutes: 5);
+      final cut = planned(2, start: 520, minutes: 60);
+      final evening = planned(3, start: 1200);
+
+      final outside = outOfView([morning, cut, evening], 540, 720);
+
+      expect(outside, (above: 1, below: 1), reason: 'the one starting before the view still shows its end');
+      expect(outOfView([morning], 505, 720), (above: 0, below: 0), reason: 'drawn half an hour tall, until 8h30');
+    });
   });
 
   group('planning mode', () {

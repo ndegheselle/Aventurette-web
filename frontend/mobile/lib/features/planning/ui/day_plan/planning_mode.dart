@@ -11,7 +11,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
 /// The bar the catalogue's pages end with in planning mode: *Planification en cours*, how many
-/// activities are picked, *Annuler* and *À planifier*. While an activity is being replaced, it names it, and *Annuler* stops the
+/// activities are picked, *Annuler* and *Valider*. While an activity is being replaced, it names it, and *Annuler* stops the
 /// replacement only. Draws nothing outside planning mode.
 class PlanningFooter extends ConsumerWidget {
   const PlanningFooter({super.key});
@@ -54,7 +54,7 @@ class PlanningFooter extends ConsumerWidget {
                 notifier.stopReplacing();
                 context.push(PlanningRoutes.dayPlan);
               },
-              child: Text(t.toPlan),
+              child: Text(t.confirm),
             ),
           ],
         ),

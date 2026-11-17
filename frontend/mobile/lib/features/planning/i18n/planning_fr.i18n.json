@@ -17,7 +17,7 @@
         },
         "replacing": "Remplacer « {name} »",
         "cancel": "Annuler",
-        "toPlan": "À planifier",
+        "confirm": "Valider",
         "add": "Ajouter au planning",
         "remove": "Retirer du planning",
         "replace": "Remplacer"
@@ -25,6 +25,7 @@
     "plan": {
         "title": "Planning de la journée",
         "empty": "Aucune activité choisie. Ajoutez-en depuis le catalogue.",
+        "add": "Ajouter",
         "hint": "Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.",
         "startTitle": "Heure de début",
         "startHint": "La première activité commence à cette heure ; les suivantes s'enchaînent.",

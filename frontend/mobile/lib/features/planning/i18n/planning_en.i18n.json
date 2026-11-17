@@ -17,7 +17,7 @@
         },
         "replacing": "Replacing “{name}”",
         "cancel": "Cancel",
-        "toPlan": "To plan",
+        "confirm": "Confirm",
         "add": "Add to planning",
         "remove": "Remove from planning",
         "replace": "Replace"
@@ -25,6 +25,7 @@
     "plan": {
         "title": "The day's planning",
         "empty": "No activity picked. Add some from the catalogue.",
+        "add": "Add",
         "hint": "Tap an activity to change its time, or hold it to move it.",
         "startTitle": "Start time",
         "startHint": "The first activity starts at this time; the others follow on.",

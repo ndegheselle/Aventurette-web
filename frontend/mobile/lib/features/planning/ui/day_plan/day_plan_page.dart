@@ -115,18 +115,36 @@ class _DayPlanPageState extends ConsumerState<DayPlanPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(AppSpaces.page, AppSpaces.spacing, AppSpaces.page, 0),
-                  child: Text(t.hint, style: context.captionText),
+                  child: HintBox(t.hint),
                 ),
                 Expanded(
                   child: _Timeline(controller: _scroll, activities: activities),
                 ),
               ],
             ),
-      actions: activities.isEmpty
-          ? null
-          : BottomActionBar(
-              children: [FButton(prefix: const Icon(FLucideIcons.save), onPress: _save, child: Text(t.save))],
-            ),
+      actions: BottomActionBar(
+        children: [
+          Row(
+            spacing: AppSpaces.spacing,
+            children: [
+              Expanded(
+                child: FButton(
+                  variant: .outline,
+                  prefix: const Icon(FLucideIcons.plus),
+                  // The plan stays open: what is picked there is added after the last activity.
+                  onPress: () => context.go(ActivitiesRoutes.catalogue),
+                  child: Text(t.add),
+                ),
+              ),
+              if (activities.isNotEmpty)
+                Expanded(
+                  flex: 2,
+                  child: FButton(prefix: const Icon(FLucideIcons.save), onPress: _save, child: Text(t.save)),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -144,7 +162,7 @@ class _Timeline extends StatelessWidget {
     final border = context.theme.colors.border;
     const hours = minutesPerDay ~/ 60;
 
-    return SingleChildScrollView(
+    final scroll = SingleChildScrollView(
       controller: controller,
       padding: const EdgeInsets.symmetric(horizontal: AppSpaces.page, vertical: AppSpaces.spacing),
       child: SizedBox(
@@ -190,6 +208,69 @@ class _Timeline extends StatelessWidget {
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) => Stack(
+        children: [
+          scroll,
+          Positioned.fill(
+            child: ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) => _OutOfViewBadges(
+                activities: activities,
+                offset: controller.hasClients ? controller.offset : controller.initialScrollOffset,
+                height: constraints.maxHeight,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Over the timeline, how many activities are scrolled out of view: at its top for those above,
+/// at its bottom for those below.
+class _OutOfViewBadges extends StatelessWidget {
+  const _OutOfViewBadges({required this.activities, required this.offset, required this.height});
+
+  final List<PlannedActivity> activities;
+
+  /// How far the timeline is scrolled, and how tall its view is, in pixels.
+  final double offset;
+  final double height;
+
+  double _minuteAt(double pixels) => (pixels - AppSpaces.spacing - _top) / _pixelsPerMinute;
+
+  @override
+  Widget build(BuildContext context) {
+    final count = context.t.planning.mode.count;
+    final outside = outOfView(activities, _minuteAt(offset), _minuteAt(offset + height));
+
+    Widget badge(int n, IconData icon) => FBadge(
+      variant: .secondary,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 4,
+        children: [
+          Icon(icon, size: 14),
+          Text(count(n: n)),
+        ],
+      ),
+    );
+
+    return IgnorePointer(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpaces.spacing),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (outside.above > 0) badge(outside.above, FLucideIcons.arrowUp) else const SizedBox.shrink(),
+            if (outside.below > 0) badge(outside.below, FLucideIcons.arrowDown) else const SizedBox.shrink(),
           ],
         ),
       ),
