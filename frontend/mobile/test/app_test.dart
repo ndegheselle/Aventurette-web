@@ -150,7 +150,7 @@ void main() {
 
     expect(find.text('Sortie SG'), findsOneWidget);
     expect(find.text('9h30–17h30 · Préparation en cours'), findsOneWidget);
-    expect(find.text('+ Créer un événement'), findsOneWidget);
+    expect(find.text('Commencer un planning'), findsOneWidget);
 
     await tester.tap(find.bySemanticsLabel('Afficher par'));
     await tester.pumpAndSettle();
@@ -158,6 +158,51 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('${today.year}'), findsOneWidget, reason: 'the period shown is the year');
     expect(find.text('Sortie SG'), findsOneWidget);
+  });
+
+  testWidgets('planning picks activities in the catalogue, then lays them out from the start time', (tester) async {
+    await pumpApp(
+      tester,
+      user: sessionRecord(),
+      seeds: {
+        'users': [
+          {'id': 'u1', 'favorites': <String>[]},
+        ],
+        'activities': [
+          {'id': 'a1', 'name': 'La quête du remède', 'format': 'BIG_GAME', 'state': 'PUBLISHED'},
+        ],
+      },
+    );
+
+    await tester.tap(find.text('Planning').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Commencer un planning'));
+    await tester.pumpAndSettle();
+    expect(find.text('Planification en cours · aucune activité'), findsOneWidget, reason: 'the catalogue, in planning mode');
+
+    await tester.tap(find.text('La quête du remède'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(FLucideIcons.calendarPlus));
+    await tester.pumpAndSettle();
+    expect(find.text('Planification en cours · 1 activité'), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.calendarMinus), findsOneWidget, reason: 'it is in the plan now: the button takes it out');
+    await tester.tap(find.text('À planifier'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Heure de début'), findsOneWidget, reason: 'asked the first time');
+    await tester.tap(find.text('Valider'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Planning de la journée'), findsOneWidget);
+    expect(find.text('9h–9h30'), findsOneWidget, reason: 'an activity with no length takes half an hour');
+    expect(find.text('Enregistrer le planning'), findsOneWidget);
+
+    await tester.tap(find.text('9h–9h30'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Retirer'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Aucune activité choisie'), findsOneWidget);
+    expect(find.text('Enregistrer le planning'), findsNothing, reason: 'nothing to save');
   });
 
   testWidgets('a dock tab that is not built yet says so', (tester) async {

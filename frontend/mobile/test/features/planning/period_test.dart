@@ -1,11 +1,12 @@
 import 'package:ajil/features/planning/models/event.dart';
 import 'package:ajil/features/planning/models/period.dart';
+import 'package:ajil/features/planning/models/scheduled_activity.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 PlanningEvent event(String id, DateTime start, DateTime end) =>
     PlanningEvent(id: id, owner: 'u1', name: id, start: start, end: end);
 
-List<String> idsOf(EventGroup group) => [for (final event in group.events) event.id];
+List<String> idsOf(PeriodGroup group) => [for (final event in group.events) event.id];
 
 void main() {
   group('the period holding a day', () {
@@ -50,7 +51,7 @@ void main() {
       final early = event('early', DateTime(2026, 11, 18, 9), DateTime(2026, 11, 18, 11));
       final friday = event('friday', DateTime(2026, 11, 20, 18), DateTime(2026, 11, 20, 20));
 
-      final groups = groupedEvents([friday, late, early], TimeRange.week, week);
+      final groups = groupedByPart([friday, late, early], const [], TimeRange.week, week);
 
       expect([for (final group in groups) group.part.from], [DateTime(2026, 11, 18), DateTime(2026, 11, 20)]);
       expect(idsOf(groups.first), ['early', 'late']);
@@ -59,10 +60,23 @@ void main() {
     test('are in each part they take part of, one ending at midnight ending the day before', () {
       final weekend = event('weekend', DateTime(2026, 11, 21, 10), DateTime(2026, 11, 23));
 
-      final groups = groupedEvents([weekend], TimeRange.week, week);
+      final groups = groupedByPart([weekend], const [], TimeRange.week, week);
 
       expect([for (final group in groups) group.part.from], [DateTime(2026, 11, 21), DateTime(2026, 11, 22)]);
     });
+  });
+
+  test("a saved activity is grouped by the day it starts, with the day's events", () {
+    final week = periodOf(TimeRange.week, DateTime(2026, 11, 16));
+    final wednesday = event('wednesday', DateTime(2026, 11, 18, 14), DateTime(2026, 11, 18, 16));
+    final game = ScheduledActivity(id: 's1', user: 'u1', activityId: 'a1', start: DateTime(2026, 11, 18, 9));
+    final saturday = ScheduledActivity(id: 's2', user: 'u1', activityId: 'a1', start: DateTime(2026, 11, 21, 10));
+
+    final groups = groupedByPart([wednesday], [saturday, game], TimeRange.week, week);
+
+    expect([for (final group in groups) group.part.from], [DateTime(2026, 11, 18), DateTime(2026, 11, 21)]);
+    expect(idsOf(groups.first), ['wednesday']);
+    expect([for (final activity in groups.first.activities) activity.id], ['s1']);
   });
 
   test('an event is on one day until it ends past the midnight after', () {

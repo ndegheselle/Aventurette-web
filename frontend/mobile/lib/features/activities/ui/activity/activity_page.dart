@@ -7,6 +7,7 @@ import 'package:ajil/features/activities/ui/activity/activity_details.dart';
 import 'package:ajil/features/activities/ui/_parts/favorite_button.dart';
 import 'package:ajil/features/activities/ui/_parts/supplies.dart';
 import 'package:ajil/features/activity_editor/routes.dart';
+import 'package:ajil/features/planning/ui/day_plan/planning_mode.dart';
 import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/async/run_action.dart';
 import 'package:ajil/ui/content/html_text.dart';
@@ -21,7 +22,8 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
 /// An activity's sheet (A03): what it is, what it takes, how it runs. Full screen, its actions
-/// at the bottom; *Mode guidé* is the only way into a run.
+/// at the bottom; *Mode guidé* is the only way into a run. *Ajouter au planning* is always there;
+/// in planning mode, the planning's bar follows.
 class ActivityPage extends ConsumerWidget {
   const ActivityPage({super.key, required this.activityId});
 
@@ -119,7 +121,7 @@ class _ActivitySheet extends ConsumerWidget {
                       (index + 1).toString().padLeft(2, '0'),
                       style: context.titleText.copyWith(fontWeight: FontWeight.w300),
                     ),
-                    title: Text(step.title.isEmpty ? t.activities.stepKind[step.kind.name]! : step.title,),
+                    title: Text(step.title.isEmpty ? t.activities.stepKind[step.kind.name]! : step.title),
                     suffix: step.duration > 0 ? Text(t.activities.minutes(minutes: step.duration)) : null,
                     // The tile cuts its subtitle to one line; this shows the whole description.
                     subtitle: DefaultTextStyle.merge(
@@ -131,35 +133,43 @@ class _ActivitySheet extends ConsumerWidget {
             ),
         ],
       ),
-      actions: BottomActionBar(
+      actions: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            spacing: 8,
-            mainAxisSize: .min,
+          BottomActionBar(
             children: [
-              FTooltip(
-                tipBuilder: (context, _) => Text(t.activities.actions.share),
-                child: FButton.icon(
-                variant: .outline,
-                  // A10, the share sheet, is not built yet.
-                onPress: () => runAction<void>(context, () => throw UnimplementedError('A10')),
-                  child: const Icon(FLucideIcons.share2),
-                ),
-              ),
-              FTooltip(
-                tipBuilder: (context, _) => Text(saved ? t.activities.actions.saved : t.activities.actions.save),
-                child: FavoriteButton(activity: activity),
-              ),
-              FTooltip(
-                tipBuilder: (context, _) => Text(t.activities.actions.guided),
-                child: FButton.icon(
-                  variant: .primary,
-                  onPress: () => context.push(ActivitiesRoutes.run(activity.id, 1)),
-                  child: const Icon(FLucideIcons.play),
-                ),
+              Row(
+                mainAxisSize: .min,
+                spacing: 8,
+                children: [
+                  AddToPlanningButton(activity: activity),
+                  FTooltip(
+                    tipBuilder: (context, _) => Text(t.activities.actions.share),
+                    child: FButton.icon(
+                      variant: .outline,
+                      // A10, the share sheet, is not built yet.
+                      onPress: () => runAction<void>(context, () => throw UnimplementedError('A10')),
+                      child: const Icon(FLucideIcons.share2),
+                    ),
+                  ),
+                  FTooltip(
+                    tipBuilder: (context, _) => Text(saved ? t.activities.actions.saved : t.activities.actions.save),
+                    child: FavoriteButton(activity: activity),
+                  ),
+                  FTooltip(
+                    tipBuilder: (context, _) => Text(t.activities.actions.guided),
+                    child: FButton.icon(
+                      variant: .primary,
+                      onPress: () => context.push(ActivitiesRoutes.run(activity.id, 1)),
+                      child: const Icon(FLucideIcons.play),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
+          const PlanningFooter(),
         ],
       ),
     );
@@ -201,23 +211,18 @@ class _SafetyButton extends StatelessWidget {
       onPress: () => showAppSheet<void>(
         context,
         title: title,
-        builder: (_) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 8,
+        builder: (_) => FTileGroup(
+          label: Text(t.activities.sheet.details),
+          divider: .full,
           children: [
             for (final instruction in activity.safety)
-              Panel(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 4,
-                  children: [
-                    Text(instruction.name, style: context.labelText),
-                    HtmlText(instruction.description, style: context.captionText),
-                  ],
-                ),
+              .tile(
+                prefix: Icon(FLucideIcons.triangleAlert),
+                title: Text(instruction.name),
+                subtitle: HtmlText(instruction.description, style: context.captionText),
               ),
           ],
-        ),
+        )
       ),
       child: Icon(FLucideIcons.triangleAlert, color: context.theme.colors.destructive),
     );

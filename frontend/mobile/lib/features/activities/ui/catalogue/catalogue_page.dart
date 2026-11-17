@@ -4,6 +4,8 @@ import 'package:ajil/features/activities/state/catalogue.dart';
 import 'package:ajil/features/activities/state/favorites.dart';
 import 'package:ajil/features/activities/ui/activity/activity_card.dart';
 import 'package:ajil/features/activities/ui/catalogue/catalogue_filters_sheet.dart';
+import 'package:ajil/features/planning/state/day_plan.dart';
+import 'package:ajil/features/planning/ui/day_plan/planning_mode.dart';
 import 'package:ajil/features/user/state/filter_defaults.dart';
 import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/content/surfaces.dart';
@@ -20,12 +22,13 @@ import 'package:forui/forui.dart';
 enum CatalogueSegment { all, favorites, mine, shared }
 
 /// The Catalogue tab: the activities, searched and filtered, or the user's favorites. *Mes
-/// créations* and *Partagés avec moi* need data that does not exist yet.
-class CataloguePage extends StatelessWidget {
+/// créations* and *Partagés avec moi* need data that does not exist yet. In planning mode, it
+/// ends with the planning's bar.
+class CataloguePage extends ConsumerWidget {
   const CataloguePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = context.t.activities.catalogue;
 
     Widget body(CatalogueSegment segment) => switch (segment) {
@@ -49,6 +52,8 @@ class CataloguePage extends StatelessWidget {
           ],
         ),
       ),
+      // Only in planning mode: an action bar keeps the bottom safe area, which the dock already does.
+      actions: ref.watch(dayPlanProvider) == null ? null : const PlanningFooter(),
     );
   }
 }

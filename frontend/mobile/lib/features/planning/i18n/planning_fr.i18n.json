@@ -7,8 +7,38 @@
         "newBlock": "Paramétrer le temps",
         "coordination": "Coordination"
     },
-    "create": "+ Créer un événement",
-    "empty": "Aucun événement.",
+    "start": "Commencer un planning",
+    "mode": {
+        "title": "Planification en cours",
+        "count": {
+            "zero": "aucune activité",
+            "one": "{n} activité",
+            "other": "{n} activités"
+        },
+        "replacing": "Remplacer « {name} »",
+        "cancel": "Annuler",
+        "toPlan": "À planifier",
+        "add": "Ajouter au planning",
+        "remove": "Retirer du planning",
+        "replace": "Remplacer"
+    },
+    "plan": {
+        "title": "Planning de la journée",
+        "empty": "Aucune activité choisie. Ajoutez-en depuis le catalogue.",
+        "hint": "Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.",
+        "startTitle": "Heure de début",
+        "startHint": "La première activité commence à cette heure ; les suivantes s'enchaînent.",
+        "confirm": "Valider",
+        "replace": "Remplacer",
+        "remove": "Retirer",
+        "save": "Enregistrer le planning",
+        "saveTitle": "Jour du planning",
+        "saveHint": "Les activités sont enregistrées à leur heure, ce jour-là.",
+        "saveConfirm": "Enregistrer",
+        "saved": "Planning enregistré",
+        "saveFailed": "Le planning n'a pas pu être enregistré."
+    },
+    "empty": "Rien de prévu sur cette période.",
     "range": "Afficher par",
     "ranges(map)": {
         "day": "Jour",

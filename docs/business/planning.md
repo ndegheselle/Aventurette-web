@@ -10,6 +10,7 @@ app planned single activities on dates; events replace that, and it is not carri
 | B02 | *Événements* | Not built |
 | B03 | *Journées types* | Not built |
 | B04 | A day template | Not built |
+| — | Planning a day: picking activities, setting their times, saving them on a day | Built |
 | B06 | *Créer un événement* | Not built |
 | B07 | An event | Not built |
 | B08 | *Modifier l'événement* | Not built |
@@ -27,14 +28,18 @@ app planned single activities on dates; events replace that, and it is not carri
 - **Beside it, the range** to show by, in a menu: *Jour*, *Semaine*, *Mois*, *Année*. **The
   planning opens on today's week.** Another range keeps the day chosen: from the week of the 18th,
   *Mois* shows that month.
-- **The events are grouped**: a week's by day, a month's by week, a year's by month; a day's are
-  not grouped. A group with no event is left out; with none at all, *Aucun événement.*
+- **The events and the saved activities are grouped**: a week's by day, a month's by week, a
+  year's by month; a day's are not grouped. A group with neither is left out; with nothing at
+  all, *Rien de prévu sur cette période.*
+- **A saved activity shows as on the plan**: a card with its name and its time — *9h–9h45* —,
+  its day before it in a month or a year. Tapping it opens the activity's sheet. It lasts as long
+  as on the plan: its play time, or 30 minutes with none.
 - **A month's weeks start on Monday and are cut at the month's edges**: November 2026 starts with
   the 1st alone.
 - **An event is in every group it takes part of.** One ending at midnight ends the day before.
 - An event reads its times on one day — *9h30–17h30* —, its days otherwise — *28–29 novembre* —,
   then its status.
-- *+ Créer un événement* ends the page.
+- *+ Commencer un planning* ends the page: it [plans a day](#planning-a-day).
 
 ### Differs from the design
 
@@ -43,6 +48,40 @@ app planned single activities on dates; events replace that, and it is not carri
 - **No group filter.** Groups and structures do not exist yet.
 - **No *2 activités à valider* on an event.** Blocks and validations do not exist yet: an event
   shows its status only — *Brouillon*, *Préparation en cours*, *Prêt*.
+
+## Planning a day
+
+Planning mode picks activities in the catalogue, then sets their times on the day's timeline.
+**The plan is kept on the phone until it is saved; it makes no event.**
+
+**Entering it**: *Commencer un planning* opens the catalogue in planning mode. *Ajouter au
+planning*, always at the bottom of an [activity's sheet](activity-sheet.md#the-sheet-a03), adds
+that activity — and enters planning mode when outside it. **Once the activity is in the plan, it
+takes it out instead** (*Retirer du planning*, shown on a long press, as each icon's label).
+
+**In planning mode**, the catalogue and the sheets end with a bar: *Planification en cours ·
+2 activités*, *Annuler*, which drops the plan, and *À planifier*, which opens the plan.
+
+**The plan** shows the day's hours, 0h to 24h, down the left, and each activity as a card at its
+time: its name and *9h30–10h15*.
+
+- **The first time it opens with activities, it asks for the start time** (9h unless changed).
+  The first activity starts then; each next one starts when the one before ends, in the order
+  they were picked.
+- **An activity lasts its play time**: the steps after the preparation. **One with none lasts
+  30 minutes**, and a short one is drawn half an hour tall, so the cards stay readable.
+- **Everything stays within the day.** An activity that would run past midnight ends at
+  midnight instead.
+- **An activity added once the times are set goes after the one ending last.**
+- **Overlapping activities are drawn side by side**; nothing prevents an overlap.
+- **Tapping a card** opens a panel: its time on a wheel, applied as it turns; *Remplacer*;
+  *Retirer*. **Holding a card** moves it up or down; it lands on the nearest five minutes.
+- ***Remplacer*** goes back to the catalogue. The bar then names the activity being replaced,
+  and the sheet's button reads *Remplacer*: the activity chosen takes its place and its time,
+  and the plan opens again. *Annuler* stops the replacement only.
+- ***Enregistrer le planning*** asks which day the plan is for — the planning's day unless
+  changed —, saves each activity at its time on it, leaves planning mode and opens the planning
+  on that day. **If saving fails, the plan stays as it was.**
 
 ## An event
 
@@ -138,7 +177,10 @@ event.** *Préparation de l'équipe* assigns tasks per group.
 
 ## Not finished
 
-- An event (B07) and creating one (B06) open on *Bientôt disponible*.
+- An event (B07) and creating one (B06) open on *Bientôt disponible*; nothing links to B06.
+- A saved activity cannot be moved or removed from the planning yet.
+- A plan saved half-way — some activities written, then a failure — is not undone: saving again
+  writes those twice.
 - *Événements* (B02) and *Journées types* (B03) were removed with the simple planning page, and
   are to be rebuilt.
 - An event's status is set only from the dashboard: nothing in the app changes it yet.

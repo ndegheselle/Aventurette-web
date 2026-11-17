@@ -1,5 +1,6 @@
 import 'package:ajil/features/planning/models/period.dart';
 import 'package:ajil/features/planning/state/planning.dart';
+import 'package:ajil/features/planning/ui/calendar_dates.dart';
 import 'package:ajil/features/planning/ui/planning_text.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/theme/tokens.dart';
@@ -25,11 +26,6 @@ class PeriodBar extends ConsumerWidget {
   }
 }
 
-/// forui's calendars count days as UTC midnights; the app, as local ones.
-DateTime _toCalendarDate(DateTime day) => DateTime.utc(day.year, day.month, day.day);
-
-DateTime _fromCalendarDate(DateTime date) => DateTime(date.year, date.month, date.day);
-
 /// The period written out. Its calendar shows the period selected; a day tapped picks the
 /// period holding it, of the same range.
 class _PeriodButton extends ConsumerWidget {
@@ -40,18 +36,18 @@ class _PeriodButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final period = view.period;
-    final from = _toCalendarDate(period.from);
-    final last = _toCalendarDate(period.lastDay);
+    final from = toCalendarDate(period.from);
+    final last = toCalendarDate(period.lastDay);
 
     return FPopover(
       popoverBuilder: (context, controller) => FCalendar.grid(
-        control: FGridCalendarControl(initial: from, today: _toCalendarDate(ref.read(todayProvider))),
+        control: FGridCalendarControl(initial: from, today: toCalendarDate(ref.read(todayProvider))),
         // The selection follows the period: a tap is read by onDayPress, not by forui's range.
         selectionControl: view.range == TimeRange.day
             ? .liftedSingle(value: from, toggleable: false, onChange: (_) {})
             : .liftedRange(value: (from, last), onChange: (_) {}),
         onDayPress: (date) {
-          ref.read(planningProvider.notifier).select(_fromCalendarDate(date));
+          ref.read(planningProvider.notifier).select(fromCalendarDate(date));
           controller.hide();
         },
       ),

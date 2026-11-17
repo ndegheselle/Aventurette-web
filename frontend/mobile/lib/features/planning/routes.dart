@@ -1,3 +1,4 @@
+import 'package:ajil/features/planning/ui/day_plan/day_plan_page.dart';
 import 'package:ajil/features/planning/ui/planning_page.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/shell/coming_soon_page.dart';
@@ -6,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 abstract final class PlanningRoutes {
   static const tab = '/planning';
+  static const dayPlan = '/day-plan';
   static const create = '/events/new';
   static String event(String id) => '/events/$id';
   static String edit(String id) => '/events/$id/edit';
@@ -20,6 +22,7 @@ final planningTab = GoRoute(
 );
 
 final planningRoutes = <GoRoute>[
+  fullScreenRoute(PlanningRoutes.dayPlan, (context, state) => const DayPlanPage()),
   // Not built yet (ADR 0023).
   fullScreenRoute(
     '/events/new',

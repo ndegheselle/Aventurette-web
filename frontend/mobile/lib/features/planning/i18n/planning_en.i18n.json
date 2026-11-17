@@ -7,8 +7,38 @@
         "newBlock": "Set up the time",
         "coordination": "Coordination"
     },
-    "create": "+ New event",
-    "empty": "No event.",
+    "start": "Start planning",
+    "mode": {
+        "title": "Currently planning",
+        "count": {
+            "zero": "no activity",
+            "one": "{n} activity",
+            "other": "{n} activities"
+        },
+        "replacing": "Replacing “{name}”",
+        "cancel": "Cancel",
+        "toPlan": "To plan",
+        "add": "Add to planning",
+        "remove": "Remove from planning",
+        "replace": "Replace"
+    },
+    "plan": {
+        "title": "The day's planning",
+        "empty": "No activity picked. Add some from the catalogue.",
+        "hint": "Tap an activity to change its time, or hold it to move it.",
+        "startTitle": "Start time",
+        "startHint": "The first activity starts at this time; the others follow on.",
+        "confirm": "Confirm",
+        "replace": "Replace",
+        "remove": "Remove",
+        "save": "Save the planning",
+        "saveTitle": "The planning's day",
+        "saveHint": "The activities are saved at their time, on that day.",
+        "saveConfirm": "Save",
+        "saved": "Planning saved",
+        "saveFailed": "The planning could not be saved."
+    },
+    "empty": "Nothing planned for this period.",
     "range": "Show by",
     "ranges(map)": {
         "day": "Day",

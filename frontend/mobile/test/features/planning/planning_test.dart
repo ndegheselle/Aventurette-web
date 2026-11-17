@@ -1,6 +1,9 @@
 import 'package:ajil/core/data/mapper.dart';
 import 'package:ajil/features/planning/api/event_mapper.dart';
 import 'package:ajil/features/planning/models/period.dart';
+import 'package:ajil/core/data/crud.dart';
+import 'package:ajil/features/activities/models/activity.dart';
+import 'package:ajil/features/planning/state/day_plan.dart';
 import 'package:ajil/features/planning/state/planning.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -32,7 +35,7 @@ void main() {
       ..select(DateTime(2026, 11, 18))
       ..show(TimeRange.month);
 
-    final groups = await container.read(planningEventsProvider.future);
+    final groups = await container.read(planningGroupsProvider.future);
 
     expect([for (final group in groups) ...group.events.map((event) => event.id)], ['spills in', 'saturday']);
   });
@@ -53,4 +56,86 @@ void main() {
     expect(backendDate(moment), endsWith('Z'));
     expect(localDate(backendDate(moment)), moment);
   });
+
+  group('saved activities', () {
+    test('show at their time, as long as their play steps, or half an hour with none', () async {
+      final crud = FakeCrudFactory({
+        'user_planned_activities': [
+          {
+            'id': 's1',
+            'user': 'u1',
+            'activity': 'a1',
+            'start': backendDate(DateTime(2026, 11, 18, 9)),
+            'expand': {
+              'activity': {
+                'id': 'a1',
+                'name': 'La quête du remède',
+                'expand': {
+                  'steps': [
+                    {'id': 'p', 'kind': 'PREPARE', 'duration': 20},
+                    {'id': 'g', 'kind': 'CUSTOM', 'duration': 45},
+                  ],
+                },
+              },
+            },
+          },
+          {'id': 's2', 'user': 'u1', 'activity': 'a2', 'start': backendDate(DateTime(2026, 11, 19, 14))},
+          {'id': 'other', 'user': 'u2', 'activity': 'a1', 'start': backendDate(DateTime(2026, 11, 18, 9))},
+        ],
+      });
+      final container = await signedInContainer(crud: crud);
+      container.read(planningProvider.notifier).select(DateTime(2026, 11, 18));
+
+      final groups = await container.read(planningGroupsProvider.future);
+
+      final activities = [for (final group in groups) ...group.activities];
+      expect([for (final activity in activities) activity.id], ['s1', 's2']);
+      expect(activities.first.name, 'La quête du remède');
+      expect(activities.first.minutes, 45, reason: 'the preparation is before the children arrive');
+      expect(activities.last.minutes, 30);
+    });
+
+    test("saving writes each activity at its time on the day, then leaves planning mode on that day", () async {
+      final crud = FakeCrudFactory();
+      final container = await signedInContainer(crud: crud);
+      final plan = container.read(dayPlanProvider.notifier)
+        ..pick(const ActivityData(id: 'a1', name: 'Un'))
+        ..pick(const ActivityData(id: 'a2', name: 'Deux'))
+        ..schedule(9 * 60);
+
+      await plan.save(DateTime(2026, 12, 5));
+
+      final records = crud.records['user_planned_activities']!;
+      expect([for (final record in records) record['activity']], ['a1', 'a2']);
+      expect(records.last['start'], backendDate(DateTime(2026, 12, 5, 9, 30)));
+      expect(records.first['user'], 'u1');
+      expect(container.read(dayPlanProvider), isNull);
+      expect(container.read(planningProvider).day, DateTime(2026, 12, 5));
+    });
+
+    test('a plan that could not be saved stays', () async {
+      final container = await signedInContainer(crud: _FailingCrudFactory());
+      final plan = container.read(dayPlanProvider.notifier)
+        ..pick(const ActivityData(id: 'a1', name: 'Un'))
+        ..schedule(9 * 60);
+
+      await expectLater(plan.save(DateTime(2026, 12, 5)), throwsStateError);
+
+      expect(container.read(dayPlanProvider)!.activities, hasLength(1));
+    });
+  });
+}
+
+/// The backend refusing every creation.
+class _FailingCrudFactory extends FakeCrudFactory {
+  @override
+  DataCrud<T> of<T>(String collection, EntityMapper<T> mapper) =>
+      _FailingCrud<T>(mapper, records.putIfAbsent(collection, () => []), writes.putIfAbsent(collection, () => []));
+}
+
+class _FailingCrud<T> extends FakeCrud<T> {
+  _FailingCrud(super.mapper, super.records, super.writes);
+
+  @override
+  Future<T> create(T entity) async => throw StateError('Backend down');
 }

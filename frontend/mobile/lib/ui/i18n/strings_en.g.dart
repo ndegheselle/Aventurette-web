@@ -195,8 +195,10 @@ class _Translations$planning$en extends Translations$planning$fr {
 
 	// Translations
 	@override late final _Translations$planning$screens$en screens = _Translations$planning$screens$en._(_root);
-	@override String get create => '+ New event';
-	@override String get empty => 'No event.';
+	@override String get start => 'Start planning';
+	@override late final _Translations$planning$mode$en mode = _Translations$planning$mode$en._(_root);
+	@override late final _Translations$planning$plan$en plan = _Translations$planning$plan$en._(_root);
+	@override String get empty => 'Nothing planned for this period.';
 	@override String get range => 'Show by';
 	@override Map<String, String> get ranges => {
 		'day': 'Day',
@@ -606,6 +608,50 @@ class _Translations$planning$screens$en extends Translations$planning$screens$fr
 	@override String get edit => 'Edit the event';
 	@override String get newBlock => 'Set up the time';
 	@override String get coordination => 'Coordination';
+}
+
+// Path: planning.mode
+class _Translations$planning$mode$en extends Translations$planning$mode$fr {
+	_Translations$planning$mode$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Currently planning';
+	@override String count({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		zero: 'no activity',
+		one: '${n} activity',
+		other: '${n} activities',
+	);
+	@override String replacing({required Object name}) => 'Replacing “${name}”';
+	@override String get cancel => 'Cancel';
+	@override String get toPlan => 'To plan';
+	@override String get add => 'Add to planning';
+	@override String get remove => 'Remove from planning';
+	@override String get replace => 'Replace';
+}
+
+// Path: planning.plan
+class _Translations$planning$plan$en extends Translations$planning$plan$fr {
+	_Translations$planning$plan$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'The day\'s planning';
+	@override String get empty => 'No activity picked. Add some from the catalogue.';
+	@override String get hint => 'Tap an activity to change its time, or hold it to move it.';
+	@override String get startTitle => 'Start time';
+	@override String get startHint => 'The first activity starts at this time; the others follow on.';
+	@override String get confirm => 'Confirm';
+	@override String get replace => 'Replace';
+	@override String get remove => 'Remove';
+	@override String get save => 'Save the planning';
+	@override String get saveTitle => 'The planning\'s day';
+	@override String get saveHint => 'The activities are saved at their time, on that day.';
+	@override String get saveConfirm => 'Save';
+	@override String get saved => 'Planning saved';
+	@override String get saveFailed => 'The planning could not be saved.';
 }
 
 // Path: planning.dates
@@ -1091,8 +1137,30 @@ extension on TranslationsEn {
 			'planning.screens.edit' => 'Edit the event',
 			'planning.screens.newBlock' => 'Set up the time',
 			'planning.screens.coordination' => 'Coordination',
-			'planning.create' => '+ New event',
-			'planning.empty' => 'No event.',
+			'planning.start' => 'Start planning',
+			'planning.mode.title' => 'Currently planning',
+			'planning.mode.count' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, zero: 'no activity', one: '${n} activity', other: '${n} activities', ), 
+			'planning.mode.replacing' => ({required Object name}) => 'Replacing “${name}”',
+			'planning.mode.cancel' => 'Cancel',
+			'planning.mode.toPlan' => 'To plan',
+			'planning.mode.add' => 'Add to planning',
+			'planning.mode.remove' => 'Remove from planning',
+			'planning.mode.replace' => 'Replace',
+			'planning.plan.title' => 'The day\'s planning',
+			'planning.plan.empty' => 'No activity picked. Add some from the catalogue.',
+			'planning.plan.hint' => 'Tap an activity to change its time, or hold it to move it.',
+			'planning.plan.startTitle' => 'Start time',
+			'planning.plan.startHint' => 'The first activity starts at this time; the others follow on.',
+			'planning.plan.confirm' => 'Confirm',
+			'planning.plan.replace' => 'Replace',
+			'planning.plan.remove' => 'Remove',
+			'planning.plan.save' => 'Save the planning',
+			'planning.plan.saveTitle' => 'The planning\'s day',
+			'planning.plan.saveHint' => 'The activities are saved at their time, on that day.',
+			'planning.plan.saveConfirm' => 'Save',
+			'planning.plan.saved' => 'Planning saved',
+			'planning.plan.saveFailed' => 'The planning could not be saved.',
+			'planning.empty' => 'Nothing planned for this period.',
 			'planning.range' => 'Show by',
 			'planning.ranges.day' => 'Day',
 			'planning.ranges.week' => 'Week',

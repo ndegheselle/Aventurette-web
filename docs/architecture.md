@@ -119,6 +119,7 @@ them wrong unless it reproduces them.
 | **One feedback per user and activity**, under a unique index: update it when it exists; a second tap while saving creates nothing. | `state/feedback.dart`, `models/feedback.dart` | `feedback_test.dart` |
 | **Pages are appended**; a new search starts over and drops a page that answers the previous one. | `state/catalogue.dart` | `library_feed_test.dart` |
 | **A date is stored in UTC and read in the device's time.** The planning asks for the user's events starting before the period ends and ending as or after it starts, then keeps those that overlap it. forui's calendars count days as UTC midnights; the app converts them to local days. | `features/planning/api/`, `models/period.dart` | `planning_test.dart`, `period_test.dart` |
+| **A saved activity is a `user_planned_activities` record**: the user, the activity and its start. Its length is not stored: it is read from the activity's steps, expanded with it — the play steps, or 30 minutes with none. | `features/planning/api/scheduled_activity_mapper.dart` | `planning_test.dart` |
 | **The router waits for the session**, sends nobody signed in to the login, a user not onboarded to the onboarding (`onboarded` on the user), and a signed-in user away from the login. | `features/user/guard.dart` | `user_test.dart` |
 | **The session is kept in the device's secure storage**, not in plain preferences. | `backend/pocketbase/client.dart` | — |
 

@@ -1,6 +1,9 @@
+import 'package:ajil/features/activities/routes.dart';
 import 'package:ajil/features/planning/models/period.dart';
 import 'package:ajil/features/planning/routes.dart';
+import 'package:ajil/features/planning/state/day_plan.dart';
 import 'package:ajil/features/planning/state/planning.dart';
+import 'package:ajil/features/planning/ui/day_plan/planned_activity_card.dart';
 import 'package:ajil/features/planning/ui/period_bar.dart';
 import 'package:ajil/features/planning/ui/planning_text.dart';
 import 'package:ajil/ui/async/async_view.dart';
@@ -28,24 +31,31 @@ class PlanningPage extends ConsumerWidget {
         children: [
           const PeriodBar(),
           AsyncView(
-            value: ref.watch(planningEventsProvider),
-            onRetry: () => ref.invalidate(planningEventsProvider),
-            data: (groups) => _EventGroups(range: range, groups: groups),
+            value: ref.watch(planningGroupsProvider),
+            onRetry: () => ref.invalidate(planningGroupsProvider),
+            data: (groups) => _PeriodGroups(range: range, groups: groups),
           ),
-          FButton(onPress: () => context.push(PlanningRoutes.create), child: Text(t.create)),
+          FButton(
+            prefix: const Icon(FLucideIcons.calendarPlus),
+            onPress: () {
+              ref.read(dayPlanProvider.notifier).start();
+              context.go(ActivitiesRoutes.catalogue);
+            },
+            child: Text(t.start),
+          ),
         ],
       ),
     );
   }
 }
 
-/// The period's events, a tile group per day, week or month. A day's are not headed: the period
-/// already names it.
-class _EventGroups extends StatelessWidget {
-  const _EventGroups({required this.range, required this.groups});
+/// The period's events and saved activities, under a heading per day, week or month. A day's
+/// are not headed: the period already names it. Events are tiles; activities, the day plan's cards.
+class _PeriodGroups extends StatelessWidget {
+  const _PeriodGroups({required this.range, required this.groups});
 
   final TimeRange range;
-  final List<EventGroup> groups;
+  final List<PeriodGroup> groups;
 
   @override
   Widget build(BuildContext context) {
@@ -62,15 +72,28 @@ class _EventGroups extends StatelessWidget {
       spacing: AppSpaces.page,
       children: [
         for (final group in groups)
-          FTileGroup(
-            label: range == TimeRange.day ? null : Text(partTitle(t, range, group.part)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: AppSpaces.spacing,
             children: [
-              for (final event in group.events)
-                FTile(
-                  title: Text(event.name),
-                  subtitle: Text(eventSubtitle(t, event)),
-                  suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => context.push(PlanningRoutes.event(event.id)),
+              if (range != TimeRange.day) Text(partTitle(t, range, group.part), style: context.labelText),
+              if (group.events.isNotEmpty)
+                FTileGroup(
+                  children: [
+                    for (final event in group.events)
+                      FTile(
+                        title: Text(event.name),
+                        subtitle: Text(eventSubtitle(t, event)),
+                        suffix: const Icon(FLucideIcons.chevronRight),
+                        onPress: () => context.push(PlanningRoutes.event(event.id)),
+                      ),
+                  ],
+                ),
+              for (final activity in group.activities)
+                PlannedActivityCard(
+                  name: activity.name,
+                  time: scheduledText(t, range, activity),
+                  onTap: () => context.push(ActivitiesRoutes.activity(activity.activityId)),
                 ),
             ],
           ),

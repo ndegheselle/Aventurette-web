@@ -1,8 +1,10 @@
 /// How dates, periods and events read, in the app's language.
 library;
 
+import 'package:ajil/features/planning/models/day_plan.dart';
 import 'package:ajil/features/planning/models/event.dart';
 import 'package:ajil/features/planning/models/period.dart';
+import 'package:ajil/features/planning/models/scheduled_activity.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 
 String _capitalised(String text) => text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
@@ -11,10 +13,16 @@ String _month(Translations t, DateTime day) => t.planning.dates.months[day.month
 
 String _withYear(Translations t, String date, DateTime day) => t.planning.dates.withYear(date: date, year: day.year);
 
-/// *9h30*, or *10h* on the hour.
-String _clock(Translations t, DateTime moment) => moment.minute == 0
-    ? t.planning.dates.hour(hours: moment.hour)
-    : t.planning.dates.time(hours: moment.hour, minutes: moment.minute.toString().padLeft(2, '0'));
+/// *9h30*, or *10h* on the hour, for a time given in minutes since midnight.
+String clockText(Translations t, int minutesOfDay) {
+  final hours = minutesOfDay ~/ 60;
+  final minutes = minutesOfDay % 60;
+  return minutes == 0
+      ? t.planning.dates.hour(hours: hours)
+      : t.planning.dates.time(hours: hours, minutes: minutes.toString().padLeft(2, '0'));
+}
+
+String _clock(Translations t, DateTime moment) => clockText(t, moment.hour * 60 + moment.minute);
 
 /// *9h30–17h30*.
 String _times(Translations t, DateTime start, DateTime end) =>
@@ -66,8 +74,20 @@ String partTitle(Translations t, TimeRange range, Period part) => switch (range)
 /// An event's line under its name: its times on one day, its days otherwise, then its status —
 /// *9h30–17h30 · Préparation en cours*, *28–29 novembre*.
 String eventSubtitle(Translations t, PlanningEvent event) => [
-  onOneDay(event)
-      ? _times(t, event.start, event.end)
-      : _days(t, dayOf(event.start), lastDayOf(event), withYear: false),
+  onOneDay(event) ? _times(t, event.start, event.end) : _days(t, dayOf(event.start), lastDayOf(event), withYear: false),
   if (event.status case final status?) t.planning.status[status.name]!,
 ].join(' · ');
+
+/// A planned activity's time: *9h30–10h15*.
+String slotText(Translations t, PlannedActivity activity) =>
+    t.planning.dates.times(from: clockText(t, activity.start), to: clockText(t, activity.end));
+
+/// A saved activity's time on the planning: *9h30–10h15* where its group is a day, with its day
+/// before — *21 novembre · 9h30–10h15* — where the group spans several.
+String scheduledText(Translations t, TimeRange range, ScheduledActivity activity) {
+  final times = _times(t, activity.start, activity.end);
+  return switch (range) {
+    TimeRange.day || TimeRange.week => times,
+    TimeRange.month || TimeRange.year => '${_day(t, activity.start)} · $times',
+  };
+}

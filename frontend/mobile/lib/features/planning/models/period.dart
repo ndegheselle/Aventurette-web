@@ -3,6 +3,7 @@
 library;
 
 import 'package:ajil/features/planning/models/event.dart';
+import 'package:ajil/features/planning/models/scheduled_activity.dart';
 
 /// How much time the planning shows at once.
 enum TimeRange { day, week, month, year }
@@ -63,24 +64,37 @@ List<Period> partsOf(TimeRange range, Period period) {
   return parts;
 }
 
-/// Events under a heading: the part of the period they take part of.
-class EventGroup {
-  const EventGroup(this.part, this.events);
+/// Events and saved activities under a heading: the part of the period they take part of.
+class PeriodGroup {
+  const PeriodGroup(this.part, {this.events = const [], this.activities = const []});
 
   final Period part;
 
-  /// In the order they start.
+  /// Each in the order they start.
   final List<PlanningEvent> events;
+  final List<ScheduledActivity> activities;
 }
 
-/// [events] grouped by the parts of [period]. A part with no event is left out; an event over
-/// several parts is in each.
-List<EventGroup> groupedEvents(List<PlanningEvent> events, TimeRange range, Period period) {
-  final groups = <EventGroup>[];
+/// [events] and [activities] grouped by the parts of [period]. A part with neither is left out;
+/// one over several parts is in each.
+List<PeriodGroup> groupedByPart(
+  List<PlanningEvent> events,
+  List<ScheduledActivity> activities,
+  TimeRange range,
+  Period period,
+) {
+  final groups = <PeriodGroup>[];
   for (final part in partsOf(range, period)) {
-    final inPart = events.where((event) => overlaps(event, part.from, part.until));
-    if (inPart.isEmpty) continue;
-    groups.add(EventGroup(part, sortedByStart(inPart)));
+    final eventsIn = events.where((event) => overlaps(event, part.from, part.until));
+    final activitiesIn = activities.where((activity) => scheduledWithin(activity, part.from, part.until));
+    if (eventsIn.isEmpty && activitiesIn.isEmpty) continue;
+    groups.add(
+      PeriodGroup(
+        part,
+        events: sortedByStart(eventsIn),
+        activities: [...activitiesIn]..sort((a, b) => a.start.compareTo(b.start)),
+      ),
+    );
   }
   return groups;
 }

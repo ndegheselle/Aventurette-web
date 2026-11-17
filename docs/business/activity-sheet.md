@@ -30,7 +30,7 @@ Then three sections, each opening a page:
 When the activity has safety instructions, a warning shows with their count, and opens them in
 full.
 
-At the bottom, four actions:
+At the bottom, *Ajouter au planning* — [plan a day](planning.md#planning-a-day) — then four actions:
 
 - *Partager* — [share, export or print](sharing.md);
 - *Enregistrer* — the [favourite](catalogue.md#favourites);

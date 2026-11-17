@@ -201,11 +201,14 @@ class Translations$planning$fr {
 	// Translations
 	late final Translations$planning$screens$fr screens = Translations$planning$screens$fr.internal(_root);
 
-	/// fr: '+ Créer un événement'
-	String get create => '+ Créer un événement';
+	/// fr: 'Commencer un planning'
+	String get start => 'Commencer un planning';
 
-	/// fr: 'Aucun événement.'
-	String get empty => 'Aucun événement.';
+	late final Translations$planning$mode$fr mode = Translations$planning$mode$fr.internal(_root);
+	late final Translations$planning$plan$fr plan = Translations$planning$plan$fr.internal(_root);
+
+	/// fr: 'Rien de prévu sur cette période.'
+	String get empty => 'Rien de prévu sur cette période.';
 
 	/// fr: 'Afficher par'
 	String get range => 'Afficher par';
@@ -824,6 +827,94 @@ class Translations$planning$screens$fr {
 
 	/// fr: 'Coordination'
 	String get coordination => 'Coordination';
+}
+
+// Path: planning.mode
+class Translations$planning$mode$fr {
+	Translations$planning$mode$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Planification en cours'
+	String get title => 'Planification en cours';
+
+	/// fr: '(zero) {aucune activité} (one) {{n} activité} (other) {{n} activités}'
+	String count({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		zero: 'aucune activité',
+		one: '${n} activité',
+		other: '${n} activités',
+	);
+
+	/// fr: 'Remplacer « {name} »'
+	String replacing({required Object name}) => 'Remplacer « ${name} »';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'À planifier'
+	String get toPlan => 'À planifier';
+
+	/// fr: 'Ajouter au planning'
+	String get add => 'Ajouter au planning';
+
+	/// fr: 'Retirer du planning'
+	String get remove => 'Retirer du planning';
+
+	/// fr: 'Remplacer'
+	String get replace => 'Remplacer';
+}
+
+// Path: planning.plan
+class Translations$planning$plan$fr {
+	Translations$planning$plan$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Planning de la journée'
+	String get title => 'Planning de la journée';
+
+	/// fr: 'Aucune activité choisie. Ajoutez-en depuis le catalogue.'
+	String get empty => 'Aucune activité choisie. Ajoutez-en depuis le catalogue.';
+
+	/// fr: 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.'
+	String get hint => 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.';
+
+	/// fr: 'Heure de début'
+	String get startTitle => 'Heure de début';
+
+	/// fr: 'La première activité commence à cette heure ; les suivantes s'enchaînent.'
+	String get startHint => 'La première activité commence à cette heure ; les suivantes s\'enchaînent.';
+
+	/// fr: 'Valider'
+	String get confirm => 'Valider';
+
+	/// fr: 'Remplacer'
+	String get replace => 'Remplacer';
+
+	/// fr: 'Retirer'
+	String get remove => 'Retirer';
+
+	/// fr: 'Enregistrer le planning'
+	String get save => 'Enregistrer le planning';
+
+	/// fr: 'Jour du planning'
+	String get saveTitle => 'Jour du planning';
+
+	/// fr: 'Les activités sont enregistrées à leur heure, ce jour-là.'
+	String get saveHint => 'Les activités sont enregistrées à leur heure, ce jour-là.';
+
+	/// fr: 'Enregistrer'
+	String get saveConfirm => 'Enregistrer';
+
+	/// fr: 'Planning enregistré'
+	String get saved => 'Planning enregistré';
+
+	/// fr: 'Le planning n'a pas pu être enregistré.'
+	String get saveFailed => 'Le planning n\'a pas pu être enregistré.';
 }
 
 // Path: planning.dates
@@ -1487,8 +1578,30 @@ extension on Translations {
 			'planning.screens.edit' => 'Modifier l\'événement',
 			'planning.screens.newBlock' => 'Paramétrer le temps',
 			'planning.screens.coordination' => 'Coordination',
-			'planning.create' => '+ Créer un événement',
-			'planning.empty' => 'Aucun événement.',
+			'planning.start' => 'Commencer un planning',
+			'planning.mode.title' => 'Planification en cours',
+			'planning.mode.count' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, zero: 'aucune activité', one: '${n} activité', other: '${n} activités', ), 
+			'planning.mode.replacing' => ({required Object name}) => 'Remplacer « ${name} »',
+			'planning.mode.cancel' => 'Annuler',
+			'planning.mode.toPlan' => 'À planifier',
+			'planning.mode.add' => 'Ajouter au planning',
+			'planning.mode.remove' => 'Retirer du planning',
+			'planning.mode.replace' => 'Remplacer',
+			'planning.plan.title' => 'Planning de la journée',
+			'planning.plan.empty' => 'Aucune activité choisie. Ajoutez-en depuis le catalogue.',
+			'planning.plan.hint' => 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.',
+			'planning.plan.startTitle' => 'Heure de début',
+			'planning.plan.startHint' => 'La première activité commence à cette heure ; les suivantes s\'enchaînent.',
+			'planning.plan.confirm' => 'Valider',
+			'planning.plan.replace' => 'Remplacer',
+			'planning.plan.remove' => 'Retirer',
+			'planning.plan.save' => 'Enregistrer le planning',
+			'planning.plan.saveTitle' => 'Jour du planning',
+			'planning.plan.saveHint' => 'Les activités sont enregistrées à leur heure, ce jour-là.',
+			'planning.plan.saveConfirm' => 'Enregistrer',
+			'planning.plan.saved' => 'Planning enregistré',
+			'planning.plan.saveFailed' => 'Le planning n\'a pas pu être enregistré.',
+			'planning.empty' => 'Rien de prévu sur cette période.',
 			'planning.range' => 'Afficher par',
 			'planning.ranges.day' => 'Jour',
 			'planning.ranges.week' => 'Semaine',

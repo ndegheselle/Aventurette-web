@@ -77,6 +77,8 @@ Opened from the planning to fill a slot or to replace an activity (UF-02, UF-08)
 keeps the group and the slot. The filters start from the group. Choosing an activity places it in
 that slot, and nothing is replaced before the user confirms.
 
+In [planning mode](planning.md#planning-a-day), the catalogue ends with the planning's bar.
+
 ## Differs from the design
 
 - **The profile is the user's, not the group's**: groups do not exist yet.
