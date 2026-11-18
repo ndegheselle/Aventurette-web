@@ -10,8 +10,8 @@ class ScheduledActivity implements Identified {
     required this.user,
     required this.activityId,
     required this.start,
+    required this.end,
     this.name = '',
-    this.minutes = defaultActivityMinutes,
   });
 
   /// Empty until the backend created it.
@@ -20,17 +20,16 @@ class ScheduledActivity implements Identified {
   final String user;
   final String activityId;
 
-  /// In the device's time.
+  /// In the device's time. The length is set when the activity is planned, and kept: editing the
+  /// activity's steps does not move it.
   final DateTime start;
+  final DateTime end;
 
-  /// The activity's, as the day plan read it: see [lengthOf].
+  /// The activity's.
   final String name;
-  final int minutes;
-
-  DateTime get end => start.add(Duration(minutes: minutes));
 }
 
-/// [activities] of a day plan, each at its time on [day].
+/// [activities] of a day plan, each at its time on [day], as long as on the plan.
 List<ScheduledActivity> scheduledOn(DateTime day, List<PlannedActivity> activities, String user) => [
   for (final activity in activities)
     ScheduledActivity(
@@ -38,8 +37,8 @@ List<ScheduledActivity> scheduledOn(DateTime day, List<PlannedActivity> activiti
       user: user,
       activityId: activity.activityId,
       name: activity.name,
-      minutes: activity.minutes,
       start: DateTime(day.year, day.month, day.day, 0, activity.start),
+      end: DateTime(day.year, day.month, day.day, 0, activity.end),
     ),
 ];
 

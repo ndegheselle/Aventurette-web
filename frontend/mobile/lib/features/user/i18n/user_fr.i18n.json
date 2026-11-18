@@ -10,7 +10,15 @@
         "codeRejected": "Code invalide ou expiré.",
         "password": "Mot de passe",
         "withPassword": "Se connecter avec le mot de passe",
-        "passwordRejected": "E-mail ou mot de passe incorrect."
+        "passwordRejected": "E-mail ou mot de passe incorrect.",
+        "toSignUp": "Pas encore de compte ? En créer un"
+    },
+    "signUp": {
+        "title": "Créer un compte",
+        "name": "Nom",
+        "submit": "Créer mon compte",
+        "accountNotCreated": "Le compte n'a pas pu être créé. Vérifiez l'e-mail.",
+        "toLogin": "J'ai déjà un compte"
     },
     "onboarding": {
         "title": "Bienvenue !",

@@ -1,4 +1,5 @@
 import 'package:ajil/features/user/ui/login/page.dart';
+import 'package:ajil/features/user/ui/login/sign_up_page.dart';
 import 'package:ajil/features/user/ui/me/me_page.dart';
 import 'package:ajil/features/user/ui/me/prefs/prefs_page.dart';
 import 'package:ajil/features/user/ui/onboarding_page.dart';
@@ -9,6 +10,7 @@ import 'package:go_router/go_router.dart';
 
 abstract final class UserRoutes {
   static const login = '/login';
+  static const signUp = '/sign-up';
   static const onboarding = '/onboarding';
   static const mySpace = '/me';
   static const contents = '/me/contents';
@@ -16,11 +18,12 @@ abstract final class UserRoutes {
   static const account = '/me/account';
 
   /// Reachable signed out.
-  static const public = {login};
+  static const public = {login, signUp};
 }
 
 final userRoutes = <GoRoute>[
   GoRoute(path: UserRoutes.login, pageBuilder: (context, state) => tabPage(state, const LoginPage())),
+  GoRoute(path: UserRoutes.signUp, pageBuilder: (context, state) => tabPage(state, const SignUpPage())),
   GoRoute(path: UserRoutes.onboarding, pageBuilder: (context, state) => tabPage(state, const OnboardingPage())),
   fullScreenRoute(UserRoutes.mySpace, (context, state) => const MySpacePage()),
   fullScreenRoute(UserRoutes.preferences, (context, state) => const PreferencesPage()),

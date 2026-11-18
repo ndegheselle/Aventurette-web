@@ -1,35 +1,27 @@
 import 'package:ajil/core/data/mapper.dart';
 import 'package:ajil/core/files/file_url_resolver.dart';
-import 'package:ajil/features/activities/api/activity_mapper.dart';
-import 'package:ajil/features/activities/models/activity.dart';
 import 'package:ajil/features/planning/api/event_mapper.dart';
-import 'package:ajil/features/planning/models/day_plan.dart';
 import 'package:ajil/features/planning/models/scheduled_activity.dart';
 
-/// A `user_planned_activities` record: who, which activity, and when it starts. Its length is
-/// not stored: it is read from the activity's steps, as the day plan reads it, so the activity
-/// and its steps are expanded.
+/// A `user_planned_activities` record: who, which activity, when it starts and when it ends. The
+/// activity is expanded for its name only.
 class ScheduledActivityMapper implements EntityMapper<ScheduledActivity> {
   const ScheduledActivityMapper();
 
-  static const _activity = ActivityMapper();
-
   @override
-  List<String> get relations => const ['activity', 'activity.steps'];
+  List<String> get relations => const ['activity'];
 
   @override
   ScheduledActivity toEntity(Payload payload, FileUrlResolver files) {
-    final expanded = (payload['expand'] as Map?)?['activity'] as Map?;
-    // Only the steps are expanded: the activity's other relations read as empty.
-    final activity = expanded == null ? null : _activity.toEntity(Payload.from(expanded), files);
+    final activity = (payload['expand'] as Map?)?['activity'] as Map?;
 
     return ScheduledActivity(
       id: payload['id'] as String,
       user: payload['user'] as String,
       activityId: payload['activity'] as String,
       start: localDate(payload['start']),
-      name: activity?.name ?? '',
-      minutes: lengthOf(activity == null ? 0 : timingOf(activity).play),
+      end: localDate(payload['end']),
+      name: (activity?['name'] as String?) ?? '',
     );
   }
 
@@ -38,5 +30,6 @@ class ScheduledActivityMapper implements EntityMapper<ScheduledActivity> {
     'user': activity.user,
     'activity': activity.activityId,
     'start': backendDate(activity.start),
+    'end': backendDate(activity.end),
   };
 }

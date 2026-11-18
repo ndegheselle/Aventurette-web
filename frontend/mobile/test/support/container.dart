@@ -8,13 +8,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'fake_crud.dart';
 
 /// A session the device kept: [user] is the record the auth port gives back, null for nobody.
+/// [calls] lists the sign-ups and the codes asked for, in order; [signUpRefused] makes a sign-up
+/// throw.
 class FakeAuth implements AuthProvider {
   FakeAuth([this.user]);
 
   Payload? user;
+  final calls = <String>[];
+  bool signUpRefused = false;
 
   @override
-  Future<String> requestOtp(String email) async => 'otp';
+  Future<void> signUp(String email, String name) async {
+    if (signUpRefused) throw StateError('Refused');
+    calls.add('signUp $email');
+  }
+
+  @override
+  Future<String> requestOtp(String email) async {
+    calls.add('requestOtp $email');
+    return 'otp';
+  }
 
   @override
   Future<Payload> loginWithOtp(String otpId, String code) async => user ?? (throw StateError('Wrong code'));

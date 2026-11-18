@@ -69,8 +69,20 @@ void main() {
   test("a saved activity is grouped by the day it starts, with the day's events", () {
     final week = periodOf(TimeRange.week, DateTime(2026, 11, 16));
     final wednesday = event('wednesday', DateTime(2026, 11, 18, 14), DateTime(2026, 11, 18, 16));
-    final game = ScheduledActivity(id: 's1', user: 'u1', activityId: 'a1', start: DateTime(2026, 11, 18, 9));
-    final saturday = ScheduledActivity(id: 's2', user: 'u1', activityId: 'a1', start: DateTime(2026, 11, 21, 10));
+    final game = ScheduledActivity(
+      id: 's1',
+      user: 'u1',
+      activityId: 'a1',
+      start: DateTime(2026, 11, 18, 9),
+      end: DateTime(2026, 11, 18, 10),
+    );
+    final saturday = ScheduledActivity(
+      id: 's2',
+      user: 'u1',
+      activityId: 'a1',
+      start: DateTime(2026, 11, 21, 10),
+      end: DateTime(2026, 11, 21, 11),
+    );
 
     final groups = groupedByPart([wednesday], [saturday, game], TimeRange.week, week);
 

@@ -296,6 +296,7 @@ class _Translations$user$en extends Translations$user$fr {
 
 	// Translations
 	@override late final _Translations$user$login$en login = _Translations$user$login$en._(_root);
+	@override late final _Translations$user$signUp$en signUp = _Translations$user$signUp$en._(_root);
 	@override late final _Translations$user$onboarding$en onboarding = _Translations$user$onboarding$en._(_root);
 	@override late final _Translations$user$filterDefaults$en filterDefaults = _Translations$user$filterDefaults$en._(_root);
 	@override Map<String, String> get location => {
@@ -834,6 +835,21 @@ class _Translations$user$login$en extends Translations$user$login$fr {
 	@override String get password => 'Password';
 	@override String get withPassword => 'Sign in with the password';
 	@override String get passwordRejected => 'Wrong email or password.';
+	@override String get toSignUp => 'No account yet? Create one';
+}
+
+// Path: user.signUp
+class _Translations$user$signUp$en extends Translations$user$signUp$fr {
+	_Translations$user$signUp$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Create an account';
+	@override String get name => 'Name';
+	@override String get submit => 'Create my account';
+	@override String get accountNotCreated => 'The account could not be created. Check the email.';
+	@override String get toLogin => 'I already have an account';
 }
 
 // Path: user.onboarding
@@ -1241,6 +1257,12 @@ extension on TranslationsEn {
 			'user.login.password' => 'Password',
 			'user.login.withPassword' => 'Sign in with the password',
 			'user.login.passwordRejected' => 'Wrong email or password.',
+			'user.login.toSignUp' => 'No account yet? Create one',
+			'user.signUp.title' => 'Create an account',
+			'user.signUp.name' => 'Name',
+			'user.signUp.submit' => 'Create my account',
+			'user.signUp.accountNotCreated' => 'The account could not be created. Check the email.',
+			'user.signUp.toLogin' => 'I already have an account',
 			'user.onboarding.title' => 'Welcome!',
 			'user.onboarding.intro' => 'Pick the catalogue\'s default filters. You can change them at any time in your preferences.',
 			'user.onboarding.later' => 'Later',

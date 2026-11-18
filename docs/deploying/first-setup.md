@@ -319,10 +319,11 @@ it. Save, then use *Send test email* on the same page and check that it reaches 
 Port 25 is blocked by most VPS providers, so do not use it. The api container needs no extra
 firewall rule: ufw only filters incoming traffic, and the SMTP connection is outgoing.
 
-**Add the beta testers.** Sign-up is closed: a tester is an account you create, in
-*Collections > users > New record*, with their email and any password (they never use it — the
-login screen asks for a code). Leave `role` empty for a plain user. Removing the record removes
-their access.
+**Accounts.** Anyone signs up from the app. Only an account whose email is verified signs in:
+the first code sent to it verifies it. To create one yourself, use *Collections > users > New
+record* with their email and any password (they never use it — the login screen asks for a
+code), and tick `verified` unless their first code should do it. Leave `role` empty for a plain
+user. Removing the record removes their access.
 
 You do not have to create collections. The schema is committed as migration files under
 `api/migrations/` and was applied automatically when the container started. Automigrate is
@@ -400,29 +401,6 @@ git push origin main:production
 That push is also the first automatic deploy. Follow it under the *Actions* tab. The
 server's checkout switches to a local `production` branch, and it stays on that branch from
 then on.
-
-## Running it from here
-
-Deploy a new version, from your own machine:
-
-```bash
-git push origin main:production
-```
-
-Or by hand on the server. It is the same script the workflow runs, so it skips the check:
-
-```bash
-sh ~/Aventurette-web/backend/scripts/deploy.sh
-```
-
-Only changed images are rebuilt. `api/pb_data` and the certificates are untouched, so a
-deploy is safe to run whenever.
-
-Rebuild the front bundle after changing the domain in `.env`:
-
-```bash
-docker compose up -d --build front
-```
 
 ### Back up
 

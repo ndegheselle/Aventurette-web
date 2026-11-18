@@ -1,10 +1,14 @@
+import 'package:ajil/backend/backend.dart';
 import 'package:ajil/features/user/api/filter_defaults_mapper.dart';
 import 'package:ajil/features/user/api/session_api.dart';
 import 'package:ajil/features/user/guard.dart';
 import 'package:ajil/features/user/models/user.dart';
 import 'package:ajil/features/user/routes.dart';
+import 'package:ajil/features/user/state/login_form.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/container.dart';
 import '../../support/fake_crud.dart';
 
 const onboarded = SessionUser(id: 'u1', email: 'e', name: 'n', role: Role.user, onboarded: true);
@@ -20,9 +24,10 @@ void main() {
       expect(redirect(loading: true, location: '/'), isNull);
     });
 
-    test('sends nobody signed in to the login, but lets the login through', () {
+    test('sends nobody signed in to the login, but lets the login and the sign-up through', () {
       expect(redirect(location: '/activities/a1'), UserRoutes.login);
       expect(redirect(location: UserRoutes.login), isNull);
+      expect(redirect(location: UserRoutes.signUp), isNull);
     });
 
     test('sends a user who has not seen the onboarding there first', () {
@@ -30,11 +35,41 @@ void main() {
       expect(redirect(user: newcomer, location: UserRoutes.onboarding), isNull);
     });
 
-    test('sends a signed-in user off the login, the onboarding and the waiting page', () {
-      for (final location in ['/', UserRoutes.login, UserRoutes.onboarding]) {
+    test('sends a signed-in user off the login, the sign-up, the onboarding and the waiting page', () {
+      for (final location in ['/', UserRoutes.login, UserRoutes.signUp, UserRoutes.onboarding]) {
         expect(redirect(user: onboarded, location: location), '/catalogue');
       }
       expect(redirect(user: onboarded, location: '/activities/a1'), isNull);
+    });
+  });
+
+  group('the sign-up', () {
+    Future<(ProviderContainer, FakeAuth)> signedOut() async {
+      final auth = FakeAuth();
+      final container = ProviderContainer(overrides: [authProviderProvider.overrideWithValue(auth)]);
+      addTearDown(container.dispose);
+      // Kept alive for the test, as the page watching it would.
+      container.listen(loginFormProvider, (_, _) {});
+      return (container, auth);
+    }
+
+    test('creates the account before sending the code that verifies it', () async {
+      final (container, auth) = await signedOut();
+
+      await container.read(loginFormProvider.notifier).signUp('Camille', ' camille@example.fr ');
+
+      expect(auth.calls, ['signUp camille@example.fr', 'requestOtp camille@example.fr']);
+      expect(container.read(loginFormProvider).codeSent, isTrue);
+    });
+
+    test('sends no code for an account that could not be created', () async {
+      final (container, auth) = await signedOut();
+      auth.signUpRefused = true;
+
+      await container.read(loginFormProvider.notifier).signUp('Camille', 'camille@example.fr');
+
+      expect(auth.calls, isEmpty);
+      expect(container.read(loginFormProvider).error, LoginError.accountNotCreated);
     });
   });
 

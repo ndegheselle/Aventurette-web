@@ -55,8 +55,10 @@ What each app holds:
 
 **Who may do what is a backend rule.** Permissions are PocketBase API rules, never a check in a
 client alone. A rule both apps must honour when they **write** goes into a PocketBase hook rather
-than into each app's mapper. A rule on how a record is **read** (a planned activity's length, for
-example) may stay in each client's mapper, with its spec.
+than into each app's mapper: a planned activity's end, for example, is stored and checked by the
+backend rather than computed by each app from the activity's steps. A rule on how a record is
+**read** (the days an event is listed under, for example) may stay in each client's mapper, with
+its spec.
 
 ## Consequences
 

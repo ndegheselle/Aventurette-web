@@ -22,6 +22,19 @@ func registerDevOTPLog(app core.App) {
 		}
 
 		log.Printf("sign-in code for %s: %v (no SMTP configured, so it was not emailed)", e.Record.Email(), e.Meta["password"])
-		return nil
+		return markOTPSent(e)
 	})
+}
+
+// markOTPSent records the code as sent to the account's email, as PocketBase does after a real
+// send. Without it, using the code would not verify the account, and the auth rule would refuse it.
+func markOTPSent(e *core.MailerRecordEvent) error {
+	otpId, _ := e.Meta["otpId"].(string)
+	otp, err := e.App.FindOTPById(otpId)
+	if err != nil {
+		return err
+	}
+
+	otp.SetSentTo(e.Record.Email())
+	return e.App.Save(otp)
 }

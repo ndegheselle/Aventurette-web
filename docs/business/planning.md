@@ -32,8 +32,8 @@ app planned single activities on dates; events replace that, and it is not carri
   year's by month; a day's are not grouped. A group with neither is left out; with nothing at
   all, *Rien de prévu sur cette période.*
 - **A saved activity shows as on the plan**: a card with its name and its time — *9h–9h45* —,
-  its day before it in a month or a year. Tapping it opens the activity's sheet. It lasts as long
-  as on the plan: its play time, or 30 minutes with none.
+  its day before it in a month or a year. Tapping it opens the activity's sheet. **It keeps the
+  length it had on the plan**, even if the activity's steps change afterwards.
 - **A month's weeks start on Monday and are cut at the month's edges**: November 2026 starts with
   the 1st alone.
 - **An event is in every group it takes part of.** One ending at midnight ends the day before.

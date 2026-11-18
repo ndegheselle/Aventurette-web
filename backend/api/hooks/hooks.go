@@ -22,7 +22,10 @@ func Register(app core.App) {
 	registerStepChildrenCleanup(app)
 	registerTagKindsCheck(app)
 	registerDefaultRole(app)
+	registerSignUpWithoutPassword(app)
+	registerVerifiedOnly(app)
 	registerActivityDuration(app)
+	registerPlannedActivityEndCheck(app)
 	registerDevOTPLog(app)
 }
 

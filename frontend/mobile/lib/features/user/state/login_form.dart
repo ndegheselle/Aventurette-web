@@ -2,13 +2,16 @@ import 'package:ajil/features/user/api/session_api.dart';
 import 'package:ajil/features/user/state/session.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum LoginError { codeNotSent, codeRejected, passwordRejected }
+enum LoginError { accountNotCreated, codeNotSent, codeRejected, passwordRejected }
 
-/// The sign-in, in two steps: the email, to which a one-time code is sent, then that code. Each
-/// step has its own error, so an error on one never shows on the other.
+/// The sign-in, in two steps: the email, to which a one-time code is sent, then that code. The
+/// sign-up has the same two, its first also taking a name. Each step has its own error, so an
+/// error on one never shows on the other.
 class LoginFormState {
-  const LoginFormState({this.email = '', this.otpId, this.busy = false, this.error});
+  const LoginFormState({this.name = '', this.email = '', this.otpId, this.busy = false, this.error});
 
+  /// Typed at the sign-up only.
+  final String name;
   final String email;
 
   /// Set once a code was sent: what the code is checked against.
@@ -23,27 +26,47 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
   @override
   LoginFormState build() => const LoginFormState();
 
+  SessionApi get _api => ref.read(sessionApiProvider);
+
   Future<void> requestCode(String email) async {
     state = LoginFormState(email: email, busy: true);
+    await _sendCode();
+  }
+
+  /// Creates the account, then sends the code that verifies its email and signs in. Nothing is
+  /// sent for an account that could not be created.
+  Future<void> signUp(String name, String email) async {
+    state = LoginFormState(name: name, email: email, busy: true);
     try {
-      final otpId = await ref.read(sessionApiProvider).requestOtp(email.trim());
-      state = LoginFormState(email: email, otpId: otpId);
+      await _api.signUp(email.trim(), name.trim());
     } catch (_) {
-      state = LoginFormState(email: email, error: LoginError.codeNotSent);
+      state = LoginFormState(name: name, email: email, error: LoginError.accountNotCreated);
+      return;
+    }
+    await _sendCode();
+  }
+
+  Future<void> _sendCode() async {
+    final LoginFormState(:name, :email) = state;
+    try {
+      final otpId = await _api.requestOtp(email.trim());
+      state = LoginFormState(name: name, email: email, otpId: otpId);
+    } catch (_) {
+      state = LoginFormState(name: name, email: email, error: LoginError.codeNotSent);
     }
   }
 
   /// Signs in. The router leaves the login once the session is set.
   Future<void> login(String code) async {
-    final otpId = state.otpId;
+    final LoginFormState(:name, :email, :otpId) = state;
     if (otpId == null) return;
 
-    state = LoginFormState(email: state.email, otpId: otpId, busy: true);
+    state = LoginFormState(name: name, email: email, otpId: otpId, busy: true);
     try {
       await ref.read(sessionProvider.notifier).loginWithOtp(otpId, code.trim());
-      state = LoginFormState(email: state.email, otpId: otpId);
+      state = LoginFormState(name: name, email: email, otpId: otpId);
     } catch (_) {
-      state = LoginFormState(email: state.email, otpId: otpId, error: LoginError.codeRejected);
+      state = LoginFormState(name: name, email: email, otpId: otpId, error: LoginError.codeRejected);
     }
   }
 
@@ -58,8 +81,8 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
     }
   }
 
-  /// Back to the email step, to correct it or have a new code sent.
-  void changeEmail() => state = LoginFormState(email: state.email);
+  /// Back to the first step, to correct it or have a new code sent.
+  void changeEmail() => state = LoginFormState(name: state.name, email: state.email);
 }
 
 final loginFormProvider = NotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>(LoginFormNotifier.new);

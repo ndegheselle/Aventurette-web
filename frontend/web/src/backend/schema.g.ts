@@ -374,6 +374,7 @@ export type UserActivityHistoryRecord = {
 export type UserPlannedActivitiesRecord = {
 	activity: RecordIdString
 	created: IsoAutoDateString
+	end: IsoDateString
 	id: string
 	start: IsoDateString
 	updated: IsoAutoDateString

@@ -16,14 +16,13 @@ class ScheduledActivitiesApi {
   /// As many as one screen lists.
   static const _limit = 200;
 
-  /// The user's activities starting in [from, until), in the order they start. A day plan keeps
-  /// each inside its day, so none starts before a day and runs into it.
+  /// The user's activities taking part of [from, until), in the order they start.
   Future<List<ScheduledActivity>> between(String user, DateTime from, DateTime until) async {
     final found = await _scheduled.filter(
       FilterGroup([
         Filter('user', user, operator: FilterOperator.equals),
-        Filter('start', backendDate(from), operator: FilterOperator.greaterOrEquals),
         Filter('start', backendDate(until), operator: FilterOperator.lessThan),
+        Filter('end', backendDate(from), operator: FilterOperator.greaterThan),
       ]),
       const PageRequest(page: 1, perPage: _limit, sort: 'start'),
     );

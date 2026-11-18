@@ -20,6 +20,8 @@ class SessionApi {
 
   final AuthProvider _auth;
 
+  Future<void> signUp(String email, String name) => _auth.signUp(email, name);
+
   Future<String> requestOtp(String email) => _auth.requestOtp(email);
 
   Future<SessionUser> loginWithOtp(String otpId, String code) async =>

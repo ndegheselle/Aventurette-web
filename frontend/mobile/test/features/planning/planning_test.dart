@@ -58,41 +58,36 @@ void main() {
   });
 
   group('saved activities', () {
-    test('show at their time, as long as their play steps, or half an hour with none', () async {
+    test('show as long as they were planned, one running in from the day before included', () async {
+      Payload planned(String id, DateTime start, DateTime end, {String user = 'u1'}) => {
+        'id': id,
+        'user': user,
+        'activity': 'a1',
+        'start': backendDate(start),
+        'end': backendDate(end),
+        'expand': {
+          'activity': {'id': 'a1', 'name': 'La quête du remède'},
+        },
+      };
       final crud = FakeCrudFactory({
         'user_planned_activities': [
-          {
-            'id': 's1',
-            'user': 'u1',
-            'activity': 'a1',
-            'start': backendDate(DateTime(2026, 11, 18, 9)),
-            'expand': {
-              'activity': {
-                'id': 'a1',
-                'name': 'La quête du remède',
-                'expand': {
-                  'steps': [
-                    {'id': 'p', 'kind': 'PREPARE', 'duration': 20},
-                    {'id': 'g', 'kind': 'CUSTOM', 'duration': 45},
-                  ],
-                },
-              },
-            },
-          },
-          {'id': 's2', 'user': 'u1', 'activity': 'a2', 'start': backendDate(DateTime(2026, 11, 19, 14))},
-          {'id': 'other', 'user': 'u2', 'activity': 'a1', 'start': backendDate(DateTime(2026, 11, 18, 9))},
+          planned('too early', DateTime(2026, 11, 17, 10), DateTime(2026, 11, 17, 11)),
+          planned('morning', DateTime(2026, 11, 18, 9), DateTime(2026, 11, 18, 9, 45)),
+          planned('runs in', DateTime(2026, 11, 17, 23, 30), DateTime(2026, 11, 18, 0, 30)),
+          planned('not mine', DateTime(2026, 11, 18, 9), DateTime(2026, 11, 18, 10), user: 'u2'),
         ],
       });
       final container = await signedInContainer(crud: crud);
-      container.read(planningProvider.notifier).select(DateTime(2026, 11, 18));
+      container.read(planningProvider.notifier)
+        ..select(DateTime(2026, 11, 18))
+        ..show(TimeRange.day);
 
       final groups = await container.read(planningGroupsProvider.future);
 
       final activities = [for (final group in groups) ...group.activities];
-      expect([for (final activity in activities) activity.id], ['s1', 's2']);
-      expect(activities.first.name, 'La quête du remède');
-      expect(activities.first.minutes, 45, reason: 'the preparation is before the children arrive');
-      expect(activities.last.minutes, 30);
+      expect([for (final activity in activities) activity.id], ['runs in', 'morning']);
+      expect(activities.last.name, 'La quête du remède');
+      expect(activities.last.end, DateTime(2026, 11, 18, 9, 45));
     });
 
     test("saving writes each activity at its time on the day, then leaves planning mode on that day", () async {
@@ -108,6 +103,7 @@ void main() {
       final records = crud.records['user_planned_activities']!;
       expect([for (final record in records) record['activity']], ['a1', 'a2']);
       expect(records.last['start'], backendDate(DateTime(2026, 12, 5, 9, 30)));
+      expect(records.last['end'], backendDate(DateTime(2026, 12, 5, 10)), reason: 'half an hour, with no play steps');
       expect(records.first['user'], 'u1');
       expect(container.read(dayPlanProvider), isNull);
       expect(container.read(planningProvider).day, DateTime(2026, 12, 5));

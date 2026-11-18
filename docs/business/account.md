@@ -21,15 +21,28 @@ Signing in and the onboarding are not in the wireframes; they come from the earl
 - **With a code sent by email.** The user types their email and taps *Recevoir un code*, then
   types the 6-digit code, valid 10 minutes. *Changer d'e-mail* goes back to the first step, which
   is also how to get a new code.
-- **Only accounts that Ajil created can sign in**: the beta testers. There is no sign-up.
 - **The screen answers the same for any email**, so it never tells whether someone has an
-  account.
+  account. A code is only sent to an email that has one: someone without an account signs up
+  first.
 - A code allows 5 attempts every 3 minutes.
 - **The session is kept on the device and renewed** as long as it is used within 7 days. There is
   no *Rester connecté*.
 - Someone signed out sees only this screen; someone signed in never sees it.
-- A password also signs in, without a mailbox.
+- A password also signs in, without a mailbox — once the email is verified.
 - There is no sign-in with Google, Microsoft or Apple.
+
+## Signing up
+
+- **Anyone can create an account**, from *Pas encore de compte ? En créer un* on the sign-in
+  screen: a name and an email, then *Créer mon compte*. The account is a plain user; nobody
+  gives themselves a role.
+- **A code is sent to that email, as at the sign-in.** Typing it verifies the email and signs
+  in, straight to the [onboarding](#onboarding).
+- **Only an account whose email is verified gets in**, to the app or to its data. An account
+  never verified is refused a session; a session from before it was unverified is refused on
+  every request.
+- **An email that already has an account is answered the same**: the code signs its owner in.
+  The name typed is then ignored.
 
 ## Onboarding
 

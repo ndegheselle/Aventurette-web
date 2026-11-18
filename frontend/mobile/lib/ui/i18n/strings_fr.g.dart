@@ -312,6 +312,7 @@ class Translations$user$fr {
 
 	// Translations
 	late final Translations$user$login$fr login = Translations$user$login$fr.internal(_root);
+	late final Translations$user$signUp$fr signUp = Translations$user$signUp$fr.internal(_root);
 	late final Translations$user$onboarding$fr onboarding = Translations$user$onboarding$fr.internal(_root);
 	late final Translations$user$filterDefaults$fr filterDefaults = Translations$user$filterDefaults$fr.internal(_root);
 	Map<String, String> get location => {
@@ -1198,6 +1199,33 @@ class Translations$user$login$fr {
 
 	/// fr: 'E-mail ou mot de passe incorrect.'
 	String get passwordRejected => 'E-mail ou mot de passe incorrect.';
+
+	/// fr: 'Pas encore de compte ? En créer un'
+	String get toSignUp => 'Pas encore de compte ? En créer un';
+}
+
+// Path: user.signUp
+class Translations$user$signUp$fr {
+	Translations$user$signUp$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Créer un compte'
+	String get title => 'Créer un compte';
+
+	/// fr: 'Nom'
+	String get name => 'Nom';
+
+	/// fr: 'Créer mon compte'
+	String get submit => 'Créer mon compte';
+
+	/// fr: 'Le compte n'a pas pu être créé. Vérifiez l'e-mail.'
+	String get accountNotCreated => 'Le compte n\'a pas pu être créé. Vérifiez l\'e-mail.';
+
+	/// fr: 'J'ai déjà un compte'
+	String get toLogin => 'J\'ai déjà un compte';
 }
 
 // Path: user.onboarding
@@ -1684,6 +1712,12 @@ extension on Translations {
 			'user.login.password' => 'Mot de passe',
 			'user.login.withPassword' => 'Se connecter avec le mot de passe',
 			'user.login.passwordRejected' => 'E-mail ou mot de passe incorrect.',
+			'user.login.toSignUp' => 'Pas encore de compte ? En créer un',
+			'user.signUp.title' => 'Créer un compte',
+			'user.signUp.name' => 'Nom',
+			'user.signUp.submit' => 'Créer mon compte',
+			'user.signUp.accountNotCreated' => 'Le compte n\'a pas pu être créé. Vérifiez l\'e-mail.',
+			'user.signUp.toLogin' => 'J\'ai déjà un compte',
 			'user.onboarding.title' => 'Bienvenue !',
 			'user.onboarding.intro' => 'Choisissez les filtres par défaut du catalogue. Vous pourrez les changer à tout moment dans vos préférences.',
 			'user.onboarding.later' => 'Plus tard',

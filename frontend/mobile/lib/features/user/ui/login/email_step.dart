@@ -1,9 +1,11 @@
+import 'package:ajil/features/user/routes.dart';
 import 'package:ajil/features/user/state/login_form.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:ajil/ui/theme/tokens.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 
 /// The login's first step: the email a code is sent to, or a password to sign in without a mailbox.
 class LoginEmailStep extends ConsumerStatefulWidget {
@@ -71,6 +73,7 @@ class _LoginEmailStepState extends ConsumerState<LoginEmailStep> {
           onPress: form.busy ? null : () => notifier.requestCode(_email.text),
           child: Text(t.sendCode),
         ),
+        FButton(variant: .ghost, onPress: () => context.go(UserRoutes.signUp), child: Text(t.toSignUp)),
       ],
     );
   }
