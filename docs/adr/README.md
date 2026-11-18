@@ -33,6 +33,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0022](0022-mobile-specs-live-in-test.md) | Mobile specs live in `test/`, mirroring `lib/` | Accepted |
 | [0023](0023-unbuilt-screens-throw-at-the-api-seam.md) | A screen not built yet has its route, and says *Bientôt disponible* | Accepted |
 | [0024](0024-mobile-app-uses-forui-theme.md) | The mobile app uses forui's own theme and icons | Accepted |
+| [0025](0025-structures-are-managed-in-a-web-app.md) | Structures are managed in a web app of their own | Proposed |
 
 ## Writing a new one
 
