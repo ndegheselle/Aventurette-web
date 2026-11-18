@@ -31,18 +31,17 @@ class _LoginCodeStepState extends ConsumerState<LoginCodeStep> {
     final notifier = ref.read(loginFormProvider.notifier);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppSpaces.spacing,
       children: [
         Text(t.codeSentTo(email: form.email), style: context.bodyText),
-        FOtpField(
+        Center(child: FOtpField(
           control: .managed(controller: _code),
           label: Text(t.code),
           forceErrorText: form.error == LoginError.codeRejected ? t.codeRejected : null,
           keyboardType: TextInputType.number,
           autofocus: true,
           onSubmit: notifier.login,
-        ),
+        )),
         FButton(
           size: .lg,
           // A busy form takes no second press, and says it is working.
