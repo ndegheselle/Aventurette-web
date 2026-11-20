@@ -2,6 +2,8 @@
 <script setup lang="ts">
 import RangeInput from '@chapelure/ui/inputs/RangeInput.vue';
 import { toggled } from '@chapelure/ui/inputs/selection';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Label } from '@chapelure/ui/shadcn/label';
 import {
     CHOICE_GROUPS,
     isChosen,
@@ -25,60 +27,60 @@ const shows = (quick: QuickFilter) => only === null || only === quick;
 
 <template>
     <div class="flex flex-col gap-4">
-        <fieldset v-if="shows('age')" class="fieldset">
-            <legend class="fieldset-legend w-full">
+        <div v-if="shows('age')" class="flex flex-col gap-2">
+            <Label>
                 <template v-if="only === null">{{ $t('activities.filters.quick.age') }}</template>
-                <span class="ms-auto font-normal opacity-70">
+                <span class="ms-auto font-normal text-muted-foreground">
                     <template v-if="isQuickFilterSet(filters, 'age')">
                         {{ $t(quickFilterLabel(filters, 'age').key, quickFilterLabel(filters, 'age').params) }}
                     </template>
                     <template v-else>{{ $t('activities.filters.any') }}</template>
                 </span>
-            </legend>
-            <RangeInput class="text-primary" v-bind="DEFAULT_AGE_BOUNDS"
+            </Label>
+            <RangeInput v-bind="DEFAULT_AGE_BOUNDS"
                         v-model:min="filters.ageMin" v-model:max="filters.ageMax" />
-        </fieldset>
+        </div>
 
-        <fieldset v-if="shows('participants')" class="fieldset">
-            <legend class="fieldset-legend w-full">
+        <div v-if="shows('participants')" class="flex flex-col gap-2">
+            <Label>
                 <template v-if="only === null">{{ $t('activities.filters.quick.participants') }}</template>
-                <span class="ms-auto font-normal opacity-70">
+                <span class="ms-auto font-normal text-muted-foreground">
                     <template v-if="isQuickFilterSet(filters, 'participants')">
                         {{ $t(quickFilterLabel(filters, 'participants').key, quickFilterLabel(filters, 'participants').params) }}
                     </template>
                     <template v-else>{{ $t('activities.filters.any') }}</template>
                 </span>
-            </legend>
-            <RangeInput class="text-primary" v-bind="DEFAULT_PARTICIPANTS_BOUNDS"
+            </Label>
+            <RangeInput v-bind="DEFAULT_PARTICIPANTS_BOUNDS"
                         v-model:min="filters.participantsMin" v-model:max="filters.participantsMax" />
-        </fieldset>
+        </div>
 
-        <fieldset v-if="shows('location')" class="fieldset">
-            <legend v-if="only === null" class="fieldset-legend">{{ $t('activities.filters.quick.location') }}</legend>
+        <div v-if="shows('location')" class="flex flex-col gap-2">
+            <Label v-if="only === null">{{ $t('activities.filters.quick.location') }}</Label>
             <div class="flex flex-wrap gap-2">
-                <button v-for="location in LOCATIONS" :key="location"
-                        type="button" class="btn btn-sm"
-                        :class="filters.locations.includes(location) ? 'btn-primary' : 'btn-soft'"
+                <Button v-for="location in LOCATIONS" :key="location"
+                        type="button" size="sm"
+                        :variant="filters.locations.includes(location) ? 'default' : 'secondary'"
                         :aria-pressed="filters.locations.includes(location)"
                         @click="() => filters.locations = toggled(filters.locations, location)">
                     {{ $t(`activities.location.${location}`) }}
-                </button>
+                </Button>
             </div>
-        </fieldset>
+        </div>
 
         <template v-if="only === null">
-            <fieldset v-for="group in CHOICE_GROUPS" :key="group.field" class="fieldset">
-                <legend class="fieldset-legend">{{ $t(group.title) }}</legend>
+            <div v-for="group in CHOICE_GROUPS" :key="group.field" class="flex flex-col gap-2">
+                <Label>{{ $t(group.title) }}</Label>
                 <div class="flex flex-wrap gap-2">
-                    <button v-for="value in group.values" :key="value"
-                            type="button" class="btn btn-sm"
-                            :class="isChosen(filters, group.field, value) ? 'btn-primary' : 'btn-soft'"
+                    <Button v-for="value in group.values" :key="value"
+                            type="button" size="sm"
+                            :variant="isChosen(filters, group.field, value) ? 'default' : 'secondary'"
                             :aria-pressed="isChosen(filters, group.field, value)"
                             @click="() => filters = withChoiceToggled(filters, group.field, value)">
                         {{ $t(`${group.prefix}.${value}`) }}
-                    </button>
+                    </Button>
                 </div>
-            </fieldset>
+            </div>
         </template>
     </div>
 </template>

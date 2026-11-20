@@ -6,7 +6,7 @@ import Modal from './Modal.vue';
 
 /** The dialog is portalled to the body, and only there while it is open. */
 const inDialog = (selector: string) => document.body.querySelector(`[role="dialog"] ${selector}`);
-const allInDialog = (selector: string) => [...document.body.querySelectorAll<HTMLElement>(`[role="dialog"] ${selector}`)];
+const allInDialog = (selector: string) => Array.from(document.body.querySelectorAll<HTMLElement>(`[role="dialog"] ${selector}`));
 
 async function mountModal(slots: Record<string, string> = {}, props: Record<string, unknown> = {}) {
     const controller = useModal();

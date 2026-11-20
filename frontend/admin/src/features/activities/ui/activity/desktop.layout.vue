@@ -7,7 +7,7 @@ import Container from '@chapelure/ui/layout/Container.vue';
 
 <template>
     <Container>
-        <div class="sticky top-0 z-10 flex items-center justify-between p-4 bg-base-100">
+        <div class="sticky top-0 z-10 flex items-center justify-between p-4 bg-background">
             <slot name="back"></slot>
             <div class="flex items-center gap-2">
                 <slot name="actions"></slot>
@@ -18,7 +18,7 @@ import Container from '@chapelure/ui/layout/Container.vue';
         <div class="flex flex-col gap-6 px-4 pb-4 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
             <!-- `top-24` clears the top bar. -->
             <div class="flex flex-col gap-2 lg:sticky lg:top-24 lg:max-h-[calc(100dvh-7rem)] lg:overflow-y-auto">
-                <div class="rounded-box overflow-hidden">
+                <div class="rounded-xl overflow-hidden">
                     <slot name="image"></slot>
                 </div>
                 <slot name="attributes"></slot>
