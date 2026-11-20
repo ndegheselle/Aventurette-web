@@ -28,7 +28,7 @@ function walk(dir, out = []) {
     return out;
 }
 
-const files = walk(join(ROOT, 'web', 'src'))
+const files = walk(join(ROOT, 'admin', 'src'))
     .concat(walk(join(ROOT, 'packages')))
     .concat(walk(join(ROOT, 'tests')))
     .filter(f => /\.(ts|vue|mts|js)$/.test(f))
@@ -51,31 +51,31 @@ function isTestFile(path) {
  * folder — `features/user/` and `features/admin/catalogue-authoring/` are both features.
  */
 function inFeatureLayer(path, layers) {
-    return new RegExp(`^web/src/features/(?:[^/]+/)+(?:${layers})/`).test(path);
+    return new RegExp(`^admin/src/features/(?:[^/]+/)+(?:${layers})/`).test(path);
 }
 
 /** Each rule reports the files that violate it. */
 const RULES = [
     {
         name: 'backend adapter is reachable from one file only',
-        why: 'Swapping backends must mean rewriting web/src/backend/index.ts, nothing else.',
-        check: f => f.path.startsWith('web/src/')
-            && f.path !== 'web/src/backend/index.ts'
+        why: 'Swapping backends must mean rewriting admin/src/backend/index.ts, nothing else.',
+        check: f => f.path.startsWith('admin/src/')
+            && f.path !== 'admin/src/backend/index.ts'
             && /@chapelure\/pocketbase/.test(f.text),
     },
     {
         name: 'the pocketbase SDK stays inside its adapter',
         why: 'Only packages/pocketbase (and the generated schema) may know the SDK exists.',
         check: f => !f.path.startsWith('packages/pocketbase/')
-            && f.path !== 'web/src/backend/schema.g.ts'
+            && f.path !== 'admin/src/backend/schema.g.ts'
             && /from ['"]pocketbase['"]/.test(f.text),
     },
     {
         name: 'backend wiring is consumed through a feature api layer',
         why: "Components must not import @/backend; go through features/<name>/api/.",
-        check: f => f.path.startsWith('web/src/')
+        check: f => f.path.startsWith('admin/src/')
             && !inFeatureLayer(f.path, 'api')
-            && f.path !== 'web/src/backend/index.ts'
+            && f.path !== 'admin/src/backend/index.ts'
             && /from ['"]@\/backend['"]/.test(f.text),
     },
     {
@@ -88,7 +88,7 @@ const RULES = [
         name: 'features do not import the app',
         why: 'The app composes features; a feature reaching back into app/ points the dependency '
             + 'the wrong way. Shared behaviour goes in @chapelure/ui.',
-        check: f => f.path.startsWith('web/src/features/')
+        check: f => f.path.startsWith('admin/src/features/')
             && /from ['"]@\/app\//.test(f.text),
     },
     {
@@ -122,7 +122,7 @@ const RULES = [
         name: "a feature's specs live in its tests/ folder",
         why: 'A spec next to what it covers doubles the length of every folder listing, and '
             + 'source folders should hold production code. See ADR 0013.',
-        check: f => /^web\/src\/features\/.*\.spec\.ts$/.test(f.path)
+        check: f => /^admin\/src\/features\/.*\.spec\.ts$/.test(f.path)
             && !inFeatureLayer(f.path, 'tests'),
     },
     {
@@ -137,7 +137,7 @@ const RULES = [
 
 /** The alias map and the tsconfig `paths` are the same list twice; check they still agree. */
 function aliasesMatchTsconfig() {
-    const raw = readFileSync(join(ROOT, 'web', 'tsconfig.json'), 'utf8');
+    const raw = readFileSync(join(ROOT, 'admin', 'tsconfig.json'), 'utf8');
 
     // Read the `paths` block directly rather than parsing the file. It is JSONC, and the
     // values contain `/*`, so stripping comments with a regex mangles them.
@@ -146,18 +146,18 @@ function aliasesMatchTsconfig() {
     const keys = [...body.matchAll(/"([^"]+)"\s*:\s*\[/g)].map(match => match[1]);
 
     if (keys.length === 0)
-        return ['no paths found in web/tsconfig.json — has the file moved?'];
+        return ['no paths found in admin/tsconfig.json — has the file moved?'];
 
     const declared = new Set(keys.map(key => key.replace(/\/\*$/, '')));
     const problems = [];
 
     for (const alias of Object.keys(aliases))
         if (!declared.has(alias))
-            problems.push(`${alias} is in backend/scripts/aliases.mjs but not in web/tsconfig.json`);
+            problems.push(`${alias} is in backend/scripts/aliases.mjs but not in admin/tsconfig.json`);
 
     for (const alias of declared)
         if (!(alias in aliases))
-            problems.push(`${alias} is in web/tsconfig.json but not in backend/scripts/aliases.mjs`);
+            problems.push(`${alias} is in admin/tsconfig.json but not in backend/scripts/aliases.mjs`);
 
     return problems;
 }
@@ -171,7 +171,7 @@ if (aliasProblems.length === 0) {
     failed++;
     console.log('  FAIL  the alias map and the tsconfig paths agree');
     console.log('        Vite and Vitest resolve through backend/scripts/aliases.mjs; the editor and');
-    console.log('        vue-tsc resolve through web/tsconfig.json. They must list the same aliases.');
+    console.log('        vue-tsc resolve through admin/tsconfig.json. They must list the same aliases.');
     for (const problem of aliasProblems) console.log(`        - ${problem}`);
 }
 

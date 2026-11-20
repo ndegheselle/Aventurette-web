@@ -145,7 +145,7 @@ mismatch, not as a missing translation.
   nothing to render.
 - A ref reached through an object is not unwrapped in a template. Destructure a composable in
   `<script setup>`.
-- `frontend/web/src/backend/index.ts` refuses to load without `VITE_API_URL`, and a deep component
+- `frontend/admin/src/backend/index.ts` refuses to load without `VITE_API_URL`, and a deep component
   tree pulls it in through some feature's api module. `vitest.config.ts` sets a fake one. A
   client that is constructed but never called is harmless; anything that would actually reach
   the network fails loudly, which is the reminder to mock that feature's api module.

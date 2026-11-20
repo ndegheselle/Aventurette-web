@@ -1,10 +1,10 @@
 # Production stack for a single host. See DEPLOYMENT.md for the full procedure.
 #
-# Four containers on one internal network. Only nginx publishes ports; front and api are
+# Five containers on one internal network. Only nginx publishes ports; app, admin and api are
 # reachable by service name from inside the network and from nowhere else.
 #
-# Everything site-specific comes from the .env file next to this one — the domain is set
-# there once and reaches nginx, the certificate and the front bundle from that single place.
+# Everything site-specific comes from the .env file next to this one — the domains are set
+# there once and reach nginx, the certificate and both bundles from that single place.
 name: aventurette
 
 services:
@@ -21,6 +21,8 @@ services:
             # Substituted into nginx/templates/*.template on start, and used by the
             # entrypoint to find /etc/letsencrypt/live/$DOMAIN.
             DOMAIN: ${DOMAIN:?set DOMAIN in .env, see .env.example}
+            APP_DOMAIN: ${APP_DOMAIN:?set APP_DOMAIN in .env, see .env.example}
+            ADMIN_DOMAIN: ${ADMIN_DOMAIN:?set ADMIN_DOMAIN in .env, see .env.example}
             API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN in .env, see .env.example}
         volumes:
             - ./nginx/certbot/www:/var/www/certbot
@@ -33,21 +35,37 @@ services:
         # Started, not healthy: the edge must come up even when the API does not, or a
         # broken api container would also take down the ACME challenge on port 80.
         depends_on:
-            - front
+            - app
+            - admin
             - api
         restart: unless-stopped
 
-    # The built SPA, served by its own nginx (frontend/web/nginx.conf owns the history-mode fallback).
-    front:
+    # The clients' Flutter app, built for the web and served by its own nginx
+    # (frontend/mobile/deploy/nginx.conf owns the SPA fallback).
+    app:
+        build:
+            context: ../frontend/mobile # self-contained: it depends on nothing outside its folder
+            args:
+                # Compiled into the bundle with --dart-define, so it is a build input, not a
+                # runtime one: changing the domain needs `docker compose up -d --build app`.
+                API_URL: https://${API_DOMAIN}
+        container_name: aventurette-app
+        expose:
+            - '80'
+        restart: unless-stopped
+
+    # The back office, a Vue SPA served by its own nginx (frontend/admin/nginx.conf owns the
+    # history-mode fallback).
+    admin:
         build:
             context: .. # the repository root: the app depends on frontend/packages/ and on
             # backend/scripts/aliases.mjs
-            dockerfile: frontend/web/Dockerfile
+            dockerfile: frontend/admin/Dockerfile
             args:
                 # Vite inlines this into the JS bundle, so it is a build input, not a runtime
-                # one: changing the domain needs `docker compose up -d --build front`.
+                # one: changing the domain needs `docker compose up -d --build admin`.
                 VITE_API_URL: https://${API_DOMAIN}
-        container_name: aventurette-front
+        container_name: aventurette-admin
         expose:
             - '80'
         restart: unless-stopped

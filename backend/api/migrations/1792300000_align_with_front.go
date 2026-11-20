@@ -10,7 +10,7 @@ import (
 	"github.com/pocketbase/pocketbase/tools/dbutils"
 )
 
-// Brings the schema to the one the front is generated from (`frontend/web/src/backend/schema.g.ts`),
+// Brings the schema to the one the front is generated from (`frontend/admin/src/backend/schema.g.ts`),
 // which the squashed snapshot missed part of:
 //   - `tags` and `materials` take the `catalog_` prefix, and admins write the tags;
 //   - `activities.safety_tags`, the SECURITY tag kind and `tags.description` go: safety

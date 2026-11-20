@@ -1,6 +1,6 @@
 # Working in this repository
 
-An npm workspace rooted in `frontend/`: the `frontend/web/` Vue app on three packages in
+An npm workspace rooted in `frontend/`: the `frontend/admin/` Vue app on three packages in
 `frontend/packages/`, with a PocketBase backend in `backend/api/`. Read [ARCHITECTURE.md](ARCHITECTURE.md) first — it is short, and the
 boundaries it describes are enforced.
 
@@ -99,9 +99,9 @@ app's real catalogue, so assertions are on the copy a user would read.
   cannot drift — but nothing checks the mapper against the payload type it claims to read
   ([ADR 0007](docs/adr/0007-models-map-their-own-payloads.md)).
 - Relations read as entities but **write as ids**. Saving a parent does not save its children.
-- Adding an alias means adding it in `backend/scripts/aliases.mjs` *and* `frontend/web/tsconfig.json`;
+- Adding an alias means adding it in `backend/scripts/aliases.mjs` *and* `frontend/admin/tsconfig.json`;
   `lint:arch` fails if they drift.
-- Tailwind does not scan `node_modules`, so `frontend/web/src/app/styles/index.css` declares
+- Tailwind does not scan `node_modules`, so `frontend/admin/src/app/styles/index.css` declares
   `@source` for `frontend/packages/ui/src`. Removing it silently drops every class used only there.
 - A new route is private by default — `features/user/guard.ts` whitelists login and register
   only.

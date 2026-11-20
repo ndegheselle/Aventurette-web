@@ -1,10 +1,11 @@
-# Port 443, for the site and for PocketBase.
+# Port 443, for the clients' app, the back office and PocketBase.
 #
 # Rendered on every container start by /docker-entrypoint.d/20-render-vhosts.sh, then
 # removed again by 40-tls-when-certificate-exists.sh while no certificate exists — nginx
 # will not start if ssl_certificate points at a missing file.
 #
-# Both hostnames are on one certificate, issued for ${DOMAIN}, hence the single live/ path.
+# Every hostname is on one certificate, issued under the name ${DOMAIN}, hence the single
+# live/ path.
 
 # Shared TLS settings.
 ssl_protocols TLSv1.2 TLSv1.3;
@@ -13,13 +14,13 @@ ssl_session_cache shared:SSL:10m;
 ssl_session_timeout 1d;
 ssl_session_tickets off;
 
-# Docker's own DNS. A deploy recreates front and api, and a recreated container comes back on a
+# Docker's own DNS. A deploy recreates app, admin and api, and a recreated container comes back on a
 # new address: a `proxy_pass` naming a host outright is resolved once, when nginx starts, and
 # would keep sending to the old one — a 502 until nginx restarts. Through a variable, nginx asks
 # this resolver again instead, at most every 10s.
 resolver 127.0.0.11 valid=10s ipv6=off;
 
-# The site.
+# The bare domain. Nothing is served here any more; it sends visitors to the clients' app.
 server {
     listen 443 ssl;
     http2 on;
@@ -28,11 +29,46 @@ server {
     ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
 
-    # The built SPA lives in the front container, which owns the history-mode fallback
-    # (see frontend/web/nginx.conf). Nothing is served from this container's filesystem.
     location / {
-        set $front http://front:80;
-        proxy_pass $front;
+        return 301 https://${APP_DOMAIN}$request_uri;
+    }
+}
+
+# The clients' app, the Flutter web build.
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${APP_DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+
+    # The build lives in the app container, which owns the SPA fallback and the cache headers
+    # (see frontend/mobile/deploy/nginx.conf). Nothing is served from this container's filesystem.
+    location / {
+        set $app http://app:80;
+        proxy_pass $app;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# The back office.
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${ADMIN_DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+
+    # The built SPA lives in the admin container, which owns the history-mode fallback
+    # (see frontend/admin/nginx.conf). Nothing is served from this container's filesystem.
+    location / {
+        set $admin http://admin:80;
+        proxy_pass $admin;
         proxy_set_header Host              $host;
         proxy_set_header X-Real-IP         $remote_addr;
         proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;

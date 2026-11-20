@@ -1,10 +1,10 @@
 # Port 80. Always loaded: the ACME challenge has to stay reachable for renewals.
 #
-# ${DOMAIN} and ${API_DOMAIN} are substituted from the environment on container start by
+# ${DOMAIN}, ${APP_DOMAIN}, ${ADMIN_DOMAIN} and ${API_DOMAIN} are substituted from the environment on container start by
 # /docker-entrypoint.d/20-render-vhosts.sh; nginx's own $variables are left alone.
 server {
     listen 80;
-    server_name ${DOMAIN} ${API_DOMAIN};
+    server_name ${DOMAIN} ${APP_DOMAIN} ${ADMIN_DOMAIN} ${API_DOMAIN};
 
     # Written by the certbot container through the shared /var/www/certbot volume.
     location /.well-known/acme-challenge/ {

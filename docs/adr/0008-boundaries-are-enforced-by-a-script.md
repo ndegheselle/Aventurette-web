@@ -26,7 +26,7 @@ The rules, and what each buys, are tabulated in `ARCHITECTURE.md`.
 - Adding a rule is adding an object to an array, so a new boundary gets enforced the day it is
   agreed rather than the day someone configures a plugin.
 - One rule checks something greps normally cannot: that `backend/scripts/aliases.mjs` and the `paths` in
-  `frontend/web/tsconfig.json` still list the same aliases. They describe the same thing in two places
+  `frontend/admin/tsconfig.json` still list the same aliases. They describe the same thing in two places
   because TypeScript will not read a JS module for its `paths` — so drift between them is a
   real failure mode, and this is what catches it.
 - A rule that fails names the offending files and says why the rule exists, so the fix does not

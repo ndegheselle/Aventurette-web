@@ -1,6 +1,7 @@
 # Deploying on a fresh server
 
-From an empty VPS to `https://lubriciel.ovh` and `https://api.lubriciel.ovh`. Written for
+From an empty VPS to `https://app.lubriciel.ovh`, `https://admin.lubriciel.ovh` and
+`https://api.lubriciel.ovh`. Written for
 Debian 12 or Ubuntu 22.04/24.04; every command runs on the server unless it says otherwise.
 
 Budget about 30 minutes, most of it waiting on the first Docker build.
@@ -23,24 +24,25 @@ Budget about 30 minutes, most of it waiting on the first Docker build.
 
 ## What you are building
 
-Four containers on one internal Docker network, defined in [compose.yml](compose.yml):
+Five containers on one internal Docker network, defined in [compose.yml](compose.yml):
 
 ```
-                     :80  :443
-                       |
-              +--------v--------+
-              |      nginx      |   TLS, ACME challenge, routing by hostname
-              +----+-------+----+
-      lubriciel.ovh|       |api.lubriciel.ovh
-              +----v---+ +-v------+        +----------+
-              | front  | |  api   |        | certbot  |  renews every 12h
-              |  SPA   | |PocketB.|        +----------+
-              +--------+ +---+----+
-                             |
-                       api/pb_data          the only state on the host
+                            :80  :443
+                              |
+                 +------------v------------+
+                 |          nginx          |   TLS, ACME challenge, routing by hostname
+                 +---+--------+--------+---+   (lubriciel.ovh redirects to app.)
+     app.lubriciel.ovh        |        api.lubriciel.ovh
+                 |   admin.lubriciel.ovh   |
+            +----v---+   +----v---+   +----v---+     +----------+
+            |  app   |   | admin  |   |  api   |     | certbot  |  renews every 12h
+            |Flutter |   |  Vue   |   |PocketB.|     +----------+
+            +--------+   +--------+   +---+----+
+                                          |
+                                    api/pb_data     the only state on the host
 ```
 
-Only `nginx` publishes ports. `front` and `api` have no route from the internet except
+Only `nginx` publishes ports. `app`, `admin` and `api` have no route from the internet except
 through it, so PocketBase is never exposed directly.
 
 Two things hold everything site-specific:
@@ -68,18 +70,28 @@ two are all you have to back up.
 
 Do this first — DNS takes time to propagate, and Let's Encrypt will refuse to issue a
 certificate until it resolves. In the OVH control panel, under *Domains > lubriciel.ovh >
-DNS zone*, create two A records pointing at the server's IP:
+DNS zone*, create four A records pointing at the server's IP:
 
 | Type | Sub-domain | Target |
 |---|---|---|
 | A | *(empty)* | `<server-ip>` |
+| A | `app` | `<server-ip>` |
+| A | `admin` | `<server-ip>` |
 | A | `api` | `<server-ip>` |
 
-Check from your own machine, not from the server, and wait until both answer with the
+Check from your own machine, not from the server, and wait until all four answer with the
 server's IP:
 
 ```bash
 dig +short lubriciel.ovh
+```
+
+```bash
+dig +short app.lubriciel.ovh
+```
+
+```bash
+dig +short admin.lubriciel.ovh
 ```
 
 ```bash
@@ -137,8 +149,8 @@ sudo ufw allow OpenSSH && sudo ufw allow 80/tcp && sudo ufw allow 443/tcp && sud
 
 ## 4. Swap, if the server is small
 
-The front image runs `npm ci` and a Vite build inside Docker, which is the memory-hungriest
-moment of the whole deploy. On a 1 GB server it gets killed without swap. Skip this step if
+The admin image runs `npm ci` and a Vite build inside Docker, and the app image a Flutter web
+build. They are the memory-hungriest moments of the whole deploy. On a 1 GB server it gets killed without swap. Skip this step if
 the server has 2 GB or more:
 
 ```bash
@@ -186,8 +198,8 @@ docker run --rm hello-world
 git clone https://github.com/ndegheselle/Aventurette-web.git ~/Aventurette-web && cd ~/Aventurette-web/backend
 ```
 
-There is no `npm install` here. The front image installs and builds inside Docker, so the
-server never needs Node.
+There is no `npm install` or `flutter build` here. The admin and app images install and build
+inside Docker, so the server never needs Node or Flutter.
 
 Now the one file to edit:
 
@@ -197,13 +209,15 @@ cp .env.example .env && nano .env
 
 ```
 DOMAIN=lubriciel.ovh
+APP_DOMAIN=app.lubriciel.ovh
+ADMIN_DOMAIN=admin.lubriciel.ovh
 API_DOMAIN=api.lubriciel.ovh
 CERTBOT_EMAIL=nicolas@degheselle.com
 ```
 
-That is the only place the domain is written. From there it reaches the nginx vhosts
+That is the only place the domains are written. From there they reach the nginx vhosts
 (substituted into `nginx/templates/` on container start), the certificate request, and the
-API URL baked into the front bundle. Nothing else needs changing to move the site to
+API URL baked into both bundles. Nothing else needs changing to move the site to
 another domain.
 
 ## 7. First start, over HTTP
@@ -212,14 +226,15 @@ another domain.
 docker compose up -d --build
 ```
 
-The first build compiles PocketBase and the SPA and takes a few minutes; later ones reuse
+The first build compiles PocketBase and both apps, and takes a few minutes (the app image
+downloads Flutter first); later ones reuse
 the cache. When it finishes:
 
 ```bash
 docker compose ps
 ```
 
-All four containers should be `Up`, with `api` reaching `healthy` within a minute.
+All five containers should be `Up`, with `api` reaching `healthy` within a minute.
 
 **nginx is serving HTTP only at this point, and that is correct.** It cannot start with the
 HTTPS vhosts yet, because those name a certificate file that does not exist — and Let's
@@ -236,14 +251,14 @@ no certificate for lubriciel.ovh yet — serving HTTP only.
 
 ## 8. Get the certificate and turn on HTTPS
 
-One certificate covers both hostnames. Confirm DNS resolves before running this — Let's
+One certificate covers all four hostnames. Confirm DNS resolves before running this — Let's
 Encrypt rate-limits failed attempts:
 
 ```bash
 sh scripts/init-certificate.sh
 ```
 
-The script reads the same `.env` and asks certbot for `DOMAIN` and `API_DOMAIN` over the
+The script reads the same `.env` and asks certbot for `DOMAIN`, `APP_DOMAIN`, `ADMIN_DOMAIN` and `API_DOMAIN` over the
 webroot the nginx container is already serving. On success it prints where the certificate
 was written. Then:
 
@@ -291,7 +306,7 @@ without this every request looks like it comes from the nginx container and rate
 and logging are useless — see
 [the PocketBase docs](https://pocketbase.io/docs/going-to-production/#using-reverse-proxy).
 
-On the same page, enable the *Batch API*. It is off by default, and the front saves an entity
+On the same page, enable the *Batch API*. It is off by default, and the back office saves an entity
 together with its children in a single batch request
 ([packages/pocketbase/src/batch.ts](../frontend/packages/pocketbase/src/batch.ts)). Without it,
 every such save fails with a `403`. Raise *Max allowed batch requests* if a save sends more
@@ -333,6 +348,14 @@ changes are made in development and deployed as code.
 ## 10. Check it works
 
 ```bash
+curl -I https://app.lubriciel.ovh
+```
+
+```bash
+curl -I https://admin.lubriciel.ovh
+```
+
+```bash
 curl -I https://lubriciel.ovh
 ```
 
@@ -341,11 +364,12 @@ curl -s https://api.lubriciel.ovh/api/health
 ```
 
 ```bash
-curl -I http://lubriciel.ovh
+curl -I http://admin.lubriciel.ovh
 ```
 
-The last one should be a `301` to `https://`. Then open `https://lubriciel.ovh` in a
-browser, sign up, and confirm the request goes to `api.lubriciel.ovh` in the network tab.
+The bare domain should answer with a `301` to `https://app.lubriciel.ovh`, and the last one with
+a `301` to `https://`. Then open `https://app.lubriciel.ovh` and `https://admin.lubriciel.ovh` in a
+browser, sign in, and confirm the requests go to `api.lubriciel.ovh` in the network tab.
 
 ## 11. Automatic deploys
 
@@ -508,11 +532,11 @@ do not retry in a loop.
 **HTTPS still off after a successful request.** The vhosts are only installed on container
 start: `docker compose restart nginx`.
 
-**The site loads but every API call fails.** Check which host the browser is calling.
-`VITE_API_URL` is compiled into the bundle at build time, so a wrong `API_DOMAIN` survives
-restarts — fix `.env`, then `docker compose up -d --build front`.
+**An app loads but every API call fails.** Check which host the browser is calling. The API
+URL is compiled into both bundles at build time, so a wrong `API_DOMAIN` survives restarts —
+fix `.env`, then `docker compose up -d --build app admin`.
 
-**The front build is killed partway through.** Out of memory, see
+**The admin or app build is killed partway through.** Out of memory, see
 [step 4](#4-swap-if-the-server-is-small).
 
 **Reset the containers without touching data.** Images and containers are disposable;

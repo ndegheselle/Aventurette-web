@@ -46,13 +46,13 @@
       "toolArgs": ["--dart-define=API_URL=http://10.0.2.2:8090"]
     },
     {
-      // Starts Vite (the "web" task) and opens Chrome on it, with breakpoints in the .vue files.
+      // Starts Vite (the "admin" task) and opens Chrome on it, with breakpoints in the .vue files.
       "name": "Web admin",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:5173/activities/authoring",
-      "webRoot": "${workspaceFolder}/frontend/web",
-      "preLaunchTask": "web"
+      "webRoot": "${workspaceFolder}/frontend/admin",
+      "preLaunchTask": "admin"
     }
   ],
   "compounds": [

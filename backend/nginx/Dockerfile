@@ -1,5 +1,5 @@
-# The edge: TLS termination, the ACME challenge, and routing by hostname to the front and
-# api containers. The build context is backend/ (see compose.yml).
+# The edge: TLS termination, the ACME challenge, and routing by hostname to the app, admin
+# and api containers. The build context is backend/ (see compose.yml).
 #
 #   docker build -f nginx/Dockerfile -t aventurette-nginx backend
 FROM nginx:alpine

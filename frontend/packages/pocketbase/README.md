@@ -8,7 +8,7 @@ Peer dependency: `pocketbase`.
 ## Wiring
 
 A consuming app should import this from exactly one file, so that swapping backends means
-rewriting that file and this package. In this repo that file is `frontend/web/src/backend/index.ts`:
+rewriting that file and this package. In this repo that file is `frontend/admin/src/backend/index.ts`:
 
 ```ts
 import type { CrudFactory } from '@chapelure/core';

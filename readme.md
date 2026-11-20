@@ -1,6 +1,6 @@
 # Aventurette
 
-Ajil — the clients' Flutter app in `frontend/mobile/`, the back office in `frontend/web/` (an npm
+Ajil — the clients' Flutter app in `frontend/mobile/`, the back office in `frontend/admin/` (an npm
 workspace rooted in `frontend/`, on top of three `frontend/packages/`), and a PocketBase backend
 in `backend/api/` that both talk to.
 
@@ -13,8 +13,10 @@ in `backend/api/` that both talk to.
 | [docs/testing.md](docs/testing.md) | how to test any of it |
 | [backend/DEPLOYMENT.md](backend/DEPLOYMENT.md) | putting it on a server |
 
-Live at [lubriciel.ovh](https://lubriciel.ovh), with the API on
-[api.lubriciel.ovh](https://api.lubriciel.ovh).
+Live at [app.lubriciel.ovh](https://app.lubriciel.ovh) (the clients' app, built for the web) and
+[admin.lubriciel.ovh](https://admin.lubriciel.ovh) (the back office), with the API on
+[api.lubriciel.ovh](https://api.lubriciel.ovh). The bare [lubriciel.ovh](https://lubriciel.ovh)
+redirects to the clients' app.
 
 # First setup
 
@@ -28,7 +30,7 @@ git clone https://github.com/ndegheselle/Aventurette-web.git
 ```
 
 Install once from `frontend/` — the workspace owns the lockfile, so do not run
-`npm install` inside `frontend/web/`:
+`npm install` inside `frontend/admin/`:
 
 ```bash
 cd Aventurette-web/frontend && npm install
@@ -38,7 +40,7 @@ Create the dev server's env file. This one points at a local PocketBase; the dep
 lives in `backend/.env` instead (see below):
 
 ```bash
-cp frontend/web/.env.example frontend/web/.env
+cp frontend/admin/.env.example frontend/admin/.env
 ```
 
 ## Develop
@@ -101,15 +103,19 @@ to a working HTTPS site. What follows is the summary and the day-to-day commands
 
 ## The stack
 
-`backend/compose.yml` runs four containers on one internal network. Only `nginx` publishes ports, so
-neither the SPA nor PocketBase is reachable from the internet except through it:
+`backend/compose.yml` runs five containers on one internal network. Only `nginx` publishes ports, so
+neither app nor PocketBase is reachable from the internet except through it:
 
-| Service | Built from | Role |
-|---|---|---|
-| `nginx` | `backend/nginx/Dockerfile` | TLS termination, ACME challenge, routing by hostname |
-| `front` | `frontend/web/Dockerfile` | the built SPA, on the internal network only |
-| `api` | `backend/api/Dockerfile` | PocketBase, compiled from `backend/api/` |
-| `certbot` | `certbot/certbot` | certificate renewal, every 12h |
+| Service | Built from | Served on | Role |
+|---|---|---|---|
+| `nginx` | `backend/nginx/Dockerfile` | every domain | TLS termination, ACME challenge, routing by hostname |
+| `app` | `frontend/mobile/Dockerfile` | `APP_DOMAIN` | the Flutter app's web build, on the internal network only |
+| `admin` | `frontend/admin/Dockerfile` | `ADMIN_DOMAIN` | the back office's built SPA, on the internal network only |
+| `api` | `backend/api/Dockerfile` | `API_DOMAIN` | PocketBase, compiled from `backend/api/` |
+| `certbot` | `certbot/certbot` | — | certificate renewal, every 12h |
+
+`DOMAIN` itself redirects to `APP_DOMAIN`. The manager app of
+[ADR 0025](docs/adr/0025-structures-are-managed-in-a-web-app.md) is not part of the stack yet.
 
 ## Configuration
 
@@ -121,23 +127,26 @@ cp .env.example .env
 
 ```
 DOMAIN=lubriciel.ovh
+APP_DOMAIN=app.lubriciel.ovh
+ADMIN_DOMAIN=admin.lubriciel.ovh
 API_DOMAIN=api.lubriciel.ovh
 CERTBOT_EMAIL=nicolas@degheselle.com
 ```
 
-The domain is written nowhere else. `DOMAIN` and `API_DOMAIN` are substituted into
-`backend/nginx/templates/*.template` when the nginx container starts, used by
-`backend/scripts/init-certificate.sh` to request the certificate, and combined into the
-`VITE_API_URL` that Vite inlines into the front bundle.
+The domains are written nowhere else. They are substituted into
+`backend/nginx/templates/*.template` when the nginx container starts and used by
+`backend/scripts/init-certificate.sh` to request the certificate. `API_DOMAIN` also becomes the
+`VITE_API_URL` that Vite inlines into the back office, and the `API_URL` that
+`flutter build web --dart-define` compiles into the clients' app.
 
-Because Vite inlines it at *build* time, changing the domain needs a rebuild of the front
-image, not just a restart:
+Because both are compiled in at *build* time, changing the API domain needs a rebuild of both
+images, not just a restart:
 
 ```bash
-docker compose up -d --build front
+docker compose up -d --build app admin
 ```
 
-> `frontend/web/.env` is a different file, for the local dev server only. It is kept out of the
+> `frontend/admin/.env` is a different file, for the local dev server only. It is kept out of the
 > Docker build context so a localhost value can never end up in a production bundle.
 
 ## Deploy an update
@@ -157,7 +166,8 @@ The first certificate is issued once, with the stack already running:
 sh scripts/init-certificate.sh && docker compose restart nginx
 ```
 
-One certificate covers both hostnames. Renewal is automatic from then on: the `certbot`
+One certificate, named after `DOMAIN`, covers every hostname. After adding a hostname to `.env`,
+run the same command again: it extends the existing certificate. Renewal is automatic from then on: the `certbot`
 container renews every 12h and the nginx container reloads on the same cadence.
 
 nginx will not start if `ssl_certificate` points at a file that does not exist, and Let's

@@ -1,7 +1,7 @@
 # Architecture
 
 Two apps, one backend. The clients' app (Ajil, `frontend/mobile/`) and the back office
-(`frontend/web/`, admins only) both talk to the same PocketBase. **They share no code: their only
+(`frontend/admin/`, admins only) both talk to the same PocketBase. **They share no code: their only
 contract is the backend's schema and rules** ([ADR 0020](adr/0020-clients-use-a-flutter-app.md)).
 What the clients' app does is in [business/](business/README.md).
 
@@ -13,15 +13,17 @@ The end objective is to have the following :
 ```mermaid
 flowchart LR
     phone["Ajil — clients' app<br/>frontend/mobile"]
-    browser["Back office — admins<br/>frontend/web"]
+    browser["Back office — admins<br/>frontend/admin"]
     nginx["nginx<br/>TLS, routing by host"]
     api["PocketBase<br/>backend/api"]
-    spa["Back office files"]
+    appweb["Clients' app, web build<br/>app domain"]
+    spa["Back office files<br/>admin domain"]
     smtp["Mail server"]
 
-    phone -- "HTTPS, api domain" --> nginx
-    browser -- "HTTPS, both domains" --> nginx
+    phone -- "HTTPS, api domain<br/>(and app domain in a browser)" --> nginx
+    browser -- "HTTPS, admin and api domains" --> nginx
     nginx --> api
+    nginx --> appweb
     nginx --> spa
     api -- "sign-in codes" --> smtp
 ```

@@ -68,7 +68,7 @@ its spec.
   section and the architecture's flowchart change when the app is created, not before.
 - Creating it means: adding `manager` to the `workspaces` in `frontend/package.json`, its aliases
   in `backend/scripts/aliases.mjs` *and* its `tsconfig.json`, and the Tailwind `@source` for
-  `frontend/packages/ui/src`, as in `frontend/web/`.
+  `frontend/packages/ui/src`, as in `frontend/admin/`.
 - It cannot open to clients before structures, groups and their roles exist in the backend.
   Today only two roles exist, a user and an Ajil admin ([account](../business/account.md#roles-today)).
 - The wireframes draw E06 and E07 in the phone's *Paramètres*. Editing roles and permissions moves
