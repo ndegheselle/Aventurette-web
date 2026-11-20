@@ -23,8 +23,7 @@ defineProps<{
         <Button as-child variant="outline" size="icon-lg">
             <FavoriteButton :activity="activity" />
         </Button>
-        <Button as-child variant="outline" size="icon-lg">
-            <PlanButton :activity="activity" />
-        </Button>
+        <!-- Given its look rather than wrapped: it changes its own while the planning is picking. -->
+        <PlanButton :activity="activity" variant="outline" size="icon-lg" />
     </div>
 </template>

@@ -6,6 +6,7 @@ import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
 import { EnumTheme, useSettings } from '@chapelure/ui/settings/useSettings';
+import { Button } from '@chapelure/ui/shadcn/button';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ChevronRightIcon, PaletteIcon, LanguagesIcon, LogOutIcon, UserIcon, UsersIcon } from 'lucide-vue-next';
@@ -56,88 +57,83 @@ useNavbar(t('user.settings.title'));
         <!-- On a phone an open section takes the whole page; on a desktop it shows beside the menu. -->
         <div v-if="!isMobile || !inSection">
             <h1 class="font-title text-2xl md:text-3xl lg:text-4xl font-bold mb-2">{{ t('user.settings.title') }}</h1>
-            <ul class="menu w-full border border-base-300 bg-base-200 rounded-box p-3 shadow">
-                <li class="menu-title">{{ t('user.settings.preferences') }}</li>
-                <li>
-                    <a @click="() => themeSheet.show()">
-                        <PaletteIcon />
-                        <span>{{ t('user.settings.theme') }}</span>
-                        <span v-if="currentThemeLabel"
-                            class="opacity-50">{{ t(currentThemeLabel) }}</span>
-                        <ChevronRightIcon />
-                    </a>
-                </li>
-                <li>
-                    <a @click="() => languageSheet.show()">
-                        <LanguagesIcon />
-                        <span>{{ t('user.settings.language') }}</span>
-                        <span class="uppercase opacity-50">{{ currentLanguage }}</span>
-                        <ChevronRightIcon />
-                    </a>
-                </li>
-            </ul>
-            <ul class="menu w-full border border-base-300 bg-base-200 rounded-box p-3 shadow mt-2">
-                <li class="menu-title">{{ t('user.settings.account') }}</li>
-                <li>
-                    <RouterLink :to="{ name: routesNames.profile }" active-class="menu-active">
-                        <UserIcon />
-                        <span>{{ t('user.settings.profile') }}</span>
-                        <ChevronRightIcon />
-                    </RouterLink>
-                </li>
-                <li class="menu-disabled">
-                    <a>
-                        <UsersIcon />
-                        <span>{{ t('user.settings.children') }}</span>
-                        <ChevronRightIcon />
-                    </a>
-                </li>
-                <li>
-                    <a @click="logoutToLogin">
-                        <LogOutIcon />
-                        <span>{{ t('auth.logout') }}</span>
-                        <ChevronRightIcon />
-                    </a>
-                </li>
-            </ul>
+            <nav class="flex flex-col gap-1 rounded-xl border bg-card p-3 text-card-foreground shadow-sm">
+                <h2 class="px-3 py-1.5 text-xs font-medium text-muted-foreground">{{ t('user.settings.preferences') }}</h2>
+                <Button variant="ghost" class="w-full justify-start" @click="() => themeSheet.show()">
+                    <PaletteIcon />
+                    <span class="flex-1 text-start">{{ t('user.settings.theme') }}</span>
+                    <span v-if="currentThemeLabel"
+                        class="text-muted-foreground">{{ t(currentThemeLabel) }}</span>
+                    <ChevronRightIcon class="text-muted-foreground" />
+                </Button>
+                <Button variant="ghost" class="w-full justify-start" @click="() => languageSheet.show()">
+                    <LanguagesIcon />
+                    <span class="flex-1 text-start">{{ t('user.settings.language') }}</span>
+                    <span class="uppercase text-muted-foreground">{{ currentLanguage }}</span>
+                    <ChevronRightIcon class="text-muted-foreground" />
+                </Button>
+            </nav>
+            <nav class="flex flex-col gap-1 rounded-xl border bg-card p-3 text-card-foreground shadow-sm mt-2">
+                <h2 class="px-3 py-1.5 text-xs font-medium text-muted-foreground">{{ t('user.settings.account') }}</h2>
+                <RouterLink :to="{ name: routesNames.profile }" custom v-slot="{ href, navigate, isActive }">
+                    <Button as-child :variant="isActive ? 'secondary' : 'ghost'" class="w-full justify-start">
+                        <a :href @click="navigate">
+                            <UserIcon />
+                            <span class="flex-1 text-start">{{ t('user.settings.profile') }}</span>
+                            <ChevronRightIcon class="text-muted-foreground" />
+                        </a>
+                    </Button>
+                </RouterLink>
+                <Button variant="ghost" class="w-full justify-start" disabled>
+                    <UsersIcon />
+                    <span class="flex-1 text-start">{{ t('user.settings.children') }}</span>
+                    <ChevronRightIcon class="text-muted-foreground" />
+                </Button>
+                <Button variant="ghost" class="w-full justify-start" @click="logoutToLogin">
+                    <LogOutIcon />
+                    <span class="flex-1 text-start">{{ t('auth.logout') }}</span>
+                    <ChevronRightIcon class="text-muted-foreground" />
+                </Button>
+            </nav>
         </div>
 
         <RouterView v-if="inSection" />
-        <p v-else-if="!isMobile" class="p-8 text-center opacity-70">{{ t('user.settings.pickSection') }}</p>
+        <p v-else-if="!isMobile" class="p-8 text-center text-muted-foreground">{{ t('user.settings.pickSection') }}</p>
 
         <ResponsiveModal :controller="themeSheet">
             <template #title>{{ t('user.settings.theme') }}</template>
-            <ul class="menu w-full">
-                <li v-for="theme in themes" :key="theme.value">
-                    <a :class="{ 'menu-active': theme.value === currentTheme }"
-                        @click="() => pickTheme(theme.value)">
-                        <!-- A square showing the theme's base colour; auto is cut in two, dark over light. -->
-                        <span class="size-5 rounded border border-base-content/20 overflow-hidden relative">
-                            <template v-if="theme.value === EnumTheme.auto">
-                                <span data-theme="light"
-                                    class="absolute inset-0 bg-base-100"></span>
-                                <span data-theme="dark"
-                                    class="absolute inset-0 bg-base-100"
-                                    style="clip-path: polygon(100% 0, 100% 100%, 0 100%)"></span>
-                            </template>
-                            <span v-else
-                                :data-theme="theme.value === EnumTheme.dark ? 'dark' : 'light'"
-                                class="absolute inset-0 bg-base-100"></span>
-                        </span>
-                        {{ t(theme.label) }}
-                    </a>
-                </li>
-            </ul>
+            <div class="flex flex-col gap-1">
+                <Button v-for="theme in themes" :key="theme.value"
+                    :variant="theme.value === currentTheme ? 'secondary' : 'ghost'"
+                    class="w-full justify-start"
+                    @click="() => pickTheme(theme.value)">
+                    <!-- A square showing the theme's base colour; auto is cut in two, dark over light.
+                         The `.light` / `.dark` class scopes that theme's palette to the span it is on. -->
+                    <span class="relative size-5 overflow-hidden rounded border">
+                        <template v-if="theme.value === EnumTheme.auto">
+                            <span class="light absolute inset-0 bg-background"></span>
+                            <span class="dark absolute inset-0 bg-background"
+                                style="clip-path: polygon(100% 0, 100% 100%, 0 100%)"></span>
+                        </template>
+                        <span v-else
+                            :class="theme.value === EnumTheme.dark ? 'dark' : 'light'"
+                            class="absolute inset-0 bg-background"></span>
+                    </span>
+                    {{ t(theme.label) }}
+                </Button>
+            </div>
         </ResponsiveModal>
 
         <ResponsiveModal :controller="languageSheet">
             <template #title>{{ t('user.settings.language') }}</template>
-            <ul class="menu w-full">
-                <li v-for="language in languages" :key="language.code">
-                    <a :class="{ 'menu-active': language.code === currentLanguage }"
-                        @click="() => pickLanguage(language.code)">{{ language.label }}</a>
-                </li>
-            </ul>
+            <div class="flex flex-col gap-1">
+                <Button v-for="language in languages" :key="language.code"
+                    :variant="language.code === currentLanguage ? 'secondary' : 'ghost'"
+                    class="w-full justify-start"
+                    @click="() => pickLanguage(language.code)">
+                    {{ language.label }}
+                </Button>
+            </div>
         </ResponsiveModal>
     </Container>
 </template>

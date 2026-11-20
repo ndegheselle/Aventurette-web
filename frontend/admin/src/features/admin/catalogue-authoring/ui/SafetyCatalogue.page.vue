@@ -27,9 +27,9 @@ async function edit(instruction: SafetyInstructionData) {
                   @edit="edit"
                   @remove="remove"
                   v-slot="{ item }">
-        <div class="list-col-grow my-auto">
+        <div class="flex-1 min-w-0">
             <b>{{ item.name }}</b>
-            <p class="text-xs opacity-60">{{ item.slug }}</p>
+            <p class="text-xs text-muted-foreground">{{ item.slug }}</p>
         </div>
     </CatalogueTab>
 

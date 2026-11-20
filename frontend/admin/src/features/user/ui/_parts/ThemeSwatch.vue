@@ -6,16 +6,15 @@ defineProps<{ theme: EnumTheme }>();
 </script>
 
 <template>
-    <span class="size-5 rounded border border-base-content/20 overflow-hidden relative">
+    <!-- The `.light` / `.dark` class scopes that theme's palette to the span it is on. -->
+    <span class="relative size-5 overflow-hidden rounded border">
         <template v-if="theme === EnumTheme.auto">
-            <span data-theme="light"
-                class="absolute inset-0 bg-base-100"></span>
-            <span data-theme="dark"
-                class="absolute inset-0 bg-base-100"
+            <span class="light absolute inset-0 bg-background"></span>
+            <span class="dark absolute inset-0 bg-background"
                 style="clip-path: polygon(100% 0, 100% 100%, 0 100%)"></span>
         </template>
         <span v-else
-            :data-theme="theme === EnumTheme.dark ? 'dark' : 'light'"
-            class="absolute inset-0 bg-base-100"></span>
+            :class="theme === EnumTheme.dark ? 'dark' : 'light'"
+            class="absolute inset-0 bg-background"></span>
     </span>
 </template>

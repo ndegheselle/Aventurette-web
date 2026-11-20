@@ -11,8 +11,9 @@ defineOptions({
 
 const props = defineProps<{ modelValue?: AcceptableValue | AcceptableValue[], class?: HTMLAttributes["class"] }>()
 
+// Patched: upstream types the event with no argument, so a handler taking the value fails vue-tsc.
 const emit = defineEmits<{
-  "update:modelValue": AcceptableValue
+  "update:modelValue": [value: AcceptableValue]
 }>()
 
 const modelValue = useVModel(props, "modelValue", emit, {

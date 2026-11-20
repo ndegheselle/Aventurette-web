@@ -1,6 +1,8 @@
 <!-- Shown once, at the first sign-in: the filter defaults, to set now or later. -->
 <script setup lang="ts">
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Spinner } from '@chapelure/ui/shadcn/spinner';
 import { useFilterDefaults } from '@features/user/composables/useFilterDefaults';
 import FilterDefaults from '@features/user/ui/_parts/FilterDefaults.vue';
 import { useI18n } from 'vue-i18n';
@@ -21,22 +23,22 @@ async function leaveAfter(action: () => Promise<boolean>) {
     <div class="flex flex-1 flex-col w-full max-w-xl mx-auto p-4 gap-4">
         <div>
             <h1 class="font-title text-2xl md:text-3xl font-bold">{{ $t('user.onboarding.title') }}</h1>
-            <p class="opacity-70">{{ $t('user.onboarding.intro') }}</p>
+            <p class="text-muted-foreground">{{ $t('user.onboarding.intro') }}</p>
         </div>
 
         <FilterDefaults v-if="defaults" v-model="defaults" />
         <div v-else class="flex justify-center p-8">
-            <span class="loading loading-spinner"></span>
+            <Spinner class="size-6" />
         </div>
 
         <div class="mt-auto flex justify-end gap-2">
-            <button type="button" class="btn btn-ghost" :disabled="isLoading" @click="() => leaveAfter(skip)">
+            <Button type="button" variant="ghost" :disabled="isLoading" @click="() => leaveAfter(skip)">
                 {{ $t('user.onboarding.later') }}
-            </button>
-            <button type="button" class="btn btn-primary" :disabled="isLoading || !defaults"
+            </Button>
+            <Button type="button" :disabled="isLoading || !defaults"
                     @click="() => leaveAfter(save)">
                 {{ $t('actions.save') }}
-            </button>
+            </Button>
         </div>
     </div>
 </template>
