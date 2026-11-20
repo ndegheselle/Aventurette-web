@@ -26,8 +26,9 @@ main() {
     sh scripts/backup.sh
 
     # Recreates only the containers whose image changed. Migrations run as the api starts.
+    # --remove-orphans stops a container whose service was removed or renamed in compose.yml.
     echo "==> Starting the new version"
-    docker compose up -d
+    docker compose up -d --remove-orphans
 
     # Each build leaves the previous images dangling.
     docker image prune -f

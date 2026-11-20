@@ -5,12 +5,12 @@
     "type": "module",
     "workspaces": [
         "packages/*",
-        "web"
+        "admin"
     ],
     "scripts": {
-        "dev": "npm run dev --workspace @aventurette/front",
-        "build": "npm run build --workspace @aventurette/front",
-        "preview": "npm run preview --workspace @aventurette/front",
+        "dev": "npm run dev --workspace @aventurette/admin",
+        "build": "npm run build --workspace @aventurette/admin",
+        "preview": "npm run preview --workspace @aventurette/admin",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",

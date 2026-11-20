@@ -11,7 +11,7 @@
       "presentation": { "panel": "dedicated", "group": "dev", "reveal": "always" }
     },
     {
-      "label": "web",
+      "label": "admin",
       "type": "shell",
       "command": "npm run dev",
       // vite.config.ts reads its port from PORT; "Web admin" in launch.json opens this one.
@@ -31,7 +31,7 @@
     },
     {
       "label": "start",
-      "dependsOn": ["api", "web"],
+      "dependsOn": ["api", "admin"],
       "dependsOrder": "parallel",
       "problemMatcher": [],
       "runOptions": { "runOn": "folderOpen" }

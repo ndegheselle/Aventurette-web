@@ -14,7 +14,7 @@ no store presence, no offline session and no native feel for the guided run. Its
 
 ## Decision
 
-Clients use a Flutter app in `frontend/mobile/`, package `ajil`. The Vue app in `frontend/web/`
+Clients use a Flutter app in `frontend/mobile/`, package `ajil`. The Vue app in `frontend/admin/`
 is the back office, for admins only.
 
 The two apps share no code. Their contract is the PocketBase schema in `backend/api/`.

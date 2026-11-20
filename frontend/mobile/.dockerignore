@@ -1,0 +1,15 @@
+# The app image is built from frontend/mobile/ (see Dockerfile). Only lib/, web/ and the
+# manifests are needed; the platform folders and local build output are not.
+build
+.dart_tool
+.flutter-plugins-dependencies
+android
+ios
+windows
+linux
+macos
+test
+tool
+Dockerfile
+.dockerignore
+**/*.log

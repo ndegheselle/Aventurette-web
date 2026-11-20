@@ -1,7 +1,8 @@
-# The gate the repository's own `npm run check` runs, on every push and pull request.
+# The gate on every push and pull request: one job per app, each running that app's own check.
 #
-# Three steps, in the order that fails fastest: the architecture boundaries (a grep, instant),
-# the typecheck and build (which covers the specs too), then the test suite.
+# `admin` is what `npm run check` runs, in the order that fails fastest: the architecture
+# boundaries (a grep, instant), the typecheck and build (which covers the specs too), then the
+# test suite. `app` is the Flutter app's check from frontend/mobile/.
 name: check
 
 on:
@@ -12,7 +13,7 @@ on:
   workflow_call:
 
 jobs:
-  check:
+  admin:
     runs-on: ubuntu-latest
     # The workspace root, with the lockfile, is frontend/.
     defaults:
@@ -39,3 +40,29 @@ jobs:
 
       - name: Tests
         run: npm run test
+
+  app:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/mobile
+    steps:
+      - uses: actions/checkout@v5
+
+      # The same version frontend/mobile/Dockerfile builds the deployed app with.
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.50.1
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Architecture boundaries
+        run: dart run tool/check_architecture.dart
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Tests
+        run: flutter test

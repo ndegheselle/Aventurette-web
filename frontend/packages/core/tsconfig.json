@@ -1,5 +1,5 @@
 {
-    // Editor / standalone check only. The authoritative typecheck is `vue-tsc -b` in frontend/web,
+    // Editor / standalone check only. The authoritative typecheck is `vue-tsc -b` in frontend/admin,
     // which pulls these sources in through the path aliases.
     // No "DOM" in lib on purpose: core must stay usable outside a browser.
     "compilerOptions": {

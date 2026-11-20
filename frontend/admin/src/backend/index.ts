@@ -1,6 +1,6 @@
 /**
  * The only file in the app that knows which backend it talks to. `@chapelure/pocketbase` may
- * not be imported anywhere else in frontend/web/src — everything downstream uses the ports built here.
+ * not be imported anywhere else in frontend/admin/src — everything downstream uses the ports built here.
  */
 import { Collections } from '@/backend/schema.g';
 import type { BaseEntity, BatchFactory, CrudFactory, EntityMapper, IAuthProvider, IdFactory } from '@chapelure/core';
@@ -14,7 +14,7 @@ import {
 
 const apiUrl = import.meta.env.VITE_API_URL;
 if (!apiUrl)
-    throw new Error('VITE_API_URL is not set — copy frontend/web/.env.example to frontend/web/.env.');
+    throw new Error('VITE_API_URL is not set — copy frontend/admin/.env.example to frontend/admin/.env.');
 
 const client = initPocketBase(apiUrl);
 

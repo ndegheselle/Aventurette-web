@@ -1,5 +1,5 @@
 // @chapelure/pocketbase — the PocketBase adapter. The only package that may import the SDK,
-// and the app imports it from one file only: frontend/web/src/backend/index.ts.
+// and the app imports it from one file only: frontend/admin/src/backend/index.ts.
 
 export { createPocketBaseAuth } from './auth';
 export { createPocketBaseBatch, pocketBaseId } from './batch';

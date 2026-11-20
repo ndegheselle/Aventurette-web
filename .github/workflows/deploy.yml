@@ -2,9 +2,11 @@
 #
 #   git push origin main:production
 #
-# Runs the check first, then backend/scripts/deploy.sh on the server over SSH. The deploy key is
-# pinned to that script in the server's authorized_keys, so it cannot run anything else.
-# Setup is in backend/DEPLOYMENT.md, "Automatic deploys".
+# Runs the check of both apps first, then backend/scripts/deploy.sh on the server over SSH, which
+# builds and restarts the stack: the clients' app on APP_DOMAIN, the back office on ADMIN_DOMAIN
+# and PocketBase on API_DOMAIN (see backend/.env.example). The deploy key is pinned to that script
+# in the server's authorized_keys, so it cannot run anything else.
+# Setup is in docs/deploying/first-setup.md, "Automatic deploys".
 name: deploy
 
 on:

@@ -18,13 +18,13 @@ a developer has to know to move between the two.
 | Web | Mobile | Holds |
 |---|---|---|
 | `@chapelure/core` | `core/` | the ports: `DataCrud`, `CrudFactory`, `AuthProvider`, `EntityMapper`, filters |
-| `@chapelure/pocketbase` + `web/src/backend` | `backend/` | the adapter, and the providers exposing the ports |
+| `@chapelure/pocketbase` + `admin/src/backend` | `backend/` | the adapter, and the providers exposing the ports |
 | `@chapelure/ui` | `ui/` | shared behaviour widgets, and the theme |
 | `features/<name>/models` | same | entities and rules, plain Dart |
 | `features/<name>/api` | same | the mappers and the calls, plain Dart |
 | `features/<name>/composables` | `features/<name>/state` | Riverpod notifiers, one per screen |
 | `features/<name>/ui` | same | pages and their widgets |
-| `web/src/app` | `app/` | `WidgetsApp`, the router, the dock shell |
+| `admin/src/app` | `app/` | `WidgetsApp`, the router, the dock shell |
 
 **State is Riverpod 3, without code generation.** A provider is the seam a spec overrides — the
 api's or the crud port's — which is what `vi.mock` with a `fakeCrud` does on the web. No
