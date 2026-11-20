@@ -44,8 +44,71 @@
 
   <title>Ajil</title>
   <link rel="manifest" href="manifest.json">
+
+  <!--
+    The loading screen, shown while the engine and the app download. It is plain HTML so it
+    paints before any script runs; the script at the end of <body> removes it once Flutter has
+    drawn its first frame. Its colours are forui's neutral theme, light and dark.
+  -->
+  <style>
+    html, body { margin: 0; height: 100%; background: #FFFFFF; }
+    #loading {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: #FFFFFF;
+      color: #171717;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      transition: opacity 300ms ease-out;
+    }
+    #loading.done { opacity: 0; pointer-events: none; }
+    #loading .name {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    #loading .track {
+      position: relative;
+      width: min(200px, 60vw);
+      height: 4px;
+      overflow: hidden;
+      border-radius: 2px;
+      background: #E5E5E5;
+    }
+    #loading .bar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 40%;
+      border-radius: 2px;
+      background: #171717;
+      animation: loading-slide 1.2s ease-in-out infinite;
+    }
+    @keyframes loading-slide {
+      from { left: -40%; }
+      to { left: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #loading .bar { animation-duration: 3s; }
+    }
+    @media (prefers-color-scheme: dark) {
+      html, body, #loading { background: #0A0A0A; }
+      #loading { color: #FAFAFA; }
+      #loading .track { background: #262626; }
+      #loading .bar { background: #FAFAFA; }
+    }
+  </style>
 </head>
 <body>
+  <div id="loading" role="progressbar" aria-label="Ajil" aria-busy="true">
+    <div class="name">Ajil</div>
+    <div class="track"><div class="bar"></div></div>
+  </div>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
@@ -55,5 +118,13 @@
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
   <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // Flutter web fires this once the app has drawn; the loading screen fades out over it.
+    window.addEventListener('flutter-first-frame', function () {
+      var loading = document.getElementById('loading');
+      loading.classList.add('done');
+      loading.addEventListener('transitionend', function () { loading.remove(); }, { once: true });
+    }, { once: true });
+  </script>
 </body>
 </html>
