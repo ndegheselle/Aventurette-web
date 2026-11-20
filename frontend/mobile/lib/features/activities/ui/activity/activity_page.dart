@@ -6,7 +6,6 @@ import 'package:ajil/features/activities/ui/activity/activity_card.dart';
 import 'package:ajil/features/activities/ui/activity/activity_details.dart';
 import 'package:ajil/features/activities/ui/_parts/favorite_button.dart';
 import 'package:ajil/features/activities/ui/_parts/supplies.dart';
-import 'package:ajil/features/activity_editor/routes.dart';
 import 'package:ajil/features/planning/ui/day_plan/planning_mode.dart';
 import 'package:ajil/ui/async/async_view.dart';
 import 'package:ajil/ui/async/run_action.dart';
