@@ -8,10 +8,10 @@ const { index, step } = defineProps<{
 </script>
 
 <template>
-    <div class="text-4xl font-thin opacity-30 tabular-nums">{{ stepNumber(index) }}</div>
-    <div>
+    <div class="text-4xl font-thin text-muted-foreground/50 tabular-nums">{{ stepNumber(index) }}</div>
+    <div class="flex-1">
         <b v-if="step.title">{{ step.title }}</b>
-        <span v-if="step.duration" class="ms-2 text-xs opacity-60">
+        <span v-if="step.duration" class="ms-2 text-xs text-muted-foreground">
             {{ $t('activities.minutes', { minutes: step.duration }) }}
         </span>
         <p class="text-xs" v-html="step.description"></p>

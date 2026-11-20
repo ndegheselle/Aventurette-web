@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import FilesInput from '@chapelure/ui/files/FilesInput.vue';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Input } from '@chapelure/ui/shadcn/input';
 import type { ActivityResourceData } from '@features/activities/models/step';
 import { useStepResources } from '@features/admin/activities-authoring/composables/useStepResources';
 import { ACCEPTED_RESOURCE_TYPES, resourcePreviewOf } from '@features/admin/activities-authoring/models/step.edit';
@@ -20,22 +22,22 @@ const { add, remove } = useStepResources(selected, () => props.stepId);
             {{ $t('activities.steps.fields.resources.constraints') }}
         </template>
     </FilesInput>
-    <div class="flex flex-wrap mt-1 bg-base-200 rounded-box pt-1">
+    <div class="flex flex-wrap mt-1 bg-muted rounded-xl pt-1">
         <div v-for="(resource, index) in selected" :key="resource.id" class="relative text-center p-1">
             <a :href="resource.url" target="_blank" rel="noopener noreferrer">
-                <img v-if="resourcePreviewOf(resource) === 'image'" class="size-16 rounded-box object-cover"
+                <img v-if="resourcePreviewOf(resource) === 'image'" class="size-16 rounded-md object-cover"
                     :src="resource.url" :alt="resource.name" />
-                <div v-else class="size-16 flex bg-base-300 rounded-box">
-                    <FileTextIcon v-if="resourcePreviewOf(resource) === 'pdf'" class="m-auto icon-lg opacity-60" />
-                    <FileIcon v-else class="m-auto icon-lg opacity-60" />
+                <div v-else class="size-16 flex rounded-md border bg-background">
+                    <FileTextIcon v-if="resourcePreviewOf(resource) === 'pdf'" class="m-auto icon-lg text-muted-foreground" />
+                    <FileIcon v-else class="m-auto icon-lg text-muted-foreground" />
                 </div>
             </a>
-            <input type="text" class="input input-xs w-16 text-center" v-model="resource.name" />
-            <button class="btn btn-error btn-xs btn-circle absolute top-0 right-0" @click="remove(index)">
-                <TrashIcon class="icon-sm" />
-            </button>
+            <Input type="text" class="h-6 w-16 px-1 text-center text-xs md:text-xs" v-model="resource.name" />
+            <Button variant="destructive" size="icon-xs" class="absolute top-0 right-0 rounded-full" @click="remove(index)">
+                <TrashIcon />
+            </Button>
         </div>
-        <div v-if="!selected.length" class="opacity-60 flex mx-auto items-center gap-2 h-10">
+        <div v-if="!selected.length" class="text-muted-foreground flex mx-auto items-center gap-2 h-10">
             <CircleOffIcon />
             <span>{{ $t('activities.steps.fields.resources.empty') }}</span>
         </div>
