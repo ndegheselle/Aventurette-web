@@ -73,7 +73,8 @@ void main() {
     await tester.tap(find.text('La quête du remède'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Mode guidé'), findsOneWidget);
+    // "Mode guidé" is only the play button's tooltip, not on screen until it is pressed long.
+    expect(find.byIcon(FLucideIcons.play), findsOneWidget, reason: 'the sheet, with its guided mode button');
     expect(find.text('Pédagogie'), findsNothing, reason: 'a sheet is full screen, over the dock');
   });
 
