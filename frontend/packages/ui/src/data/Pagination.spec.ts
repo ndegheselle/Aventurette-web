@@ -14,7 +14,7 @@ function click(wrapper: ReturnType<typeof mountPagination>, index: number) {
 }
 
 function isDisabled(wrapper: ReturnType<typeof mountPagination>, index: number) {
-    return wrapper.findAll('button')[index]!.classes('btn-disabled');
+    return wrapper.findAll('button')[index]!.attributes('disabled') !== undefined;
 }
 
 describe('Pagination', () => {

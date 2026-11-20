@@ -14,16 +14,10 @@ export const SETTINGS_STORAGE_KEYS = {
 } as const;
 
 function applyTheme(theme: EnumTheme) {
-    const html = document.documentElement;
-    if (theme === EnumTheme.light) {
-        html.setAttribute('data-theme', 'light');
-    } else if (theme === EnumTheme.dark) {
-        html.setAttribute('data-theme', 'dark');
-    } else {
-        // daisyUI resolves `data-theme`, not the media query, so mirror the OS preference.
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-    }
+    // The palette is scoped by a `dark` class on the root, so auto mirrors the OS preference.
+    const isDark = theme === EnumTheme.dark
+        || (theme === EnumTheme.auto && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark', isDark);
 }
 
 function readStoredTheme(): EnumTheme {

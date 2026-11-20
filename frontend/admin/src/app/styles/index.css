@@ -1,18 +1,15 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
 /*
   Tailwind v4 discovers classes by scanning the source tree, and it ignores node_modules.
-  Workspace packages are symlinked in there, so without this the design system's classes are
+  Workspace packages are symlinked in there, so without this the shadcn components' classes are
   silently dropped from the bundle. Verify after changing it by grepping the built CSS for a
-  class only @chapelure/ui uses (e.g. "modal-box").
+  class only @chapelure/ui uses (e.g. "data-[state=open]:animate-in").
 */
 @source "../../../../packages/ui/src";
 
-/* Mechanics live with the design system; the brand theme belongs to this app. */
-@import "@chapelure/ui/styles/helpers.css";
+/* The components' mechanics live with them; the palette belongs to this app. */
+@import "@chapelure/ui/styles/shadcn.css";
 @import "./themes.css";
-
-@plugin "daisyui" {
-    themes: false;
-}

@@ -1,10 +1,14 @@
 <!-- Driven by a useModal controller: <BottomSheet :controller height="half" />. Closes on the cross or by pulling the header down.
      The `action` slot puts a button at the top right, beside the cross; the default slot is told whether the sheet is expanded. -->
 <script setup lang="ts" generic="T = boolean">
+import { keepOpenOnAlerts } from '@chapelure/ui/alerts/useAlert';
 import { useSwipe } from '@chapelure/ui/gestures/useSwipe';
 import { stageAfterPull, type SheetStage } from '@chapelure/ui/modals/sheetStage';
 import { useModal, type IModalController } from '@chapelure/ui/modals/useModal';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { DialogOverlay } from '@chapelure/ui/shadcn/dialog';
 import { XIcon } from 'lucide-vue-next';
+import { DialogContent, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui';
 import { computed, ref, useTemplateRef, watch } from 'vue';
 
 /**
@@ -32,7 +36,6 @@ const stageStyles: Record<SheetStage, { height: string; maxHeight?: string }> = 
     full: { height: 'calc(100dvh - 1rem)' }
 };
 
-const dialog = useTemplateRef<HTMLDialogElement>('dialog');
 const box = useTemplateRef<HTMLElement>('box');
 
 const stage = ref<SheetStage>('partial');
@@ -70,15 +73,15 @@ const boxStyle = computed(() => {
     return { height: `${heightAtGrab - offset.value}px` };
 });
 
-watch(controller.isShown, (isShown) => {
+watch(controller.isShown, () => {
     reset();
     stage.value = 'partial';
-    if (isShown) {
-        dialog.value?.show();
-    } else {
-        dialog.value?.close();
-    }
 });
+
+// Closed by the overlay or Escape: that is a cancel.
+function onOpenChange(open: boolean) {
+    if (!open) controller.cancel();
+}
 
 defineSlots<{
     title: any;
@@ -88,40 +91,47 @@ defineSlots<{
 </script>
 
 <template>
-    <dialog ref="dialog"
-            class="modal modal-bottom">
-        <div ref="box"
-             class="modal-box flex flex-col p-0 w-full max-w-none"
-             :class="[heights[height], { 'transition-[height,max-height,transform] [interpolate-size:allow-keywords]': !isDragging }]"
-             :style="boxStyle">
-            <!-- The pull zone: the handle and the title. touch-none keeps the browser from scrolling instead. -->
-            <div class="touch-none select-none cursor-grab"
-                 v-on="handlers">
-                <div class="mx-auto mt-2 h-1.5 w-10 rounded-full bg-base-300" />
-                <div class="flex items-center px-4 pb-2 pt-1">
-                    <h3 class="text-lg font-bold">
-                        <slot name="title" />
-                    </h3>
-                    <div class="ms-auto flex items-center gap-1"
-                         @pointerdown.stop>
-                        <slot name="action" />
+    <!-- reka's dialog primitives, drawn as shadcn's bottom sheet: its own Sheet has no room for the pull zone. -->
+    <DialogRoot :open="controller.isShown.value"
+                @update:open="onOpenChange">
+        <DialogPortal>
+            <DialogOverlay />
+            <DialogContent data-slot="sheet-content"
+                           class="fixed inset-x-0 bottom-0 z-50 flex w-full flex-col rounded-t-xl border-t bg-background shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom data-[state=closed]:duration-300 data-[state=open]:duration-500"
+                           :class="[heights[height], { 'transition-[height,max-height,transform] [interpolate-size:allow-keywords]': !isDragging }]"
+                           :style="boxStyle"
+                           :aria-describedby="undefined"
+                           @interact-outside="keepOpenOnAlerts">
+                <div ref="box"
+                     class="flex min-h-0 flex-1 flex-col">
+                    <!-- The pull zone: the handle and the title. touch-none keeps the browser from scrolling instead. -->
+                    <div class="touch-none select-none cursor-grab"
+                         v-on="handlers">
+                        <div class="mx-auto mt-2 h-1.5 w-10 rounded-full bg-muted" />
+                        <div class="flex items-center px-4 pb-2 pt-1">
+                            <DialogTitle class="text-lg font-semibold">
+                                <slot name="title" />
+                            </DialogTitle>
+                            <div class="ms-auto flex items-center gap-1"
+                                 @pointerdown.stop>
+                                <slot name="action" />
+                            </div>
+                            <Button variant="ghost"
+                                    size="icon-sm"
+                                    class="rounded-full"
+                                    :aria-label="$t('actions.close')"
+                                    @pointerdown.stop
+                                    @click="() => controller.cancel()">
+                                <XIcon />
+                            </Button>
+                        </div>
                     </div>
-                    <button class="btn btn-sm btn-circle btn-ghost"
-                            :aria-label="$t('actions.close')"
-                            @pointerdown.stop
-                            @click="() => controller.cancel()">
-                        <XIcon />
-                    </button>
+
+                    <div class="flex-1 overflow-y-auto px-4 pb-4">
+                        <slot :expanded="isExpandable && stage === 'full'" />
+                    </div>
                 </div>
-            </div>
-
-            <div class="flex-1 overflow-y-auto px-4 pb-4">
-                <slot :expanded="isExpandable && stage === 'full'" />
-            </div>
-        </div>
-
-        <div class="modal-backdrop">
-            <button @click="() => controller.cancel()">{{ $t('actions.close') }}</button>
-        </div>
-    </dialog>
+            </DialogContent>
+        </DialogPortal>
+    </DialogRoot>
 </template>

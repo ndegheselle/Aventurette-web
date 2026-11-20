@@ -27,7 +27,8 @@
         "update": "Edit",
         "confirm": "Confirm",
         "back": "Back",
-        "close": "Close"
+        "close": "Close",
+        "clear": "Clear"
     },
     "inputs": {
         "file": {

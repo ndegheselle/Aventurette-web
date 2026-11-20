@@ -1,86 +1,93 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { nextTick } from 'vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
 import Modal from './Modal.vue';
 
-function mountModal(slots: Record<string, string> = {}, props: Record<string, unknown> = {}) {
+/** The dialog is portalled to the body, and only there while it is open. */
+const inDialog = (selector: string) => document.body.querySelector(`[role="dialog"] ${selector}`);
+const allInDialog = (selector: string) => [...document.body.querySelectorAll<HTMLElement>(`[role="dialog"] ${selector}`)];
+
+async function mountModal(slots: Record<string, string> = {}, props: Record<string, unknown> = {}) {
     const controller = useModal();
-    const wrapper = mount(Modal, { props: { controller, ...props }, slots });
-    return { controller, wrapper };
+    const wrapper = mount(Modal, { props: { controller, ...props }, slots, attachTo: document.body });
+    const answer = controller.show();
+    await nextTick();
+    return { controller, wrapper, answer };
 }
 
-describe('Modal', () => {
-    it('renders its title and body', () => {
-        const { wrapper } = mountModal({ title: 'Filter', default: '<p>body</p>' });
+function click(element: Element | null | undefined) {
+    (element as HTMLElement).click();
+}
 
-        expect(wrapper.find('h3').text()).toBe('Filter');
-        expect(wrapper.find('.overflow-y-auto').html()).toContain('<p>body</p>');
+afterEach(() => {
+    document.body.innerHTML = '';
+});
+
+describe('Modal', () => {
+    it('renders its title and body', async () => {
+        await mountModal({ title: 'Filter', default: '<p>body</p>' });
+
+        expect(inDialog('[data-slot="dialog-title"]')?.textContent?.trim()).toBe('Filter');
+        expect(inDialog('[data-slot="dialog-body"]')?.innerHTML).toContain('<p>body</p>');
     });
 
-    it('opens the dialog when the controller says to show', async () => {
-        const { controller, wrapper } = mountModal();
-        const dialog = wrapper.find('dialog').element as HTMLDialogElement;
-        const show = vi.spyOn(dialog, 'show');
+    it('opens the dialog when the controller says to show, and only then', async () => {
+        const controller = useModal();
+        mount(Modal, { props: { controller }, attachTo: document.body });
+        expect(document.body.querySelector('[role="dialog"]')).toBeNull();
 
         controller.show();
         await nextTick();
 
-        expect(show).toHaveBeenCalledOnce();
+        expect(document.body.querySelector('[role="dialog"]')).not.toBeNull();
     });
 
     it('closes the dialog when the controller resolves', async () => {
-        const { controller, wrapper } = mountModal();
-        const dialog = wrapper.find('dialog').element as HTMLDialogElement;
-        const close = vi.spyOn(dialog, 'close');
+        const { controller } = await mountModal();
 
-        controller.show();
-        await nextTick();
         controller.confirm(true);
         await nextTick();
 
-        expect(close).toHaveBeenCalledOnce();
+        expect(document.body.querySelector('[role="dialog"][data-state="open"]')).toBeNull();
     });
 
     it('cancels from the corner cross', async () => {
-        const { controller, wrapper } = mountModal();
-        const answer = controller.show();
+        const { answer } = await mountModal();
 
-        await wrapper.find('.btn-circle').trigger('click');
+        click(inDialog('[data-slot="dialog-close"]'));
 
         await expect(answer).resolves.toBeNull();
     });
 
-    it('cancels from the backdrop, so clicking away does not confirm by accident', async () => {
-        const { controller, wrapper } = mountModal();
-        const answer = controller.show();
+    it('cancels on Escape, so leaving does not confirm by accident', async () => {
+        const { answer } = await mountModal();
 
-        await wrapper.find('.modal-backdrop button').trigger('click');
+        document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
 
         await expect(answer).resolves.toBeNull();
     });
 
     it('offers cancel and confirm by default', async () => {
-        const { controller, wrapper } = mountModal();
-        const answer = controller.show();
+        const { answer } = await mountModal();
 
-        const confirmButton = wrapper.findAll('.modal-action button').at(-1)!;
-        expect(confirmButton.text()).toContain('Confirm');
-        await confirmButton.trigger('click');
+        const confirmButton = allInDialog('[data-slot="dialog-footer"] button').at(-1)!;
+        expect(confirmButton.textContent).toContain('Confirm');
+        click(confirmButton);
 
         await expect(answer).resolves.toBe(true);
     });
 
-    it('lets the caller replace the actions entirely', () => {
-        const { wrapper } = mountModal({ actions: '<button class="mine">Apply</button>' });
+    it('lets the caller replace the actions entirely', async () => {
+        await mountModal({ actions: '<button class="mine">Apply</button>' });
 
-        expect(wrapper.find('.modal-action .mine').exists()).toBe(true);
-        expect(wrapper.find('.modal-action').text()).not.toContain('Confirm');
+        expect(inDialog('[data-slot="dialog-footer"] .mine')).not.toBeNull();
+        expect(inDialog('[data-slot="dialog-footer"]')?.textContent).not.toContain('Confirm');
     });
 
-    it('drops the action bar when asked, for a modal that closes another way', () => {
-        const { wrapper } = mountModal({}, { withActions: false });
+    it('drops the action bar when asked, for a modal that closes another way', async () => {
+        await mountModal({}, { withActions: false });
 
-        expect(wrapper.find('.modal-action').exists()).toBe(false);
+        expect(inDialog('[data-slot="dialog-footer"]')).toBeNull();
     });
 });

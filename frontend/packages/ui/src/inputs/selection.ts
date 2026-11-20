@@ -14,6 +14,12 @@ export function displayOf<T>(item: T, displayKey?: keyof T): string {
     return String(shown);
 }
 
+/** What a tag picker still offers: the items not picked yet whose display contains `search`, any case. */
+export function offered<T>(items: T[], selected: T[], search: string, displayKey?: keyof T, keyBy?: keyof T): T[] {
+    const needle = search.toLowerCase();
+    return items.filter(item => !isPicked(selected, item, keyBy) && displayOf(item, displayKey).toLowerCase().includes(needle));
+}
+
 /** `selected` with `item` removed if it was picked, added otherwise. */
 export function toggled<T>(selected: T[], item: T, keyBy?: keyof T): T[] {
     if (!isPicked(selected, item, keyBy))

@@ -1,42 +1,45 @@
 <script setup lang="ts">
-import { EnumAlertType, useAlert } from '@chapelure/ui/alerts/useAlert';
+import { ALERTS_ATTRIBUTE, EnumAlertType, useAlert } from '@chapelure/ui/alerts/useAlert';
+import { Alert, AlertDescription } from '@chapelure/ui/shadcn/alert';
+import { Button } from '@chapelure/ui/shadcn/button';
 import { CircleCheckIcon, TriangleAlertIcon, XIcon } from 'lucide-vue-next';
-import { useTemplateRef, watchEffect } from 'vue';
 
 const { alerts, close, act } = useAlert();
-
-const dialogRef = useTemplateRef('dialogRef');
-
-watchEffect(() => {
-    if (dialogRef.value && !dialogRef.value.open) {
-        dialogRef.value.show();
-    }
-});
 </script>
 
 <template>
-    <dialog ref="dialogRef" class="z-9999">
-        <!-- Top center on a phone, where the bottom of the screen is the dock's and the page's actions'. -->
-        <TransitionGroup name="alert" tag="div" class="toast toast-top toast-center md:toast-bottom md:toast-end stack stack-top" v-if="alerts.length > 0">
-            <div role="alert" class="alert" 
-                v-for="alert in alerts.toReversed()" :key="alert.id" 
-                :class="{
-                    'alert-error alert-soft border border-error': alert.type === EnumAlertType.Error,
-                    'alert-success alert-soft border border-success': alert.type === EnumAlertType.Success
-                }">
-                <TriangleAlertIcon class="opacity-50" v-if="alert.type === EnumAlertType.Error" />
-                <CircleCheckIcon class="opacity-50" v-else-if="alert.type === EnumAlertType.Success" />
-                <span>{{ alert.message }}</span>
-                <button v-if="alert.action" @click="act(alert)" class="btn btn-sm">
+    <!-- Above any modal, and clickable while one is open: a modal turns pointer events off on the body.
+         Top center on a phone, where the bottom of the screen is the dock's and the page's actions'. -->
+    <Teleport to="body">
+        <TransitionGroup name="alert"
+                         tag="div"
+                         v-bind="{ [ALERTS_ATTRIBUTE]: '' }"
+                         class="pointer-events-auto fixed inset-x-4 top-4 z-100 flex flex-col gap-2 md:inset-x-auto md:top-auto md:right-4 md:bottom-4 md:w-96">
+            <Alert v-for="alert in alerts.toReversed()"
+                   :key="alert.id"
+                   :variant="alert.type === EnumAlertType.Error ? 'destructive' : 'default'"
+                   class="flex items-center gap-3 shadow-lg">
+                <TriangleAlertIcon v-if="alert.type === EnumAlertType.Error" />
+                <CircleCheckIcon v-else-if="alert.type === EnumAlertType.Success" />
+                <AlertDescription class="flex-1 whitespace-pre-line">{{ alert.message }}</AlertDescription>
+                <Button v-if="alert.action"
+                        variant="outline"
+                        size="sm"
+                        @click="act(alert)">
                     {{ alert.action.label }}
-                </button>
-                <button @click="close(alert.id)" class="btn btn-sm btn-ghost btn-circle" :aria-label="$t('actions.close')">
+                </Button>
+                <Button variant="ghost"
+                        size="icon-sm"
+                        class="rounded-full"
+                        :aria-label="$t('actions.close')"
+                        @click="close(alert.id)">
                     <XIcon class="icon-sm" />
-                </button>
-            </div>
+                </Button>
+            </Alert>
         </TransitionGroup>
-    </dialog>
+    </Teleport>
 </template>
+
 <style scoped>
 .alert-enter-active {
     transition: opacity 0.3s ease, transform 0.3s ease;

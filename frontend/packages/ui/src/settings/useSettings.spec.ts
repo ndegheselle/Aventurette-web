@@ -7,11 +7,12 @@ function prefersDark(dark: boolean) {
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: dark, addEventListener() { }, removeEventListener() { } })));
 }
 
-const themeAttribute = () => document.documentElement.getAttribute('data-theme');
+/** The theme the page is drawn in: the palette is scoped by a `dark` class on the root. */
+const themeAttribute = () => document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 
 beforeEach(() => {
     localStorage.clear();
-    document.documentElement.removeAttribute('data-theme');
+    document.documentElement.classList.remove('dark');
     prefersDark(false);
 });
 
@@ -59,6 +60,15 @@ describe('useSettings', () => {
 
             expect(themeAttribute()).toBe('dark');
             expect(localStorage.getItem(SETTINGS_STORAGE_KEYS.theme)).toBe('dark');
+        });
+
+        it('takes the dark palette off for light', () => {
+            const [settings] = withSetup(() => useSettings());
+            settings.changeTheme(EnumTheme.dark);
+
+            settings.changeTheme(EnumTheme.light);
+
+            expect(themeAttribute()).toBe('light');
         });
 
         it('goes back to following the OS on auto', () => {

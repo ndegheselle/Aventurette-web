@@ -8,6 +8,7 @@
 -->
 <script setup lang="ts">
 import { formatBytes } from '@chapelure/ui/files/useFiles';
+import { Button } from '@chapelure/ui/shadcn/button';
 import { FileIcon, XIcon } from 'lucide-vue-next';
 
 const files = defineModel<File[]>('files', { required: true });
@@ -33,19 +34,19 @@ function removeFile(index: number) {
 </script>
 
 <template>
-    <ul class="list bg-base-200 shadow rounded-box mt-1" v-if="files.length">
-        <li v-for="(file, index) in files" class="list-row p-1 items-center">
-            <img v-if="canPreviewAsImage(file)" :src="toLink(file)" class="size-10 object-cover rounded-box" />
-            <div v-else class="size-10 flex">
+    <ul class="mt-1 flex flex-col divide-y rounded-lg border bg-card shadow-xs" v-if="files.length">
+        <li v-for="(file, index) in files" class="flex items-center gap-3 p-1">
+            <img v-if="canPreviewAsImage(file)" :src="toLink(file)" class="size-10 rounded-md object-cover" />
+            <div v-else class="flex size-10">
                 <FileIcon class="m-auto icon-lg" />
             </div>
-            <a :href="toLink(file)" target="_blank" rel="noopener noreferrer">
+            <a :href="toLink(file)" target="_blank" rel="noopener noreferrer" class="flex-1 truncate underline-offset-4 hover:underline">
                 {{ file.name }}
             </a>
-            <span class="text-xs uppercase font-semibold opacity-60">{{ formatBytes(file.size) }}</span>
-            <button class="btn btn-sm btn-square btn-ghost" @click="removeFile(index)">
+            <span class="text-xs font-semibold uppercase text-muted-foreground">{{ formatBytes(file.size) }}</span>
+            <Button variant="ghost" size="icon-sm" @click="removeFile(index)">
                 <XIcon />
-            </button>
+            </Button>
         </li>
     </ul>
 </template>

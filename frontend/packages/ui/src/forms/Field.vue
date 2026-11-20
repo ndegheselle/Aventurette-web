@@ -4,6 +4,7 @@
 -->
 <script lang="ts" setup>
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
+import { Label } from '@chapelure/ui/shadcn/label';
 
 defineProps<{
     label?: string,
@@ -17,12 +18,11 @@ defineSlots<{
 </script>
 
 <template>
-    <div class="flex flex-col">
-        <legend v-if="label || $slots.label"
-                class="fieldset-legend"
-                :class="{ 'text-error': error }">
+    <div class="flex flex-col gap-2" :data-invalid="!!error || undefined">
+        <Label v-if="label || $slots.label"
+               :class="{ 'text-destructive': error }">
             <slot name="label">{{ $t(label!) }}</slot>
-        </legend>
+        </Label>
         <slot></slot>
         <FieldError :error />
     </div>

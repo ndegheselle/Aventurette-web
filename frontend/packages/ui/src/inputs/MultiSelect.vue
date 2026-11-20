@@ -4,10 +4,15 @@
   than by reference. To pick plain values, give it `Option`s from `inputs/selection`.
 -->
 <script setup lang="ts" generic="T">
-import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
 import { displayOf, isPicked, toggled } from '@chapelure/ui/inputs/selection';
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from '@chapelure/ui/shadcn/dropdown-menu';
 import { ChevronDownIcon, CircleQuestionMarkIcon } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 const { items = [], displayKey, keyBy, placeholder } = defineProps<{
     items: T[],
@@ -17,8 +22,6 @@ const { items = [], displayKey, keyBy, placeholder } = defineProps<{
 }>();
 
 const selected = defineModel<T[]>({ default: () => [] });
-
-const open = ref<boolean>(false);
 
 const summary = computed(() => selected.value.map(getDisplay).join(', '));
 
@@ -31,31 +34,28 @@ function toggle(item: T) {
 }
 </script>
 <template>
-    <Dropdown v-model="open" :isFullWidth="true">
-        <template #summary>
-            <summary
-                class="bg-base-100 rounded-box border border-base-content/20 flex items-center gap-2 min-h-10 px-3 cursor-pointer">
-                <span class="flex-1 truncate" :class="{ 'opacity-50': !selected.length }">
+    <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+            <button type="button"
+                    class="flex h-9 w-full items-center gap-2 rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30">
+                <span class="flex-1 truncate text-left" :class="{ 'text-muted-foreground': !selected.length }">
                     {{ summary || placeholder || $t('actions.select') }}
                 </span>
-                <ChevronDownIcon class="icon-sm opacity-50" />
-            </summary>
-        </template>
-        <!-- Stopped here so a tick does not close the dropdown. -->
-        <ul class="menu p-2 w-full" @click.stop>
-            <li v-for="value in items">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" class="checkbox checkbox-sm"
-                        :checked="isPicked(selected, value, keyBy)" @change="() => toggle(value)" />
-                    <span>{{ getDisplay(value) }}</span>
-                </label>
-            </li>
-            <li class="opacity-30" v-if="!items.length">
-                <div class="flex justify-center">
-                    <CircleQuestionMarkIcon />
-                    <span>{{ $t('data.noData') }}</span>
-                </div>
-            </li>
-        </ul>
-    </Dropdown>
+                <ChevronDownIcon class="size-4 opacity-50" />
+            </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" class="w-(--reka-dropdown-menu-trigger-width)">
+            <!-- Prevented, so a tick does not close the dropdown. -->
+            <DropdownMenuCheckboxItem v-for="value in items"
+                                      :model-value="isPicked(selected, value, keyBy)"
+                                      @update:model-value="() => toggle(value)"
+                                      @select.prevent>
+                {{ getDisplay(value) }}
+            </DropdownMenuCheckboxItem>
+            <div class="flex justify-center gap-2 p-2 text-sm text-muted-foreground" v-if="!items.length">
+                <CircleQuestionMarkIcon />
+                <span>{{ $t('data.noData') }}</span>
+            </div>
+        </DropdownMenuContent>
+    </DropdownMenu>
 </template>

@@ -1,8 +1,9 @@
 <script setup lang="ts" generic="T">
-import Dropdown from '@chapelure/ui/dropdown/Dropdown.vue';
-import { displayOf, isPicked } from '@chapelure/ui/inputs/selection';
+import { displayOf, offered } from '@chapelure/ui/inputs/selection';
+import { Badge } from '@chapelure/ui/shadcn/badge';
+import { Popover, PopoverAnchor, PopoverContent } from '@chapelure/ui/shadcn/popover';
 import { CircleQuestionMarkIcon, XIcon } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 
 /** `keyBy` matches a picked item to an option by that key, rather than by reference. */
 const { items = [], displayKey, keyBy } = defineProps<{
@@ -13,12 +14,11 @@ const { items = [], displayKey, keyBy } = defineProps<{
 
 const selected = defineModel<T[]>({ default: () => [] });
 
-const availableItems = computed(() => items.filter(
-    x => !isPicked(selected.value, x, keyBy) && getDisplay(x).toLowerCase().includes(search.value.toLowerCase())
-));
-
 const open = ref<boolean>(false);
 const search = ref<string>("");
+const anchor = useTemplateRef<HTMLElement>('anchor');
+
+const availableItems = computed(() => offered(items, selected.value, search.value, displayKey, keyBy));
 
 function getDisplay(value: T): string {
     return displayOf(value, displayKey);
@@ -32,39 +32,42 @@ function removeItem(index: number) {
     selected.value = selected.value.filter((_, i) => i !== index);
 }
 
-function openDropdown() {
-    open.value = true;
+// Typing in the field is not leaving the picker.
+function keepOpenInField(event: CustomEvent<{ originalEvent: Event }>) {
+    if (anchor.value?.contains(event.detail.originalEvent.target as Node)) event.preventDefault();
 }
 </script>
 <template>
-    <Dropdown v-model="open" :isFullWidth="true">
-        <template #summary>
-            <summary
-                class="bg-base-100 rounded-box border border-base-content/20 flex flex-wrap items-center min-h-10 p-1 pe-2">
-                <div class="flex flex-wrap gap-1 me-2">
-                    <span class="badge badge-primary whitespace-nowrap pe-0" v-for="(value, index) in selected">
-                        {{ getDisplay(value) }}
-                        <span class="cursor-pointer p-1" @click="() => removeItem(index)">
-                            <XIcon class="icon-sm" />
-                        </span>
+    <Popover v-model:open="open">
+        <PopoverAnchor as-child>
+            <div ref="anchor"
+                 class="flex min-h-9 w-full flex-wrap items-center gap-1 rounded-md border border-input bg-transparent p-1 pe-2 shadow-xs dark:bg-input/30">
+                <Badge v-for="(value, index) in selected" class="whitespace-nowrap pe-0">
+                    {{ getDisplay(value) }}
+                    <span class="cursor-pointer p-0.5" @click="() => removeItem(index)">
+                        <XIcon class="icon-sm" />
                     </span>
-                </div>
-                <div class="flex-1 min-w-32 flex items-center">
-                    <input type="text" class="w-full outline-hidden" :placeholder="$t('actions.search')"
-                        @focus="openDropdown" v-model="search" />
-                </div>
-            </summary>
-        </template>
-        <ul class="menu p-2 w-full">
-            <li v-for="value in availableItems" @click="() => addItem(value)">
-                <a>{{ getDisplay(value) }}</a>
-            </li>
-            <li class="opacity-30" v-if="!availableItems.length">
-                <div class="flex justify-center">
-                    <CircleQuestionMarkIcon  />
-                    <span>{{ $t('data.noData') }}</span>
-                </div>
-            </li>
-        </ul>
-    </Dropdown>
+                </Badge>
+                <input type="text" class="min-w-32 flex-1 bg-transparent px-1 text-sm outline-hidden placeholder:text-muted-foreground"
+                       :placeholder="$t('actions.search')"
+                       v-model="search"
+                       @focus="open = true" />
+            </div>
+        </PopoverAnchor>
+        <PopoverContent align="start"
+                        class="w-(--reka-popover-trigger-width) p-1"
+                        @open-auto-focus.prevent
+                        @interact-outside="keepOpenInField">
+            <button v-for="value in availableItems"
+                    type="button"
+                    class="flex w-full rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+                    @click="() => addItem(value)">
+                {{ getDisplay(value) }}
+            </button>
+            <div class="flex justify-center gap-2 p-2 text-sm text-muted-foreground" v-if="!availableItems.length">
+                <CircleQuestionMarkIcon />
+                <span>{{ $t('data.noData') }}</span>
+            </div>
+        </PopoverContent>
+    </Popover>
 </template>

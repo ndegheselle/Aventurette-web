@@ -1,6 +1,6 @@
 import { onScopeDispose, ref } from 'vue';
 
-/** Below daisyUI's `md` breakpoint, where the desktop drawer stops fitting. */
+/** Below Tailwind's `md` breakpoint, where the desktop sidebar stops fitting. */
 const MOBILE_QUERY = '(max-width: 767.98px)';
 
 /** Whether the viewport is phone-sized, kept current as it is resized or rotated. */

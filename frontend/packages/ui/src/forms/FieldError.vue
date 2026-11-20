@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
     <span v-if="error"
-           class="text-error mt-1">
+           class="text-sm text-destructive">
         <TriangleAlertIcon class="inline mr-1 icon-sm" />
         {{ error }}
     </span>

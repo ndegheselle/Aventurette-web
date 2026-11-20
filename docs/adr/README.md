@@ -12,7 +12,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0001](0001-workspace-packages-resolve-to-source.md) | Workspace packages resolve to source, with no build step | Accepted |
 | [0002](0002-backend-behind-core-ports.md) | The backend sits behind ports in `@chapelure/core` | Accepted |
 | [0003](0003-features-are-vertical-slices.md) | Features are vertical slices with a fixed folder shape | Accepted |
-| [0004](0004-daisyui-classes-at-the-call-site.md) | daisyUI classes are written where they are used | Accepted |
+| [0004](0004-shadcn-vue-components.md) | The back office is drawn with shadcn-vue's components | Accepted |
 | [0005](0005-icons-imported-directly.md) | Icons are imported directly from lucide | Accepted |
 | [0006](0006-the-view-layer-stays-vue.md) | The view layer is Vue, and stays Vue | Accepted |
 | [0007](0007-models-map-their-own-payloads.md) | Models map their own payloads, relations and files included | Accepted |
