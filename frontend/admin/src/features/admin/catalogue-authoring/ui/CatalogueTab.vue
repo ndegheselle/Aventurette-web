@@ -11,6 +11,7 @@ import List from '@chapelure/ui/data/List.vue';
 import Pagination from '@chapelure/ui/data/Pagination.vue';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
+import { Button } from '@chapelure/ui/shadcn/button';
 import { PenIcon, PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 
@@ -60,12 +61,12 @@ async function confirmRemove(entry: T) {
             <div class="flex-1 min-w-64 flex gap-2">
                 <SearchInput @search="() => emit('refresh')"
                              v-model="search" />
-                <button class="btn btn-primary btn-square"
+                <Button size="icon"
                         :disabled="!canAdd"
                         :title="$t(addLabel)"
                         @click="() => emit('add')">
                     <PlusIcon />
-                </button>
+                </Button>
             </div>
         </div>
 
@@ -73,18 +74,21 @@ async function confirmRemove(entry: T) {
               v-slot="{ item }"
               class="flex-1">
             <slot :item="item" />
-            <div class="my-auto flex gap-2">
-                <button class="btn btn-soft btn-square btn-error"
+            <div class="flex gap-2">
+                <Button variant="secondary"
+                        size="icon"
+                        class="text-destructive"
                         :title="$t('catalogue.remove')"
                         @click="() => confirmRemove(item)">
-                    <TrashIcon class="icon-sm" />
-                </button>
-                <button v-if="editable"
-                        class="btn btn-soft btn-square"
+                    <TrashIcon />
+                </Button>
+                <Button v-if="editable"
+                        variant="secondary"
+                        size="icon"
                         :title="$t('actions.update')"
                         @click="() => emit('edit', item)">
-                    <PenIcon class="icon-sm" />
-                </button>
+                    <PenIcon />
+                </Button>
             </div>
         </List>
 

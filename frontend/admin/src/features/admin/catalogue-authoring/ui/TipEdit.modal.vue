@@ -5,6 +5,8 @@ import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useEditModal } from '@chapelure/ui/modals/useEditModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Input } from '@chapelure/ui/shadcn/input';
 import type { ActivityTipData } from '@features/activities/models/step';
 import { tipsApi } from '@features/admin/catalogue-authoring/api/tips.api';
 import { CheckIcon, XIcon } from 'lucide-vue-next';
@@ -20,9 +22,9 @@ defineExpose<IEditModal<ActivityTipData>>({ show });
         <template #title>
             {{ $t(isNew ? 'catalogue.tips.new' : 'catalogue.tips.edit') }}
         </template>
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-4">
             <Field label="catalogue.fields.name" :error="errors.get('name')">
-                <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
+                <Input type="text" :aria-invalid="!!errors.get('name') || undefined"
                     v-model="tip.name" />
             </Field>
             <Field label="catalogue.tips.fields.description" :error="errors.get('description')">
@@ -31,14 +33,14 @@ defineExpose<IEditModal<ActivityTipData>>({ show });
         </div>
         <FieldError :error="errors.global.value" />
         <template #actions>
-            <button class="btn" @click="cancel">
+            <Button variant="outline" @click="cancel">
                 <XIcon />
                 {{ $t('actions.cancel') }}
-            </button>
-            <button class="btn btn-primary" :disabled="isLoading" @click="confirm">
+            </Button>
+            <Button :disabled="isLoading" @click="confirm">
                 <CheckIcon />
                 {{ $t('actions.save') }}
-            </button>
+            </Button>
         </template>
     </Modal>
 </template>

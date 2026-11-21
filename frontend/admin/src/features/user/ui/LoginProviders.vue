@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { Button } from '@chapelure/ui/shadcn/button';
+
 const emit = defineEmits<{ 'provider-selected': [provider: string] }>();
 </script>
 
 <template>
     <div class="grid grid-cols-3 gap-2">
-        <button class="btn h-auto min-w-0 px-1" @click="emit('provider-selected', 'google')">
+        <Button variant="outline" class="h-auto min-w-0 px-1" @click="emit('provider-selected', 'google')">
             <div class="flex flex-col items-center py-2 min-w-0 max-w-full">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="32" height="32"
                     xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
@@ -25,8 +27,8 @@ const emit = defineEmits<{ 'provider-selected': [provider: string] }>();
 
                 <span>Google</span>
             </div>
-        </button>
-        <button class="btn h-auto min-w-0 px-1" @click="emit('provider-selected', 'microsoft')">
+        </Button>
+        <Button variant="outline" class="h-auto min-w-0 px-1" @click="emit('provider-selected', 'microsoft')">
             <div class="flex flex-col items-center py-2 min-w-0 max-w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23" width="32" height="32">
                     <path fill="#f3f3f3" d="M0 0h23v23H0z" />
@@ -38,8 +40,8 @@ const emit = defineEmits<{ 'provider-selected': [provider: string] }>();
 
                 <span>Microsoft</span>
             </div>
-        </button>
-        <button class="btn h-auto min-w-0 px-1" @click="emit('provider-selected', 'apple')">
+        </Button>
+        <Button variant="outline" class="h-auto min-w-0 px-1" @click="emit('provider-selected', 'apple')">
             <div class="flex flex-col items-center py-2 min-w-0 max-w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 814 1000" width="32" height="32">
                     <path
@@ -47,6 +49,6 @@ const emit = defineEmits<{ 'provider-selected': [provider: string] }>();
                 </svg>
                 <span>Apple</span>
             </div>
-        </button>
+        </Button>
     </div>
 </template>

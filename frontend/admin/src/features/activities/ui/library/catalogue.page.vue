@@ -3,6 +3,10 @@ import InfiniteScroll from '@chapelure/ui/data/InfiniteScroll.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import SearchInput from '@chapelure/ui/data/SearchInput.vue';
 import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
+import { Badge } from '@chapelure/ui/shadcn/badge';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Label } from '@chapelure/ui/shadcn/label';
+import { Switch } from '@chapelure/ui/shadcn/switch';
 import { useCatalogueFilters } from '@features/activities/composables/useCatalogueFilters';
 import { useLibraryFeed } from '@features/activities/composables/useLibraryFeed';
 import { QUICK_FILTERS, quickFilterLabel } from '@features/activities/models/catalogueFilters';
@@ -22,32 +26,33 @@ const { items, loading, done, empty, loadMore } = useLibraryFeed(applied, search
 <template>
     <Container>
         <!-- Sticky: the list scrolls, the search and filters stay in reach. -->
-        <div class="sticky top-0 z-10 flex flex-col gap-2 bg-base-100 p-2">
+        <div class="sticky top-0 z-10 flex flex-col gap-2 bg-background p-2">
             <SearchInput v-model="search" @search="searchFor" />
 
             <!-- The full filters' button, then the quick ones on a line that scrolls sideways. -->
-            <!-- The padding keeps the count's indicator inside the line, which clips what overflows it. -->
+            <!-- The padding keeps the count's badge inside the line, which clips what overflows it. -->
             <div class="flex gap-2 pt-1">
-                <div class="indicator shrink-0">
-                    <span v-if="activeCount"
-                          class="indicator-item badge badge-primary badge-xs">{{ activeCount }}</span>
-                    <button type="button"
-                            class="btn btn-square"
+                <div class="relative shrink-0">
+                    <Button type="button"
+                            variant="outline"
+                            size="icon"
                             :aria-label="$t('activities.filters.open')"
                             @click="openAll">
                         <FunnelIcon />
-                    </button>
+                    </Button>
+                    <Badge v-if="activeCount"
+                           class="absolute -top-1 -right-1 h-4 min-w-4 px-1 tabular-nums">{{ activeCount }}</Badge>
                 </div>
 
                 <div class="flex gap-2 overflow-x-auto scrollbar-none">
-                    <button v-for="quick in QUICK_FILTERS"
+                    <Button v-for="quick in QUICK_FILTERS"
                             :key="quick"
                             type="button"
-                            class="btn btn-soft"
+                            variant="secondary"
                             @click="() => openQuick(quick)">
                         {{ $t(quickFilterLabel(applied, quick).key, quickFilterLabel(applied, quick).params) }}
                         <ChevronDownIcon class="size-4" />
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -57,7 +62,7 @@ const { items, loading, done, empty, loadMore } = useLibraryFeed(applied, search
             <PickBanner />
         </div>
 
-        <div v-if="empty" class="flex flex-col items-center gap-2 p-8 text-center opacity-50">
+        <div v-if="empty" class="flex flex-col items-center gap-2 p-8 text-center text-muted-foreground">
             <SearchXIcon class="size-10" />
             <p>{{ $t('activities.library.catalogueEmpty') }}</p>
         </div>
@@ -78,39 +83,36 @@ const { items, loading, done, empty, loadMore } = useLibraryFeed(applied, search
                          height="full">
             <template #title>
                 {{ $t('activities.filters.title') }}
-                <span v-if="draftCount"
-                      class="badge badge-primary">{{ draftCount }}</span>
+                <Badge v-if="draftCount">{{ draftCount }}</Badge>
             </template>
             <div class="flex flex-col gap-4">
-                <label class="label justify-between rounded-box bg-base-200 p-3 text-base-content">
-                    <span class="flex flex-col">
+                <div class="flex items-center justify-between gap-4 rounded-xl bg-muted p-3">
+                    <Label for="catalogue-profile" class="flex-col items-start gap-1 leading-normal">
                         <span class="font-semibold">{{ $t('activities.filters.profile.title') }}</span>
-                        <span class="text-sm opacity-70 whitespace-normal">
+                        <span class="text-sm font-normal text-muted-foreground">
                             {{ $t(hasProfile ? 'activities.filters.profile.help' : 'activities.filters.profile.empty') }}
                         </span>
-                    </span>
-                    <input type="checkbox"
-                           class="toggle toggle-primary"
-                           :disabled="!hasProfile"
-                           v-model="profileApplied" />
-                </label>
+                    </Label>
+                    <Switch id="catalogue-profile"
+                            :disabled="!hasProfile"
+                            v-model="profileApplied" />
+                </div>
 
                 <LibraryFilters v-model="draft" />
 
                 <div class="sticky bottom-0 grid grid-cols-2 gap-2">
 
-                    <button type="button"
-                            class="btn"
+                    <Button type="button"
+                            variant="outline"
                             :disabled="!draftCount"
                             @click="reset">
                         {{ $t('activities.filters.reset') }}
-                    </button>
+                    </Button>
 
-                    <button type="button"
-                            class="btn btn-primary"
+                    <Button type="button"
                             @click="() => allSheet.confirm(true)">
                         {{ $t('activities.filters.apply') }}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </ResponsiveModal>
@@ -125,11 +127,11 @@ const { items, loading, done, empty, loadMore } = useLibraryFeed(applied, search
                 <LibraryFilters v-model="draft"
                                 :only="quickShown" />
 
-                <button type="button"
-                        class="btn btn-primary btn-block"
+                <Button type="button"
+                        class="w-full"
                         @click="() => quickSheet.confirm(true)">
                     {{ $t('activities.filters.apply') }}
-                </button>
+                </Button>
             </div>
         </ResponsiveModal>
     </Container>

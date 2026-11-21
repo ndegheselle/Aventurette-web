@@ -13,15 +13,6 @@ export function highOf(bounds: RangeBounds, max: number | null | undefined): num
     return max ?? bounds.ceiling;
 }
 
-/** The thumbs may meet but not cross: each stops at the other. */
-export function clampLow(value: number, high: number): number {
-    return Math.min(value, high);
-}
-
-export function clampHigh(value: number, low: number): number {
-    return Math.max(value, low);
-}
-
 /** An end back at its edge bounds nothing, so it reads as unset, as it started. */
 export function lowValue(bounds: RangeBounds, value: number): number | null {
     return value <= bounds.floor ? null : value;
@@ -29,22 +20,6 @@ export function lowValue(bounds: RangeBounds, value: number): number | null {
 
 export function highValue(bounds: RangeBounds, value: number): number | null {
     return value >= bounds.ceiling ? null : value;
-}
-
-/** Position on the track, 0 to 100. */
-export function percentOf(bounds: RangeBounds, value: number): number {
-    const span = bounds.ceiling - bounds.floor;
-    if (span <= 0) return 0;
-
-    return Math.min(100, Math.max(0, (value - bounds.floor) / span * 100));
-}
-
-/**
- * Which thumb is on top when they overlap. At the ceiling the max thumb cannot move right, so
- * the min one has to be the one caught; at the floor, the other way round.
- */
-export function isLowOnTop(bounds: RangeBounds, low: number): boolean {
-    return percentOf(bounds, low) > 50;
 }
 
 /** What a range reads as beside its label. `key` is a translation key, `params` its values. */

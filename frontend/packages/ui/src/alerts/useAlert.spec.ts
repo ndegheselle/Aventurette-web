@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { EnumAlertType, useAlert } from './useAlert';
+import { ALERTS_ATTRIBUTE, EnumAlertType, keepOpenOnAlerts, useAlert } from './useAlert';
 
 describe('useAlert', () => {
     beforeEach(() => {
@@ -74,5 +74,30 @@ describe('useAlert', () => {
 
         expect(undo).toHaveBeenCalledOnce();
         expect(alert.alerts.value).toHaveLength(0);
+    });
+});
+
+describe('keepOpenOnAlerts', () => {
+    function interactionOn(target: Element) {
+        return new CustomEvent('interact-outside', { cancelable: true, detail: { originalEvent: { target } as unknown as Event } });
+    }
+
+    it('keeps a modal open when the click was on an alert', () => {
+        const container = document.createElement('div');
+        container.setAttribute(ALERTS_ATTRIBUTE, '');
+        const close = container.appendChild(document.createElement('button'));
+        const event = interactionOn(close);
+
+        keepOpenOnAlerts(event);
+
+        expect(event.defaultPrevented).toBe(true);
+    });
+
+    it('lets a click anywhere else close it', () => {
+        const event = interactionOn(document.createElement('div'));
+
+        keepOpenOnAlerts(event);
+
+        expect(event.defaultPrevented).toBe(false);
     });
 });

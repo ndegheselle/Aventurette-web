@@ -52,3 +52,15 @@ export function useAlert() {
         error: (msg: string) => push(EnumAlertType.Error, msg),
     }
 }
+
+/** Marks the alerts' container, so a modal can tell a click on an alert from a click away. */
+export const ALERTS_ATTRIBUTE = 'data-alerts';
+
+/**
+ * For a modal's `interact-outside`. Alerts sit outside every modal, but closing one must not
+ * close the modal under it and lose what was typed there.
+ */
+export function keepOpenOnAlerts(event: CustomEvent<{ originalEvent: Event }>) {
+    const target = event.detail?.originalEvent?.target as Element | null | undefined;
+    if (target?.closest?.(`[${ALERTS_ATTRIBUTE}]`)) event.preventDefault();
+}

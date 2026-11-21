@@ -88,7 +88,9 @@ describe('Login.page', () => {
 
     it('ends the session with the tab when "Stay logged in" is unticked', async () => {
         const { wrapper } = await mountForm();
-        await wrapper.find('input[type=checkbox]').setValue(false);
+        // The checkbox is a button (shadcn's), ticked by default: a click unticks it.
+        await wrapper.find('button[role=checkbox]').trigger('click');
+        expect(wrapper.find('button[role=checkbox]').attributes('aria-checked')).toBe('false');
         await requestCode(wrapper);
 
         await submitCode(wrapper);

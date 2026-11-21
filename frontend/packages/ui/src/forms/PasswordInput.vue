@@ -1,5 +1,6 @@
 <!-- Password field with a reveal toggle. -->
 <script setup lang="ts">
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@chapelure/ui/shadcn/input-group';
 import { EyeClosedIcon, EyeIcon, KeyRoundIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
@@ -12,17 +13,21 @@ const isRevealed = ref(false);
 </script>
 
 <template>
-    <label class="input"
-           :class="{ 'input-error': error }">
-        <KeyRoundIcon class="opacity-50" />
-        <input class="grow"
-               :type="isRevealed ? 'text' : 'password'"
-               v-model="model" />
-        <button class="btn btn-ghost btn-sm btn-circle absolute right-1"
-                :aria-label="$t('inputs.password.reveal')"
-                @click="isRevealed = !isRevealed">
-            <EyeIcon v-if="isRevealed" />
-            <EyeClosedIcon v-else />
-        </button>
-    </label>
+    <InputGroup>
+        <InputGroupAddon>
+            <KeyRoundIcon />
+        </InputGroupAddon>
+        <InputGroupInput :type="isRevealed ? 'text' : 'password'"
+                         :aria-invalid="error || undefined"
+                         v-model="model" />
+        <InputGroupAddon align="inline-end">
+            <InputGroupButton size="icon-xs"
+                              class="rounded-full"
+                              :aria-label="$t('inputs.password.reveal')"
+                              @click="isRevealed = !isRevealed">
+                <EyeIcon v-if="isRevealed" />
+                <EyeClosedIcon v-else />
+            </InputGroupButton>
+        </InputGroupAddon>
+    </InputGroup>
 </template>

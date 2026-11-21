@@ -1,15 +1,17 @@
 # @chapelure/ui
 
-Vue 3 behaviour library: the components and composables that are worth *not* hand-writing —
-promise-driven modals, a paged list, file input with validation, alerts, settings.
+Vue 3 UI library: [shadcn-vue](https://www.shadcn-vue.com)'s components, vendored, and the
+components and composables built on them that are worth *not* hand-writing — promise-driven
+modals, a paged list, file input with validation, alerts, settings.
 
-It is deliberately not a design system. Anything whose whole job was to put a daisyUI class on
-an element lives at the call site instead: the app writes `<button class="btn btn-primary">`,
-not `<Button variant="primary">`. What earns a file here is behaviour — `<Modal>` owning a
-promise, `<FilesInput>` validating what was dropped on it, `useEditModal` sequencing a
-create-or-update — or a composition the app repeats, like `<Panel>`'s surface.
+The look is shadcn's, the same as the mobile app's forui ([ADR 0004](../../../docs/adr/0004-shadcn-vue-components.md)).
+The app writes `<Button variant="outline">` from `shadcn/` and lays it out with Tailwind; what
+earns a file outside `shadcn/` is behaviour — `<Modal>` owning a promise, `<FilesInput>`
+validating what was dropped on it, `useEditModal` sequencing a create-or-update — or a
+composition the app repeats, like `<Panel>`'s surface.
 
-Peer dependencies: `vue`, `vue-i18n`, `tailwindcss`, `daisyui`, `lucide-vue-next`.
+Dependencies: `reka-ui`, `class-variance-authority`, `cn`, `@vueuse/core`. Peer dependencies:
+`vue`, `vue-i18n`, `tailwindcss`, `tw-animate-css`, `@tailwindcss/typography`, `lucide-vue-next`.
 
 ## Setup in a consuming app
 
@@ -19,16 +21,16 @@ explicitly or they are silently dropped from the bundle:
 
 ```css
 @import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @source "../../../../packages/ui/src";   /* adjust the depth to your CSS entry */
 
-@import "@chapelure/ui/styles/helpers.css";
-@import "./themes.css";                  /* your brand — this package ships no theme */
-
-@plugin "daisyui" { themes: false; }
+@import "@chapelure/ui/styles/shadcn.css"; /* colours and radii mapped to the theme's variables */
+@import "./themes.css";                    /* your palette: shadcn's variables, light and .dark */
 ```
 
-Verify with `grep modal-box <your dist>/assets/*.css`.
+Verify with `grep 'data-\[state=open\]' <your dist>/assets/*.css`.
 
 **2. Translations.** This package ships its own strings; the app merges them:
 
@@ -48,7 +50,8 @@ their host components mounted once, near the root:
 is missing, rather than throwing.
 
 **4. The stored theme.** Call `applyStoredTheme()` from `settings/useSettings` once at boot, so
-the theme picked in `SettingsMenu` holds from the first paint.
+the theme picked in `SettingsMenu` holds from the first paint. It puts `dark` on `<html>`, or
+takes it off.
 
 ## Layout of the package
 
@@ -58,14 +61,16 @@ the composable driving them together, the way `settings/` holds `SettingsMenu` n
 
 | Folder | |
 |---|---|
-| `modals/` | Modal, ConfirmationModal, `useModal`, `useConfirmation`, `useEditModal`, `useDraftModal` |
-| `alerts/` | AlertsContainer, `useAlert` |
-| `dropdown/` | Dropdown, `vClickOutside` |
-| `data/` | List, Pagination, SearchInput |
+| `shadcn/` | shadcn-vue's components, one folder each, and `cn` in `utils.ts` |
+| `styles/` | `shadcn.css`, what the components need from the stylesheet |
+| `modals/` | Modal, ResponsiveModal, BottomSheet, ConfirmationModal, `useModal`, `useConfirmation`, `useEditModal`, `useDraftModal` |
+| `alerts/` | AlertsContainer, `useAlert`, `keepOpenOnAlerts` |
+| `data/` | List, Pagination, SearchInput, InfiniteScroll |
 | `files/` | FilesInput, FilesList, `useOneFile` |
 | `forms/` | Field, FieldError, PasswordInput, TextEditor, `useSubmit`, `useValidationErrors` |
+| `inputs/` | MultiSelect, TagSelect, RangeInput, `selection`, `range` |
 | `settings/` | SettingsMenu, `useSettings`, `applyStoredTheme` |
-| `layout/` | Container, Panel |
+| `layout/` | Container, Panel, `useIsMobile`, `useNavbar` |
 
 Everything is deep-imported, components and composables alike — there is no barrel. Icons are
 imported from `lucide-vue-next` directly, under their real names.
@@ -73,12 +78,27 @@ imported from `lucide-vue-next` directly, under their real names.
 ```ts
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
+import { Button } from '@chapelure/ui/shadcn/button';
 import { XIcon } from 'lucide-vue-next';
 ```
 
 `Container` is the page shell, `Panel` a surface. `PasswordInput` and `TextEditor` are the inputs
-left: one for its reveal toggle, one for the tiptap instance it owns and tears down — none for
-the `input` class.
+left: one for its reveal toggle, one for the tiptap instance it owns and tears down — a plain
+field is shadcn's `Input`.
+
+## The vendored shadcn components
+
+`shadcn/` is shadcn-vue's new-york-v4 registry, copied in. Its files keep upstream's formatting,
+so they can be diffed against it; what was changed here is marked `Patched:` in the file. The
+copy rewrites three things: `cn` comes from `@chapelure/ui/shadcn/utils`, a sibling from
+`@chapelure/ui/shadcn/<name>`, an icon from `lucide-vue-next`.
+
+To add one, take `https://shadcn-vue.com/r/styles/new-york-v4/<name>.json`, write each of its
+`files` under `shadcn/<name>/` with those three rewrites, and install its `dependencies`.
+
+reka's overlays — dialog, popover, dropdown menu, tooltip — are portalled to `<body>` and render
+only while open. A spec on one mounts with `attachTo: document.body`, opens it, and queries the
+body.
 
 ## Patterns
 

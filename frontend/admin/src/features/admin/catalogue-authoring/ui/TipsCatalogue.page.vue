@@ -27,9 +27,9 @@ async function edit(tip: ActivityTipData) {
                   @edit="edit"
                   @remove="remove"
                   v-slot="{ item }">
-        <div class="list-col-grow my-auto">
+        <div class="flex-1 min-w-0">
             <b>{{ item.name }}</b>
-            <div class="text-xs opacity-60 line-clamp-2" v-html="item.description"></div>
+            <div class="text-xs text-muted-foreground line-clamp-2" v-html="item.description"></div>
         </div>
     </CatalogueTab>
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Badge } from '@chapelure/ui/shadcn/badge';
+import { NativeSelect, NativeSelectOption } from '@chapelure/ui/shadcn/native-select';
 import { ActivityTagType, type ActivityTagData } from '@features/activities/models/tag';
 import CatalogueTab from '@features/admin/catalogue-authoring/ui/CatalogueTab.vue';
 import TagEditModal from '@features/admin/catalogue-authoring/ui/TagEdit.modal.vue';
@@ -27,24 +29,23 @@ async function edit(tag: ActivityTagData) {
                   @edit="edit"
                   @remove="remove">
         <template #toolbar>
-            <select class="select w-auto"
-                    :aria-label="$t('catalogue.tags.fields.type')"
-                    :value="type"
-                    @change="selectType(($event.target as HTMLSelectElement).value as ActivityTagType || null)">
-                <option value="">{{ $t('catalogue.tags.allTypes') }}</option>
-                <option v-for="kind in ActivityTagType" :key="kind" :value="kind">
+            <NativeSelect :aria-label="$t('catalogue.tags.fields.type')"
+                          :model-value="type ?? ''"
+                          @change="selectType(($event.target as HTMLSelectElement).value as ActivityTagType || null)">
+                <NativeSelectOption value="">{{ $t('catalogue.tags.allTypes') }}</NativeSelectOption>
+                <NativeSelectOption v-for="kind in ActivityTagType" :key="kind" :value="kind">
                     {{ $t(`activities.tagType.${kind}`) }}
-                </option>
-            </select>
+                </NativeSelectOption>
+            </NativeSelect>
         </template>
 
         <template #default="{ item }">
-            <div class="list-col-grow my-auto">
-                <div class="flex flex-wrap gap-2">
+            <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
                     <b>{{ item.name }}</b>
-                    <span class="badge badge-sm badge-ghost my-auto">{{ $t(`activities.tagType.${item.type}`) }}</span>
+                    <Badge variant="secondary">{{ $t(`activities.tagType.${item.type}`) }}</Badge>
                 </div>
-                <p class="text-xs opacity-60">{{ item.slug }}</p>
+                <p class="text-xs text-muted-foreground">{{ item.slug }}</p>
             </div>
         </template>
     </CatalogueTab>

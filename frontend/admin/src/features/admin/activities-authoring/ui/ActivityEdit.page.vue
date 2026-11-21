@@ -13,6 +13,17 @@ import Container from '@chapelure/ui/layout/Container.vue';
 import Panel from '@chapelure/ui/layout/Panel.vue';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
 import type { IEditModal } from '@chapelure/ui/modals/useModal';
+import { Badge } from '@chapelure/ui/shadcn/badge';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Card, CardContent } from '@chapelure/ui/shadcn/card';
+import { Checkbox } from '@chapelure/ui/shadcn/checkbox';
+import { Input } from '@chapelure/ui/shadcn/input';
+import { Label } from '@chapelure/ui/shadcn/label';
+import { NativeSelect, NativeSelectOption } from '@chapelure/ui/shadcn/native-select';
+import { Spinner } from '@chapelure/ui/shadcn/spinner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@chapelure/ui/shadcn/tabs';
+import { Textarea } from '@chapelure/ui/shadcn/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@chapelure/ui/shadcn/tooltip';
 import StepSummary from '@features/admin/activities-authoring/ui/StepSummary.vue';
 import {
     ActivityFormat,
@@ -197,382 +208,430 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
 </script>
 
 <template>
-    <Container>
-        <div class="sticky top-0 flex gap-2 py-2 bg-base-100 z-10">
-            <RouterLink class="btn btn-ghost" :to="{ name: routesNames.all }">
-                <ArrowLeftIcon class="opacity-50" /> {{ $t('actions.back') }}
-            </RouterLink>
-            <button class="btn btn-ghost btn-square lg:hidden" :aria-label="$t('activities.authoring.navigation.title')"
-                @click="openSections">
-                <TableOfContentsIcon class="opacity-50" />
-            </button>
+    <!-- The tooltips stand in for the labels a small screen hides; the desktop Sidebar's provider is not
+         there on mobile. A tab's tooltip hangs on its content: on the trigger itself, the tooltip's
+         `data-state` would override the tab's. -->
+    <TooltipProvider>
+        <!-- Padded, so neither the menu nor the buttons touch the sidebar or the window's edge. -->
+        <Container class="px-2 pb-2">
+            <div class="sticky top-0 z-10 flex gap-2 bg-background py-2">
+                <Button variant="ghost" as-child>
+                    <RouterLink :to="{ name: routesNames.all }">
+                        <ArrowLeftIcon class="text-muted-foreground" /> {{ $t('actions.back') }}
+                    </RouterLink>
+                </Button>
+                <Button variant="ghost" size="icon" class="lg:hidden" :aria-label="$t('activities.authoring.navigation.title')"
+                    @click="openSections">
+                    <TableOfContentsIcon class="text-muted-foreground" />
+                </Button>
 
-            <!-- Its own write: stores the state and leaves the form as it is. A new activity has
-                 no record to write it to until its first save. -->
-            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden ms-auto"
-                :data-tip="$t(transition.label)">
-                <button class="btn" :disabled="isChangingState || isNew" @click="changeState">
-                    <span v-if="isChangingState" class="loading loading-spinner loading-sm"></span>
-                    <BadgeCheckIcon v-if="transition.to === ActivityState.PUBLISHED" />
-                    <UndoIcon v-else />
-                    <span class="sr-only sm:not-sr-only">{{ $t(transition.label) }}</span>
-                </button>
-            </div>
-
-            <div class="tooltip tooltip-bottom sm:before:hidden sm:after:hidden" :data-tip="$t('actions.save')">
-                <button class="btn btn-primary" :disabled="isLoading" @click="save">
-                    <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
-                    <SaveIcon class="opacity-50" />
-                    <span class="sr-only sm:not-sr-only">{{ $t('actions.save') }}</span>
-                </button>
-            </div>
-        </div>
-        <FieldError :error="errors.global.value" />
-
-        <div class="grid gap-2 items-start lg:grid-cols-[14rem_minmax(0,1fr)]">
-            <aside class="hidden lg:block sticky top-16 rounded-box bg-base-200 shadow">
-                <SectionsMenu :entries="sections" @select="goTo" />
-            </aside>
-
-            <div class="flex flex-col gap-2">
-                <Panel id="section-informations" class="scroll-mt-16">
-                    <h2 class="text-2xl flex items-center gap-2">
-                        <LibraryIcon class="opacity-50" /> {{ $t('activities.families.informations') }}
-                    </h2>
-                    <Field label="activities.fields.name" :error="errors.get('name')">
-                        <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
-                            v-model="activity.name" />
-                    </Field>
-                    <Field label="activities.fields.summary" :error="errors.get('summary')">
-                        <textarea class="textarea w-full" :class="{ 'textarea-error': !!errors.get('summary') }"
-                            :maxlength="SUMMARY_MAX_LENGTH" v-model="activity.summary"></textarea>
-                        <span class="label justify-end">
-                            {{ $t('activities.constraints.summary', { count: activity.summary.length, max: SUMMARY_MAX_LENGTH }) }}
+                <!-- Its own write: stores the state and leaves the form as it is. A new activity has
+                     no record to write it to until its first save. The tooltip hangs on a wrapper, as
+                     a disabled button fires no pointer events. -->
+                <Tooltip>
+                    <TooltipTrigger as-child>
+                        <span class="ms-auto">
+                            <Button variant="outline" :disabled="isChangingState || isNew" @click="changeState">
+                                <Spinner v-if="isChangingState" />
+                                <BadgeCheckIcon v-if="transition.to === ActivityState.PUBLISHED" />
+                                <UndoIcon v-else />
+                                <span class="sr-only sm:not-sr-only">{{ $t(transition.label) }}</span>
+                            </Button>
                         </span>
-                    </Field>
-                    <Field label="activities.fields.picture">
-                        <FilesInput accept="image/*" @change="updateImage">
-                            <template #constraints>
-                                {{ $t('activities.constraints.picture') }}
-                            </template>
-                        </FilesInput>
-                        <FilesList v-model:files="files" />
-                    </Field>
-                </Panel>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" class="sm:hidden">{{ $t(transition.label) }}</TooltipContent>
+                </Tooltip>
 
-                <Panel id="section-description" class="scroll-mt-16">
-                    <h2 class="text-2xl flex items-center gap-2">
-                        <ScrollTextIcon class="opacity-50" /> {{ $t('activities.authoring.description') }}
-                    </h2>
-                    <TextEditor v-model="activity.description" class="min-h-64" />
-                    <FieldError :error="errors.get('description')" />
-                </Panel>
+                <Tooltip>
+                    <TooltipTrigger as-child>
+                        <span>
+                            <Button :disabled="isLoading" @click="save">
+                                <Spinner v-if="isLoading" />
+                                <SaveIcon />
+                                <span class="sr-only sm:not-sr-only">{{ $t('actions.save') }}</span>
+                            </Button>
+                        </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" class="sm:hidden">{{ $t('actions.save') }}</TooltipContent>
+                </Tooltip>
+            </div>
+            <FieldError :error="errors.global.value" />
 
-                <!-- An optional select's "none" is null here; the mapper writes it as the empty string PocketBase stores. -->
-                <Panel id="section-families" class="scroll-mt-16">
-                    <div class="tabs tabs-box">
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.classification')">
-                            <input type="radio" name="activity-families" value="classification" v-model="familyTab" />
-                            <ShapesIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.classification') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                                <Field label="activities.fields.format" :error="errors.get('format')">
-                                    <select class="select w-full" v-model="activity.classification.format">
-                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
-                                        <option v-for="value in formats" :key="value" :value="value">
-                                            {{ $t(`activities.format.${value}`) }}
-                                        </option>
-                                    </select>
-                                </Field>
-                                <Field label="activities.tagType.THEME" :error="errors.get('theme_tags')">
-                                    <TagSelect :items="tagOptions.THEME" displayKey="name" keyBy="id"
-                                        v-model="activity.classification.themes" />
-                                </Field>
-                            </div>
-                            <Field label="activities.fields.practices" :error="errors.get('practices')">
-                                <MultiSelect :items="practiceOptions" displayKey="label" keyBy="value"
-                                    v-model="practices" />
-                            </Field>
-                        </div>
+            <div class="grid gap-2 items-start lg:grid-cols-[14rem_minmax(0,1fr)]">
+                <aside class="hidden lg:block sticky top-16 rounded-xl border bg-card shadow-sm">
+                    <SectionsMenu :entries="sections" @select="goTo" />
+                </aside>
 
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.imaginary')">
-                            <input type="radio" name="activity-families" value="imaginary" v-model="familyTab" />
-                            <SparklesIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.imaginary') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                                <Field label="activities.fields.imaginaryRule" :error="errors.get('imaginary_rule')">
-                                    <select class="select w-full" v-model="activity.imaginary.rule">
-                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
-                                        <option v-for="value in imaginaryRules" :key="value" :value="value">
-                                            {{ $t(`activities.imaginaryRule.${value}`) }}
-                                        </option>
-                                    </select>
-                                </Field>
-                                <Field label="activities.tagType.IMAGINARY" :error="errors.get('imaginary_tags')">
-                                    <TagSelect :items="tagOptions.IMAGINARY" displayKey="name" keyBy="id"
-                                        v-model="activity.imaginary.universes" />
-                                </Field>
-                            </div>
-                        </div>
+                <div class="flex flex-col gap-2">
+                    <Panel id="section-informations" class="scroll-mt-16">
+                        <h2 class="text-2xl flex items-center gap-2">
+                            <LibraryIcon class="text-muted-foreground" /> {{ $t('activities.families.informations') }}
+                        </h2>
+                        <Field label="activities.fields.name" :error="errors.get('name')">
+                            <Input type="text" :aria-invalid="!!errors.get('name') || undefined" v-model="activity.name" />
+                        </Field>
+                        <Field label="activities.fields.summary" :error="errors.get('summary')">
+                            <Textarea :aria-invalid="!!errors.get('summary') || undefined" :maxlength="SUMMARY_MAX_LENGTH"
+                                v-model="activity.summary" />
+                            <span class="self-end text-sm text-muted-foreground">
+                                {{ $t('activities.constraints.summary', { count: activity.summary.length, max: SUMMARY_MAX_LENGTH }) }}
+                            </span>
+                        </Field>
+                        <Field label="activities.fields.picture">
+                            <FilesInput accept="image/*" @change="updateImage">
+                                <template #constraints>
+                                    {{ $t('activities.constraints.picture') }}
+                                </template>
+                            </FilesInput>
+                            <FilesList v-model:files="files" />
+                        </Field>
+                    </Panel>
 
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.audience')">
-                            <input type="radio" name="activity-families" value="audience" v-model="familyTab" />
-                            <UsersIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.audience') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                                <Field :error="errors.get('age_min') || errors.get('age_max')">
-                                    <template #label>
-                                        {{ $t('activities.fields.age') }}
-                                        <span class="font-normal opacity-60">{{ $t(ageLabel.key, ageLabel.params)
-                                            }}</span>
-                                    </template>
-                                    <RangeInput class="text-primary" v-bind="AGE_BOUNDS" v-model:min="ageMin"
-                                        v-model:max="ageMax" />
-                                </Field>
-                                <Field :error="errors.get('participants_min') || errors.get('participants_max')">
-                                    <template #label>
-                                        {{ $t('activities.fields.participants') }}
-                                        <span class="font-normal opacity-60">{{ $t(participantsLabel.key,
-                                            participantsLabel.params)
-                                        }}</span>
-                                    </template>
-                                    <RangeInput class="text-primary" v-bind="PARTICIPANTS_BOUNDS"
-                                        v-model:min="participantsMin" v-model:max="participantsMax" />
-                                </Field>
-                                <Field label="activities.fields.childrenPace" :error="errors.get('children_pace')">
-                                    <select class="select w-full" v-model="activity.audience.childrenPace">
-                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
-                                        <option v-for="value in childrenPaces" :key="value" :value="value">
-                                            {{ $t(`activities.childrenPace.${value}`) }}
-                                        </option>
-                                    </select>
-                                </Field>
-                            </div>
-                            <Field label="activities.fields.ageVariants" :error="errors.get('age_variants')">
-                                <TextEditor v-model="activity.audience.ageVariants" class="min-h-24" />
-                            </Field>
-                        </div>
+                    <Panel id="section-description" class="scroll-mt-16">
+                        <h2 class="text-2xl flex items-center gap-2">
+                            <ScrollTextIcon class="text-muted-foreground" /> {{ $t('activities.authoring.description') }}
+                        </h2>
+                        <TextEditor v-model="activity.description" class="min-h-64" />
+                        <FieldError :error="errors.get('description')" />
+                    </Panel>
 
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.supervision')">
-                            <input type="radio" name="activity-families" value="supervision" v-model="familyTab" />
-                            <UserCheckIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.supervision') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                                <Field label="activities.fields.hostEffort" :error="errors.get('host_effort')">
-                                    <select class="select w-full" v-model="activity.supervision.hostEffort">
-                                        <option :value="null">{{ $t('activities.fields.unset') }}</option>
-                                        <option v-for="value in hostEfforts" :key="value" :value="value">
-                                            {{ $t(`activities.hostEffort.${value}`) }}
-                                        </option>
-                                    </select>
+                    <!-- An optional select's "none" is null here; the mapper writes it as the empty string PocketBase stores. -->
+                    <Panel id="section-families" class="scroll-mt-16">
+                        <Tabs v-model="familyTab">
+                            <TabsList class="w-full">
+                                <TabsTrigger value="classification">
+                                    <Tooltip>
+                                        <TooltipTrigger as-child>
+                                            <span class="flex items-center gap-1.5">
+                                                <ShapesIcon class="text-muted-foreground" />
+                                                <span class="sr-only sm:not-sr-only">{{ $t('activities.families.classification') }}</span>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent class="sm:hidden">{{ $t('activities.families.classification') }}</TooltipContent>
+                                    </Tooltip>
+                                </TabsTrigger>
+                                <TabsTrigger value="imaginary">
+                                    <Tooltip>
+                                        <TooltipTrigger as-child>
+                                            <span class="flex items-center gap-1.5">
+                                                <SparklesIcon class="text-muted-foreground" />
+                                                <span class="sr-only sm:not-sr-only">{{ $t('activities.families.imaginary') }}</span>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent class="sm:hidden">{{ $t('activities.families.imaginary') }}</TooltipContent>
+                                    </Tooltip>
+                                </TabsTrigger>
+                                <TabsTrigger value="audience">
+                                    <Tooltip>
+                                        <TooltipTrigger as-child>
+                                            <span class="flex items-center gap-1.5">
+                                                <UsersIcon class="text-muted-foreground" />
+                                                <span class="sr-only sm:not-sr-only">{{ $t('activities.families.audience') }}</span>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent class="sm:hidden">{{ $t('activities.families.audience') }}</TooltipContent>
+                                    </Tooltip>
+                                </TabsTrigger>
+                                <TabsTrigger value="supervision">
+                                    <Tooltip>
+                                        <TooltipTrigger as-child>
+                                            <span class="flex items-center gap-1.5">
+                                                <UserCheckIcon class="text-muted-foreground" />
+                                                <span class="sr-only sm:not-sr-only">{{ $t('activities.families.supervision') }}</span>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent class="sm:hidden">{{ $t('activities.families.supervision') }}</TooltipContent>
+                                    </Tooltip>
+                                </TabsTrigger>
+                                <TabsTrigger value="place">
+                                    <Tooltip>
+                                        <TooltipTrigger as-child>
+                                            <span class="flex items-center gap-1.5">
+                                                <MapPinIcon class="text-muted-foreground" />
+                                                <span class="sr-only sm:not-sr-only">{{ $t('activities.families.place') }}</span>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent class="sm:hidden">{{ $t('activities.families.place') }}</TooltipContent>
+                                    </Tooltip>
+                                </TabsTrigger>
+                                <TabsTrigger value="pedagogy">
+                                    <Tooltip>
+                                        <TooltipTrigger as-child>
+                                            <span class="flex items-center gap-1.5">
+                                                <GraduationCapIcon class="text-muted-foreground" />
+                                                <span class="sr-only sm:not-sr-only">{{ $t('activities.families.pedagogy') }}</span>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent class="sm:hidden">{{ $t('activities.families.pedagogy') }}</TooltipContent>
+                                    </Tooltip>
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="classification" class="flex flex-col gap-4 p-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Field label="activities.fields.format" :error="errors.get('format')">
+                                        <NativeSelect class="w-full" v-model="activity.classification.format">
+                                            <NativeSelectOption :value="null">{{ $t('activities.fields.unset') }}</NativeSelectOption>
+                                            <NativeSelectOption v-for="value in formats" :key="value" :value="value">
+                                                {{ $t(`activities.format.${value}`) }}
+                                            </NativeSelectOption>
+                                        </NativeSelect>
+                                    </Field>
+                                    <Field label="activities.tagType.THEME" :error="errors.get('theme_tags')">
+                                        <TagSelect :items="tagOptions.THEME" displayKey="name" keyBy="id"
+                                            v-model="activity.classification.themes" />
+                                    </Field>
+                                </div>
+                                <Field label="activities.fields.practices" :error="errors.get('practices')">
+                                    <MultiSelect :items="practiceOptions" displayKey="label" keyBy="value"
+                                        v-model="practices" />
                                 </Field>
-                                <Field label="activities.fields.hosts" :error="errors.get('recommended_hosts_numbers')">
-                                    <input type="number" min="0" class="input w-full"
-                                        :class="{ 'input-error': !!errors.get('recommended_hosts_numbers') }"
-                                        v-model.number="activity.supervision.hostsRequired" />
+                            </TabsContent>
+
+                            <TabsContent value="imaginary" class="flex flex-col gap-4 p-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Field label="activities.fields.imaginaryRule" :error="errors.get('imaginary_rule')">
+                                        <NativeSelect class="w-full" v-model="activity.imaginary.rule">
+                                            <NativeSelectOption :value="null">{{ $t('activities.fields.unset') }}</NativeSelectOption>
+                                            <NativeSelectOption v-for="value in imaginaryRules" :key="value" :value="value">
+                                                {{ $t(`activities.imaginaryRule.${value}`) }}
+                                            </NativeSelectOption>
+                                        </NativeSelect>
+                                    </Field>
+                                    <Field label="activities.tagType.IMAGINARY" :error="errors.get('imaginary_tags')">
+                                        <TagSelect :items="tagOptions.IMAGINARY" displayKey="name" keyBy="id"
+                                            v-model="activity.imaginary.universes" />
+                                    </Field>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="audience" class="flex flex-col gap-4 p-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Field :error="errors.get('age_min') || errors.get('age_max')">
+                                        <template #label>
+                                            {{ $t('activities.fields.age') }}
+                                            <span class="font-normal text-muted-foreground">{{ $t(ageLabel.key, ageLabel.params) }}</span>
+                                        </template>
+                                        <RangeInput v-bind="AGE_BOUNDS" v-model:min="ageMin" v-model:max="ageMax" />
+                                    </Field>
+                                    <Field :error="errors.get('participants_min') || errors.get('participants_max')">
+                                        <template #label>
+                                            {{ $t('activities.fields.participants') }}
+                                            <span class="font-normal text-muted-foreground">{{ $t(participantsLabel.key, participantsLabel.params) }}</span>
+                                        </template>
+                                        <RangeInput v-bind="PARTICIPANTS_BOUNDS" v-model:min="participantsMin"
+                                            v-model:max="participantsMax" />
+                                    </Field>
+                                    <Field label="activities.fields.childrenPace" :error="errors.get('children_pace')">
+                                        <NativeSelect class="w-full" v-model="activity.audience.childrenPace">
+                                            <NativeSelectOption :value="null">{{ $t('activities.fields.unset') }}</NativeSelectOption>
+                                            <NativeSelectOption v-for="value in childrenPaces" :key="value" :value="value">
+                                                {{ $t(`activities.childrenPace.${value}`) }}
+                                            </NativeSelectOption>
+                                        </NativeSelect>
+                                    </Field>
+                                </div>
+                                <Field label="activities.fields.ageVariants" :error="errors.get('age_variants')">
+                                    <TextEditor v-model="activity.audience.ageVariants" class="min-h-24" />
                                 </Field>
-                            </div>
-                            <label class="label mt-2">
-                                <input type="checkbox" class="checkbox checkbox-sm"
-                                    v-model="activity.supervision.crossSupervision" />
-                                {{ $t('activities.fields.crossSupervision') }}
-                            </label>
-                            <Field label="activities.fields.supervisionNotes" :error="errors.get('supervision_notes')">
-                                <TextEditor v-model="activity.supervision.notes" class="min-h-24" />
-                            </Field>
-                        </div>
+                            </TabsContent>
 
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.place')">
-                            <input type="radio" name="activity-families" value="place" v-model="familyTab" />
-                            <MapPinIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.place') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <div class="flex gap-4">
-                                <label class="label">
-                                    <input type="checkbox" class="checkbox checkbox-sm"
-                                        v-model="activity.place.indoor" />
-                                    {{ $t('activities.fields.indoor') }}
-                                </label>
-                                <label class="label">
-                                    <input type="checkbox" class="checkbox checkbox-sm"
-                                        v-model="activity.place.outdoor" />
-                                    {{ $t('activities.fields.outdoor') }}
-                                </label>
-                            </div>
-                            <Field label="activities.fields.seasons" :error="errors.get('seasons')">
-                                <MultiSelect :items="seasonOptions" displayKey="label" keyBy="value"
-                                    v-model="seasons" />
-                            </Field>
-                            <Field label="activities.fields.locations" :error="errors.get('locations')">
-                                <MultiSelect :items="locationOptions" displayKey="label" keyBy="value"
-                                    v-model="locations" />
-                            </Field>
-                            <Field label="activities.fields.conditions" :error="errors.get('conditions')">
-                                <TextEditor v-model="activity.place.conditions" class="min-h-24" />
-                            </Field>
-                        </div>
-
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.pedagogy')">
-                            <input type="radio" name="activity-families" value="pedagogy" v-model="familyTab" />
-                            <GraduationCapIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.pedagogy') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
-                                <Field label="activities.tagType.GOAL" :error="errors.get('goal_tags')">
-                                    <TagSelect :items="tagOptions.GOAL" displayKey="name" keyBy="id"
-                                        v-model="activity.pedagogy.goals" />
+                            <TabsContent value="supervision" class="flex flex-col gap-4 p-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Field label="activities.fields.hostEffort" :error="errors.get('host_effort')">
+                                        <NativeSelect class="w-full" v-model="activity.supervision.hostEffort">
+                                            <NativeSelectOption :value="null">{{ $t('activities.fields.unset') }}</NativeSelectOption>
+                                            <NativeSelectOption v-for="value in hostEfforts" :key="value" :value="value">
+                                                {{ $t(`activities.hostEffort.${value}`) }}
+                                            </NativeSelectOption>
+                                        </NativeSelect>
+                                    </Field>
+                                    <Field label="activities.fields.hosts" :error="errors.get('recommended_hosts_numbers')">
+                                        <Input type="number" min="0"
+                                            :aria-invalid="!!errors.get('recommended_hosts_numbers') || undefined"
+                                            v-model.number="activity.supervision.hostsRequired" />
+                                    </Field>
+                                </div>
+                                <Label class="font-normal">
+                                    <Checkbox v-model="activity.supervision.crossSupervision" />
+                                    {{ $t('activities.fields.crossSupervision') }}
+                                </Label>
+                                <Field label="activities.fields.supervisionNotes" :error="errors.get('supervision_notes')">
+                                    <TextEditor v-model="activity.supervision.notes" class="min-h-24" />
                                 </Field>
-                                <Field label="activities.tagType.IDEAL_FOR" :error="errors.get('ideal_for_tags')">
-                                    <TagSelect :items="tagOptions.IDEAL_FOR" displayKey="name" keyBy="id"
-                                        v-model="activity.pedagogy.idealFor" />
+                            </TabsContent>
+
+                            <TabsContent value="place" class="flex flex-col gap-4 p-3">
+                                <div class="flex gap-4">
+                                    <Label class="font-normal">
+                                        <Checkbox v-model="activity.place.indoor" />
+                                        {{ $t('activities.fields.indoor') }}
+                                    </Label>
+                                    <Label class="font-normal">
+                                        <Checkbox v-model="activity.place.outdoor" />
+                                        {{ $t('activities.fields.outdoor') }}
+                                    </Label>
+                                </div>
+                                <Field label="activities.fields.seasons" :error="errors.get('seasons')">
+                                    <MultiSelect :items="seasonOptions" displayKey="label" keyBy="value"
+                                        v-model="seasons" />
                                 </Field>
-                                <Field v-for="axis in DEVELOPMENT_AXES" :key="axis"
-                                    :label="`activities.tagType.${axis}`">
-                                    <TagSelect :items="tagOptions[axis]" displayKey="name" keyBy="id"
-                                        v-model="activity.pedagogy.development[axis]" />
+                                <Field label="activities.fields.locations" :error="errors.get('locations')">
+                                    <MultiSelect :items="locationOptions" displayKey="label" keyBy="value"
+                                        v-model="locations" />
                                 </Field>
-                            </div>
-                            <!-- The six axes share one relation, so its error shows once, under all of them. -->
-                            <FieldError :error="errors.get('development_tags')" />
-                        </div>
-                    </div>
-                </Panel>
+                                <Field label="activities.fields.conditions" :error="errors.get('conditions')">
+                                    <TextEditor v-model="activity.place.conditions" class="min-h-24" />
+                                </Field>
+                            </TabsContent>
 
-                <Panel id="section-preparation" class="scroll-mt-16">
-                    <div class="tabs tabs-box">
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.families.safety')">
-                            <input type="radio" name="activity-preparation" value="safety" v-model="preparationTab" />
-                            <ShieldAlertIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.families.safety') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <TagSelect :items="safetyInstructions" class="w-full" displayKey="name" keyBy="id"
-                                v-model="activity.safety.instructions" />
-                            <FieldError :error="errors.get('safety_instructions')" />
-                        </div>
+                            <TabsContent value="pedagogy" class="flex flex-col gap-4 p-3">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <Field label="activities.tagType.GOAL" :error="errors.get('goal_tags')">
+                                        <TagSelect :items="tagOptions.GOAL" displayKey="name" keyBy="id"
+                                            v-model="activity.pedagogy.goals" />
+                                    </Field>
+                                    <Field label="activities.tagType.IDEAL_FOR" :error="errors.get('ideal_for_tags')">
+                                        <TagSelect :items="tagOptions.IDEAL_FOR" displayKey="name" keyBy="id"
+                                            v-model="activity.pedagogy.idealFor" />
+                                    </Field>
+                                    <Field v-for="axis in DEVELOPMENT_AXES" :key="axis"
+                                        :label="`activities.tagType.${axis}`">
+                                        <TagSelect :items="tagOptions[axis]" displayKey="name" keyBy="id"
+                                            v-model="activity.pedagogy.development[axis]" />
+                                    </Field>
+                                </div>
+                                <!-- The six axes share one relation, so its error shows once, under all of them. -->
+                                <FieldError :error="errors.get('development_tags')" />
+                            </TabsContent>
+                        </Tabs>
+                    </Panel>
 
-                        <label class="tab gap-2 tooltip sm:before:hidden sm:after:hidden"
-                            :data-tip="$t('activities.materials.title')">
-                            <input type="radio" name="activity-preparation" value="materials" v-model="preparationTab" />
-                            <PackageOpenIcon class="opacity-50" />
-                            <span class="sr-only sm:not-sr-only">{{ $t('activities.materials.title') }}</span>
-                        </label>
-                        <div class="tab-content p-3">
-                            <MaterialsSelection v-model="activity.materials" @add="addMaterial" @create="createMaterial"
-                                @remove="removeMaterial" />
-                            <FieldError :error="errors.get('materials')" />
-                        </div>
+                    <Panel id="section-preparation" class="scroll-mt-16">
+                        <Tabs v-model="preparationTab">
+                            <TabsList class="w-full">
+                                <TabsTrigger value="safety">
+                                    <Tooltip>
+                                        <TooltipTrigger as-child>
+                                            <span class="flex items-center gap-1.5">
+                                                <ShieldAlertIcon class="text-muted-foreground" />
+                                                <span class="sr-only sm:not-sr-only">{{ $t('activities.families.safety') }}</span>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent class="sm:hidden">{{ $t('activities.families.safety') }}</TooltipContent>
+                                    </Tooltip>
+                                </TabsTrigger>
+                                <TabsTrigger value="materials">
+                                    <Tooltip>
+                                        <TooltipTrigger as-child>
+                                            <span class="flex items-center gap-1.5">
+                                                <PackageOpenIcon class="text-muted-foreground" />
+                                                <span class="sr-only sm:not-sr-only">{{ $t('activities.materials.title') }}</span>
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent class="sm:hidden">{{ $t('activities.materials.title') }}</TooltipContent>
+                                    </Tooltip>
+                                </TabsTrigger>
+                            </TabsList>
 
-                    </div>
-                </Panel>
+                            <TabsContent value="safety" class="flex flex-col gap-2 p-3">
+                                <TagSelect :items="safetyInstructions" class="w-full" displayKey="name" keyBy="id"
+                                    v-model="activity.safety.instructions" />
+                                <FieldError :error="errors.get('safety_instructions')" />
+                            </TabsContent>
 
-                <Panel id="section-workshops" class="scroll-mt-16">
-                    <h2 class="text-2xl flex items-center gap-2">
-                        <BookOpenIcon class="opacity-50" /> {{ $t('activities.workshops.title') }}
-                    </h2>
-                    <button class="btn btn-primary" @click="() => editWorkshop(newWorkshop())">
-                        <PlusIcon class="opacity-50" />
-                        {{ $t('actions.add') }}
-                    </button>
-                    <FieldError :error="errors.get('workshops')" />
-                    <List :items="activity.workshops" v-slot="{ item }">
-                        <div class="my-auto">
-                            <div class="flex gap-2">
-                                <b>{{ item.name }}</b>
-                                <span v-if="item.theme" class="my-auto text-sm opacity-60">{{ item.theme }}</span>
-                                <span v-if="item.adults_required" class="badge my-auto">
-                                    {{ $t('activities.workshops.adults', { count: item.adults_required }) }}
+                            <TabsContent value="materials" class="flex flex-col gap-2 p-3">
+                                <MaterialsSelection v-model="activity.materials" @add="addMaterial" @create="createMaterial"
+                                    @remove="removeMaterial" />
+                                <FieldError :error="errors.get('materials')" />
+                            </TabsContent>
+                        </Tabs>
+                    </Panel>
+
+                    <Panel id="section-workshops" class="scroll-mt-16">
+                        <h2 class="text-2xl flex items-center gap-2">
+                            <BookOpenIcon class="text-muted-foreground" /> {{ $t('activities.workshops.title') }}
+                        </h2>
+                        <Button @click="() => editWorkshop(newWorkshop())">
+                            <PlusIcon />
+                            {{ $t('actions.add') }}
+                        </Button>
+                        <FieldError :error="errors.get('workshops')" />
+                        <List :items="activity.workshops" v-slot="{ item }">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <b>{{ item.name }}</b>
+                                    <span v-if="item.theme" class="text-sm text-muted-foreground">{{ item.theme }}</span>
+                                    <Badge v-if="item.adults_required" variant="outline">
+                                        {{ $t('activities.workshops.adults', { count: item.adults_required }) }}
+                                    </Badge>
+                                </div>
+                                <span v-if="item.challenges" v-html="item.challenges">
                                 </span>
                             </div>
-                            <span v-if="item.challenges" v-html="item.challenges">
-                            </span>
-                        </div>
 
-                        <div class="ms-auto my-auto flex gap-2">
-                            <button class="btn btn-sm btn-soft btn-error btn-square"
-                                @click="() => confirmRemoveWorkshop(item)">
-                                <TrashIcon class="icon-sm" />
-                            </button>
-                            <button class="btn btn-sm btn-soft btn-square" @click="() => editWorkshop(item)">
-                                <PenIcon class="icon-sm" />
-                            </button>
-                        </div>
-                    </List>
-                </Panel>
-
-                <Panel id="section-steps" class="scroll-mt-16">
-                    <h2 class="text-2xl flex items-center gap-2">
-                        <ListOrderedIcon class="opacity-50" /> {{ $t('activities.authoring.steps.title') }}
-                        <span class="ms-auto text-sm font-normal opacity-60">
-                            {{ $t('activities.fields.preparationTime') }} {{ $t('activities.minutes', {
-                                minutes:
-                                    timing.preparation
-                            })
-                            }}
-                            · {{ $t('activities.fields.playTime') }} {{ $t('activities.minutes', {
-                                minutes: timing.play
-                            }) }}
-                        </span>
-                    </h2>
-                    <button class="btn btn-primary" @click="() => editStep(newStep())">
-                        <PlusIcon class="opacity-50" />
-                        {{ $t('actions.add') }}
-                    </button>
-                    <FieldError :error="errors.get('steps')" />
-                    <List :items="activity.steps" v-slot="{ item, index }">
-                        <StepSummary :index="index" :step="item" />
-
-                        <div class="my-auto flex gap-2">
-                            <button class="btn btn-soft btn-error btn-square" @click="() => confirmRemoveStep(item)">
-                                <TrashIcon class="icon-sm" />
-                            </button>
-                            <button class="btn btn-soft btn-square" @click="() => editStep(item)">
-                                <PenIcon class="icon-sm" />
-                            </button>
-                        </div>
-                    </List>
-                </Panel>
-
-                <!-- Read only: users write their comments from the feedback screen, after a run. -->
-                <Panel id="section-comments" class="scroll-mt-16">
-                    <h2 class="text-2xl flex items-center gap-2">
-                        <MessageSquareIcon class="opacity-50" /> {{ $t('activities.authoring.comments.title') }}
-                        <span class="badge">{{ comments.length }}</span>
-                    </h2>
-                    <p v-if="!comments.length" class="opacity-50">{{ $t('activities.authoring.comments.empty') }}</p>
-                    <div v-for="comment in comments" :key="comment.id" class="card card-sm bg-base-100">
-                        <div class="card-body">
-                            <div class="flex items-center gap-2 text-sm opacity-60">
-                                <b>{{ $t('activities.authoring.comments.anonymous') }}</b>
-                                <span>· {{ $d(comment.updated) }}</span>
-                                <ThumbsUpIcon v-if="comment.liked" class="icon-sm text-primary fill-current ms-auto"
-                                    :aria-label="$t('activities.authoring.comments.liked')" />
+                            <div class="flex gap-2">
+                                <Button variant="destructive" size="icon-sm" @click="() => confirmRemoveWorkshop(item)">
+                                    <TrashIcon />
+                                </Button>
+                                <Button variant="secondary" size="icon-sm" @click="() => editWorkshop(item)">
+                                    <PenIcon />
+                                </Button>
                             </div>
-                            <p class="whitespace-pre-line">{{ comment.comment }}</p>
-                        </div>
-                    </div>
-                </Panel>
+                        </List>
+                    </Panel>
+
+                    <Panel id="section-steps" class="scroll-mt-16">
+                        <h2 class="text-2xl flex items-center gap-2">
+                            <ListOrderedIcon class="text-muted-foreground" /> {{ $t('activities.authoring.steps.title') }}
+                            <span class="ms-auto text-sm font-normal text-muted-foreground">
+                                {{ $t('activities.fields.preparationTime') }} {{ $t('activities.minutes', { minutes: timing.preparation }) }}
+                                · {{ $t('activities.fields.playTime') }} {{ $t('activities.minutes', { minutes: timing.play }) }}
+                            </span>
+                        </h2>
+                        <Button @click="() => editStep(newStep())">
+                            <PlusIcon />
+                            {{ $t('actions.add') }}
+                        </Button>
+                        <FieldError :error="errors.get('steps')" />
+                        <List :items="activity.steps" v-slot="{ item, index }">
+                            <StepSummary :index="index" :step="item" />
+
+                            <div class="flex gap-2">
+                                <Button variant="destructive" size="icon" @click="() => confirmRemoveStep(item)">
+                                    <TrashIcon />
+                                </Button>
+                                <Button variant="secondary" size="icon" @click="() => editStep(item)">
+                                    <PenIcon />
+                                </Button>
+                            </div>
+                        </List>
+                    </Panel>
+
+                    <!-- Read only: users write their comments from the feedback screen, after a run. -->
+                    <Panel id="section-comments" class="scroll-mt-16">
+                        <h2 class="text-2xl flex items-center gap-2">
+                            <MessageSquareIcon class="text-muted-foreground" /> {{ $t('activities.authoring.comments.title') }}
+                            <Badge variant="outline">{{ comments.length }}</Badge>
+                        </h2>
+                        <p v-if="!comments.length" class="text-muted-foreground">{{ $t('activities.authoring.comments.empty') }}</p>
+                        <Card v-for="comment in comments" :key="comment.id" class="py-4 shadow-none">
+                            <CardContent class="flex flex-col gap-2 px-4">
+                                <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <b>{{ $t('activities.authoring.comments.anonymous') }}</b>
+                                    <span>· {{ $d(comment.updated) }}</span>
+                                    <ThumbsUpIcon v-if="comment.liked" class="icon-sm text-primary fill-current ms-auto"
+                                        :aria-label="$t('activities.authoring.comments.liked')" />
+                                </div>
+                                <p class="whitespace-pre-line">{{ comment.comment }}</p>
+                            </CardContent>
+                        </Card>
+                    </Panel>
+                </div>
             </div>
-        </div>
-    </Container>
-    <StepEditModal ref="stepModal" :materials="activity.materials" :tips="tips" />
-    <WorkshopEditModal ref="workshopModal" :materials="activity.materials" />
-    <SectionsMenuModal ref="sectionsModal" :entries="sections" />
+        </Container>
+        <StepEditModal ref="stepModal" :materials="activity.materials" :tips="tips" />
+        <WorkshopEditModal ref="workshopModal" :materials="activity.materials" />
+        <SectionsMenuModal ref="sectionsModal" :entries="sections" />
+    </TooltipProvider>
 </template>

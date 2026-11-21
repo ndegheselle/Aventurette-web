@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useIsMobile } from '@chapelure/ui/layout/useIsMobile';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Spinner } from '@chapelure/ui/shadcn/spinner';
 import { useActivity } from '@features/activities/composables/useActivity';
 import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
 import ActivityActions from '@features/activities/ui/activity/_parts/actions.vue';
@@ -26,9 +28,9 @@ function back() {
 <template>
     <component v-if="activity" :is="isMobile ? MobileLayout : DesktopLayout">
         <template #back>
-            <button type="button" class="btn btn-soft btn-square btn-lg" :aria-label="$t('back')" @click="back">
+            <Button type="button" variant="secondary" size="icon-lg" :aria-label="$t('back')" @click="back">
                 <ArrowLeftIcon />
-            </button>
+            </Button>
         </template>
 
         <template #safety>
@@ -45,7 +47,7 @@ function back() {
 
         <template #header>
             <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold">{{ activity.name }}</h1>
-            <p v-if="activity.summary" class="text-lg opacity-80">{{ activity.summary }}</p>
+            <p v-if="activity.summary" class="text-lg text-muted-foreground">{{ activity.summary }}</p>
             <span class="text-sm" v-html="activity.description"></span>
         </template>
 
@@ -60,6 +62,6 @@ function back() {
     </component>
 
     <div v-else class="flex justify-center p-8">
-        <span class="loading loading-spinner"></span>
+        <Spinner class="size-6" />
     </div>
 </template>

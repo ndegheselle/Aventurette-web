@@ -3,6 +3,8 @@
 import RangeInput from '@chapelure/ui/inputs/RangeInput.vue';
 import { rangeLabel } from '@chapelure/ui/inputs/range';
 import { toggled } from '@chapelure/ui/inputs/selection';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Label } from '@chapelure/ui/shadcn/label';
 import { DEFAULT_AGE_BOUNDS, DEFAULT_PARTICIPANTS_BOUNDS, Location, type FilterDefaultsData } from '@features/user/models/user';
 
 const defaults = defineModel<FilterDefaultsData>({ required: true });
@@ -11,40 +13,40 @@ const locations = Object.values(Location);
 </script>
 
 <template>
-    <div class="flex flex-col gap-4">
-        <fieldset class="fieldset">
-            <legend class="fieldset-legend w-full">
-                {{ $t('user.filterDefaults.age') }}
-                <span class="ms-auto font-normal opacity-70">
+    <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+                <Label>{{ $t('user.filterDefaults.age') }}</Label>
+                <span class="ms-auto text-sm text-muted-foreground">
                     {{ $t(rangeLabel(defaults.ageMin, defaults.ageMax).key, rangeLabel(defaults.ageMin, defaults.ageMax).params) }}
                 </span>
-            </legend>
-            <RangeInput class="text-primary" v-bind="DEFAULT_AGE_BOUNDS"
+            </div>
+            <RangeInput v-bind="DEFAULT_AGE_BOUNDS"
                         v-model:min="defaults.ageMin" v-model:max="defaults.ageMax" />
-        </fieldset>
+        </div>
 
-        <fieldset class="fieldset">
-            <legend class="fieldset-legend w-full">
-                {{ $t('user.filterDefaults.participants') }}
-                <span class="ms-auto font-normal opacity-70">
+        <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+                <Label>{{ $t('user.filterDefaults.participants') }}</Label>
+                <span class="ms-auto text-sm text-muted-foreground">
                     {{ $t(rangeLabel(defaults.participantsMin, defaults.participantsMax).key, rangeLabel(defaults.participantsMin, defaults.participantsMax).params) }}
                 </span>
-            </legend>
-            <RangeInput class="text-primary" v-bind="DEFAULT_PARTICIPANTS_BOUNDS"
+            </div>
+            <RangeInput v-bind="DEFAULT_PARTICIPANTS_BOUNDS"
                         v-model:min="defaults.participantsMin" v-model:max="defaults.participantsMax" />
-        </fieldset>
+        </div>
 
-        <fieldset class="fieldset">
-            <legend class="fieldset-legend">{{ $t('user.filterDefaults.locations') }}</legend>
+        <div class="flex flex-col gap-3">
+            <Label>{{ $t('user.filterDefaults.locations') }}</Label>
             <div class="flex flex-wrap gap-2">
-                <button v-for="location in locations" :key="location"
-                        type="button" class="btn btn-sm"
-                        :class="defaults.locations.includes(location) ? 'btn-primary' : 'btn-soft'"
+                <Button v-for="location in locations" :key="location"
+                        type="button" size="sm"
+                        :variant="defaults.locations.includes(location) ? 'default' : 'secondary'"
                         :aria-pressed="defaults.locations.includes(location)"
                         @click="() => defaults.locations = toggled(defaults.locations, location)">
                     {{ $t(`activities.location.${location}`) }}
-                </button>
+                </Button>
             </div>
-        </fieldset>
+        </div>
     </div>
 </template>

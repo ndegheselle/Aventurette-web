@@ -1,4 +1,5 @@
-<!-- Example : <List :items="list" v-slot="{ item, index }"></List> -->
+<!-- Example : <List :items="list" v-slot="{ item, index }"></List>
+     A row is a flex line: give the part that should take the room left `flex-1`. -->
 <script setup lang="ts" generic="T extends BaseEntity">
 import type { BaseEntity } from '@chapelure/core';
 import { CircleQuestionMarkIcon } from 'lucide-vue-next';
@@ -12,15 +13,15 @@ defineSlots<{
 </script>
 
 <template>
-    <ul class="list bg-base-100 rounded-box border border-base-content/5">
-        <li class="p-4 opacity-30 tracking-wide my-auto mx-auto" v-if="!items?.length">
-            <div class="flex ">
+    <ul class="flex flex-col divide-y rounded-xl border bg-card text-card-foreground">
+        <li class="mx-auto my-auto p-4 tracking-wide text-muted-foreground" v-if="!items?.length">
+            <div class="flex">
                 <CircleQuestionMarkIcon class="mr-2 my-auto" />
                 <span>{{ $t('data.noData') }}</span>
             </div>
         </li>
 
-        <li v-for="(item, index) in items" :key="item.id" class="list-row duration-300">
+        <li v-for="(item, index) in items" :key="item.id" class="flex items-center gap-4 p-4 duration-300">
             <slot :item="item" :index="index" />
         </li>
     </ul>

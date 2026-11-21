@@ -131,8 +131,8 @@ const RULES = [
         check: f => inFeatureLayer(f.path, 'composables')
             && /from ['"]@\/backend['"]/.test(f.text),
     },
-    // No rule confines daisyUI classes to packages/ui: it only bred one-line wrapper
-    // components. See the compromises section of ARCHITECTURE.md.
+    // No rule confines Tailwind classes to packages/ui: layout is written at the call site, on
+    // shadcn's components. See ADR 0004.
 ];
 
 /** The alias map and the tsconfig `paths` are the same list twice; check they still agree. */

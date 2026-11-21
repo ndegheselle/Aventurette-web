@@ -6,6 +6,8 @@ import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useDraftModal } from '@chapelure/ui/modals/useDraftModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Input } from '@chapelure/ui/shadcn/input';
 import type { ActivityMaterialData } from '@features/activities/models/material';
 import type { ActivityWorkshopData } from '@features/activities/models/workshop';
 import { workshopProblems } from '@features/admin/activities-authoring/models/workshop.edit';
@@ -26,17 +28,16 @@ defineExpose<IEditModal<ActivityWorkshopData>>({ show });
         <template #title>
             {{ $t('actions.update') }}
         </template>
-        <div class="flex flex-col">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4">
+        <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Field label="activities.workshops.fields.name" :error="errors.get('name')">
-                    <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
-                        v-model="workshop.name" />
+                    <Input type="text" :aria-invalid="!!errors.get('name') || undefined" v-model="workshop.name" />
                 </Field>
                 <Field label="activities.workshops.fields.theme" :error="errors.get('theme')">
-                    <input type="text" class="input w-full" v-model="workshop.theme" />
+                    <Input type="text" v-model="workshop.theme" />
                 </Field>
                 <Field label="activities.workshops.fields.adultsRequired" :error="errors.get('adults_required')">
-                    <input type="number" min="0" class="input w-full" v-model.number="workshop.adults_required" />
+                    <Input type="number" min="0" v-model.number="workshop.adults_required" />
                 </Field>
             </div>
             <Field label="activities.workshops.fields.challenges" :error="errors.get('challenges')">
@@ -48,14 +49,14 @@ defineExpose<IEditModal<ActivityWorkshopData>>({ show });
         </div>
         <FieldError :error="errors.global.value" />
         <template #actions>
-            <button class="btn" @click="cancel">
+            <Button variant="outline" @click="cancel">
                 <XIcon />
                 {{ $t('actions.cancel') }}
-            </button>
-            <button class="btn btn-primary" @click="confirm">
+            </Button>
+            <Button @click="confirm">
                 <CheckIcon />
                 {{ $t('actions.confirm') }}
-            </button>
+            </Button>
         </template>
     </Modal>
 </template>

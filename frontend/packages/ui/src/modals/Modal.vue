@@ -1,23 +1,20 @@
 <!-- Driven by a useModal controller: <Modal :controller /> -->
 <script setup lang="ts" generic="T = boolean">
+import { keepOpenOnAlerts } from '@chapelure/ui/alerts/useAlert';
 import { useModal, type IModalController } from '@chapelure/ui/modals/useModal';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@chapelure/ui/shadcn/dialog';
 import { CheckIcon, XIcon } from 'lucide-vue-next';
-import { useTemplateRef, watch } from 'vue';
 
 const { controller = useModal(), withActions = true } = defineProps<{
     withActions?: boolean,
     controller?: IModalController<T>
 }>();
 
-const dialog = useTemplateRef<HTMLDialogElement>('dialog');
-
-watch(controller.isShown, (isShown) => {
-    if (isShown) {
-        dialog.value?.show();
-    } else {
-        dialog.value?.close();
-    }
-});
+// Closed by the overlay or Escape: that is a cancel, so clicking away never confirms by accident.
+function onOpenChange(open: boolean) {
+    if (!open) controller.cancel();
+}
 
 defineSlots<{
     title: any;
@@ -27,43 +24,45 @@ defineSlots<{
 </script>
 
 <template>
-    <dialog ref="dialog"
-            class="modal">
-        <div class="modal-box max-w-5xl">
-            <div class="flex">
-                <h3 class="text-lg font-bold">
+    <Dialog :open="controller.isShown.value"
+            @update:open="onOpenChange">
+        <DialogContent class="flex max-h-[90dvh] flex-col sm:max-w-5xl"
+                       :show-close-button="false"
+                       :aria-describedby="undefined"
+                       @interact-outside="keepOpenOnAlerts">
+            <DialogHeader class="flex-row items-center">
+                <DialogTitle class="text-lg">
                     <slot name="title" />
-                </h3>
-                <button class="btn btn-sm btn-circle btn-ghost ms-auto"
+                </DialogTitle>
+                <Button variant="ghost"
+                        size="icon-sm"
+                        class="ms-auto rounded-full"
+                        data-slot="dialog-close"
+                        :aria-label="$t('actions.close')"
                         @click="() => controller.cancel()">
                     <XIcon />
-                </button>
-            </div>
+                </Button>
+            </DialogHeader>
 
-            <div class="overflow-y-auto">
+            <div class="-mx-6 overflow-y-auto px-6"
+                 data-slot="dialog-body">
                 <slot />
             </div>
 
-            <div class="modal-action"
-                 v-if="withActions">
+            <DialogFooter v-if="withActions">
                 <slot name="actions">
-                    <button class="btn"
+                    <Button variant="outline"
                             @click="() => controller.cancel()">
                         <XIcon />
                         {{ $t("actions.cancel") }}
-                    </button>
+                    </Button>
                     <!-- The default actions are a yes or no: a modal answering anything else brings its own. -->
-                    <button class="btn btn-primary"
-                            @click="() => controller.confirm(true as T)">
+                    <Button @click="() => controller.confirm(true as T)">
                         <CheckIcon />
                         {{ $t("actions.confirm") }}
-                    </button>
+                    </Button>
                 </slot>
-            </div>
-        </div>
-
-        <div class="modal-backdrop">
-            <button @click="() => controller.cancel()">{{ $t('actions.close') }}</button>
-        </div>
-    </dialog>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
 </template>

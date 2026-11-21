@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
+import { Button } from '@chapelure/ui/shadcn/button';
 import type { ActivityMaterialData } from '@features/activities/models/material';
 import { pictureOf, type ActivityResourceData } from '@features/activities/models/step';
 import { ExternalLinkIcon, FileTextIcon, PackageIcon } from 'lucide-vue-next';
@@ -34,20 +35,20 @@ function showResource(picked: ActivityResourceData) {
 
 <template>
     <div v-if="materials.length || resources.length"
-         class="carousel w-full gap-2 justify-center">
+         class="flex w-full snap-x snap-mandatory justify-center gap-2 overflow-x-auto">
         <button v-for="item in materials"
                 :key="item.id"
                 type="button"
                 :title="item.name"
-                class="carousel-item flex-col bg-base-200 w-20 justify-center cursor-pointer"
+                class="flex w-20 shrink-0 snap-start flex-col justify-center cursor-pointer"
                 @click="() => showMaterial(item)">
-            <div class="flex items-center justify-center bg-base-300 rounded-box size-20">
-                <PackageIcon class="size-10 opacity-30" />
+            <div class="flex items-center justify-center bg-muted rounded-xl size-20">
+                <PackageIcon class="size-10 text-muted-foreground" />
             </div>
             <div class="flex flex-col justify-center text-sm text-center">
                 <div class="truncate">{{ item.name }}</div>
                 <div v-if="item.quantity"
-                     class="truncate text-xs opacity-60">{{ item.quantity }}</div>
+                     class="truncate text-xs text-muted-foreground">{{ item.quantity }}</div>
             </div>
         </button>
 
@@ -55,15 +56,15 @@ function showResource(picked: ActivityResourceData) {
                 :key="item.id"
                 type="button"
                 :title="item.name"
-                class="carousel-item flex-col w-20 bg-base-200 cursor-pointer"
+                class="flex w-20 shrink-0 snap-start flex-col cursor-pointer"
                 @click="() => showResource(item)">
             <img v-if="pictureOf(item)"
                  :src="pictureOf(item)"
                  alt=""
                  class="flex-1 min-h-0 w-full object-cover" />
             <div v-else
-                 class="flex items-center justify-center bg-base-300 rounded-box size-20">
-                <FileTextIcon class="size-10 opacity-30" />
+                 class="flex items-center justify-center bg-muted rounded-xl size-20">
+                <FileTextIcon class="size-10 text-muted-foreground" />
             </div>
             <div class="flex flex-col justify-center text-sm text-center">
                 <div class="truncate">{{ item.name }}</div>
@@ -73,11 +74,11 @@ function showResource(picked: ActivityResourceData) {
         <ResponsiveModal :controller="sheet">
             <template #title>{{ material?.name ?? resource?.name }}</template>
             <div v-if="material" class="flex flex-col items-center gap-3">
-                <div class="flex items-center justify-center bg-base-300 rounded-box size-32">
-                    <PackageIcon class="size-16 opacity-30" />
+                <div class="flex items-center justify-center bg-muted rounded-xl size-32">
+                    <PackageIcon class="size-16 text-muted-foreground" />
                 </div>
                 <div v-if="material.quantity" class="text-center">
-                    <div class="text-xs opacity-60">{{ $t('activities.materials.quantity') }}</div>
+                    <div class="text-xs text-muted-foreground">{{ $t('activities.materials.quantity') }}</div>
                     <div>{{ material.quantity }}</div>
                 </div>
             </div>
@@ -85,18 +86,19 @@ function showResource(picked: ActivityResourceData) {
                 <img v-if="pictureOf(resource)"
                      :src="pictureOf(resource)"
                      alt=""
-                     class="max-h-80 rounded-box object-contain" />
+                     class="max-h-80 rounded-xl object-contain" />
                 <div v-else
-                     class="flex items-center justify-center bg-base-300 rounded-box size-32">
-                    <FileTextIcon class="size-16 opacity-30" />
+                     class="flex items-center justify-center bg-muted rounded-xl size-32">
+                    <FileTextIcon class="size-16 text-muted-foreground" />
                 </div>
-                <a :href="resource.url"
-                   target="_blank"
-                   rel="noopener"
-                   class="btn btn-primary">
-                    <ExternalLinkIcon />
-                    {{ $t('activities.supplies.open') }}
-                </a>
+                <Button as-child>
+                    <a :href="resource.url"
+                       target="_blank"
+                       rel="noopener">
+                        <ExternalLinkIcon />
+                        {{ $t('activities.supplies.open') }}
+                    </a>
+                </Button>
             </div>
         </ResponsiveModal>
     </div>

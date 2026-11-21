@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { debounce } from '@chapelure/core';
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@chapelure/ui/shadcn/input-group';
 import { SearchIcon, XIcon } from 'lucide-vue-next';
 
 /** Long enough that typing a word searches once, at its end. */
@@ -25,11 +26,15 @@ function clear() {
 </script>
 
 <template>
-    <label class="input w-full p-0 ps-2 pe-0.5">
-        <SearchIcon class="opacity-50" />
-        <input type="text" :placeholder="$t('actions.search')" v-model="model" @input="onInput" />
-        <button v-if="model" class="btn btn-sm btn-ghost btn-square" @click="clear">
-            <XIcon />
-        </button>
-    </label>
+    <InputGroup>
+        <InputGroupAddon>
+            <SearchIcon />
+        </InputGroupAddon>
+        <InputGroupInput type="text" :placeholder="$t('actions.search')" v-model="model" @input="onInput" />
+        <InputGroupAddon v-if="model" align="inline-end">
+            <InputGroupButton size="icon-xs" :aria-label="$t('actions.clear')" @click="clear">
+                <XIcon />
+            </InputGroupButton>
+        </InputGroupAddon>
+    </InputGroup>
 </template>

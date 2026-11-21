@@ -19,6 +19,6 @@ const favorite = computed(() => isFavorite(props.activity.id));
             :aria-pressed="favorite"
             :aria-label="$t(favorite ? 'activities.actions.unfavorite' : 'activities.actions.favorite')"
             @click="toggle(activity)">
-        <HeartIcon :class="{ 'fill-current text-error': favorite }" />
+        <HeartIcon :class="{ 'fill-current text-destructive': favorite }" />
     </button>
 </template>

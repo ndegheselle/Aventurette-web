@@ -4,6 +4,8 @@ import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import TextEditor from '@chapelure/ui/forms/TextEditor.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Input } from '@chapelure/ui/shadcn/input';
 import type { SafetyInstructionData } from '@features/activities/models/activity';
 import { safetyInstructionsApi } from '@features/admin/catalogue-authoring/api/safety.api';
 import { useSluggedEditModal } from '@features/admin/catalogue-authoring/composables/useSluggedEditModal';
@@ -20,14 +22,14 @@ defineExpose<IEditModal<SafetyInstructionData>>({ show });
         <template #title>
             {{ $t(isNew ? 'catalogue.safety.new' : 'catalogue.safety.edit') }}
         </template>
-        <div class="flex flex-col">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+        <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Field label="catalogue.fields.name" :error="errors.get('name')">
-                    <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('name') }"
+                    <Input type="text" :aria-invalid="!!errors.get('name') || undefined"
                         v-model="instruction.name" />
                 </Field>
                 <Field label="catalogue.fields.slug" :error="errors.get('slug')">
-                    <input type="text" class="input w-full" :class="{ 'input-error': !!errors.get('slug') }"
+                    <Input type="text" :aria-invalid="!!errors.get('slug') || undefined"
                         v-model="instruction.slug" />
                 </Field>
             </div>
@@ -37,14 +39,14 @@ defineExpose<IEditModal<SafetyInstructionData>>({ show });
         </div>
         <FieldError :error="errors.global.value" />
         <template #actions>
-            <button class="btn" @click="cancel">
+            <Button variant="outline" @click="cancel">
                 <XIcon />
                 {{ $t('actions.cancel') }}
-            </button>
-            <button class="btn btn-primary" :disabled="isLoading" @click="confirm">
+            </Button>
+            <Button :disabled="isLoading" @click="confirm">
                 <CheckIcon />
                 {{ $t('actions.save') }}
-            </button>
+            </Button>
         </template>
     </Modal>
 </template>

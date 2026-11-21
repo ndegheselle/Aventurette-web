@@ -4,6 +4,9 @@ import Pagination from '@chapelure/ui/data/Pagination.vue';
 import Container from '@chapelure/ui/layout/Container.vue';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import { useConfirmation } from '@chapelure/ui/modals/useConfirmation';
+import { Badge } from '@chapelure/ui/shadcn/badge';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Tabs, TabsList, TabsTrigger } from '@chapelure/ui/shadcn/tabs';
 import { ActivityState, type ActivityData } from '@features/activities/models/activity';
 import { useActivitiesEditList } from '@features/admin/activities-authoring/composables/useActivitiesEditList';
 import { authoredStateTabs } from '@features/admin/activities-authoring/models/activity.edit';
@@ -43,56 +46,65 @@ useNavbar(t('activities.authoring.title'));
 <template>
     <Container>
         <div class="flex gap-2 my-2">
-            <div role="tablist"
-                 class="tabs flex-1 tabs-box">
-                <a v-for="tab in authoredStateTabs"
-                   :key="tab.label"
-                   role="tab"
-                   class="tab"
-                   :class="{ 'tab-active': state === tab.value }"
-                   @click="selectState(tab.value)">
-                    {{ $t(tab.label) }}
-                </a>
-            </div>
+            <!-- The tabs filter the list rather than switch panels: picking one is the composable's.
+                 A state is null for "all", so the tabs key on its string. -->
+            <Tabs class="flex-1"
+                  activation-mode="manual"
+                  :model-value="String(state)">
+                <TabsList class="w-full">
+                    <TabsTrigger v-for="tab in authoredStateTabs"
+                                 :key="tab.label"
+                                 :value="String(tab.value)"
+                                 @click="selectState(tab.value)">
+                        {{ $t(tab.label) }}
+                    </TabsTrigger>
+                </TabsList>
+            </Tabs>
             <div class="ms-auto my-auto flex gap-2">
-                <button class="btn btn-soft btn-square"
+                <Button variant="secondary"
+                        size="icon"
                         :title="$t('activities.authoring.import.title')"
                         @click="() => importModal?.show()">
                     <ImportIcon />
-                </button>
-                <RouterLink class="btn btn-primary btn-square"
-                            :title="$t('actions.add')"
-                            :to="{ name: routesNames.new }">
-                    <PlusIcon />
-                </RouterLink>
+                </Button>
+                <Button size="icon"
+                        as-child>
+                    <RouterLink :title="$t('actions.add')"
+                                :to="{ name: routesNames.new }">
+                        <PlusIcon />
+                    </RouterLink>
+                </Button>
             </div>
         </div>
 
         <List :items="paginated.items"
               v-slot="{ item }"
               class="flex-1">
-            <div><img class="size-16 rounded-box"
+            <div><img class="size-16 rounded-md"
                      src="https://placeholder.pagebee.io/api/plain/64/64" /></div>
-            <div>
-                <div class="flex flex-wrap gap-2">
-                    <b class="my-auto">{{ item.name }}</b>
-                    <span class="badge badge-sm my-auto"
-                          :class="item.state === ActivityState.PUBLISHED ? 'badge-success' : 'badge-ghost'">
+            <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                    <b>{{ item.name }}</b>
+                    <Badge :variant="item.state === ActivityState.PUBLISHED ? 'default' : 'secondary'">
                         {{ $t(`activities.state.${item.state}`) }}
-                    </span>
+                    </Badge>
                 </div>
                 <p class="text-xs"
                    v-html="item.description"></p>
             </div>
-            <div class="my-auto flex gap-2">
-                <a class="btn btn-soft btn-square btn-error"
-                   @click="() => remove(item)">
-                    <TrashIcon class="icon-sm" />
-                </a>
-                <RouterLink class="btn btn-soft btn-square"
-                            :to="{ name: routesNames.page, params: { id: item.id } }">
-                    <PenIcon class="icon-sm" />
-                </RouterLink>
+            <div class="flex gap-2">
+                <Button variant="destructive"
+                        size="icon"
+                        @click="() => remove(item)">
+                    <TrashIcon />
+                </Button>
+                <Button variant="secondary"
+                        size="icon"
+                        as-child>
+                    <RouterLink :to="{ name: routesNames.page, params: { id: item.id } }">
+                        <PenIcon />
+                    </RouterLink>
+                </Button>
             </div>
         </List>
 

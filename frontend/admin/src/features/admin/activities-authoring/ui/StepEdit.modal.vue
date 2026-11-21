@@ -6,6 +6,11 @@ import TagSelect from '@chapelure/ui/inputs/TagSelect.vue';
 import Modal from '@chapelure/ui/modals/Modal.vue';
 import { useDraftModal } from '@chapelure/ui/modals/useDraftModal';
 import { useModal, type IEditModal } from '@chapelure/ui/modals/useModal';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { ButtonGroup } from '@chapelure/ui/shadcn/button-group';
+import { Input } from '@chapelure/ui/shadcn/input';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@chapelure/ui/shadcn/input-group';
+import { NativeSelect, NativeSelectOption } from '@chapelure/ui/shadcn/native-select';
 import type { ActivityMaterialData } from '@features/activities/models/material';
 import { StepKind, type ActivityStepData, type ActivityTipData } from '@features/activities/models/step';
 import ResourcesSelection from '@features/admin/activities-authoring/ui/ResourcesSelection.vue';
@@ -46,30 +51,30 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
         <template #title>
             {{ $t('actions.update') }}
         </template>
-        <div class="flex flex-col">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4">
+        <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Field label="activities.steps.fields.title" class="md:col-span-2" :error="errors.get('title')">
-                    <input type="text" class="input w-full" v-model="step.title" />
+                    <Input type="text" v-model="step.title" />
                 </Field>
                 <Field label="activities.steps.fields.duration" :error="errors.get('duration')">
-                    <div class="join w-full">
-                        <label class="join-item input w-full">
-                            <input type="number" min="0" v-model.number="hours" />
-                            <span class="label">{{ $t('activities.authoring.steps.hours') }}</span>
-                        </label>
-                        <label class="join-item input w-full">
-                            <input type="number" min="0" max="59" v-model.number="minutes" />
-                            <span class="label">{{ $t('activities.authoring.steps.minutes') }}</span>
-                        </label>
-                    </div>
+                    <ButtonGroup class="w-full">
+                        <InputGroup>
+                            <InputGroupInput type="number" min="0" v-model.number="hours" />
+                            <InputGroupAddon align="inline-end">{{ $t('activities.authoring.steps.hours') }}</InputGroupAddon>
+                        </InputGroup>
+                        <InputGroup>
+                            <InputGroupInput type="number" min="0" max="59" v-model.number="minutes" />
+                            <InputGroupAddon align="inline-end">{{ $t('activities.authoring.steps.minutes') }}</InputGroupAddon>
+                        </InputGroup>
+                    </ButtonGroup>
                 </Field>
             </div>
             <Field label="activities.steps.fields.kind" :error="errors.get('kind')">
-                <select class="select w-full" v-model="step.kind">
-                    <option v-for="value in kinds" :key="value" :value="value">
+                <NativeSelect class="w-full" v-model="step.kind">
+                    <NativeSelectOption v-for="value in kinds" :key="value" :value="value">
                         {{ $t(`activities.steps.kind.${value}`) }}
-                    </option>
-                </select>
+                    </NativeSelectOption>
+                </NativeSelect>
             </Field>
             <Field label="activities.steps.fields.description" :error="errors.get('description')">
                 <TextEditor v-model="step.description" class="min-h-32" />
@@ -86,14 +91,14 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
         </div>
         <FieldError :error="errors.global.value" />
         <template #actions>
-            <button class="btn" @click="cancel">
+            <Button variant="outline" @click="cancel">
                 <XIcon />
                 {{ $t('actions.cancel') }}
-            </button>
-            <button class="btn btn-primary" @click="confirm">
+            </Button>
+            <Button @click="confirm">
                 <CheckIcon />
                 {{ $t('actions.confirm') }}
-            </button>
+            </Button>
         </template>
     </Modal>
 </template>

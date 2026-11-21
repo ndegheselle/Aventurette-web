@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { optionsFor, optionsOf, toggled } from './selection';
+import { offered, optionsFor, optionsOf, toggled } from './selection';
 
 const art = { id: 'a', name: 'Art' };
 const forest = { id: 'b', name: 'Forest' };
@@ -32,5 +32,20 @@ describe('optionsFor', () => {
 
     it('drops a value no option offers', () => {
         expect(optionsFor(options, ['summer', 'autumn']).map(option => option.value)).toEqual(['summer']);
+    });
+});
+
+describe('offered', () => {
+    it('stops offering what is picked', () => {
+        expect(offered([art, forest], [forest], '', 'name')).toEqual([art]);
+    });
+
+    it('matches a copy to its option by keyBy', () => {
+        // The field holds its own copy of the row, from another read.
+        expect(offered([art, forest], [{ ...forest }], '', 'name', 'id')).toEqual([art]);
+    });
+
+    it('keeps what contains the search, whatever its case', () => {
+        expect(offered([art, forest], [], 'RES', 'name')).toEqual([forest]);
     });
 });

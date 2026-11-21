@@ -1,4 +1,5 @@
-<!-- The page's sections as a side menu; picking one is the parent's to act on. -->
+<!-- The page's sections as a side menu; picking one is the parent's to act on. A long label wraps
+     rather than running out of the menu. -->
 <script lang="ts">
 import type { Component } from 'vue';
 
@@ -16,27 +17,36 @@ export interface SectionEntry {
 </script>
 
 <script setup lang="ts">
+import { Button } from '@chapelure/ui/shadcn/button';
+
 const { entries } = defineProps<{ entries: SectionEntry[] }>();
 const emit = defineEmits<{ select: [entry: SectionEntry] }>();
 </script>
 
 <template>
-    <ul class="menu w-full">
+    <ul class="flex w-full flex-col gap-1 p-2">
         <li v-for="entry in entries"
             :key="entry.key">
-            <button @click="() => emit('select', entry)">
+            <Button variant="ghost"
+                    size="sm"
+                    class="h-auto min-h-8 w-full justify-start py-1.5 text-left whitespace-normal"
+                    @click="() => emit('select', entry)">
                 <component :is="entry.icon"
-                           class="icon-sm opacity-50" />
+                           class="text-muted-foreground" />
                 {{ $t(entry.label) }}
-            </button>
-            <ul v-if="entry.children?.length">
+            </Button>
+            <ul v-if="entry.children?.length"
+                class="ms-4 mt-1 flex flex-col gap-1 border-l ps-2">
                 <li v-for="child in entry.children"
                     :key="child.key">
-                    <button @click="() => emit('select', child)">
+                    <Button variant="ghost"
+                            size="sm"
+                            class="h-auto min-h-8 w-full justify-start py-1.5 text-left whitespace-normal"
+                            @click="() => emit('select', child)">
                         <component :is="child.icon"
-                                   class="icon-sm opacity-50" />
+                                   class="text-muted-foreground" />
                         {{ $t(child.label) }}
-                    </button>
+                    </Button>
                 </li>
             </ul>
         </li>

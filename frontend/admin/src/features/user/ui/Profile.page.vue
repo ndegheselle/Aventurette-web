@@ -2,6 +2,9 @@
 <script setup lang="ts">
 import { useAlert } from '@chapelure/ui/alerts/useAlert';
 import { useIsMobile } from '@chapelure/ui/layout/useIsMobile';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@chapelure/ui/shadcn/card';
+import { Spinner } from '@chapelure/ui/shadcn/spinner';
 import { useFilterDefaults } from '@features/user/composables/useFilterDefaults';
 import { routesNames } from '@features/user/routes';
 import FilterDefaults from '@features/user/ui/_parts/FilterDefaults.vue';
@@ -22,27 +25,32 @@ async function submit() {
 <template>
     <div class="flex flex-col gap-4">
         <div class="flex items-center gap-2">
-            <RouterLink v-if="isMobile" :to="{ name: routesNames.settings }"
-                        class="btn btn-soft btn-square" :aria-label="$t('actions.back')">
-                <ArrowLeftIcon />
-            </RouterLink>
+            <Button v-if="isMobile" as-child variant="secondary" size="icon">
+                <RouterLink :to="{ name: routesNames.settings }" :aria-label="$t('actions.back')">
+                    <ArrowLeftIcon />
+                </RouterLink>
+            </Button>
             <h2 class="font-title text-xl md:text-2xl font-bold">{{ $t('user.settings.profile') }}</h2>
         </div>
 
-        <section class="border border-base-300 bg-base-200 rounded-box p-4 shadow">
-            <h3 class="font-bold">{{ $t('user.filterDefaults.title') }}</h3>
-            <p class="text-sm opacity-70 mb-2">{{ $t('user.filterDefaults.help') }}</p>
+        <Card class="gap-4 py-4">
+            <CardHeader class="px-4">
+                <CardTitle>{{ $t('user.filterDefaults.title') }}</CardTitle>
+                <CardDescription>{{ $t('user.filterDefaults.help') }}</CardDescription>
+            </CardHeader>
 
-            <FilterDefaults v-if="defaults" v-model="defaults" />
-            <div v-else class="flex justify-center p-8">
-                <span class="loading loading-spinner"></span>
-            </div>
+            <CardContent class="px-4">
+                <FilterDefaults v-if="defaults" v-model="defaults" />
+                <div v-else class="flex justify-center p-8">
+                    <Spinner class="size-6" />
+                </div>
+            </CardContent>
 
-            <div class="flex justify-end mt-4">
-                <button type="button" class="btn btn-primary" :disabled="isLoading || !defaults" @click="submit">
+            <CardFooter class="justify-end px-4">
+                <Button type="button" :disabled="isLoading || !defaults" @click="submit">
                     {{ $t('actions.save') }}
-                </button>
-            </div>
-        </section>
+                </Button>
+            </CardFooter>
+        </Card>
     </div>
 </template>

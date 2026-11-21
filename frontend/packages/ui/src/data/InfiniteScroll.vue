@@ -2,6 +2,7 @@
      Emits `load` when the bottom is about to come into view (`margin` px early). The caller owns `loading` (true until the page
      has been appended) and `done` (nothing left to fetch: stops the events and hides the spinner). -->
 <script setup lang="ts">
+import { Spinner } from '@chapelure/ui/shadcn/spinner';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -39,6 +40,6 @@ watch(() => [props.loading, props.done], observe, { flush: 'post' });
 <template>
     <slot></slot>
     <div v-if="!done" ref="sentinel" class="flex justify-center py-4 min-h-12">
-        <span v-if="loading" class="loading loading-ring loading-md"></span>
+        <Spinner v-if="loading" class="size-6 text-muted-foreground" />
     </div>
 </template>

@@ -76,8 +76,9 @@ app's real catalogue, so assertions are on the copy a user would read.
 ## Conventions
 
 - **Four-space indent**, single quotes, semicolons. Match the file you are in.
-- **daisyUI classes are written at the call site** — no wrapper components for styling
-  ([ADR 0004](docs/adr/0004-daisyui-classes-at-the-call-site.md)).
+- **The UI is shadcn-vue's components**, vendored in `@chapelure/ui/shadcn/<name>`, with
+  Tailwind for layout; a variant is a prop, and there are no wrappers of our own over them
+  ([ADR 0004](docs/adr/0004-shadcn-vue-components.md)). No colours outside the theme's roles.
 - **Icons** come straight from `lucide-vue-next` by their real names
   ([ADR 0005](docs/adr/0005-icons-imported-directly.md)).
 - **Imports are non-relative** across folders: `@/`, `@features/`, `@chapelure/*`.
@@ -102,7 +103,10 @@ app's real catalogue, so assertions are on the copy a user would read.
 - Adding an alias means adding it in `backend/scripts/aliases.mjs` *and* `frontend/admin/tsconfig.json`;
   `lint:arch` fails if they drift.
 - Tailwind does not scan `node_modules`, so `frontend/admin/src/app/styles/index.css` declares
-  `@source` for `frontend/packages/ui/src`. Removing it silently drops every class used only there.
+  `@source` for `frontend/packages/ui/src`. Removing it silently drops every class used only there
+  — the shadcn components' included.
+- reka's overlays (dialog, popover, dropdown menu, tooltip) are portalled to `<body>` and render
+  only while open: a spec reads them from `document.body`, after opening them.
 - A new route is private by default — `features/user/guard.ts` whitelists login and register
   only.
 

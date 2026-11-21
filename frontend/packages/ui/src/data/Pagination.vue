@@ -7,6 +7,9 @@
                     @change="refresh" />
 -->
 <script setup lang="ts">
+import { Button } from '@chapelure/ui/shadcn/button';
+import { ButtonGroup, ButtonGroupText } from '@chapelure/ui/shadcn/button-group';
+import { NativeSelect, NativeSelectOption } from '@chapelure/ui/shadcn/native-select';
 import { ChevronFirstIcon, ChevronLastIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-vue-next';
 import { computed, watch } from 'vue';
 
@@ -53,47 +56,47 @@ watch([page, totalPages], ([currentPage, maxPages]) => {
 </script>
 
 <template>
-    <div class="flex w-full">
-        <div class="join">
-            <button class="join-item btn btn-sm btn-square"
-                    :class="{ 'btn-disabled': page <= 1 }"
+    <div class="flex w-full items-center">
+        <ButtonGroup>
+            <Button variant="outline" size="icon-sm"
+                    :disabled="page <= 1"
                     :aria-label="$t('data.pagination.first')"
                     @click="goTo(1)">
-                    <ChevronFirstIcon />
-            </button>
-            <button class="join-item btn btn-sm btn-square"
-                    :class="{ 'btn-disabled': page <= 1 }"
+                <ChevronFirstIcon />
+            </Button>
+            <Button variant="outline" size="icon-sm"
+                    :disabled="page <= 1"
                     :aria-label="$t('data.pagination.previous')"
                     @click="goTo(page - 1)">
-                    <ChevronLeftIcon />
-            </button>
-            <span class="join-item btn btn-sm">
+                <ChevronLeftIcon />
+            </Button>
+            <ButtonGroupText class="h-8 bg-background">
                 {{ page }} / {{ totalPages }}
-            </span>
-            <button class="join-item btn btn-sm btn-square"
-                    :class="{ 'btn-disabled': page >= totalPages }"
+            </ButtonGroupText>
+            <Button variant="outline" size="icon-sm"
+                    :disabled="page >= totalPages"
                     :aria-label="$t('data.pagination.next')"
                     @click="goTo(page + 1)">
-                    <ChevronRightIcon />
-            </button>
-            <button class="join-item btn btn-sm btn-square"
-                    :class="{ 'btn-disabled': page >= totalPages }"
+                <ChevronRightIcon />
+            </Button>
+            <Button variant="outline" size="icon-sm"
+                    :disabled="page >= totalPages"
                     :aria-label="$t('data.pagination.last')"
                     @click="goTo(totalPages)">
-                    <ChevronLastIcon />
-            </button>
-        </div>
+                <ChevronLastIcon />
+            </Button>
+        </ButtonGroup>
 
-        <span class="ms-auto opacity-50 text-sm my-auto hidden md:inline">
+        <span class="ms-auto hidden text-sm text-muted-foreground md:inline">
             {{ firstElement }} - {{ lastElement }} {{ $t('data.pagination.of') }} {{ total }}
         </span>
-        <select v-model="perPage"
-                class="select w-18 select-sm ms-auto md:ms-2">
-            <option v-for="option in capacityOptions"
-                    :key="option"
-                    :value="option">
+        <NativeSelect v-model="perPage"
+                      class="ms-auto w-20 md:ms-2 [&_select]:h-8">
+            <NativeSelectOption v-for="option in capacityOptions"
+                                :key="option"
+                                :value="option">
                 {{ option }}
-            </option>
-        </select>
+            </NativeSelectOption>
+        </NativeSelect>
     </div>
 </template>

@@ -13,9 +13,12 @@ import {
     StrikethroughIcon,
     UndoIcon,
 } from 'lucide-vue-next';
+import { Button } from '@chapelure/ui/shadcn/button';
+import { Separator } from '@chapelure/ui/shadcn/separator';
+import { Toggle } from '@chapelure/ui/shadcn/toggle';
 import StarterKit from '@tiptap/starter-kit';
 import { Editor, EditorContent } from '@tiptap/vue-3';
-import { onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
+import { onBeforeUnmount, onMounted, shallowRef, watch, type Component } from 'vue';
 
 const model = defineModel<string>({ default: '' })
 
@@ -39,74 +42,61 @@ onMounted(() => {
 onBeforeUnmount(() => {
     editor.value?.destroy()
 })
+
+/** A toolbar button: lit while the selection has the mark, applying or lifting it when pressed. */
+interface Tool {
+    icon: Component;
+    isActive: (editor: Editor) => boolean;
+    run: (editor: Editor) => void;
+}
+
+const toolGroups: Tool[][] = [
+    [
+        { icon: BoldIcon, isActive: e => e.isActive('bold'), run: e => e.chain().focus().toggleBold().run() },
+        { icon: ItalicIcon, isActive: e => e.isActive('italic'), run: e => e.chain().focus().toggleItalic().run() },
+        { icon: StrikethroughIcon, isActive: e => e.isActive('strike'), run: e => e.chain().focus().toggleStrike().run() },
+        { icon: CodeIcon, isActive: e => e.isActive('code'), run: e => e.chain().focus().toggleCode().run() },
+    ],
+    [
+        { icon: Heading1Icon, isActive: e => e.isActive('heading', { level: 1 }), run: e => e.chain().focus().toggleHeading({ level: 1 }).run() },
+        { icon: Heading2Icon, isActive: e => e.isActive('heading', { level: 2 }), run: e => e.chain().focus().toggleHeading({ level: 2 }).run() },
+        { icon: Heading3Icon, isActive: e => e.isActive('heading', { level: 3 }), run: e => e.chain().focus().toggleHeading({ level: 3 }).run() },
+    ],
+    [
+        { icon: ListIcon, isActive: e => e.isActive('bulletList'), run: e => e.chain().focus().toggleBulletList().run() },
+        { icon: ListOrderedIcon, isActive: e => e.isActive('orderedList'), run: e => e.chain().focus().toggleOrderedList().run() },
+        { icon: QuoteIcon, isActive: e => e.isActive('blockquote'), run: e => e.chain().focus().toggleBlockquote().run() },
+    ],
+];
 </script>
 
 <template>
-    <div class="border border-base-300 rounded-box overflow-hidden flex flex-col h-full">
-        <div v-if="editor" class="flex flex-wrap gap-1 p-0.5 border-b border-base-300 bg-base-300">
-            <div class="join">
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('bold') }"
-                    @click="editor.chain().focus().toggleBold().run()">
-                    <BoldIcon />
-                </button>
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('italic') }"
-                    @click="editor.chain().focus().toggleItalic().run()">
-                    <ItalicIcon />
-                </button>
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('strike') }"
-                    @click="editor.chain().focus().toggleStrike().run()">
-                    <StrikethroughIcon />
-                </button>
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('code') }"
-                    @click="editor.chain().focus().toggleCode().run()">
-                    <CodeIcon />
-                </button>
-            </div>
+    <div class="flex h-full flex-col overflow-hidden rounded-md border border-input shadow-xs">
+        <div v-if="editor" class="flex flex-wrap items-center gap-1 border-b bg-muted/50 p-1">
+            <template v-for="(tools, index) in toolGroups" :key="index">
+                <Separator v-if="index > 0" orientation="vertical" class="mx-0.5 data-[orientation=vertical]:h-5" />
+                <Toggle v-for="(tool, toolIndex) in tools" :key="toolIndex"
+                        size="sm"
+                        :model-value="tool.isActive(editor)"
+                        @update:model-value="tool.run(editor)">
+                    <component :is="tool.icon" />
+                </Toggle>
+            </template>
 
-            <div class="join">
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('heading', { level: 1 }) }"
-                    @click="editor.chain().focus().toggleHeading({ level: 1 }).run()">
-                    <Heading1Icon />
-                </button>
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('heading', { level: 2 }) }"
-                    @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">
-                    <Heading2Icon />
-                </button>
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('heading', { level: 3 }) }"
-                    @click="editor.chain().focus().toggleHeading({ level: 3 }).run()">
-                    <Heading3Icon />
-                </button>
-            </div>
-
-            <div class="join">
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('bulletList') }"
-                    @click="editor.chain().focus().toggleBulletList().run()">
-                    <ListIcon />
-                </button>
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('orderedList') }"
-                    @click="editor.chain().focus().toggleOrderedList().run()">
-                    <ListOrderedIcon />
-                </button>
-                <button class="btn btn-square btn-ghost join-item" :class="{ 'btn-active': editor.isActive('blockquote') }"
-                    @click="editor.chain().focus().toggleBlockquote().run()">
-                    <QuoteIcon />
-                </button>
-            </div>
-
-            <div class="join ms-auto">
-                <button class="btn btn-square btn-ghost join-item" :disabled="!editor.can().undo()"
+            <div class="ms-auto flex gap-0.5">
+                <Button variant="ghost" size="icon-sm" :disabled="!editor.can().undo()"
                     @click="editor.chain().focus().undo().run()">
                     <UndoIcon />
-                </button>
-                <button class="btn btn-square btn-ghost join-item" :disabled="!editor.can().redo()"
+                </Button>
+                <Button variant="ghost" size="icon-sm" :disabled="!editor.can().redo()"
                     @click="editor.chain().focus().redo().run()">
                     <RedoIcon />
-                </button>
+                </Button>
             </div>
         </div>
-        <!-- `prose` is @tailwindcss/typography, not daisyUI. The app's stylesheet has to
-             register the plugin or the editor renders unstyled. -->
-        <editor-content :editor="editor" class="prose prose-p:my-1 max-w-none bg-base-100 px-2 flex-1" />
+        <!-- `prose` is @tailwindcss/typography. The app's stylesheet has to register the plugin
+             or the editor renders unstyled. -->
+        <editor-content :editor="editor" class="prose prose-p:my-1 dark:prose-invert max-w-none flex-1 bg-background px-2" />
     </div>
 </template>
 
