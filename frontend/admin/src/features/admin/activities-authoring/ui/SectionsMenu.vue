@@ -1,4 +1,5 @@
-<!-- The page's sections as a side menu; picking one is the parent's to act on. -->
+<!-- The page's sections as a side menu; picking one is the parent's to act on. A long label wraps
+     rather than running out of the menu. -->
 <script lang="ts">
 import type { Component } from 'vue';
 
@@ -28,7 +29,7 @@ const emit = defineEmits<{ select: [entry: SectionEntry] }>();
             :key="entry.key">
             <Button variant="ghost"
                     size="sm"
-                    class="w-full justify-start"
+                    class="h-auto min-h-8 w-full justify-start py-1.5 text-left whitespace-normal"
                     @click="() => emit('select', entry)">
                 <component :is="entry.icon"
                            class="text-muted-foreground" />
@@ -40,7 +41,7 @@ const emit = defineEmits<{ select: [entry: SectionEntry] }>();
                     :key="child.key">
                     <Button variant="ghost"
                             size="sm"
-                            class="w-full justify-start"
+                            class="h-auto min-h-8 w-full justify-start py-1.5 text-left whitespace-normal"
                             @click="() => emit('select', child)">
                         <component :is="child.icon"
                                    class="text-muted-foreground" />

@@ -212,7 +212,8 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
          there on mobile. A tab's tooltip hangs on its content: on the trigger itself, the tooltip's
          `data-state` would override the tab's. -->
     <TooltipProvider>
-        <Container>
+        <!-- Padded, so neither the menu nor the buttons touch the sidebar or the window's edge. -->
+        <Container class="px-2 pb-2">
             <div class="sticky top-0 z-10 flex gap-2 bg-background py-2">
                 <Button variant="ghost" as-child>
                     <RouterLink :to="{ name: routesNames.all }">
