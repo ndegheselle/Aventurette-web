@@ -17,6 +17,15 @@ const newcomer = SessionUser(id: 'u1', email: 'e', name: 'n', role: Role.user, o
 String? redirect({bool loading = false, SessionUser? user, required String location}) =>
     redirectFor(loading: loading, user: user, location: location, waiting: '/', home: '/catalogue');
 
+/// Nobody signed in, with the login form kept alive as the page watching it would.
+Future<(ProviderContainer, FakeAuth)> signedOut() async {
+  final auth = FakeAuth();
+  final container = ProviderContainer(overrides: [authProviderProvider.overrideWithValue(auth)]);
+  addTearDown(container.dispose);
+  container.listen(loginFormProvider, (_, _) {});
+  return (container, auth);
+}
+
 void main() {
   group('the router', () {
     test('waits on the waiting page while the session is read', () {
@@ -45,15 +54,6 @@ void main() {
 
   group('the sign-up', () {
     const password = 'correct horse';
-
-    Future<(ProviderContainer, FakeAuth)> signedOut() async {
-      final auth = FakeAuth();
-      final container = ProviderContainer(overrides: [authProviderProvider.overrideWithValue(auth)]);
-      addTearDown(container.dispose);
-      // Kept alive for the test, as the page watching it would.
-      container.listen(loginFormProvider, (_, _) {});
-      return (container, auth);
-    }
 
     test('creates the account before sending the code that verifies it', () async {
       final (container, auth) = await signedOut();
@@ -85,6 +85,29 @@ void main() {
       expect(container.read(loginFormProvider).error, LoginError.passwordsDiffer);
 
       expect(auth.calls, isEmpty);
+    });
+  });
+
+  group('the password sign-in', () {
+    test('sends the code that verifies an account never verified, and moves on to the code step', () async {
+      final (container, auth) = await signedOut();
+      auth.unverified = true;
+
+      await container.read(loginFormProvider.notifier).loginWithPassword(' camille@example.fr ', 'correct horse');
+
+      expect(auth.calls, ['requestOtp camille@example.fr']);
+      expect(container.read(loginFormProvider).codeSent, isTrue);
+      expect(container.read(loginFormProvider).error, isNull);
+    });
+
+    test('sends no code for a wrong password', () async {
+      final (container, auth) = await signedOut();
+
+      await container.read(loginFormProvider.notifier).loginWithPassword('camille@example.fr', 'wrong');
+
+      expect(auth.calls, isEmpty);
+      expect(container.read(loginFormProvider).codeSent, isFalse);
+      expect(container.read(loginFormProvider).error, LoginError.passwordRejected);
     });
   });
 

@@ -1,3 +1,4 @@
+import 'package:ajil/core/errors.dart';
 import 'package:ajil/features/user/api/session_api.dart';
 import 'package:ajil/features/user/models/user.dart';
 import 'package:ajil/features/user/state/session.dart';
@@ -85,12 +86,16 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
     }
   }
 
-  /// Signs in with a password, from the email step. Debug builds only.
+  /// Signs in with a password, from the email step. The right password to an account whose email
+  /// was never verified sends the code that verifies it instead, as after the sign-up: the form
+  /// moves on to the code step.
   Future<void> loginWithPassword(String email, String password) async {
     state = LoginFormState(email: email, busy: true);
     try {
       await ref.read(sessionProvider.notifier).loginWithPassword(email.trim(), password);
       state = LoginFormState(email: email);
+    } on UnverifiedAccountError {
+      await _sendCode();
     } catch (_) {
       state = LoginFormState(email: email, error: LoginError.passwordRejected);
     }
