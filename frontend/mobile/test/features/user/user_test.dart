@@ -44,6 +44,8 @@ void main() {
   });
 
   group('the sign-up', () {
+    const password = 'correct horse';
+
     Future<(ProviderContainer, FakeAuth)> signedOut() async {
       final auth = FakeAuth();
       final container = ProviderContainer(overrides: [authProviderProvider.overrideWithValue(auth)]);
@@ -56,7 +58,7 @@ void main() {
     test('creates the account before sending the code that verifies it', () async {
       final (container, auth) = await signedOut();
 
-      await container.read(loginFormProvider.notifier).signUp('Camille', ' camille@example.fr ');
+      await container.read(loginFormProvider.notifier).signUp('Camille', ' camille@example.fr ', password, password);
 
       expect(auth.calls, ['signUp camille@example.fr', 'requestOtp camille@example.fr']);
       expect(container.read(loginFormProvider).codeSent, isTrue);
@@ -66,11 +68,33 @@ void main() {
       final (container, auth) = await signedOut();
       auth.signUpRefused = true;
 
-      await container.read(loginFormProvider.notifier).signUp('Camille', 'camille@example.fr');
+      await container.read(loginFormProvider.notifier).signUp('Camille', 'camille@example.fr', password, password);
 
       expect(auth.calls, isEmpty);
       expect(container.read(loginFormProvider).error, LoginError.accountNotCreated);
     });
+
+    test('creates no account for a password too short or not confirmed', () async {
+      final (container, auth) = await signedOut();
+      final notifier = container.read(loginFormProvider.notifier);
+
+      await notifier.signUp('Camille', 'camille@example.fr', 'short', 'short');
+      expect(container.read(loginFormProvider).error, LoginError.passwordTooShort);
+
+      await notifier.signUp('Camille', 'camille@example.fr', password, '${password}x');
+      expect(container.read(loginFormProvider).error, LoginError.passwordsDiffer);
+
+      expect(auth.calls, isEmpty);
+    });
+  });
+
+  test('a sign-up password is long enough before it is confirmed', () {
+    expect(passwordProblem('1234567', '1234567'), PasswordProblem.tooShort);
+    expect(passwordProblem('1234567', '12345678'), PasswordProblem.tooShort);
+    expect(passwordProblem('12345678', '12345679'), PasswordProblem.mismatch);
+    // Kept as typed: a trailing space is part of the password.
+    expect(passwordProblem('12345678', '12345678 '), PasswordProblem.mismatch);
+    expect(passwordProblem('12345678', '12345678'), isNull);
   });
 
   test('a session with no role is a plain user, and one never onboarded is not', () {

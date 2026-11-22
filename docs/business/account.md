@@ -34,15 +34,18 @@ Signing in and the onboarding are not in the wireframes; they come from the earl
 ## Signing up
 
 - **Anyone can create an account**, from *Pas encore de compte ? En créer un* on the sign-in
-  screen: a name and an email, then *Créer mon compte*. The account is a plain user; nobody
-  gives themselves a role.
+  screen: a name, an email and a password typed twice, then *Créer mon compte*. The account is
+  a plain user; nobody gives themselves a role.
+- **The password has at least 8 characters, and both typings match.** The screen says which is
+  wrong, under that field, and creates nothing until both hold. The password is kept as typed,
+  spaces included.
 - **A code is sent to that email, as at the sign-in.** Typing it verifies the email and signs
   in, straight to the [onboarding](#onboarding).
 - **Only an account whose email is verified gets in**, to the app or to its data. An account
   never verified is refused a session; a session from before it was unverified is refused on
   every request.
 - **An email that already has an account is answered the same**: the code signs its owner in.
-  The name typed is then ignored.
+  The name and the password typed are then ignored; the account keeps its own password.
 
 ## Onboarding
 

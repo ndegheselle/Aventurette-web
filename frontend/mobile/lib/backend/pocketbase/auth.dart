@@ -20,10 +20,12 @@ class PocketBaseAuth implements AuthProvider {
   final String _fields;
 
   @override
-  Future<void> signUp(String email, String name) async {
+  Future<void> signUp(String email, String name, String password) async {
+    // PocketBase wants the password twice; the app has already checked the user typed it twice.
+    final body = {'email': email, 'name': name, 'password': password, 'passwordConfirm': password};
     try {
       // The created record is not read: the session starts with the code.
-      await mapErrors(() => _collection.create(body: {'email': email, 'name': name}, fields: 'id'));
+      await mapErrors(() => _collection.create(body: body, fields: 'id'));
     } on ValidationError catch (error) {
       // The account exists: the code will sign its owner in, as from the login.
       if (error.fields['email'] == _emailTaken) return;

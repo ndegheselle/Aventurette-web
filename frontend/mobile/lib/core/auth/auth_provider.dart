@@ -3,10 +3,11 @@ import 'package:ajil/core/data/mapper.dart';
 /// The session seam. The implementation persists the session itself; the app calls [refresh] on
 /// start to find out whether one is still valid.
 abstract interface class AuthProvider {
-  /// Create an account with no password, unverified until the first code [requestOtp] sends is
+  /// Create an account with [password], unverified until the first code [requestOtp] sends is
   /// used. Resolves the same when the email already has an account, so nobody can probe which
-  /// exist. Throws a ValidationError for a value the backend refuses.
-  Future<void> signUp(String email, String name);
+  /// exist; that account keeps its own password. Throws a ValidationError for a value the backend
+  /// refuses.
+  Future<void> signUp(String email, String name, String password);
 
   /// Email a one-time code. Resolves to the id [loginWithOtp] needs alongside the code. Resolves
   /// the same whether or not an account has that email, so nobody can probe which exist.

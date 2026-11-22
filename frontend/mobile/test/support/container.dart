@@ -18,7 +18,7 @@ class FakeAuth implements AuthProvider {
   bool signUpRefused = false;
 
   @override
-  Future<void> signUp(String email, String name) async {
+  Future<void> signUp(String email, String name, String password) async {
     if (signUpRefused) throw StateError('Refused');
     calls.add('signUp $email');
   }

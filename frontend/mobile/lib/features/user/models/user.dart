@@ -24,6 +24,22 @@ class SessionUser {
 /// A signed-in user who has not seen the onboarding is sent there before anything else.
 bool needsOnboarding(SessionUser? user) => user != null && !user.onboarded;
 
+// ── Sign-up ─────────────────────────────────────────────────────────────────────────────────
+
+/// The shortest password the backend accepts.
+const minPasswordLength = 8;
+
+enum PasswordProblem { tooShort, mismatch }
+
+/// What is wrong with the password typed at the sign-up, and its confirmation; null when
+/// nothing is. Checked before the account is created, so the backend refuses neither. A short
+/// password is reported before a mismatch: there is no point confirming it.
+PasswordProblem? passwordProblem(String password, String confirmation) {
+  if (password.length < minPasswordLength) return PasswordProblem.tooShort;
+  if (password != confirmation) return PasswordProblem.mismatch;
+  return null;
+}
+
 // ── Filter defaults ─────────────────────────────────────────────────────────────────────────
 
 /// A place an activity can happen in, and a user looks for activities in. The backend spells

@@ -16,6 +16,10 @@
     "signUp": {
         "title": "Create an account",
         "name": "Name",
+        "password": "Password",
+        "passwordConfirm": "Confirm the password",
+        "passwordTooShort": "At least 8 characters.",
+        "passwordsDiffer": "The passwords do not match.",
         "submit": "Create my account",
         "accountNotCreated": "The account could not be created. Check the email.",
         "toLogin": "I already have an account"

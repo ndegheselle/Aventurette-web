@@ -847,6 +847,10 @@ class _Translations$user$signUp$en extends Translations$user$signUp$fr {
 	// Translations
 	@override String get title => 'Create an account';
 	@override String get name => 'Name';
+	@override String get password => 'Password';
+	@override String get passwordConfirm => 'Confirm the password';
+	@override String get passwordTooShort => 'At least 8 characters.';
+	@override String get passwordsDiffer => 'The passwords do not match.';
 	@override String get submit => 'Create my account';
 	@override String get accountNotCreated => 'The account could not be created. Check the email.';
 	@override String get toLogin => 'I already have an account';
@@ -1260,6 +1264,10 @@ extension on TranslationsEn {
 			'user.login.toSignUp' => 'No account yet? Create one',
 			'user.signUp.title' => 'Create an account',
 			'user.signUp.name' => 'Name',
+			'user.signUp.password' => 'Password',
+			'user.signUp.passwordConfirm' => 'Confirm the password',
+			'user.signUp.passwordTooShort' => 'At least 8 characters.',
+			'user.signUp.passwordsDiffer' => 'The passwords do not match.',
 			'user.signUp.submit' => 'Create my account',
 			'user.signUp.accountNotCreated' => 'The account could not be created. Check the email.',
 			'user.signUp.toLogin' => 'I already have an account',
