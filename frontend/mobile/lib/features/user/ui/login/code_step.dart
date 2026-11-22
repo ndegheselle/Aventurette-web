@@ -33,15 +33,18 @@ class _LoginCodeStepState extends ConsumerState<LoginCodeStep> {
     return Column(
       spacing: AppSpaces.spacing,
       children: [
+        if (form.unverified) Text(t.emailNotVerified, style: context.labelText),
         Text(t.codeSentTo(email: form.email), style: context.bodyText),
-        Center(child: FOtpField(
-          control: .managed(controller: _code),
-          label: Text(t.code),
-          forceErrorText: form.error == LoginError.codeRejected ? t.codeRejected : null,
-          keyboardType: TextInputType.number,
-          autofocus: true,
-          onSubmit: notifier.login,
-        )),
+        Center(
+          child: FOtpField(
+            control: .managed(controller: _code),
+            label: Text(t.code),
+            forceErrorText: form.error == LoginError.codeRejected ? t.codeRejected : null,
+            keyboardType: TextInputType.number,
+            autofocus: true,
+            onSubmit: notifier.login,
+          ),
+        ),
         FButton(
           size: .lg,
           // A busy form takes no second press, and says it is working.

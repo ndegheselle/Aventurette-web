@@ -1182,6 +1182,9 @@ class Translations$user$login$fr {
 	/// fr: 'Un code de connexion a été envoyé à {email}. Il est valable 10 minutes.'
 	String codeSentTo({required Object email}) => 'Un code de connexion a été envoyé à ${email}. Il est valable 10 minutes.';
 
+	/// fr: 'Votre e-mail n'est pas encore vérifié. Saisissez le code pour le confirmer.'
+	String get emailNotVerified => 'Votre e-mail n\'est pas encore vérifié. Saisissez le code pour le confirmer.';
+
 	/// fr: 'Changer d'e-mail'
 	String get changeEmail => 'Changer d\'e-mail';
 
@@ -1718,6 +1721,7 @@ extension on Translations {
 			'user.login.code' => 'Code de connexion',
 			'user.login.sendCode' => 'Recevoir un code',
 			'user.login.codeSentTo' => ({required Object email}) => 'Un code de connexion a été envoyé à ${email}. Il est valable 10 minutes.',
+			'user.login.emailNotVerified' => 'Votre e-mail n\'est pas encore vérifié. Saisissez le code pour le confirmer.',
 			'user.login.changeEmail' => 'Changer d\'e-mail',
 			'user.login.codeNotSent' => 'Le code n\'a pas pu être envoyé.',
 			'user.login.codeRejected' => 'Code invalide ou expiré.',

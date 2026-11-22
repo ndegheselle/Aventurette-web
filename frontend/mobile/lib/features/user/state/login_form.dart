@@ -10,7 +10,14 @@ enum LoginError { accountNotCreated, passwordTooShort, passwordsDiffer, codeNotS
 /// sign-up has the same two, its first also taking a name and a password, typed twice. Each step
 /// has its own error, so an error on one never shows on the other.
 class LoginFormState {
-  const LoginFormState({this.name = '', this.email = '', this.otpId, this.busy = false, this.error});
+  const LoginFormState({
+    this.name = '',
+    this.email = '',
+    this.otpId,
+    this.unverified = false,
+    this.busy = false,
+    this.error,
+  });
 
   /// Typed at the sign-up only.
   final String name;
@@ -18,6 +25,10 @@ class LoginFormState {
 
   /// Set once a code was sent: what the code is checked against.
   final String? otpId;
+
+  /// The code was sent because a password sign-in found the email not verified: the code step
+  /// says so, since the user asked for no code.
+  final bool unverified;
   final bool busy;
   final LoginError? error;
 
@@ -62,11 +73,11 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
     await _sendCode();
   }
 
-  Future<void> _sendCode() async {
+  Future<void> _sendCode({bool unverified = false}) async {
     final LoginFormState(:name, :email) = state;
     try {
       final otpId = await _api.requestOtp(email.trim());
-      state = LoginFormState(name: name, email: email, otpId: otpId);
+      state = LoginFormState(name: name, email: email, otpId: otpId, unverified: unverified);
     } catch (_) {
       state = LoginFormState(name: name, email: email, error: LoginError.codeNotSent);
     }
@@ -74,15 +85,21 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
 
   /// Signs in. The router leaves the login once the session is set.
   Future<void> login(String code) async {
-    final LoginFormState(:name, :email, :otpId) = state;
+    final LoginFormState(:name, :email, :otpId, :unverified) = state;
     if (otpId == null) return;
 
-    state = LoginFormState(name: name, email: email, otpId: otpId, busy: true);
+    state = LoginFormState(name: name, email: email, otpId: otpId, unverified: unverified, busy: true);
     try {
       await ref.read(sessionProvider.notifier).loginWithOtp(otpId, code.trim());
-      state = LoginFormState(name: name, email: email, otpId: otpId);
+      state = LoginFormState(name: name, email: email, otpId: otpId, unverified: unverified);
     } catch (_) {
-      state = LoginFormState(name: name, email: email, otpId: otpId, error: LoginError.codeRejected);
+      state = LoginFormState(
+        name: name,
+        email: email,
+        otpId: otpId,
+        unverified: unverified,
+        error: LoginError.codeRejected,
+      );
     }
   }
 
@@ -95,7 +112,7 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       await ref.read(sessionProvider.notifier).loginWithPassword(email.trim(), password);
       state = LoginFormState(email: email);
     } on UnverifiedAccountError {
-      await _sendCode();
+      await _sendCode(unverified: true);
     } catch (_) {
       state = LoginFormState(email: email, error: LoginError.passwordRejected);
     }

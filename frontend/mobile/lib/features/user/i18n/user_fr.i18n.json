@@ -5,6 +5,7 @@
         "code": "Code de connexion",
         "sendCode": "Recevoir un code",
         "codeSentTo": "Un code de connexion a été envoyé à {email}. Il est valable 10 minutes.",
+        "emailNotVerified": "Votre e-mail n'est pas encore vérifié. Saisissez le code pour le confirmer.",
         "changeEmail": "Changer d'e-mail",
         "codeNotSent": "Le code n'a pas pu être envoyé.",
         "codeRejected": "Code invalide ou expiré.",

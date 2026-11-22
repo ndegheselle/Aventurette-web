@@ -96,8 +96,8 @@ void main() {
       await container.read(loginFormProvider.notifier).loginWithPassword(' camille@example.fr ', 'correct horse');
 
       expect(auth.calls, ['requestOtp camille@example.fr']);
-      expect(container.read(loginFormProvider).codeSent, isTrue);
-      expect(container.read(loginFormProvider).error, isNull);
+      final form = container.read(loginFormProvider);
+      expect((form.codeSent, form.unverified, form.error), (true, true, null));
     });
 
     test('sends no code for a wrong password', () async {

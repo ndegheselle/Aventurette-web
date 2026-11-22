@@ -829,6 +829,7 @@ class _Translations$user$login$en extends Translations$user$login$fr {
 	@override String get code => 'Sign-in code';
 	@override String get sendCode => 'Send me a code';
 	@override String codeSentTo({required Object email}) => 'A sign-in code was sent to ${email}. It is valid for 10 minutes.';
+	@override String get emailNotVerified => 'Your email is not verified yet. Type the code to confirm it.';
 	@override String get changeEmail => 'Change email';
 	@override String get codeNotSent => 'The code could not be sent.';
 	@override String get codeRejected => 'Invalid or expired code.';
@@ -1255,6 +1256,7 @@ extension on TranslationsEn {
 			'user.login.code' => 'Sign-in code',
 			'user.login.sendCode' => 'Send me a code',
 			'user.login.codeSentTo' => ({required Object email}) => 'A sign-in code was sent to ${email}. It is valid for 10 minutes.',
+			'user.login.emailNotVerified' => 'Your email is not verified yet. Type the code to confirm it.',
 			'user.login.changeEmail' => 'Change email',
 			'user.login.codeNotSent' => 'The code could not be sent.',
 			'user.login.codeRejected' => 'Invalid or expired code.',
