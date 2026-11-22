@@ -5,6 +5,7 @@
         "code": "Sign-in code",
         "sendCode": "Send me a code",
         "codeSentTo": "A sign-in code was sent to {email}. It is valid for 10 minutes.",
+        "emailNotVerified": "Your email is not verified yet. Type the code to confirm it.",
         "changeEmail": "Change email",
         "codeNotSent": "The code could not be sent.",
         "codeRejected": "Invalid or expired code.",
