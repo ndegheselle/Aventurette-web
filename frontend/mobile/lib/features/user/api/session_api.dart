@@ -20,7 +20,7 @@ class SessionApi {
 
   final AuthProvider _auth;
 
-  Future<void> signUp(String email, String name) => _auth.signUp(email, name);
+  Future<void> signUp(String email, String name, String password) => _auth.signUp(email, name, password);
 
   Future<String> requestOtp(String email) => _auth.requestOtp(email);
 

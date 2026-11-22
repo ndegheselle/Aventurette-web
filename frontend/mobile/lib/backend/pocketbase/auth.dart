@@ -7,6 +7,10 @@ import 'package:pocketbase/pocketbase.dart';
 /// The code PocketBase gives an email that another account already has.
 const _emailTaken = 'validation_not_unique';
 
+/// What PocketBase answers a sign-in whose credentials are right but that the collection's auth
+/// rule refuses: on `users`, an account whose email is not verified. Wrong credentials are a 400.
+const _authRuleRefused = 403;
+
 /// [AuthProvider] over a PocketBase auth collection. [fields] are the user fields the session
 /// holds, and the only ones asked for: the rest of the record is read by whatever needs it.
 class PocketBaseAuth implements AuthProvider {
@@ -20,10 +24,12 @@ class PocketBaseAuth implements AuthProvider {
   final String _fields;
 
   @override
-  Future<void> signUp(String email, String name) async {
+  Future<void> signUp(String email, String name, String password) async {
+    // PocketBase wants the password twice; the app has already checked the user typed it twice.
+    final body = {'email': email, 'name': name, 'password': password, 'passwordConfirm': password};
     try {
       // The created record is not read: the session starts with the code.
-      await mapErrors(() => _collection.create(body: {'email': email, 'name': name}, fields: 'id'));
+      await mapErrors(() => _collection.create(body: body, fields: 'id'));
     } on ValidationError catch (error) {
       // The account exists: the code will sign its owner in, as from the login.
       if (error.fields['email'] == _emailTaken) return;
@@ -45,8 +51,13 @@ class PocketBaseAuth implements AuthProvider {
 
   @override
   Future<Payload> loginWithPassword(String email, String password) async {
-    final auth = await mapErrors(() => _collection.authWithPassword(email, password, fields: _fields));
-    return auth.record.toJson();
+    try {
+      final auth = await mapErrors(() => _collection.authWithPassword(email, password, fields: _fields));
+      return auth.record.toJson();
+    } on ClientException catch (error) {
+      if (error.statusCode == _authRuleRefused) throw const UnverifiedAccountError();
+      rethrow;
+    }
   }
 
   @override

@@ -1218,6 +1218,18 @@ class Translations$user$signUp$fr {
 	/// fr: 'Nom'
 	String get name => 'Nom';
 
+	/// fr: 'Mot de passe'
+	String get password => 'Mot de passe';
+
+	/// fr: 'Confirmer le mot de passe'
+	String get passwordConfirm => 'Confirmer le mot de passe';
+
+	/// fr: 'Au moins 8 caractères.'
+	String get passwordTooShort => 'Au moins 8 caractères.';
+
+	/// fr: 'Les mots de passe ne correspondent pas.'
+	String get passwordsDiffer => 'Les mots de passe ne correspondent pas.';
+
 	/// fr: 'Créer mon compte'
 	String get submit => 'Créer mon compte';
 
@@ -1715,6 +1727,10 @@ extension on Translations {
 			'user.login.toSignUp' => 'Pas encore de compte ? En créer un',
 			'user.signUp.title' => 'Créer un compte',
 			'user.signUp.name' => 'Nom',
+			'user.signUp.password' => 'Mot de passe',
+			'user.signUp.passwordConfirm' => 'Confirmer le mot de passe',
+			'user.signUp.passwordTooShort' => 'Au moins 8 caractères.',
+			'user.signUp.passwordsDiffer' => 'Les mots de passe ne correspondent pas.',
 			'user.signUp.submit' => 'Créer mon compte',
 			'user.signUp.accountNotCreated' => 'Le compte n\'a pas pu être créé. Vérifiez l\'e-mail.',
 			'user.signUp.toLogin' => 'J\'ai déjà un compte',

@@ -64,9 +64,7 @@
       background: #FFFFFF;
       color: #171717;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      transition: opacity 300ms ease-out;
     }
-    #loading.done { opacity: 0; pointer-events: none; }
     #loading .name {
       font-size: 40px;
       font-weight: 700;
@@ -119,11 +117,9 @@
   -->
   <script src="flutter_bootstrap.js" async></script>
   <script>
-    // Flutter web fires this once the app has drawn; the loading screen fades out over it.
+    // Flutter web fires this once the app has drawn; the loading screen goes at once, with no fade.
     window.addEventListener('flutter-first-frame', function () {
-      var loading = document.getElementById('loading');
-      loading.classList.add('done');
-      loading.addEventListener('transitionend', function () { loading.remove(); }, { once: true });
+      document.getElementById('loading').remove();
     }, { once: true });
   </script>
 </body>

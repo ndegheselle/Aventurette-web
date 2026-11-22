@@ -1,12 +1,14 @@
+import 'package:ajil/core/errors.dart';
 import 'package:ajil/features/user/api/session_api.dart';
+import 'package:ajil/features/user/models/user.dart';
 import 'package:ajil/features/user/state/session.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum LoginError { accountNotCreated, codeNotSent, codeRejected, passwordRejected }
+enum LoginError { accountNotCreated, passwordTooShort, passwordsDiffer, codeNotSent, codeRejected, passwordRejected }
 
 /// The sign-in, in two steps: the email, to which a one-time code is sent, then that code. The
-/// sign-up has the same two, its first also taking a name. Each step has its own error, so an
-/// error on one never shows on the other.
+/// sign-up has the same two, its first also taking a name and a password, typed twice. Each step
+/// has its own error, so an error on one never shows on the other.
 class LoginFormState {
   const LoginFormState({this.name = '', this.email = '', this.otpId, this.busy = false, this.error});
 
@@ -34,11 +36,25 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
   }
 
   /// Creates the account, then sends the code that verifies its email and signs in. Nothing is
-  /// sent for an account that could not be created.
-  Future<void> signUp(String name, String email) async {
+  /// created for a password too short or not confirmed, and nothing is sent for an account that
+  /// could not be created. The password is kept as typed: spaces are part of it.
+  Future<void> signUp(String name, String email, String password, String confirmation) async {
+    final problem = passwordProblem(password, confirmation);
+    if (problem != null) {
+      state = LoginFormState(
+        name: name,
+        email: email,
+        error: switch (problem) {
+          PasswordProblem.tooShort => LoginError.passwordTooShort,
+          PasswordProblem.mismatch => LoginError.passwordsDiffer,
+        },
+      );
+      return;
+    }
+
     state = LoginFormState(name: name, email: email, busy: true);
     try {
-      await _api.signUp(email.trim(), name.trim());
+      await _api.signUp(email.trim(), name.trim(), password);
     } catch (_) {
       state = LoginFormState(name: name, email: email, error: LoginError.accountNotCreated);
       return;
@@ -70,12 +86,16 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
     }
   }
 
-  /// Signs in with a password, from the email step. Debug builds only.
+  /// Signs in with a password, from the email step. The right password to an account whose email
+  /// was never verified sends the code that verifies it instead, as after the sign-up: the form
+  /// moves on to the code step.
   Future<void> loginWithPassword(String email, String password) async {
     state = LoginFormState(email: email, busy: true);
     try {
       await ref.read(sessionProvider.notifier).loginWithPassword(email.trim(), password);
       state = LoginFormState(email: email);
+    } on UnverifiedAccountError {
+      await _sendCode();
     } catch (_) {
       state = LoginFormState(email: email, error: LoginError.passwordRejected);
     }

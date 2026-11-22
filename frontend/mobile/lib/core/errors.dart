@@ -13,6 +13,15 @@ class ValidationError implements Exception {
   String toString() => 'ValidationError($message, $fields)';
 }
 
+/// A sign-in refused because the account's email was never verified. The adapter throws it only
+/// once the credentials are right, so it tells nothing to someone who does not know them.
+class UnverifiedAccountError implements Exception {
+  const UnverifiedAccountError();
+
+  @override
+  String toString() => 'UnverifiedAccountError()';
+}
+
 /// Asked for the signed-in user with nobody signed in: a bug, since the router keeps every
 /// private screen behind the session.
 class NotAuthenticatedError extends StateError {

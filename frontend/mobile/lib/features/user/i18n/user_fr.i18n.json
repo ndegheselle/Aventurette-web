@@ -16,6 +16,10 @@
     "signUp": {
         "title": "Créer un compte",
         "name": "Nom",
+        "password": "Mot de passe",
+        "passwordConfirm": "Confirmer le mot de passe",
+        "passwordTooShort": "Au moins 8 caractères.",
+        "passwordsDiffer": "Les mots de passe ne correspondent pas.",
         "submit": "Créer mon compte",
         "accountNotCreated": "Le compte n'a pas pu être créé. Vérifiez l'e-mail.",
         "toLogin": "J'ai déjà un compte"

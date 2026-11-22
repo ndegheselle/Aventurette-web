@@ -6,8 +6,8 @@ import 'package:ajil/ui/i18n/strings.g.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Creating an account: a name and an email, then the code sent to it, which verifies the email
-/// and signs in. The router leaves this page once the session is set.
+/// Creating an account: a name, an email and a password, then the code sent to the email, which
+/// verifies it and signs in. The router leaves this page once the session is set.
 class SignUpPage extends ConsumerWidget {
   const SignUpPage({super.key});
 

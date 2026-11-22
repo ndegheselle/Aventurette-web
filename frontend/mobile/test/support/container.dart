@@ -1,6 +1,7 @@
 import 'package:ajil/backend/backend.dart';
 import 'package:ajil/core/auth/auth_provider.dart';
 import 'package:ajil/core/data/mapper.dart';
+import 'package:ajil/core/errors.dart';
 import 'package:ajil/features/user/state/session.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,16 +10,17 @@ import 'fake_crud.dart';
 
 /// A session the device kept: [user] is the record the auth port gives back, null for nobody.
 /// [calls] lists the sign-ups and the codes asked for, in order; [signUpRefused] makes a sign-up
-/// throw.
+/// throw; [unverified] makes a password sign-in find the account's email not verified.
 class FakeAuth implements AuthProvider {
   FakeAuth([this.user]);
 
   Payload? user;
   final calls = <String>[];
   bool signUpRefused = false;
+  bool unverified = false;
 
   @override
-  Future<void> signUp(String email, String name) async {
+  Future<void> signUp(String email, String name, String password) async {
     if (signUpRefused) throw StateError('Refused');
     calls.add('signUp $email');
   }
@@ -33,8 +35,10 @@ class FakeAuth implements AuthProvider {
   Future<Payload> loginWithOtp(String otpId, String code) async => user ?? (throw StateError('Wrong code'));
 
   @override
-  Future<Payload> loginWithPassword(String email, String password) async =>
-      user ?? (throw StateError('Wrong password'));
+  Future<Payload> loginWithPassword(String email, String password) async {
+    if (unverified) throw const UnverifiedAccountError();
+    return user ?? (throw StateError('Wrong password'));
+  }
 
   @override
   Future<Payload?> refresh() async => user;

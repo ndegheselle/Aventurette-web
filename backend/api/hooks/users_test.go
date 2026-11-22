@@ -78,6 +78,17 @@ func TestOnlyAVerifiedUserSignsIn(t *testing.T) {
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
+			// The app tells the two apart: a 403 sends the code that verifies the email, so it must
+			// never answer a wrong password, which would tell a stranger the account exists.
+			Name:            "refuses a wrong password to an unverified account as to any other",
+			Method:          http.MethodPost,
+			URL:             "/api/collections/users/auth-with-password",
+			Body:            strings.NewReader(`{"identity":"tester@test.local","password":"wrong-password"}`),
+			TestAppFactory:  newTestAppWithTester,
+			ExpectedStatus:  http.StatusBadRequest,
+			ExpectedContent: []string{`"data":{}`},
+		},
+		{
 			Name:            "signs in a verified account with its password",
 			Method:          http.MethodPost,
 			URL:             "/api/collections/users/auth-with-password",
