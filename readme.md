@@ -12,6 +12,7 @@ in `backend/api/` that both talk to.
 | [docs/coding-guidelines.md](docs/coding-guidelines.md) | how to write code that stays simple to read |
 | [docs/testing.md](docs/testing.md) | how to test any of it |
 | [backend/DEPLOYMENT.md](backend/DEPLOYMENT.md) | putting it on a server |
+| [branding/ajil.svg](branding/ajil.svg) | the app's icon, shared by both apps: change it there, then run `branding/render-icons.sh` (needs ImageMagick 7) to update every copy |
 
 Live at [app.lubriciel.ovh](https://app.lubriciel.ovh) (the clients' app, built for the web) and
 [admin.lubriciel.ovh](https://admin.lubriciel.ovh) (the back office), with the API on

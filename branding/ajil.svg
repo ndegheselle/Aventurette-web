@@ -1,0 +1,8 @@
+<!-- Ajil's icon, and the one source of every copy in the repo: run render-icons.sh after changing it.
+     A placeholder monogram in forui's neutral colours until there is a real logo. The glyph is a
+     path, not text, so it renders the same without the font. -->
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#171717" />
+  <path fill="#ffffff" fill-rule="evenodd"
+        d="M43 27H57L72 72H61.5L58.2 62H41.8L38.5 72H28ZM44.6 53.5H55.4L50 36.5Z" />
+</svg>
