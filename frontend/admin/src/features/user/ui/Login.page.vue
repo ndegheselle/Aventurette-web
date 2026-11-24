@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NotImplementedError } from '@chapelure/core';
 import Field from '@chapelure/ui/forms/Field.vue';
 import FieldError from '@chapelure/ui/forms/FieldError.vue';
 import { Button } from '@chapelure/ui/shadcn/button';
@@ -7,29 +6,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@chapelure/ui/shadcn/c
 import { Checkbox } from '@chapelure/ui/shadcn/checkbox';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@chapelure/ui/shadcn/input-group';
 import { Label } from '@chapelure/ui/shadcn/label';
-import { Separator } from '@chapelure/ui/shadcn/separator';
 import { Spinner } from '@chapelure/ui/shadcn/spinner';
-import LoginProviders from '@features/user/ui/LoginProviders.vue';
 import { useLoginForm } from '@features/user/composables/useLoginForm';
-import { KeyRoundIcon, MailIcon } from 'lucide-vue-next';
+import { KeyRoundIcon, LockIcon, MailIcon } from 'lucide-vue-next';
 
 const {
     email,
+    password,
     code,
     codeSent,
+    unverified,
     rememberMe,
+    isBusy,
     requestCode,
-    isRequestingCode,
     requestErrors,
+    loginWithPassword,
+    passwordErrors,
     login,
-    isLoggingIn,
     loginErrors,
     changeEmail,
 } = useLoginForm();
-
-function signInWith(_provider: string) {
-    throw new NotImplementedError();
-}
 </script>
 
 <template>
@@ -49,33 +45,50 @@ function signInWith(_provider: string) {
                         <InputGroupInput type="email"
                                          autocomplete="email"
                                          :aria-invalid="!!requestErrors.get('email') || undefined"
-                                         v-model="email" />
+                                         v-model="email"
+                                         @keydown.enter="requestCode" />
                     </InputGroup>
                 </Field>
 
                 <FieldError :error="requestErrors.global.value" />
+
+                <Field label="auth.form.password"
+                       :error="passwordErrors.global.value">
+                    <InputGroup>
+                        <InputGroupAddon>
+                            <LockIcon />
+                        </InputGroupAddon>
+                        <InputGroupInput type="password"
+                                         autocomplete="current-password"
+                                         :aria-invalid="!!passwordErrors.global.value || undefined"
+                                         v-model="password"
+                                         @keydown.enter="loginWithPassword" />
+                    </InputGroup>
+                </Field>
 
                 <Label>
                     <Checkbox v-model="rememberMe" />
                     {{ $t('auth.form.rememberMe') }}
                 </Label>
 
-                <div class="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Separator class="flex-1" />
-                    {{ $t('auth.form.withOauth2') }}
-                    <Separator class="flex-1" />
+                <div class="mt-2 flex flex-col gap-2">
+                    <Button variant="outline"
+                            :disabled="isBusy"
+                            @click="loginWithPassword">
+                        <Spinner v-if="isBusy" />
+                        {{ $t('auth.login.withPassword') }}
+                    </Button>
+                    <Button size="lg"
+                            :disabled="isBusy"
+                            @click="requestCode">
+                        <Spinner v-if="isBusy" />
+                        {{ $t('auth.login.sendCode') }}
+                    </Button>
                 </div>
-                <LoginProviders @provider-selected="signInWith" />
-
-                <Button class="mt-2"
-                        :disabled="isRequestingCode"
-                        @click="requestCode">
-                    <Spinner v-if="isRequestingCode" />
-                    {{ $t('auth.login.sendCode') }}
-                </Button>
             </CardContent>
 
             <CardContent v-else class="flex flex-col gap-4 px-4">
+                <p v-if="unverified" class="text-sm font-medium">{{ $t('auth.login.emailNotVerified') }}</p>
                 <p class="text-sm">{{ $t('auth.login.codeSentTo', { email }) }}</p>
 
                 <Field label="auth.form.code"
@@ -88,16 +101,18 @@ function signInWith(_provider: string) {
                                          inputmode="numeric"
                                          autocomplete="one-time-code"
                                          :aria-invalid="!!loginErrors.get('password') || undefined"
-                                         v-model="code" />
+                                         v-model="code"
+                                         @keydown.enter="login" />
                     </InputGroup>
                 </Field>
 
                 <FieldError :error="loginErrors.global.value" />
 
                 <div class="mt-2 flex flex-col gap-2">
-                    <Button :disabled="isLoggingIn"
+                    <Button size="lg"
+                            :disabled="isBusy"
                             @click="login">
-                        <Spinner v-if="isLoggingIn" />
+                        <Spinner v-if="isBusy" />
                         {{ $t('auth.login.title') }}
                     </Button>
                     <Button variant="ghost"

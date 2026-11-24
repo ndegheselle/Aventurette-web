@@ -1,4 +1,4 @@
-import { ValidationError } from '@chapelure/core';
+import { UnverifiedAccountError, ValidationError } from '@chapelure/core';
 import { describe, expect, it } from 'vitest';
 import { createPocketBaseAuth } from './auth';
 import { fakePocketBase } from './testing';
@@ -27,6 +27,13 @@ describe('createPocketBaseAuth', () => {
             pb.failNextWith(aRejection({ identity: { code: 'validation_invalid_login' } }));
 
             await expect(auth.login('parent@example.com', 'wrong')).rejects.toBeInstanceOf(ValidationError);
+        });
+
+        it('tells an account whose email is not verified from rejected credentials', async () => {
+            const { pb, auth } = setup();
+            pb.failNextWith({ status: 403, message: 'Not allowed', response: { data: {} } });
+
+            await expect(auth.login('parent@example.com', 'secret')).rejects.toBeInstanceOf(UnverifiedAccountError);
         });
     });
 

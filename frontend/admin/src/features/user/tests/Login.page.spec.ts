@@ -29,6 +29,14 @@ async function requestCode(wrapper: any, email = 'someone@example.com') {
     await flushPromises();
 }
 
+/** Fills the email step and signs in with the password. */
+async function submitPassword(wrapper: any, password = 'secret') {
+    await input(wrapper).setValue('someone@example.com');
+    await wrapper.find('input[type=password]').setValue(password);
+    await button(wrapper, 'Log in with the password').trigger('click');
+    await flushPromises();
+}
+
 async function submitCode(wrapper: any, code = '123456') {
     await input(wrapper).setValue(code);
     await button(wrapper, 'Log in').trigger('click');
@@ -40,12 +48,43 @@ beforeEach(() => {
 });
 
 describe('Login.page', () => {
-    it('asks for an email only, with no password', async () => {
+    it('signs in with the password and goes to the home page', async () => {
+        const { wrapper, router } = await mountForm();
+
+        await submitPassword(wrapper);
+
+        expect(auth.session).toEqual(user);
+        expect(router.currentRoute.value.path).toBe('/');
+    });
+
+    it('stays on the email step when the password is refused', async () => {
+        const { wrapper, router } = await mountForm();
+        auth.failNextWith({});
+
+        await submitPassword(wrapper, 'wrong');
+
+        expect(wrapper.text()).toContain('Wrong email or password.');
+        expect(router.currentRoute.value.path).toBe('/login');
+        expect(auth.session).toBeNull();
+    });
+
+    it('sends a code instead when the password is right but the email not verified', async () => {
+        const { wrapper } = await mountForm();
+        auth.refuseNextAsUnverified();
+
+        await submitPassword(wrapper);
+
+        expect(wrapper.text()).toContain('Your email is not verified yet.');
+        expect(wrapper.text()).toContain('A sign-in code was sent to someone@example.com');
+        expect(auth.session).toBeNull();
+    });
+
+    it('does not say the email is unverified when the code was asked for', async () => {
         const { wrapper } = await mountForm();
 
-        expect(wrapper.text()).toContain('Email');
-        expect(wrapper.text()).not.toContain('Password');
-        expect(wrapper.find('input[type=password]').exists()).toBe(false);
+        await requestCode(wrapper);
+
+        expect(wrapper.text()).not.toContain('Your email is not verified yet.');
     });
 
     it('asks for the code once it was sent, naming the email it went to', async () => {

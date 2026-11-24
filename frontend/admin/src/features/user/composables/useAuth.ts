@@ -21,6 +21,14 @@ export function useAuth() {
         current.value = await auth.loginWithOtp(otpId, code, { remember });
     }
 
+    /**
+     * `remember` as for `loginWithOtp`. Throws UnverifiedAccountError for the right password to an
+     * account whose email was never verified.
+     */
+    async function loginWithPassword(email: string, password: string, remember: boolean) {
+        current.value = await auth.login(email, password, { remember });
+    }
+
     /** Drop the session. Where to go next is the caller's. */
     function logout() {
         auth.logout();
@@ -47,6 +55,7 @@ export function useAuth() {
         isLoggedIn,
         requestOtp,
         loginWithOtp,
+        loginWithPassword,
         logout,
         refresh,
         currentId,

@@ -7,6 +7,7 @@
  *     }));
  */
 import {
+    UnverifiedAccountError,
     ValidationError,
     type BaseEntity,
     type FieldErrors,
@@ -115,10 +116,12 @@ export interface FakeAuth<TUser extends BaseEntity> extends IAuthProvider<TUser>
     lastLoginOptions: LoginOptions | undefined;
     /** Make the next login, code request or code login fail the way the backend refuses one. */
     failNextWith(fields: FieldErrors, message?: string): void;
+    /** Make the next login refuse right credentials, as for an account whose email is not verified. */
+    refuseNextAsUnverified(): void;
 }
 
 export function fakeAuthProvider<TUser extends BaseEntity>(user: TUser): FakeAuth<TUser> {
-    let pendingFailure: ValidationError | null = null;
+    let pendingFailure: Error | null = null;
 
     function raiseIfArmed() {
         if (!pendingFailure) return;
@@ -133,6 +136,10 @@ export function fakeAuthProvider<TUser extends BaseEntity>(user: TUser): FakeAut
 
         failNextWith(fields, message = 'Invalid credentials') {
             pendingFailure = new ValidationError(fields, message);
+        },
+
+        refuseNextAsUnverified() {
+            pendingFailure = new UnverifiedAccountError();
         },
 
         async login(_email, _password, options) {

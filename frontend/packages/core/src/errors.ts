@@ -1,6 +1,17 @@
 export class NotImplementedError extends Error { }
 export class NotAuthenticatedError extends Error { }
 
+/**
+ * A sign-in refused because the account's email was never verified. Adapters throw it only once
+ * the credentials are right, so it tells nothing to someone who does not know them.
+ */
+export class UnverifiedAccountError extends Error {
+    constructor() {
+        super('The email of the account is not verified.');
+        this.name = 'UnverifiedAccountError';
+    }
+}
+
 /** Backend error codes keyed by field name. The UI turns each code into a message. */
 export type FieldErrors = Record<string, { code?: string }>;
 

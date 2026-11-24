@@ -1,7 +1,13 @@
-import type { BaseEntity, IAuthProvider, LoginOptions } from '@chapelure/core';
+import { UnverifiedAccountError, type BaseEntity, type IAuthProvider, type LoginOptions } from '@chapelure/core';
 import type PocketBase from 'pocketbase';
 import type { RememberingAuthStore } from './authStore';
-import { mapErrors } from './errors';
+import { mapErrors, statusOf } from './errors';
+
+/**
+ * What PocketBase answers a sign-in whose credentials are right but that the collection's auth
+ * rule refuses: on `users`, an account whose email is not verified. Wrong credentials are a 400.
+ */
+const AUTH_RULE_REFUSED = 403;
 
 /**
  * IAuthProvider backed by a PocketBase auth collection.
@@ -24,8 +30,13 @@ export function createPocketBaseAuth<TUser extends BaseEntity>(
         async login(email: string, password: string, { remember = true }: LoginOptions = {}): Promise<TUser> {
             // Before authenticating: the SDK saves the session as soon as it succeeds.
             store.remember = remember;
-            const result = await mapErrors(() => collection.authWithPassword<TUser>(email, password, options));
-            return result.record;
+            try {
+                const result = await mapErrors(() => collection.authWithPassword<TUser>(email, password, options));
+                return result.record;
+            } catch (error) {
+                if (statusOf(error) === AUTH_RULE_REFUSED) throw new UnverifiedAccountError();
+                throw error;
+            }
         },
 
         async requestOtp(email: string): Promise<string> {

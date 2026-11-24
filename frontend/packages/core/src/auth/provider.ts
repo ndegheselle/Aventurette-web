@@ -12,7 +12,10 @@ export interface LoginOptions {
  * the app calls `refresh` on boot to find out whether one is still valid.
  */
 export interface IAuthProvider<TUser extends BaseEntity> {
-    /** Authenticate and start a session. Throws if the credentials are rejected. */
+    /**
+     * Authenticate and start a session. Throws if the credentials are rejected, and
+     * UnverifiedAccountError if they are right but the account's email was never verified.
+     */
     login(email: string, password: string, options?: LoginOptions): Promise<TUser>;
 
     /**

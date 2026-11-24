@@ -26,6 +26,7 @@ export {
     BatchError,
     NotAuthenticatedError,
     NotImplementedError,
+    UnverifiedAccountError,
     ValidationError
 } from './errors';
 export type { FieldErrors } from './errors';

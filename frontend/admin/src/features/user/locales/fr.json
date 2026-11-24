@@ -11,11 +11,14 @@
             "codeSentTo": "Un code de connexion a été envoyé à {email}. Il est valable 10 minutes.",
             "changeEmail": "Changer d'e-mail",
             "requestError": "Le code n'a pas pu être envoyé.",
-            "codeError": "Code invalide ou expiré."
+            "codeError": "Code invalide ou expiré.",
+            "withPassword": "Se connecter avec le mot de passe",
+            "passwordError": "E-mail ou mot de passe incorrect.",
+            "emailNotVerified": "Votre e-mail n'est pas encore vérifié. Saisissez le code pour le confirmer."
         },
         "form": {
-            "withOauth2": "ou connectez-vous avec",
             "email": "E-mail",
+            "password": "Mot de passe",
             "code": "Code de connexion",
             "rememberMe": "Rester connecté"
         }
