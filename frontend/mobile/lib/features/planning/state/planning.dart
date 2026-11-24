@@ -1,5 +1,5 @@
 import 'package:ajil/features/planning/api/events_api.dart';
-import 'package:ajil/features/planning/api/scheduled_activities_api.dart';
+import 'package:ajil/features/planning/api/scheduled_blocks_api.dart';
 import 'package:ajil/features/planning/models/event.dart';
 import 'package:ajil/features/planning/models/period.dart';
 import 'package:ajil/features/user/state/session.dart';
@@ -31,15 +31,15 @@ class PlanningNotifier extends Notifier<PlanningView> {
 
 final planningProvider = NotifierProvider<PlanningNotifier, PlanningView>(PlanningNotifier.new);
 
-/// The user's events and saved activities of the period shown, grouped. Another day of the same
+/// The user's events and saved blocks of the period shown, grouped. Another day of the same
 /// period reads nothing again.
 final planningGroupsProvider = FutureProvider.autoDispose<List<PeriodGroup>>((ref) async {
   final (range, period) = ref.watch(planningProvider.select((view) => (view.range, view.period)));
   final user = ref.watch(currentUserIdProvider);
-  final (events, activities) = await (
+  final (events, blocks) = await (
     ref.read(eventsApiProvider).between(user, period.from, period.until),
-    ref.read(scheduledActivitiesApiProvider).between(user, period.from, period.until),
+    ref.read(scheduledBlocksApiProvider).between(user, period.from, period.until),
   ).wait;
   final inPeriod = events.where((event) => overlaps(event, period.from, period.until)).toList();
-  return groupedByPart(inPeriod, activities, range, period);
+  return groupedByPart(inPeriod, blocks, range, period);
 });

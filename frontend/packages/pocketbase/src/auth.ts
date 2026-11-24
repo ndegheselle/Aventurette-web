@@ -1,6 +1,6 @@
 import { UnverifiedAccountError, type BaseEntity, type IAuthProvider, type LoginOptions } from '@chapelure/core';
 import type PocketBase from 'pocketbase';
-import type { RememberingAuthStore } from './authStore';
+import type { MemoryAuthStore, RememberingAuthStore } from './authStore';
 import { mapErrors, statusOf } from './errors';
 
 /**
@@ -22,7 +22,7 @@ export function createPocketBaseAuth<TUser extends BaseEntity>(
 ): IAuthProvider<TUser> {
     const collection = client.collection(collectionName);
     // initPocketBase builds every client with this store.
-    const store = client.authStore as RememberingAuthStore;
+    const store = client.authStore as RememberingAuthStore | MemoryAuthStore;
     // The SDK needs the token beside the record to keep the session.
     const options = { fields: ['token', ...fields.map(field => `record.${field}`)].join(',') };
 

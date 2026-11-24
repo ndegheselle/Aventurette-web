@@ -620,9 +620,9 @@ class _Translations$planning$mode$en extends Translations$planning$mode$fr {
 	// Translations
 	@override String get title => 'Currently planning';
 	@override String count({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
-		zero: 'no activity',
-		one: '${n} activity',
-		other: '${n} activities',
+		zero: 'no block',
+		one: '${n} block',
+		other: '${n} blocks',
 	);
 	@override String replacing({required Object name}) => 'Replacing “${name}”';
 	@override String get cancel => 'Cancel';
@@ -640,20 +640,31 @@ class _Translations$planning$plan$en extends Translations$planning$plan$fr {
 
 	// Translations
 	@override String get title => 'The day\'s planning';
-	@override String get empty => 'No activity picked. Add some from the catalogue.';
+	@override String get empty => 'Nothing planned. Add an activity or a time.';
 	@override String get add => 'Add';
-	@override String get hint => 'Tap an activity to change its time, or hold it to move it.';
+	@override String get hint => 'Tap a block to change its time or length, or hold it to move it.';
 	@override String get startTitle => 'Start time';
-	@override String get startHint => 'The first activity starts at this time; the others follow on.';
+	@override String get startHint => 'The first block starts at this time; the others follow on.';
 	@override String get confirm => 'Confirm';
 	@override String get replace => 'Replace';
 	@override String get remove => 'Remove';
 	@override String get save => 'Save the planning';
 	@override String get saveTitle => 'The planning\'s day';
-	@override String get saveHint => 'The activities are saved at their time, on that day.';
+	@override String get saveHint => 'The blocks are saved at their time, on that day.';
 	@override String get saveConfirm => 'Save';
 	@override String get saved => 'Planning saved';
 	@override String get saveFailed => 'The planning could not be saved.';
+	@override String get addTitle => 'Add to the planning';
+	@override String get addActivity => 'An activity';
+	@override String get addActivityHint => 'Picked from the catalogue';
+	@override String get addNamed => 'A time';
+	@override String get addNamedHint => 'Meal, snack, transition… you name it';
+	@override String get namedTitle => 'New time';
+	@override String get label => 'Name';
+	@override String get labelHint => 'Meal, snack, transition…';
+	@override String get start => 'Start';
+	@override String get length => 'Length';
+	@override String get addConfirm => 'Add';
 }
 
 // Path: planning.dates
@@ -1161,7 +1172,7 @@ extension on TranslationsEn {
 			'planning.screens.coordination' => 'Coordination',
 			'planning.start' => 'Start planning',
 			'planning.mode.title' => 'Currently planning',
-			'planning.mode.count' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, zero: 'no activity', one: '${n} activity', other: '${n} activities', ), 
+			'planning.mode.count' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, zero: 'no block', one: '${n} block', other: '${n} blocks', ), 
 			'planning.mode.replacing' => ({required Object name}) => 'Replacing “${name}”',
 			'planning.mode.cancel' => 'Cancel',
 			'planning.mode.confirm' => 'Confirm',
@@ -1169,20 +1180,31 @@ extension on TranslationsEn {
 			'planning.mode.remove' => 'Remove from planning',
 			'planning.mode.replace' => 'Replace',
 			'planning.plan.title' => 'The day\'s planning',
-			'planning.plan.empty' => 'No activity picked. Add some from the catalogue.',
+			'planning.plan.empty' => 'Nothing planned. Add an activity or a time.',
 			'planning.plan.add' => 'Add',
-			'planning.plan.hint' => 'Tap an activity to change its time, or hold it to move it.',
+			'planning.plan.hint' => 'Tap a block to change its time or length, or hold it to move it.',
 			'planning.plan.startTitle' => 'Start time',
-			'planning.plan.startHint' => 'The first activity starts at this time; the others follow on.',
+			'planning.plan.startHint' => 'The first block starts at this time; the others follow on.',
 			'planning.plan.confirm' => 'Confirm',
 			'planning.plan.replace' => 'Replace',
 			'planning.plan.remove' => 'Remove',
 			'planning.plan.save' => 'Save the planning',
 			'planning.plan.saveTitle' => 'The planning\'s day',
-			'planning.plan.saveHint' => 'The activities are saved at their time, on that day.',
+			'planning.plan.saveHint' => 'The blocks are saved at their time, on that day.',
 			'planning.plan.saveConfirm' => 'Save',
 			'planning.plan.saved' => 'Planning saved',
 			'planning.plan.saveFailed' => 'The planning could not be saved.',
+			'planning.plan.addTitle' => 'Add to the planning',
+			'planning.plan.addActivity' => 'An activity',
+			'planning.plan.addActivityHint' => 'Picked from the catalogue',
+			'planning.plan.addNamed' => 'A time',
+			'planning.plan.addNamedHint' => 'Meal, snack, transition… you name it',
+			'planning.plan.namedTitle' => 'New time',
+			'planning.plan.label' => 'Name',
+			'planning.plan.labelHint' => 'Meal, snack, transition…',
+			'planning.plan.start' => 'Start',
+			'planning.plan.length' => 'Length',
+			'planning.plan.addConfirm' => 'Add',
 			'planning.empty' => 'Nothing planned for this period.',
 			'planning.range' => 'Show by',
 			'planning.ranges.day' => 'Day',

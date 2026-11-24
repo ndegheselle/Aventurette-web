@@ -4,7 +4,7 @@ library;
 import 'package:ajil/features/planning/models/day_plan.dart';
 import 'package:ajil/features/planning/models/event.dart';
 import 'package:ajil/features/planning/models/period.dart';
-import 'package:ajil/features/planning/models/scheduled_activity.dart';
+import 'package:ajil/features/planning/models/scheduled_block.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
 
 String _capitalised(String text) => text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
@@ -78,16 +78,16 @@ String eventSubtitle(Translations t, PlanningEvent event) => [
   if (event.status case final status?) t.planning.status[status.name]!,
 ].join(' · ');
 
-/// A planned activity's time: *9h30–10h15*.
-String slotText(Translations t, PlannedActivity activity) =>
-    t.planning.dates.times(from: clockText(t, activity.start), to: clockText(t, activity.end));
+/// A planned block's time: *9h30–10h15*.
+String slotText(Translations t, PlannedBlock block) =>
+    t.planning.dates.times(from: clockText(t, block.start), to: clockText(t, block.end));
 
-/// A saved activity's time on the planning: *9h30–10h15* where its group is a day, with its day
+/// A saved block's time on the planning: *9h30–10h15* where its group is a day, with its day
 /// before — *21 novembre · 9h30–10h15* — where the group spans several.
-String scheduledText(Translations t, TimeRange range, ScheduledActivity activity) {
-  final times = _times(t, activity.start, activity.end);
+String scheduledText(Translations t, TimeRange range, ScheduledBlock block) {
+  final times = _times(t, block.start, block.end);
   return switch (range) {
     TimeRange.day || TimeRange.week => times,
-    TimeRange.month || TimeRange.year => '${_day(t, activity.start)} · $times',
+    TimeRange.month || TimeRange.year => '${_day(t, block.start)} · $times',
   };
 }

@@ -25,7 +25,7 @@ func Register(app core.App) {
 	registerSignUpWithoutPassword(app)
 	registerVerifiedOnly(app)
 	registerActivityDuration(app)
-	registerPlannedActivityEndCheck(app)
+	registerPlannedBlockEndCheck(app)
 	registerDevOTPLog(app)
 }
 

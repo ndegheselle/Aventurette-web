@@ -8,22 +8,21 @@ import (
 	"github.com/pocketbase/pocketbase/tests"
 )
 
-func savePlanned(t *testing.T, app *tests.TestApp, start time.Time, end time.Time) error {
-	activity := newActivity(t, app)
-
-	planned, err := app.FindCollectionByNameOrId(plannedActivitiesCollection)
+func newPlannedBlock(t *testing.T, app *tests.TestApp, activity *core.Record, start time.Time, end time.Time) *core.Record {
+	blocks, err := app.FindCollectionByNameOrId(plannedBlocksCollection)
 	if err != nil {
 		t.Fatal(err)
 	}
-	record := core.NewRecord(planned)
+	record := core.NewRecord(blocks)
 	record.Set("user", activity.GetString("user"))
 	record.Set("activity", activity.Id)
+	record.Set("label", activity.GetString("name"))
 	record.Set("start", start)
 	record.Set("end", end)
-	return app.Save(record)
+	return record
 }
 
-func TestPlannedActivityEndsAfterItStarts(t *testing.T) {
+func TestPlannedBlockEndsAfterItStarts(t *testing.T) {
 	start := time.Date(2026, 11, 18, 9, 0, 0, 0, time.UTC)
 	scenarios := []struct {
 		name     string
@@ -40,7 +39,7 @@ func TestPlannedActivityEndsAfterItStarts(t *testing.T) {
 			app := newTestApp(t)
 			defer app.Cleanup()
 
-			err := savePlanned(t, app, start, scenario.end)
+			err := app.Save(newPlannedBlock(t, app, newActivity(t, app), start, scenario.end))
 			if scenario.accepted && err != nil {
 				t.Fatalf("expected it saved, got %v", err)
 			}
@@ -48,5 +47,32 @@ func TestPlannedActivityEndsAfterItStarts(t *testing.T) {
 				t.Fatal("expected it refused")
 			}
 		})
+	}
+}
+
+func TestDeletingAnActivityKeepsItsBlocks(t *testing.T) {
+	app := newTestApp(t)
+	defer app.Cleanup()
+
+	activity := newActivity(t, app)
+	start := time.Date(2026, 11, 18, 9, 0, 0, 0, time.UTC)
+	block := newPlannedBlock(t, app, activity, start, start.Add(time.Hour))
+	if err := app.Save(block); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := app.Delete(activity); err != nil {
+		t.Fatalf("expected the activity deleted, got %v", err)
+	}
+
+	kept, err := app.FindRecordById(plannedBlocksCollection, block.Id)
+	if err != nil {
+		t.Fatalf("expected the block kept, got %v", err)
+	}
+	if kept.GetString("activity") != "" {
+		t.Fatalf("expected the link cleared, got %q", kept.GetString("activity"))
+	}
+	if kept.GetString("label") != activity.GetString("name") {
+		t.Fatalf("expected the label kept, got %q", kept.GetString("label"))
 	}
 }

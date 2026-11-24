@@ -98,6 +98,13 @@ const RULES = [
             && /from ['"](vue|vue-i18n|vue-router|@chapelure\/ui)/.test(f.text),
     },
     {
+        name: 'the MCP server loads no view layer',
+        why: 'admin/src/mcp/ and the features\' mcp/ run in Node, with no browser: they reach the '
+            + 'features through models/ and api/, never through Vue, a composable or a component.',
+        check: f => (f.path.startsWith('admin/src/mcp/') || inFeatureLayer(f.path, 'mcp'))
+            && /from ['"](vue|vue-i18n|vue-router|@chapelure\/ui|[^'"]*\/(composables|ui)\/|[^'"]*\.vue)/.test(f.text),
+    },
+    {
         name: '@chapelure/ui depends on neither the app nor the backend',
         why: 'The design system has to stay reusable by a second app.',
         check: f => f.path.startsWith('packages/ui/')

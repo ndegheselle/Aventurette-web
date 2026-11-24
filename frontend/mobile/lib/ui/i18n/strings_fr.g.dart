@@ -841,11 +841,11 @@ class Translations$planning$mode$fr {
 	/// fr: 'Planification en cours'
 	String get title => 'Planification en cours';
 
-	/// fr: '(zero) {aucune activité} (one) {{n} activité} (other) {{n} activités}'
+	/// fr: '(zero) {aucun bloc} (one) {{n} bloc} (other) {{n} blocs}'
 	String count({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
-		zero: 'aucune activité',
-		one: '${n} activité',
-		other: '${n} activités',
+		zero: 'aucun bloc',
+		one: '${n} bloc',
+		other: '${n} blocs',
 	);
 
 	/// fr: 'Remplacer « {name} »'
@@ -878,20 +878,20 @@ class Translations$planning$plan$fr {
 	/// fr: 'Planning de la journée'
 	String get title => 'Planning de la journée';
 
-	/// fr: 'Aucune activité choisie. Ajoutez-en depuis le catalogue.'
-	String get empty => 'Aucune activité choisie. Ajoutez-en depuis le catalogue.';
+	/// fr: 'Rien de prévu. Ajoutez une activité ou un temps.'
+	String get empty => 'Rien de prévu. Ajoutez une activité ou un temps.';
 
 	/// fr: 'Ajouter'
 	String get add => 'Ajouter';
 
-	/// fr: 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.'
-	String get hint => 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.';
+	/// fr: 'Touchez un bloc pour changer son heure ou sa durée, ou maintenez-le pour le déplacer.'
+	String get hint => 'Touchez un bloc pour changer son heure ou sa durée, ou maintenez-le pour le déplacer.';
 
 	/// fr: 'Heure de début'
 	String get startTitle => 'Heure de début';
 
-	/// fr: 'La première activité commence à cette heure ; les suivantes s'enchaînent.'
-	String get startHint => 'La première activité commence à cette heure ; les suivantes s\'enchaînent.';
+	/// fr: 'Le premier bloc commence à cette heure ; les suivants s'enchaînent.'
+	String get startHint => 'Le premier bloc commence à cette heure ; les suivants s\'enchaînent.';
 
 	/// fr: 'Valider'
 	String get confirm => 'Valider';
@@ -908,8 +908,8 @@ class Translations$planning$plan$fr {
 	/// fr: 'Jour du planning'
 	String get saveTitle => 'Jour du planning';
 
-	/// fr: 'Les activités sont enregistrées à leur heure, ce jour-là.'
-	String get saveHint => 'Les activités sont enregistrées à leur heure, ce jour-là.';
+	/// fr: 'Les blocs sont enregistrés à leur heure, ce jour-là.'
+	String get saveHint => 'Les blocs sont enregistrés à leur heure, ce jour-là.';
 
 	/// fr: 'Enregistrer'
 	String get saveConfirm => 'Enregistrer';
@@ -919,6 +919,39 @@ class Translations$planning$plan$fr {
 
 	/// fr: 'Le planning n'a pas pu être enregistré.'
 	String get saveFailed => 'Le planning n\'a pas pu être enregistré.';
+
+	/// fr: 'Ajouter au planning'
+	String get addTitle => 'Ajouter au planning';
+
+	/// fr: 'Une activité'
+	String get addActivity => 'Une activité';
+
+	/// fr: 'À choisir dans le catalogue'
+	String get addActivityHint => 'À choisir dans le catalogue';
+
+	/// fr: 'Un temps'
+	String get addNamed => 'Un temps';
+
+	/// fr: 'Repas, goûter, transition… à nommer'
+	String get addNamedHint => 'Repas, goûter, transition… à nommer';
+
+	/// fr: 'Nouveau temps'
+	String get namedTitle => 'Nouveau temps';
+
+	/// fr: 'Nom'
+	String get label => 'Nom';
+
+	/// fr: 'Repas, goûter, transition…'
+	String get labelHint => 'Repas, goûter, transition…';
+
+	/// fr: 'Début'
+	String get start => 'Début';
+
+	/// fr: 'Durée'
+	String get length => 'Durée';
+
+	/// fr: 'Ajouter'
+	String get addConfirm => 'Ajouter';
 }
 
 // Path: planning.dates
@@ -1626,7 +1659,7 @@ extension on Translations {
 			'planning.screens.coordination' => 'Coordination',
 			'planning.start' => 'Commencer un planning',
 			'planning.mode.title' => 'Planification en cours',
-			'planning.mode.count' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, zero: 'aucune activité', one: '${n} activité', other: '${n} activités', ), 
+			'planning.mode.count' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, zero: 'aucun bloc', one: '${n} bloc', other: '${n} blocs', ), 
 			'planning.mode.replacing' => ({required Object name}) => 'Remplacer « ${name} »',
 			'planning.mode.cancel' => 'Annuler',
 			'planning.mode.confirm' => 'Valider',
@@ -1634,20 +1667,31 @@ extension on Translations {
 			'planning.mode.remove' => 'Retirer du planning',
 			'planning.mode.replace' => 'Remplacer',
 			'planning.plan.title' => 'Planning de la journée',
-			'planning.plan.empty' => 'Aucune activité choisie. Ajoutez-en depuis le catalogue.',
+			'planning.plan.empty' => 'Rien de prévu. Ajoutez une activité ou un temps.',
 			'planning.plan.add' => 'Ajouter',
-			'planning.plan.hint' => 'Touchez une activité pour changer son heure, ou maintenez-la pour la déplacer.',
+			'planning.plan.hint' => 'Touchez un bloc pour changer son heure ou sa durée, ou maintenez-le pour le déplacer.',
 			'planning.plan.startTitle' => 'Heure de début',
-			'planning.plan.startHint' => 'La première activité commence à cette heure ; les suivantes s\'enchaînent.',
+			'planning.plan.startHint' => 'Le premier bloc commence à cette heure ; les suivants s\'enchaînent.',
 			'planning.plan.confirm' => 'Valider',
 			'planning.plan.replace' => 'Remplacer',
 			'planning.plan.remove' => 'Retirer',
 			'planning.plan.save' => 'Enregistrer le planning',
 			'planning.plan.saveTitle' => 'Jour du planning',
-			'planning.plan.saveHint' => 'Les activités sont enregistrées à leur heure, ce jour-là.',
+			'planning.plan.saveHint' => 'Les blocs sont enregistrés à leur heure, ce jour-là.',
 			'planning.plan.saveConfirm' => 'Enregistrer',
 			'planning.plan.saved' => 'Planning enregistré',
 			'planning.plan.saveFailed' => 'Le planning n\'a pas pu être enregistré.',
+			'planning.plan.addTitle' => 'Ajouter au planning',
+			'planning.plan.addActivity' => 'Une activité',
+			'planning.plan.addActivityHint' => 'À choisir dans le catalogue',
+			'planning.plan.addNamed' => 'Un temps',
+			'planning.plan.addNamedHint' => 'Repas, goûter, transition… à nommer',
+			'planning.plan.namedTitle' => 'Nouveau temps',
+			'planning.plan.label' => 'Nom',
+			'planning.plan.labelHint' => 'Repas, goûter, transition…',
+			'planning.plan.start' => 'Début',
+			'planning.plan.length' => 'Durée',
+			'planning.plan.addConfirm' => 'Ajouter',
 			'planning.empty' => 'Rien de prévu sur cette période.',
 			'planning.range' => 'Afficher par',
 			'planning.ranges.day' => 'Jour',

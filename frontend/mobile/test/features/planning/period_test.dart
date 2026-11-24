@@ -1,6 +1,6 @@
 import 'package:ajil/features/planning/models/event.dart';
 import 'package:ajil/features/planning/models/period.dart';
-import 'package:ajil/features/planning/models/scheduled_activity.dart';
+import 'package:ajil/features/planning/models/scheduled_block.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 PlanningEvent event(String id, DateTime start, DateTime end) =>
@@ -66,20 +66,21 @@ void main() {
     });
   });
 
-  test("a saved activity is grouped by the day it starts, with the day's events", () {
+  test("a saved block is grouped by the day it starts, with the day's events", () {
     final week = periodOf(TimeRange.week, DateTime(2026, 11, 16));
     final wednesday = event('wednesday', DateTime(2026, 11, 18, 14), DateTime(2026, 11, 18, 16));
-    final game = ScheduledActivity(
+    final game = ScheduledBlock(
       id: 's1',
       user: 'u1',
       activityId: 'a1',
+      label: 'Relais',
       start: DateTime(2026, 11, 18, 9),
       end: DateTime(2026, 11, 18, 10),
     );
-    final saturday = ScheduledActivity(
+    final saturday = ScheduledBlock(
       id: 's2',
       user: 'u1',
-      activityId: 'a1',
+      label: 'Repas',
       start: DateTime(2026, 11, 21, 10),
       end: DateTime(2026, 11, 21, 11),
     );
@@ -88,7 +89,7 @@ void main() {
 
     expect([for (final group in groups) group.part.from], [DateTime(2026, 11, 18), DateTime(2026, 11, 21)]);
     expect(idsOf(groups.first), ['wednesday']);
-    expect([for (final activity in groups.first.activities) activity.id], ['s1']);
+    expect([for (final block in groups.first.blocks) block.id], ['s1']);
   });
 
   test('an event is on one day until it ends past the midnight after', () {

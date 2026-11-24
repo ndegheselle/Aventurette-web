@@ -7,9 +7,6 @@ export default defineConfig({
     plugins: [vue()],
     // The same map the app builds with, so a test resolves an import as the browser will.
     resolve: { alias: aliases },
-    // The workspace root is frontend/, but a spec reads the fiche-to-json skill's files from the
-    // repository's .claude/, one level up, which Vite would otherwise refuse to serve.
-    server: { fs: { allow: ['..'] } },
     test: {
         globals: true,
         // happy-dom rather than jsdom: far faster to start, and nothing here needs jsdom's

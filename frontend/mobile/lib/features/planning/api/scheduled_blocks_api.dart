@@ -2,22 +2,21 @@ import 'package:ajil/backend/backend.dart';
 import 'package:ajil/core/data/crud.dart';
 import 'package:ajil/core/data/filters.dart';
 import 'package:ajil/features/planning/api/event_mapper.dart';
-import 'package:ajil/features/planning/api/scheduled_activity_mapper.dart';
-import 'package:ajil/features/planning/models/scheduled_activity.dart';
+import 'package:ajil/features/planning/api/scheduled_block_mapper.dart';
+import 'package:ajil/features/planning/models/scheduled_block.dart';
 import 'package:riverpod/riverpod.dart';
 
-/// A user's activities saved on the planning. The `user_planned_activities` rules keep each to
-/// its user.
-class ScheduledActivitiesApi {
-  const ScheduledActivitiesApi(this._scheduled);
+/// A user's blocks saved on the planning. The `planned_blocks` rules keep each to its user.
+class ScheduledBlocksApi {
+  const ScheduledBlocksApi(this._scheduled);
 
-  final DataCrud<ScheduledActivity> _scheduled;
+  final DataCrud<ScheduledBlock> _scheduled;
 
   /// As many as one screen lists.
   static const _limit = 200;
 
-  /// The user's activities taking part of [from, until), in the order they start.
-  Future<List<ScheduledActivity>> between(String user, DateTime from, DateTime until) async {
+  /// The user's blocks taking part of [from, until), in the order they start.
+  Future<List<ScheduledBlock>> between(String user, DateTime from, DateTime until) async {
     final found = await _scheduled.filter(
       FilterGroup([
         Filter('user', user, operator: FilterOperator.equals),
@@ -29,13 +28,11 @@ class ScheduledActivitiesApi {
     return found.items;
   }
 
-  /// Creates [activities], all at once.
-  Future<void> createAll(List<ScheduledActivity> activities) =>
-      Future.wait([for (final activity in activities) _scheduled.create(activity)]);
+  /// Creates [blocks], all at once.
+  Future<void> createAll(List<ScheduledBlock> blocks) =>
+      Future.wait([for (final block in blocks) _scheduled.create(block)]);
 }
 
-final scheduledActivitiesApiProvider = Provider(
-  (ref) => ScheduledActivitiesApi(
-    ref.watch(crudFactoryProvider).of('user_planned_activities', const ScheduledActivityMapper()),
-  ),
+final scheduledBlocksApiProvider = Provider(
+  (ref) => ScheduledBlocksApi(ref.watch(crudFactoryProvider).of('planned_blocks', const ScheduledBlockMapper())),
 );

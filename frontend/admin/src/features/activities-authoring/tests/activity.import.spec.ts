@@ -7,6 +7,7 @@ import {
     DEVELOPMENT_AXES,
     HostEffort,
     ImaginaryRule,
+    SUMMARY_MAX_LENGTH,
 } from '@features/activities/models/activity';
 import { StepKind } from '@features/activities/models/step';
 import { ActivityTagType } from '@features/activities/models/tag';
@@ -15,19 +16,20 @@ import {
     draftFromSheet,
     materialsOfSheet,
     readActivitySheet,
-    referenceKey,
+    referencesToCreate,
+    resourcesOfSheet,
     SHEET_VERSION,
     stepFromSheet,
     unsetFields,
     type ActivitySheet,
 } from '@features/activities-authoring/models/activity.import';
+import { MAX_STEP_RESOURCES } from '@features/activities-authoring/models/step.edit';
 import { aCatalogueMaterial, aMaterial, anActivity, aResource, aSafetyInstruction, aTag, aTip } from '@tests';
 import { describe, expect, it } from 'vitest';
-// Relative: no alias reaches the skills folder, and this is the one file that needs to.
-import example from '../../../../../../.claude/skills/fiche-to-json/example.json?raw';
-import schema from '../../../../../../.claude/skills/fiche-to-json/fiche-activite.schema.json?raw';
+import schema from '@features/activities-authoring/mcp/activity-sheet.schema.json?raw';
+import example from '@features/activities-authoring/tests/activity-sheet.example.json?raw';
 
-// A sheet is written by hand or by the skill, outside the app: reading it is the one place that
+// A sheet is written by an assistant from a fiche, outside the app: reading it is the one place that
 // says what an imported activity may hold. Then the names in it become links.
 
 const nothingKnown = { tags: [], safetyInstructions: [], tips: [] };
@@ -39,13 +41,13 @@ function sheetOf(json: object): ActivitySheet {
 }
 
 describe('readActivitySheet', () => {
-    it('reads the example the fiche-to-json skill writes from', () => {
-        // The skill documents the format; this is what keeps the two from drifting apart.
+    it('reads the example written against the schema', () => {
+        // The schema is what the assistant writes from; this keeps it and the reader together.
         expect(readActivitySheet(example).problems).toEqual([]);
     });
 
-    it('accepts the codes the fiche-to-json schema lists, and only those', () => {
-        // The skill writes against the schema; the enums come from the database.
+    it('accepts the codes the schema lists, and only those', () => {
+        // The assistant writes against the schema; the enums come from the database.
         const { properties, $defs } = JSON.parse(schema);
         const codes = (name: string) => $defs[name].oneOf.map((option: { const: string }) => option.const);
 
@@ -91,6 +93,12 @@ describe('readActivitySheet', () => {
         const reading = readActivitySheet(JSON.stringify({ version: 1, name: 'Tag' }));
 
         expect(reading.problems).toEqual([{ path: 'version', code: 'version', value: '1' }]);
+    });
+
+    it('refuses a summary longer than the collection takes, rather than cutting it', () => {
+        const reading = readActivitySheet(JSON.stringify({ name: 'Tag', summary: 'a'.repeat(SUMMARY_MAX_LENGTH + 1) }));
+
+        expect(reading.problems).toEqual([{ path: 'summary', code: 'length', value: String(SUMMARY_MAX_LENGTH) }]);
     });
 
     it('reads anything missing or null as unset, the way a blank activity holds it', () => {
@@ -148,21 +156,12 @@ describe('activityFromSheet', () => {
         expect(unknown).toEqual([{ kind: ActivityTagType.DEVELOP_SOCIAL, label: 'activities.tagType.DEVELOP_SOCIAL', name: 'Écoute' }]);
     });
 
-    it('links what the author picked for a name that matched nothing, and still reports the name once', () => {
-        // Still reported, so the pick can be changed; picked among its own kind only.
-        const insects = aTag({ type: ActivityTagType.THEME, name: 'Insectes' });
-        const pirates = aTag({ type: ActivityTagType.IMAGINARY, name: 'Pirates' });
-        const sheet = sheetOf({ name: 'Tag', classification: { themes: ['Bugs', 'bugs', 'Birds'] }, imaginary: { universes: ['Corsaires'] } });
-        const picks = {
-            [referenceKey({ kind: ActivityTagType.THEME, name: 'Bugs' })]: insects.id,
-            [referenceKey({ kind: ActivityTagType.IMAGINARY, name: 'Corsaires' })]: insects.id,
-        };
+    it('reports a name that matched nothing once, whatever its case', () => {
+        const sheet = sheetOf({ name: 'Tag', classification: { themes: ['Bugs', 'bugs', 'Birds'] } });
 
-        const { activity, unknown } = activityFromSheet(sheet, { ...nothingKnown, tags: [insects, pirates] }, picks);
+        const { unknown } = activityFromSheet(sheet, nothingKnown);
 
-        expect(activity.classification.themes).toEqual([insects]);
-        expect(activity.imaginary.universes).toEqual([]);
-        expect(unknown.map(reference => reference.name)).toEqual(['Bugs', 'Birds', 'Corsaires']);
+        expect(unknown.map(reference => reference.name)).toEqual(['Bugs', 'Birds']);
     });
 
     it('links a name given twice once', () => {
@@ -323,5 +322,45 @@ describe('draftFromSheet', () => {
 
         expect(draft.activity.materials.map(link => link.material))
             .toEqual(draft.newMaterials.map(material => material.id));
+    });
+});
+
+describe('referencesToCreate', () => {
+    it('creates the safety instructions and tips that matched nothing, never a tag', () => {
+        // Tags are a curated list: one that matches nothing is picked in the editor.
+        const sheet = sheetOf({
+            name: 'Tag',
+            classification: { themes: ['Insectes'] },
+            safety: { instructions: ['Feu'] },
+            steps: [{ title: 'Jouer', tips: ['Chuchoter'] }],
+        });
+
+        const created = referencesToCreate(activityFromSheet(sheet, nothingKnown).unknown);
+
+        expect(created.map(reference => [reference.kind, reference.name])).toEqual([['SAFETY', 'Feu'], ['TIP', 'Chuchoter']]);
+    });
+});
+
+describe('resourcesOfSheet', () => {
+    const twoSteps = { steps: [{ title: 'Préparer' }, { title: 'Jouer' }] } as Pick<ActivitySheet, 'steps'>;
+
+    it('groups the files by the position of their step', () => {
+        const reading = resourcesOfSheet(twoSteps, [{ step: 1, path: '/a.png' }, { step: 1, path: '/b.pdf' }]);
+
+        expect(reading.paths).toEqual([[], ['/a.png', '/b.pdf']]);
+    });
+
+    it('refuses a file for a step the sheet does not have, rather than dropping it', () => {
+        const reading = resourcesOfSheet(twoSteps, [{ step: 2, path: '/a.png' }]);
+
+        expect(reading.problems).toEqual([{ path: 'resources[0].step', code: 'choice', value: '2' }]);
+    });
+
+    it('refuses more files than a step may carry', () => {
+        const eleven = Array.from({ length: MAX_STEP_RESOURCES + 1 }, (_, index) => ({ step: 0, path: `/${index}.png` }));
+
+        const reading = resourcesOfSheet(twoSteps, eleven);
+
+        expect(reading.problems).toEqual([{ path: 'steps[0]', code: 'files', value: String(MAX_STEP_RESOURCES) }]);
     });
 });

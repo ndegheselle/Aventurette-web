@@ -1,6 +1,7 @@
 {
   "version": 3,
   "name": "La chasse aux couleurs",
+  "summary": "L'animateur annonce une couleur, les enfants rapportent au camp de base un objet de cette couleur.",
   "description": "<p>Les enfants partent à la recherche d'objets de la couleur annoncée par l'animateur et les rapportent au camp de base. Un jeu <strong>simple et rapide</strong>, idéal pour faire bouger un petit groupe.</p>",
   "visualBrief": "Un groupe d'enfants courant vers un cerceau rempli d'objets colorés.",
   "classification": {

@@ -54,6 +54,14 @@ export class RememberingAuthStore extends BaseAuthStore {
     }
 }
 
+/**
+ * The SDK's in-memory store, with the flag `createPocketBaseAuth` sets. Nothing outlives the
+ * process, so there is nothing to remember: the flag is ignored.
+ */
+export class MemoryAuthStore extends BaseAuthStore {
+    remember = true;
+}
+
 function read(storage: Storage): StoredSession | null {
     const raw = storage.getItem(STORAGE_KEY);
     if (!raw) return null;

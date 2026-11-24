@@ -6,8 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/container.dart';
 
-PlannedActivity planned(int key, {int minutes = 60, int start = 0}) =>
-    PlannedActivity(key: key, activityId: 'a$key', name: 'a$key', minutes: minutes, start: start);
+PlannedBlock planned(int key, {int minutes = 60, int start = 0}) =>
+    PlannedBlock(key: key, activityId: 'a$key', label: 'a$key', minutes: minutes, start: start);
 
 ActivityData activity(String id, {int minutes = 0}) => ActivityData(
   id: id,
@@ -15,12 +15,18 @@ ActivityData activity(String id, {int minutes = 0}) => ActivityData(
   steps: [if (minutes > 0) ActivityStep(id: 's', kind: StepKind.custom, duration: minutes)],
 );
 
-List<int> startsOf(List<PlannedActivity> activities) => [for (final activity in activities) activity.start];
+List<int> startsOf(List<PlannedBlock> blocks) => [for (final block in blocks) block.start];
 
 void main() {
   test('an activity with no length takes the default one', () {
     expect(lengthOf(0), defaultActivityMinutes);
     expect(lengthOf(45), 45);
+  });
+
+  test('a length the user sets lands on five minutes, at least five, a day at most', () {
+    expect(blockLengthOf(43), 45);
+    expect(blockLengthOf(0), blockStepMinutes);
+    expect(blockLengthOf(minutesPerDay + 60), minutesPerDay);
   });
 
   test('activities follow each other from the start, and stop at the end of the day', () {
@@ -41,7 +47,7 @@ void main() {
     test('lays activities apart full width when they do not overlap', () {
       final slots = timelineOf([planned(1, start: 600), planned(2, start: 540)]);
 
-      expect([for (final slot in slots) slot.activity.key], [2, 1], reason: 'by start');
+      expect([for (final slot in slots) slot.block.key], [2, 1], reason: 'by start');
       expect([for (final slot in slots) slot.lanes], [1, 1]);
     });
 
@@ -79,7 +85,7 @@ void main() {
 
       plan.schedule(10 * 60);
 
-      expect(startsOf(container.read(dayPlanProvider)!.activities), [600, 690]);
+      expect(startsOf(container.read(dayPlanProvider)!.blocks), [600, 690]);
     });
 
     test('an activity already planned is taken out, every time it is in the plan', () async {
@@ -92,13 +98,13 @@ void main() {
       final action = plan.pick(activity('first'));
 
       expect(action, PickAction.remove);
-      expect([for (final planned in container.read(dayPlanProvider)!.activities) planned.name], ['second']);
+      expect([for (final planned in container.read(dayPlanProvider)!.blocks) planned.label], ['second']);
     });
 
     test('while replacing, an activity already planned replaces rather than leaves', () async {
       final container = await signedInContainer();
       final plan = container.read(dayPlanProvider.notifier)..pick(activity('first'));
-      plan.replace(container.read(dayPlanProvider)!.activities.single.key);
+      plan.replace(container.read(dayPlanProvider)!.blocks.single.key);
 
       expect(pickActionOf(container.read(dayPlanProvider), 'first'), PickAction.replace);
     });
@@ -109,16 +115,56 @@ void main() {
         ..pick(activity('first', minutes: 60))
         ..pick(activity('second', minutes: 60))
         ..schedule(9 * 60);
-      final second = container.read(dayPlanProvider)!.activities.last;
+      final second = container.read(dayPlanProvider)!.blocks.last;
 
       plan.replace(second.key);
       final outcome = plan.pick(activity('third', minutes: 45));
 
-      final activities = container.read(dayPlanProvider)!.activities;
+      final blocks = container.read(dayPlanProvider)!.blocks;
       expect(outcome, PickAction.replace);
-      expect([for (final activity in activities) activity.name], ['first', 'third']);
-      expect(activities.last.start, 10 * 60);
+      expect([for (final block in blocks) block.label], ['first', 'third']);
+      expect(blocks.last.start, 10 * 60);
+      expect(blocks.last.minutes, 45, reason: 'the replacement lasts its own play time');
       expect(container.read(dayPlanProvider)!.replacing, isNull);
+    });
+
+    test('a named block is never taken for an activity, whatever its label', () async {
+      final container = await signedInContainer();
+      final plan = container.read(dayPlanProvider.notifier)..addBlock(label: 'first', start: 9 * 60, minutes: 30);
+
+      expect(pickActionOf(container.read(dayPlanProvider), 'first'), PickAction.add);
+      plan.pick(activity('first'));
+
+      expect([for (final block in container.read(dayPlanProvider)!.blocks) block.activityId], [null, 'first']);
+    });
+
+    test('a named block gives the plan its times, those picked before following the usual start', () async {
+      final container = await signedInContainer();
+      final plan = container.read(dayPlanProvider.notifier)..pick(activity('game', minutes: 60));
+
+      plan.addBlock(label: ' Repas ', start: 12 * 60, minutes: 90);
+
+      final day = container.read(dayPlanProvider)!;
+      expect(day.scheduled, isTrue);
+      expect(startsOf(day.blocks), [defaultStartMinutes, 12 * 60]);
+      expect(day.blocks.last.label, 'Repas');
+      expect(day.blocks.last.minutes, 90);
+    });
+
+    test('a longer block keeps its start, unless it would run past midnight', () async {
+      final container = await signedInContainer();
+      final plan = container.read(dayPlanProvider.notifier)
+        ..addBlock(label: 'Veillée', start: 22 * 60, minutes: 60)
+        ..addBlock(label: 'Goûter', start: 16 * 60, minutes: 20);
+      final [evening, snack] = container.read(dayPlanProvider)!.blocks;
+
+      plan
+        ..resize(evening.key, 180)
+        ..resize(snack.key, 30);
+
+      final [longer, shorter] = container.read(dayPlanProvider)!.blocks;
+      expect((longer.start, longer.minutes), (minutesPerDay - 180, 180));
+      expect((shorter.start, shorter.minutes), (16 * 60, 30));
     });
   });
 }

@@ -3,7 +3,7 @@
 library;
 
 import 'package:ajil/features/planning/models/event.dart';
-import 'package:ajil/features/planning/models/scheduled_activity.dart';
+import 'package:ajil/features/planning/models/scheduled_block.dart';
 
 /// How much time the planning shows at once.
 enum TimeRange { day, week, month, year }
@@ -64,35 +64,35 @@ List<Period> partsOf(TimeRange range, Period period) {
   return parts;
 }
 
-/// Events and saved activities under a heading: the part of the period they take part of.
+/// Events and saved blocks under a heading: the part of the period they take part of.
 class PeriodGroup {
-  const PeriodGroup(this.part, {this.events = const [], this.activities = const []});
+  const PeriodGroup(this.part, {this.events = const [], this.blocks = const []});
 
   final Period part;
 
   /// Each in the order they start.
   final List<PlanningEvent> events;
-  final List<ScheduledActivity> activities;
+  final List<ScheduledBlock> blocks;
 }
 
-/// [events] and [activities] grouped by the parts of [period]. A part with neither is left out;
-/// one over several parts is in each.
+/// [events] and [blocks] grouped by the parts of [period]. A part with neither is left out; one
+/// over several parts is in each.
 List<PeriodGroup> groupedByPart(
   List<PlanningEvent> events,
-  List<ScheduledActivity> activities,
+  List<ScheduledBlock> blocks,
   TimeRange range,
   Period period,
 ) {
   final groups = <PeriodGroup>[];
   for (final part in partsOf(range, period)) {
     final eventsIn = events.where((event) => overlaps(event, part.from, part.until));
-    final activitiesIn = activities.where((activity) => scheduledWithin(activity, part.from, part.until));
-    if (eventsIn.isEmpty && activitiesIn.isEmpty) continue;
+    final blocksIn = blocks.where((block) => scheduledWithin(block, part.from, part.until));
+    if (eventsIn.isEmpty && blocksIn.isEmpty) continue;
     groups.add(
       PeriodGroup(
         part,
         events: sortedByStart(eventsIn),
-        activities: [...activitiesIn]..sort((a, b) => a.start.compareTo(b.start)),
+        blocks: [...blocksIn]..sort((a, b) => a.start.compareTo(b.start)),
       ),
     );
   }

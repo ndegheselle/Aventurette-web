@@ -9,6 +9,7 @@ import {
     DEVELOPMENT_AXES,
     HostEffort,
     ImaginaryRule,
+    SUMMARY_MAX_LENGTH,
     type ActivityAudience,
     type ActivityData,
     type ActivityPlace,
@@ -27,26 +28,27 @@ import {
     materialNamed,
     nameKey,
 } from "@features/activities-authoring/models/material.edit";
-import { createEmptyStep, isBlankHtml } from "@features/activities-authoring/models/step.edit";
+import { createEmptyStep, isBlankHtml, MAX_STEP_RESOURCES } from "@features/activities-authoring/models/step.edit";
 import { createEmptyWorkshop } from "@features/activities-authoring/models/workshop.edit";
 
 /**
- * An activity sheet brought in as JSON — what the `fiche-to-json` skill writes from the Confluence
- * template. It reads as `ActivityData` does, family by family, except that tags, safety
- * instructions, tips and materials are names: the file is written before anything exists to point
- * at.
+ * An activity sheet, as the MCP server's `save_activity` takes it: mapped from a fiche written
+ * from the Confluence template, against `mcp/activity-sheet.schema.json`. It reads as
+ * `ActivityData` does, family by family, except that tags, safety instructions, tips and materials
+ * are names: the sheet is written before anything exists to point at.
  */
 
 // ── The sheet ───────────────────────────────────────────────────────────────────────────────
 
 /**
- * The one format read. The skill writes it into `version`. Version 1 named safety tags, and gave
- * each step a tip, a visual brief and end criteria. Version 2 named the tips on the activity.
+ * The one format read, given in `version`. Version 1 named safety tags, and gave each step a tip,
+ * a visual brief and end criteria. Version 2 named the tips on the activity.
  */
 export const SHEET_VERSION = 3;
 
 export interface ActivitySheet {
     name: string;
+    summary: string;
     description: HTMLString;
     visualBrief: string;
     classification: {
@@ -103,8 +105,8 @@ export interface SheetStep {
 export interface SheetProblem {
     /** Where in the file, as `steps[2].kind`. Empty for the file as a whole. */
     path: string;
-    code: "json" | "version" | "required" | "object" | "text" | "number" | "boolean" | "list" | "choice";
-    /** The value refused, for `choice` and `version`. */
+    code: "json" | "version" | "required" | "object" | "text" | "number" | "boolean" | "list" | "choice" | "length" | "files";
+    /** The value refused, for `choice` and `version`; the maximum, for `length` and `files`. */
     value?: string;
 }
 
@@ -147,8 +149,14 @@ export function readActivitySheet(text: string): SheetReading {
     if (!name.trim())
         read.problems.push({ path: "name", code: "required" });
 
+    // The collection refuses a longer one, and cutting it would put words in the author's mouth.
+    const summary = read.text(root.summary, "summary").trim();
+    if (summary.length > SUMMARY_MAX_LENGTH)
+        read.problems.push({ path: "summary", code: "length", value: String(SUMMARY_MAX_LENGTH) });
+
     const sheet: ActivitySheet = {
         name: name.trim(),
+        summary,
         description: read.text(root.description, "description"),
         visualBrief: read.text(root.visualBrief, "visualBrief"),
         classification: {
@@ -330,24 +338,9 @@ export interface UnknownReference {
     name: string;
 }
 
-/**
- * What the author linked in place of names that matched nothing: the id of one of the same kind,
- * by `referenceKey`. A name with no pick is left off.
- */
-export type ReferencePicks = Record<string, string>;
-
-/** The key a pick is held under. Two spellings of one name, in one kind, share it. */
-export function referenceKey(reference: Pick<UnknownReference, 'kind' | 'name'>): string {
+/** Two spellings of one name, in one kind, are the same reference. */
+function referenceKey(reference: Pick<UnknownReference, 'kind' | 'name'>): string {
     return `${reference.kind}:${nameKey(reference.name)}`;
-}
-
-/** What a name of that kind may be linked to instead, by name. */
-export function referenceCandidates(known: SheetReferences, kind: ReferenceKind): { id: string; name: string }[] {
-    const candidates = kind === 'SAFETY' ? known.safetyInstructions
-        : kind === 'TIP' ? known.tips
-        : known.tags.filter(tag => tag.type === kind);
-
-    return [...candidates].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export interface SheetActivity {
@@ -355,16 +348,17 @@ export interface SheetActivity {
     activity: ActivityData;
     /** The tips each step of the sheet links, by its position. */
     stepTips: ActivityTipData[][];
-    /** What the sheet named that does not exist, each once — picked or not, so a pick can change. */
+    /** What the sheet named that does not exist, each once. */
     unknown: UnknownReference[];
 }
 
 /**
  * The activity a sheet describes, and the tips of each step. Tags, safety instructions and tips
- * are reference data, so a name matches an existing one of the same kind by name or slug, whatever the case. One that matches
- * nothing is reported, and links what the author picked for it, or nothing: it is never created.
+ * are reference data, so a name matches an existing one of the same kind by name or slug,
+ * whatever the case. One that matches nothing is reported and left off: creating it is the
+ * caller's (`referencesToCreate`).
  */
-export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences, picks: ReferencePicks = {}): SheetActivity {
+export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences): SheetActivity {
     const unknown: UnknownReference[] = [];
 
     function matching<T extends { id: string; name: string; slug?: string }>(kind: ReferenceKind, label: string, candidates: T[], names: string[]): T[] {
@@ -380,9 +374,6 @@ export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences, 
             const reference = { kind, label, name };
             if (!unknown.some(other => referenceKey(other) === referenceKey(reference)))
                 unknown.push(reference);
-
-            const picked = candidates.find(candidate => candidate.id === picks[referenceKey(reference)]);
-            if (picked) found.push(picked);
         }
 
         return distinctById(found);
@@ -399,6 +390,7 @@ export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences, 
     const activity: ActivityData = {
         ...createEmptyActivity(),
         name: sheet.name,
+        summary: sheet.summary,
         description: sheet.description,
         visualBrief: sheet.visualBrief,
         classification: {
@@ -447,6 +439,7 @@ export function unsetFields(activity: ActivityData, steps: Pick<SheetStep, 'titl
     const untimed = steps.filter(step => !step.duration).map(step => step.title);
 
     const checks: [boolean, string][] = [
+        [!activity.summary.trim(), 'activities.fields.summary'],
         [!activity.visualBrief.trim(), 'activities.fields.visualBrief'],
         [isBlankHtml(activity.description), 'activities.authoring.description'],
         [!classification.format, 'activities.fields.format'],
@@ -602,4 +595,51 @@ function workshopFromSheet(
 
 function escapeHtml(text: string): string {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// ── What the MCP server adds ────────────────────────────────────────────────────────────────
+
+/**
+ * The names a save creates rather than reports: safety instructions and tips are free wording an
+ * author may add, while tags are a curated list, picked in the editor when none matches.
+ */
+export function referencesToCreate(unknown: UnknownReference[]): UnknownReference[] {
+    return unknown.filter(reference => reference.kind === "SAFETY" || reference.kind === "TIP");
+}
+
+/** A file given for one of the sheet"s steps, by the step"s position. */
+export interface SheetResourcePath {
+    step: number;
+    path: string;
+}
+
+/** Each step"s file paths, by its position, or what is wrong with them. */
+export type SheetResourcesReading =
+    | { paths: string[][]; problems: [] }
+    | { paths: null; problems: SheetProblem[] };
+
+/**
+ * Group the files given for a sheet"s steps by step. A position the sheet has no step at, or more
+ * files than a step may carry, is refused rather than dropped: the author meant that file.
+ */
+export function resourcesOfSheet(sheet: Pick<ActivitySheet, "steps">, resources: SheetResourcePath[]): SheetResourcesReading {
+    const paths: string[][] = sheet.steps.map(() => []);
+    const problems: SheetProblem[] = [];
+
+    resources.forEach(({ step, path }, index) => {
+        const files = paths[step];
+        if (!Number.isInteger(step) || !files) {
+            problems.push({ path: `resources[${index}].step`, code: "choice", value: String(step) });
+            return;
+        }
+        files.push(path);
+    });
+
+    paths.forEach((files, step) => {
+        if (files.length > MAX_STEP_RESOURCES)
+            problems.push({ path: `steps[${step}]`, code: "files", value: String(MAX_STEP_RESOURCES) });
+    });
+
+    if (problems.length) return { paths: null, problems };
+    return { paths, problems: [] };
 }

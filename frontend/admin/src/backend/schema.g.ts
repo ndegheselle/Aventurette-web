@@ -21,10 +21,10 @@ export const Collections = {
 	CatalogTips: "catalog_tips",
 	DayTemplates: "day_templates",
 	Events: "events",
+	PlannedBlocks: "planned_blocks",
 	StepsResources: "steps_resources",
 	UserActivityFeedback: "user_activity_feedback",
 	UserActivityHistory: "user_activity_history",
-	UserPlannedActivities: "user_planned_activities",
 	Users: "users",
 } as const
 export type Collections = typeof Collections[keyof typeof Collections]
@@ -344,6 +344,17 @@ export type EventsRecord = {
 	updated: IsoAutoDateString
 }
 
+export type PlannedBlocksRecord = {
+	activity?: RecordIdString
+	created: IsoAutoDateString
+	end: IsoDateString
+	id: string
+	label: string
+	start: IsoDateString
+	updated: IsoAutoDateString
+	user: RecordIdString
+}
+
 export type StepsResourcesRecord = {
 	created: IsoAutoDateString
 	file?: FileNameString
@@ -367,16 +378,6 @@ export type UserActivityHistoryRecord = {
 	activity: RecordIdString
 	created: IsoAutoDateString
 	id: string
-	updated: IsoAutoDateString
-	user: RecordIdString
-}
-
-export type UserPlannedActivitiesRecord = {
-	activity: RecordIdString
-	created: IsoAutoDateString
-	end: IsoDateString
-	id: string
-	start: IsoDateString
 	updated: IsoAutoDateString
 	user: RecordIdString
 }
@@ -448,10 +449,10 @@ export type CatalogTagsResponse<Texpand = unknown> = Required<CatalogTagsRecord>
 export type CatalogTipsResponse<Texpand = unknown> = Required<CatalogTipsRecord> & BaseSystemFields<Texpand>
 export type DayTemplatesResponse<Texpand = unknown> = Required<DayTemplatesRecord> & BaseSystemFields<Texpand>
 export type EventsResponse<Texpand = unknown> = Required<EventsRecord> & BaseSystemFields<Texpand>
+export type PlannedBlocksResponse<Texpand = unknown> = Required<PlannedBlocksRecord> & BaseSystemFields<Texpand>
 export type StepsResourcesResponse<Texpand = unknown> = Required<StepsResourcesRecord> & BaseSystemFields<Texpand>
 export type UserActivityFeedbackResponse<Texpand = unknown> = Required<UserActivityFeedbackRecord> & BaseSystemFields<Texpand>
 export type UserActivityHistoryResponse<Texpand = unknown> = Required<UserActivityHistoryRecord> & BaseSystemFields<Texpand>
-export type UserPlannedActivitiesResponse<Texpand = unknown> = Required<UserPlannedActivitiesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -472,10 +473,10 @@ export type CollectionRecords = {
 	catalog_tips: CatalogTipsRecord
 	day_templates: DayTemplatesRecord
 	events: EventsRecord
+	planned_blocks: PlannedBlocksRecord
 	steps_resources: StepsResourcesRecord
 	user_activity_feedback: UserActivityFeedbackRecord
 	user_activity_history: UserActivityHistoryRecord
-	user_planned_activities: UserPlannedActivitiesRecord
 	users: UsersRecord
 }
 
@@ -495,10 +496,10 @@ export type CollectionResponses = {
 	catalog_tips: CatalogTipsResponse
 	day_templates: DayTemplatesResponse
 	events: EventsResponse
+	planned_blocks: PlannedBlocksResponse
 	steps_resources: StepsResourcesResponse
 	user_activity_feedback: UserActivityFeedbackResponse
 	user_activity_history: UserActivityHistoryResponse
-	user_planned_activities: UserPlannedActivitiesResponse
 	users: UsersResponse
 }
 

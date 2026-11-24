@@ -57,24 +57,30 @@ void main() {
     expect(localDate(backendDate(moment)), moment);
   });
 
-  group('saved activities', () {
+  group('saved blocks', () {
+    Payload saved(
+      String id,
+      DateTime start,
+      DateTime end, {
+      String user = 'u1',
+      String activity = 'a1',
+      String label = 'La quête',
+    }) => {
+      'id': id,
+      'user': user,
+      'activity': activity,
+      'label': label,
+      'start': backendDate(start),
+      'end': backendDate(end),
+    };
+
     test('show as long as they were planned, one running in from the day before included', () async {
-      Payload planned(String id, DateTime start, DateTime end, {String user = 'u1'}) => {
-        'id': id,
-        'user': user,
-        'activity': 'a1',
-        'start': backendDate(start),
-        'end': backendDate(end),
-        'expand': {
-          'activity': {'id': 'a1', 'name': 'La quête du remède'},
-        },
-      };
       final crud = FakeCrudFactory({
-        'user_planned_activities': [
-          planned('too early', DateTime(2026, 11, 17, 10), DateTime(2026, 11, 17, 11)),
-          planned('morning', DateTime(2026, 11, 18, 9), DateTime(2026, 11, 18, 9, 45)),
-          planned('runs in', DateTime(2026, 11, 17, 23, 30), DateTime(2026, 11, 18, 0, 30)),
-          planned('not mine', DateTime(2026, 11, 18, 9), DateTime(2026, 11, 18, 10), user: 'u2'),
+        'planned_blocks': [
+          saved('too early', DateTime(2026, 11, 17, 10), DateTime(2026, 11, 17, 11)),
+          saved('morning', DateTime(2026, 11, 18, 9), DateTime(2026, 11, 18, 9, 45)),
+          saved('runs in', DateTime(2026, 11, 17, 23, 30), DateTime(2026, 11, 18, 0, 30)),
+          saved('not mine', DateTime(2026, 11, 18, 9), DateTime(2026, 11, 18, 10), user: 'u2'),
         ],
       });
       final container = await signedInContainer(crud: crud);
@@ -84,26 +90,48 @@ void main() {
 
       final groups = await container.read(planningGroupsProvider.future);
 
-      final activities = [for (final group in groups) ...group.activities];
-      expect([for (final activity in activities) activity.id], ['runs in', 'morning']);
-      expect(activities.last.name, 'La quête du remède');
-      expect(activities.last.end, DateTime(2026, 11, 18, 9, 45));
+      final blocks = [for (final group in groups) ...group.blocks];
+      expect([for (final block in blocks) block.id], ['runs in', 'morning']);
+      expect(blocks.last.end, DateTime(2026, 11, 18, 9, 45));
     });
 
-    test("saving writes each activity at its time on the day, then leaves planning mode on that day", () async {
+    test('keep the label they were saved with, and read a block with no activity as named', () async {
+      final crud = FakeCrudFactory({
+        'planned_blocks': [
+          saved('game', DateTime(2026, 11, 18, 9), DateTime(2026, 11, 18, 10), label: 'Ancien nom'),
+          saved('meal', DateTime(2026, 11, 18, 12), DateTime(2026, 11, 18, 13), activity: '', label: 'Repas'),
+        ],
+      });
+      final container = await signedInContainer(crud: crud);
+      container.read(planningProvider.notifier)
+        ..select(DateTime(2026, 11, 18))
+        ..show(TimeRange.day);
+
+      final groups = await container.read(planningGroupsProvider.future);
+
+      final blocks = [for (final group in groups) ...group.blocks];
+      expect([for (final block in blocks) (block.label, block.activityId)], [('Ancien nom', 'a1'), ('Repas', null)]);
+    });
+
+    test("saving writes each block at its time on the day, then leaves planning mode on that day", () async {
       final crud = FakeCrudFactory();
       final container = await signedInContainer(crud: crud);
       final plan = container.read(dayPlanProvider.notifier)
         ..pick(const ActivityData(id: 'a1', name: 'Un'))
         ..pick(const ActivityData(id: 'a2', name: 'Deux'))
-        ..schedule(9 * 60);
+        ..schedule(9 * 60)
+        ..addBlock(label: 'Repas', start: 12 * 60, minutes: 60);
 
       await plan.save(DateTime(2026, 12, 5));
 
-      final records = crud.records['user_planned_activities']!;
-      expect([for (final record in records) record['activity']], ['a1', 'a2']);
-      expect(records.last['start'], backendDate(DateTime(2026, 12, 5, 9, 30)));
-      expect(records.last['end'], backendDate(DateTime(2026, 12, 5, 10)), reason: 'half an hour, with no play steps');
+      final records = crud.records['planned_blocks']!;
+      expect(
+        [for (final record in records) (record['activity'], record['label'])],
+        [('a1', 'Un'), ('a2', 'Deux'), ('', 'Repas')],
+      );
+      expect(records[1]['start'], backendDate(DateTime(2026, 12, 5, 9, 30)));
+      expect(records[1]['end'], backendDate(DateTime(2026, 12, 5, 10)), reason: 'half an hour, with no play steps');
+      expect(records.last['end'], backendDate(DateTime(2026, 12, 5, 13)));
       expect(records.first['user'], 'u1');
       expect(container.read(dayPlanProvider), isNull);
       expect(container.read(planningProvider).day, DateTime(2026, 12, 5));
@@ -117,7 +145,7 @@ void main() {
 
       await expectLater(plan.save(DateTime(2026, 12, 5)), throwsStateError);
 
-      expect(container.read(dayPlanProvider)!.activities, hasLength(1));
+      expect(container.read(dayPlanProvider)!.blocks, hasLength(1));
     });
   });
 }

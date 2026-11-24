@@ -139,6 +139,7 @@ export function anActivity(overrides: Partial<ActivityData> = {}): ActivityData 
         ...SYSTEM,
         id: nextId('act'),
         name: 'Treasure hunt',
+        summary: '',
         description: '<p>Hide, then seek.</p>',
         state: ActivityState.DRAFT,
         user: nextId('usr'),

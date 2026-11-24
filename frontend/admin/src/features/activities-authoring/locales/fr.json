@@ -30,29 +30,10 @@
                 "create": "Créer « {name} »"
             },
             "import": {
-                "title": "Importer une fiche",
-                "stages": {
-                    "sheet": "Fiche JSON",
-                    "complete": "Compléments",
-                    "files": "Fichiers"
-                },
-                "sheet": {
-                    "constraints": "Un fichier JSON produit à partir du template de fiche d'activité.",
-                    "summary": "{steps} étape(s), {materials} matériel(s), {workshops} atelier(s)"
-                },
-                "files": {
-                    "optional": "Facultatif : le visuel et les ressources peuvent aussi être ajoutés plus tard depuis l'éditeur."
-                },
-                "unknown": "Ces éléments n'existent pas encore : liez-en un existant à la place, ou laissez-les de côté.",
-                "leaveOff": "Laisser de côté",
                 "unset": {
-                    "title": "Restera à compléter dans l'éditeur :",
                     "indoorOutdoor": "Intérieur / extérieur"
                 },
-                "complete": "Rien ne manque à cette fiche.",
-                "stepResources": "Ressources — {title}",
                 "problems": {
-                    "title": "{file} ne peut pas être importé :",
                     "json": "Le fichier n'est pas un JSON valide.",
                     "version": "La version de fiche {value} n'est pas prise en charge.",
                     "required": "{path} : champ obligatoire.",
@@ -61,11 +42,10 @@
                     "number": "{path} : un nombre positif est attendu.",
                     "boolean": "{path} : true ou false est attendu.",
                     "list": "{path} : une liste est attendue.",
-                    "choice": "{path} : « {value} » n'est pas une valeur reconnue."
-                },
-                "next": "Suivant",
-                "back": "Précédent",
-                "confirm": "Importer"
+                    "choice": "{path} : « {value} » n'est pas une valeur reconnue.",
+                    "length": "{path} : {value} caractères au plus.",
+                    "files": "{path} : {value} fichiers au plus."
+                }
             },
             "comments": {
                 "title": "Commentaires des utilisateurs",

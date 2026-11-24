@@ -10,11 +10,11 @@ app planned single activities on dates; events replace that, and it is not carri
 | B02 | *Événements* | Not built |
 | B03 | *Journées types* | Not built |
 | B04 | A day template | Not built |
-| — | Planning a day: picking activities, setting their times, saving them on a day | Built |
+| — | Planning a day: picking activities, adding named times, setting their times, saving them on a day | Built |
 | B06 | *Créer un événement* | Not built |
 | B07 | An event | Not built |
 | B08 | *Modifier l'événement* | Not built |
-| B09, B10, B11 | Adding a block: an activity, or a temps de vie and its setup | Not built |
+| B09, B10, B11 | Adding a block: an activity, or a temps de vie and its setup | Built in a day plan, simplified: a named time, no setup |
 | B12, B13 | A block's time, and an overlap | Not built |
 | B14 | *Coordination* across units | Not built |
 | B16 | *Dupliquer l'événement* | Not built |
@@ -28,12 +28,14 @@ app planned single activities on dates; events replace that, and it is not carri
 - **Beside it, the range** to show by, in a menu: *Jour*, *Semaine*, *Mois*, *Année*. **The
   planning opens on today's week.** Another range keeps the day chosen: from the week of the 18th,
   *Mois* shows that month.
-- **The events and the saved activities are grouped**: a week's by day, a month's by week, a
+- **The events and the saved blocks are grouped**: a week's by day, a month's by week, a
   year's by month; a day's are not grouped. A group with neither is left out; with nothing at
   all, *Rien de prévu sur cette période.*
-- **A saved activity shows as on the plan**: a card with its name and its time — *9h–9h45* —,
-  its day before it in a month or a year. Tapping it opens the activity's sheet. **It keeps the
-  length it had on the plan**, even if the activity's steps change afterwards.
+- **A saved block shows as on the plan**: a card with its label and its time — *9h–9h45* —, its
+  day before it in a month or a year. Tapping an activity's opens its sheet; a named time opens
+  nothing. **It keeps the label and the length it had on the plan**, even if the activity is
+  renamed or its steps change afterwards. **Deleting the activity keeps the block**, which then
+  opens nothing.
 - **A month's weeks start on Monday and are cut at the month's edges**: November 2026 starts with
   the 1st alone.
 - **An event is in every group it takes part of.** One ending at midnight ends the day before.
@@ -51,40 +53,55 @@ app planned single activities on dates; events replace that, and it is not carri
 
 ## Planning a day
 
-Planning mode picks activities in the catalogue, then sets their times on the day's timeline.
-**The plan is kept on the phone until it is saved; it makes no event.**
+Planning mode builds a day of **blocks**: activities picked in the catalogue, and times the user
+names — a meal, a snack, a transition. Each has a label, a start and a length on the day's
+timeline. **The plan is kept on the phone until it is saved; it makes no event.**
 
 **Entering it**: *Commencer un planning* opens the catalogue in planning mode. *Ajouter au
 planning*, always at the bottom of an [activity's sheet](activity-sheet.md#the-sheet-a03), adds
 that activity — and enters planning mode when outside it. **Once the activity is in the plan, it
-takes it out instead** (*Retirer du planning*, shown on a long press, as each icon's label).
+takes it out instead** (*Retirer du planning*, shown on a long press, as each icon's label). A
+named time is never taken for an activity, whatever its label.
 
 **In planning mode**, the catalogue and the sheets end with a bar: *Planification en cours ·
-2 activités*, *Annuler*, which drops the plan, and *Valider*, which opens the plan.
+2 blocs*, *Annuler*, which drops the plan, and *Valider*, which opens the plan.
 
-**The plan** shows the day's hours, 0h to 24h, down the left, and each activity as a card at its
-time: its name and *9h30–10h15*.
+**The plan** shows the day's hours, 0h to 24h, down the left, and each block as a card at its
+time: its label and *9h30–10h15*. A named time's card has a clock, on the page's background.
 
-- **The first time it opens with activities, it asks for the start time** (9h unless changed).
-  The first activity starts then; each next one starts when the one before ends, in the order
-  they were picked.
-- **An activity lasts its play time**: the steps after the preparation. **One with none lasts
-  30 minutes**, and a short one is drawn half an hour tall, so the cards stay readable.
-- **Everything stays within the day.** An activity that would run past midnight ends at
-  midnight instead.
-- **An activity added once the times are set goes after the one ending last.** ***Ajouter***,
-  at the bottom of the plan, goes back to the catalogue to pick more.
-- **Overlapping activities are drawn side by side**; nothing prevents an overlap.
-- **Activities scrolled wholly out of view are counted** in a badge at the top (*↑ 2 activités*)
-  or the bottom of the timeline.
-- **Tapping a card** opens a panel: its time on a wheel, applied as it turns; *Remplacer*;
-  *Retirer*. **Holding a card** moves it up or down; it lands on the nearest five minutes.
+- **The first time it opens with blocks, it asks for the start time** (9h unless changed).
+  The first block starts then; each next one starts when the one before ends, in the order
+  they were added.
+- **An activity takes its name and lasts its play time** (the steps after the preparation),
+  as they are when it is picked. **One with none lasts 30 minutes**, and a short block is drawn
+  half an hour tall, so the cards stay readable.
+- **Everything stays within the day.** A block that would run past midnight ends at midnight
+  instead.
+- ***Ajouter***, at the bottom of the plan, asks what to add:
+  - *Une activité* goes back to the catalogue; what is picked goes after the block ending last.
+  - *Un temps* asks for its **name**, its **start** — after the block ending last — and its
+    **length**, **30 minutes unless changed**. *Ajouter* waits for a name. Added before any start
+    time was set, it gives the plan its times: the blocks before it follow on from 9h.
+- **Overlapping blocks are drawn side by side**; nothing prevents an overlap.
+- **Blocks scrolled wholly out of view are counted** in a badge at the top (*↑ 2 blocs*) or the
+  bottom of the timeline.
+- **Tapping a card** opens a panel: its start and its length on wheels, applied as they turn —
+  a length lands on five minutes, five at least; a longer block keeps its start unless it would
+  run past midnight —; *Remplacer*, for an activity; *Retirer*. **Holding a card** moves it up or
+  down; it lands on the nearest five minutes.
 - ***Remplacer*** goes back to the catalogue. The bar then names the activity being replaced,
-  and the sheet's button reads *Remplacer*: the activity chosen takes its place and its time,
-  and the plan opens again. *Annuler* stops the replacement only.
+  and the sheet's button reads *Remplacer*: the activity chosen takes its place and its start,
+  with its own name and play time, and the plan opens again. *Annuler* stops the replacement
+  only.
 - ***Enregistrer le planning*** asks which day the plan is for — the planning's day unless
-  changed —, saves each activity at its time on it, leaves planning mode and opens the planning
+  changed —, saves each block at its time on it, leaves planning mode and opens the planning
   on that day. **If saving fails, the plan stays as it was.**
+
+### Differs from the design
+
+- **A temps de vie is a name the user types**, not one of the six of B10 (*Accueil*, *Repas*…):
+  a day's *Goûter* or *Transition* fit none of them. It has no setup (B11): groups, preparation
+  and tasks do not exist yet.
 
 ## An event
 
@@ -181,7 +198,7 @@ event.** *Préparation de l'équipe* assigns tasks per group.
 ## Not finished
 
 - An event (B07) and creating one (B06) open on *Bientôt disponible*; nothing links to B06.
-- A saved activity cannot be moved or removed from the planning yet.
+- A saved block cannot be moved or removed from the planning yet.
 - A plan saved half-way — some activities written, then a failure — is not undone: saving again
   writes those twice.
 - *Événements* (B02) and *Journées types* (B03) were removed with the simple planning page, and

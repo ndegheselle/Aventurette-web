@@ -11,9 +11,7 @@ import { ActivityState, type ActivityData } from '@features/activities/models/ac
 import { useActivitiesEditList } from '@features/activities-authoring/composables/useActivitiesEditList';
 import { authoredStateTabs } from '@features/activities-authoring/models/activity.edit';
 import { routesNames } from '@features/activities-authoring/routes';
-import ActivityImportModal from '@features/activities-authoring/ui/ActivityImport.modal.vue';
-import { ImportIcon, PenIcon, PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
-import { useTemplateRef } from 'vue';
+import { PenIcon, PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 
 const {
@@ -26,7 +24,6 @@ const {
 
 const { t } = useI18n();
 const confirm = useConfirmation();
-const importModal = useTemplateRef('importModal');
 
 // The confirmation is the screen's; the write is the composable's.
 async function remove(activity: ActivityData) {
@@ -61,12 +58,6 @@ useNavbar(t('activities.authoring.title'));
                 </TabsList>
             </Tabs>
             <div class="ms-auto my-auto flex gap-2">
-                <Button variant="secondary"
-                        size="icon"
-                        :title="$t('activities.authoring.import.title')"
-                        @click="() => importModal?.show()">
-                    <ImportIcon />
-                </Button>
                 <Button size="icon"
                         as-child>
                     <RouterLink :title="$t('actions.add')"
@@ -113,7 +104,5 @@ useNavbar(t('activities.authoring.title'));
                     v-model:perPage="paginated.options.perPage"
                     :total="paginated.total"
                     @change="refresh" />
-
-        <ActivityImportModal ref="importModal" />
     </Container>
 </template>

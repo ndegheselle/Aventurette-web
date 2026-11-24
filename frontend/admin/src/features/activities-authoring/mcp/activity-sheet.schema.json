@@ -1,12 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Fiche d'activité — import",
-  "description": "The JSON file the authoring screen imports, written from a fiche d'activité made from the Confluence template. Version 3. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the file is written before anything exists to point at. `readActivitySheet` in frontend/admin/src/features/activities-authoring/models/activity.import.ts is what the app actually reads; it only requires `name` and ignores unknown keys. This schema is stricter on purpose: every key is written, its empty value when unset, so the file stays readable for the next person who edits it.",
+  "description": "The activity sheet `save_activity` takes, mapped from a fiche d'activité written from the Confluence template. Version 3. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the sheet is written before anything exists to point at. Write every key, with its empty value when unset.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "version",
     "name",
+    "summary",
     "description",
     "visualBrief",
     "classification",
@@ -30,13 +31,18 @@
       "pattern": "\\S",
       "description": "Name of the activity: the fiche's h1, the one after the template title. Plain text."
     },
+    "summary": {
+      "type": "string",
+      "maxLength": 300,
+      "description": "`## Résumé`: a few plain sentences presenting the activity, shown under its title. Plain text, 300 characters at most. Longer: leave \"\" and report it, never shorten it."
+    },
     "description": {
       "$ref": "#/$defs/html",
       "description": "`## Description`: what children do, why the activity is interesting, and what should be known before starting. HTML."
     },
     "visualBrief": {
       "type": "string",
-      "description": "Informations row « Visuel principal »: brief of the cover image, plain text. The image itself is picked in the import modal."
+      "description": "Informations row « Visuel principal »: brief of the cover image, plain text. The image itself is `save_activity`'s `visual`."
     },
     "classification": {
       "type": "object",
@@ -247,7 +253,7 @@
     },
     "names": {
       "type": "array",
-      "description": "Names as the fiche writes them, one per entry, trimmed, without a leading #. A comma or « et » list is split. A name only links if one of that kind exists in the app; the import modal lists the others.",
+      "description": "Names as the fiche writes them, one per entry, trimmed, without a leading #. A comma or « et » list is split. A tag only links if one of that kind exists in the app; a safety instruction or a tip that does not exist is created.",
       "items": { "type": "string", "pattern": "\\S" }
     },
     "count": {

@@ -3,6 +3,7 @@ import 'package:ajil/backend/backend.dart';
 import 'package:ajil/core/data/mapper.dart';
 import 'package:ajil/features/user/api/preferences_api.dart';
 import 'package:ajil/ui/i18n/strings.g.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -179,13 +180,13 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Commencer un planning'));
     await tester.pumpAndSettle();
-    expect(find.text('Planification en cours · aucune activité'), findsOneWidget, reason: 'the catalogue, in planning mode');
+    expect(find.text('Planification en cours · aucun bloc'), findsOneWidget, reason: 'the catalogue, in planning mode');
 
     await tester.tap(find.text('La quête du remède'));
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(FLucideIcons.calendarPlus));
     await tester.pumpAndSettle();
-    expect(find.text('Planification en cours · 1 activité'), findsOneWidget);
+    expect(find.text('Planification en cours · 1 bloc'), findsOneWidget);
     expect(find.byIcon(FLucideIcons.calendarMinus), findsOneWidget, reason: 'it is in the plan now: the button takes it out');
     await tester.tap(find.text('Valider'));
     await tester.pumpAndSettle();
@@ -202,8 +203,50 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Retirer'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('Aucune activité choisie'), findsOneWidget);
+    expect(find.textContaining('Rien de prévu.'), findsOneWidget);
     expect(find.text('Enregistrer le planning'), findsNothing, reason: 'nothing to save');
+  });
+
+  testWidgets('a time the user names is added to the plan once it has a name', (tester) async {
+    await pumpApp(
+      tester,
+      user: sessionRecord(),
+      seeds: {
+        'users': [
+          {'id': 'u1', 'favorites': <String>[]},
+        ],
+      },
+    );
+    await tester.tap(find.text('Planning').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Commencer un planning'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Valider'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Ajouter'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Un temps'));
+    await tester.pumpAndSettle();
+    // The sheet's own button, scrolled into view below the wheels.
+    final add = find.text('Ajouter').last;
+    await tester.ensureVisible(add);
+    await tester.pumpAndSettle();
+    await tester.tap(add);
+    await tester.pumpAndSettle();
+    expect(find.text('Nouveau temps'), findsOneWidget, reason: 'no name yet: nothing is added');
+
+    await tester.enterText(find.byType(EditableText), 'Repas');
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(add);
+    await tester.pumpAndSettle();
+    await tester.tap(add);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Nouveau temps'), findsNothing, reason: 'the sheet closed');
+    expect(find.text('Repas'), findsOneWidget);
+    expect(find.text('9h–9h30'), findsOneWidget, reason: 'offered at the usual start, for half an hour');
+    expect(find.text('Enregistrer le planning'), findsOneWidget);
   });
 
   testWidgets('a dock tab that is not built yet says so', (tester) async {

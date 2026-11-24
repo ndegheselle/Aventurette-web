@@ -1,9 +1,11 @@
-/// A day being planned: activities picked from the catalogue, each at a time of a single day.
+/// A day being planned: blocks on the timeline of a single day, each an activity picked from the
+/// catalogue or a time the user names — a meal, a transition.
 library;
 
 import 'dart:math';
 
-/// The length given to an activity whose steps say none, so it still takes room on the day.
+/// The length given to an activity whose steps say none, so it still takes room on the day. Also
+/// the length offered for a block the user adds.
 const defaultActivityMinutes = 30;
 
 /// Where a plan starts when the user does not say: 9h.
@@ -11,22 +13,24 @@ const defaultStartMinutes = 9 * 60;
 
 const minutesPerDay = 24 * 60;
 
-/// An activity of the plan, at a time of the day.
-class PlannedActivity {
-  const PlannedActivity({
-    required this.key,
-    required this.activityId,
-    required this.name,
-    required this.minutes,
-    this.start = 0,
-  });
+/// The shortest length a user sets, and the step it moves by.
+const blockStepMinutes = 5;
+
+/// A block of the plan, at a time of the day.
+class PlannedBlock {
+  const PlannedBlock({required this.key, required this.label, required this.minutes, this.activityId, this.start = 0});
 
   /// Tells apart the same activity planned twice.
   final int key;
-  final String activityId;
-  final String name;
 
-  /// Its length, never 0: see [lengthOf].
+  /// The activity it runs; null for a block the user named.
+  final String? activityId;
+
+  /// The activity's name when it was picked, or the user's. Set once: renaming the activity
+  /// afterwards does not change it.
+  final String label;
+
+  /// Its length, never 0: see [lengthOf] and [blockLengthOf].
   final int minutes;
 
   /// Minutes since midnight. 0 until the plan is scheduled.
@@ -34,33 +38,35 @@ class PlannedActivity {
 
   int get end => start + minutes;
 
-  PlannedActivity copyWith({String? activityId, String? name, int? minutes, int? start}) => PlannedActivity(
+  bool get isActivity => activityId != null;
+
+  PlannedBlock copyWith({String? activityId, String? label, int? minutes, int? start}) => PlannedBlock(
     key: key,
     activityId: activityId ?? this.activityId,
-    name: name ?? this.name,
+    label: label ?? this.label,
     minutes: minutes ?? this.minutes,
     start: start ?? this.start,
   );
 }
 
 /// The plan in progress. [scheduled] is false until the user gave its start time: until then its
-/// activities have no time, only an order.
+/// blocks have no time, only an order.
 class DayPlan {
-  const DayPlan({this.activities = const [], this.scheduled = false, this.replacing});
+  const DayPlan({this.blocks = const [], this.scheduled = false, this.replacing});
 
-  /// In the order they were picked.
-  final List<PlannedActivity> activities;
+  /// In the order they were added.
+  final List<PlannedBlock> blocks;
   final bool scheduled;
 
   /// The key of the activity the catalogue is picking a replacement for; null when adding.
   final int? replacing;
 
-  PlannedActivity? get replaced => activities.where((activity) => activity.key == replacing).firstOrNull;
+  PlannedBlock? get replaced => blocks.where((block) => block.key == replacing).firstOrNull;
 
-  DayPlan copyWith({List<PlannedActivity>? activities, bool? scheduled}) =>
-      DayPlan(activities: activities ?? this.activities, scheduled: scheduled ?? this.scheduled, replacing: replacing);
+  DayPlan copyWith({List<PlannedBlock>? blocks, bool? scheduled}) =>
+      DayPlan(blocks: blocks ?? this.blocks, scheduled: scheduled ?? this.scheduled, replacing: replacing);
 
-  DayPlan replacingNone() => DayPlan(activities: activities, scheduled: scheduled);
+  DayPlan replacingNone() => DayPlan(blocks: blocks, scheduled: scheduled);
 }
 
 /// What an activity's planning button does.
@@ -68,9 +74,10 @@ enum PickAction { add, remove, replace }
 
 /// What the button of [activityId] does on [plan], null outside planning mode: replace the
 /// activity being replaced; otherwise take the activity out when it is in the plan, else add it.
+/// A block the user named never counts, whatever its label.
 PickAction pickActionOf(DayPlan? plan, String activityId) {
   if (plan?.replacing != null) return PickAction.replace;
-  final planned = plan?.activities.any((activity) => activity.activityId == activityId) ?? false;
+  final planned = plan?.blocks.any((block) => block.activityId == activityId) ?? false;
   return planned ? PickAction.remove : PickAction.add;
 }
 
@@ -78,82 +85,88 @@ PickAction pickActionOf(DayPlan? plan, String activityId) {
 /// day at most.
 int lengthOf(int minutes) => minutes > 0 ? minutes.clamp(1, minutesPerDay) : defaultActivityMinutes;
 
-/// [start] moved so an activity of [minutes] stays inside the day.
+/// A length the user set: on the nearest [blockStepMinutes], at least one step, a day at most.
+int blockLengthOf(int minutes) {
+  final snapped = (minutes / blockStepMinutes).round() * blockStepMinutes;
+  return snapped.clamp(blockStepMinutes, minutesPerDay);
+}
+
+/// [start] moved so a block of [minutes] stays inside the day.
 int clampStart(int start, int minutes) => start.clamp(0, minutesPerDay - minutes);
 
-/// [activities] one after the other, in their order, from [from]. Those that would run past
+/// [blocks] one after the other, in their order, from [from]. Those that would run past
 /// midnight end the day instead.
-List<PlannedActivity> chained(List<PlannedActivity> activities, int from) {
-  final placed = <PlannedActivity>[];
+List<PlannedBlock> chained(List<PlannedBlock> blocks, int from) {
+  final placed = <PlannedBlock>[];
   var next = from;
-  for (final activity in activities) {
-    final start = clampStart(next, activity.minutes);
-    placed.add(activity.copyWith(start: start));
-    next = start + activity.minutes;
+  for (final block in blocks) {
+    final start = clampStart(next, block.minutes);
+    placed.add(block.copyWith(start: start));
+    next = start + block.minutes;
   }
   return placed;
 }
 
-/// Where an activity added to a scheduled plan goes: after the one ending last.
-int nextStart(List<PlannedActivity> activities, int minutes) {
-  if (activities.isEmpty) return clampStart(defaultStartMinutes, minutes);
-  final lastEnd = activities.map((activity) => activity.end).reduce(max);
+/// Where a block added to a scheduled plan goes: after the one ending last.
+int nextStart(List<PlannedBlock> blocks, int minutes) {
+  if (blocks.isEmpty) return clampStart(defaultStartMinutes, minutes);
+  final lastEnd = blocks.map((block) => block.end).reduce(max);
   return clampStart(lastEnd, minutes);
 }
 
-/// An activity's place on the timeline: side by side with those it overlaps, in [lanes]
-/// columns, in column [lane].
+/// A block's place on the timeline: side by side with those it overlaps, in [lanes] columns, in
+/// column [lane].
 class TimelineSlot {
-  const TimelineSlot(this.activity, {required this.lane, required this.lanes});
+  const TimelineSlot(this.block, {required this.lane, required this.lanes});
 
-  final PlannedActivity activity;
+  final PlannedBlock block;
   final int lane;
   final int lanes;
 }
 
-/// [activities] laid out on the timeline, by start. Overlapping ones share the width, each in
-/// the first column free; an activity is drawn at least [minimumMinutes] long, and that is the
-/// length its overlaps are judged by.
-List<TimelineSlot> timelineOf(List<PlannedActivity> activities, {int minimumMinutes = defaultActivityMinutes}) {
-  final byStart = [...activities]..sort((a, b) => a.start.compareTo(b.start));
-  int drawnEnd(PlannedActivity activity) => activity.start + max(activity.minutes, minimumMinutes);
+/// [blocks] laid out on the timeline, by start. Overlapping ones share the width, each in the
+/// first column free; a block is drawn at least [minimumMinutes] long, and that is the length its
+/// overlaps are judged by.
+List<TimelineSlot> timelineOf(List<PlannedBlock> blocks, {int minimumMinutes = defaultActivityMinutes}) {
+  final byStart = [...blocks]..sort((a, b) => a.start.compareTo(b.start));
+  int drawnEnd(PlannedBlock block) => block.start + max(block.minutes, minimumMinutes);
 
   final slots = <TimelineSlot>[];
-  var cluster = <(PlannedActivity, int)>[];
+  var cluster = <(PlannedBlock, int)>[];
   var laneEnds = <int>[];
   var clusterEnd = 0;
 
   void closeCluster() {
-    slots.addAll([for (final (activity, lane) in cluster) TimelineSlot(activity, lane: lane, lanes: laneEnds.length)]);
+    slots.addAll([for (final (block, lane) in cluster) TimelineSlot(block, lane: lane, lanes: laneEnds.length)]);
     cluster = [];
     laneEnds = [];
   }
 
-  for (final activity in byStart) {
-    if (cluster.isNotEmpty && activity.start >= clusterEnd) closeCluster();
+  for (final block in byStart) {
+    if (cluster.isNotEmpty && block.start >= clusterEnd) closeCluster();
 
-    var lane = laneEnds.indexWhere((end) => end <= activity.start);
+    var lane = laneEnds.indexWhere((end) => end <= block.start);
     if (lane == -1) {
       lane = laneEnds.length;
       laneEnds.add(0);
     }
-    laneEnds[lane] = drawnEnd(activity);
-    cluster.add((activity, lane));
-    clusterEnd = cluster.length == 1 ? drawnEnd(activity) : max(clusterEnd, drawnEnd(activity));
+    laneEnds[lane] = drawnEnd(block);
+    cluster.add((block, lane));
+    clusterEnd = cluster.length == 1 ? drawnEnd(block) : max(clusterEnd, drawnEnd(block));
   }
   if (cluster.isNotEmpty) closeCluster();
   return slots;
 }
 
-/// How many of [activities] are wholly out of the minutes [from] to [until] in view: above them,
-/// and below them. Each is as tall as it is drawn, at least [minimumMinutes].
+/// How many of [blocks] are wholly out of the minutes [from] to [until] in view: above them, and
+/// below them. Each is as tall as it is drawn, at least [minimumMinutes].
 ({int above, int below}) outOfView(
-  List<PlannedActivity> activities,
+  List<PlannedBlock> blocks,
   double from,
   double until, {
   int minimumMinutes = defaultActivityMinutes,
 }) {
-  final above = activities.where((activity) => activity.start + max(activity.minutes, minimumMinutes) <= from);
-  final below = activities.where((activity) => activity.start >= until);
+  final above = blocks.where((block) => block.start + max(block.minutes, minimumMinutes) <= from);
+  final below = blocks.where((block) => block.start >= until);
   return (above: above.length, below: below.length);
 }

@@ -14,6 +14,7 @@ The end objective is to have the following :
 flowchart LR
     phone["Ajil — clients' app<br/>frontend/mobile"]
     browser["Back office — admins<br/>frontend/admin"]
+    mcp["MCP server — on an admin's machine<br/>frontend/admin/src/mcp"]
     nginx["nginx<br/>TLS, routing by host"]
     api["PocketBase<br/>backend/api"]
     appweb["Clients' app, web build<br/>app domain"]
@@ -22,6 +23,7 @@ flowchart LR
 
     phone -- "HTTPS, api domain<br/>(and app domain in a browser)" --> nginx
     browser -- "HTTPS, admin and api domains" --> nginx
+    mcp -- "HTTPS, api domain<br/>(or a local PocketBase)" --> nginx
     nginx --> api
     nginx --> appweb
     nginx --> spa
@@ -121,7 +123,7 @@ them wrong unless it reproduces them.
 | **One feedback per user and activity**, under a unique index: update it when it exists; a second tap while saving creates nothing. | `state/feedback.dart`, `models/feedback.dart` | `feedback_test.dart` |
 | **Pages are appended**; a new search starts over and drops a page that answers the previous one. | `state/catalogue.dart` | `library_feed_test.dart` |
 | **A date is stored in UTC and read in the device's time.** The planning asks for the user's events starting before the period ends and ending as or after it starts, then keeps those that overlap it. forui's calendars count days as UTC midnights; the app converts them to local days. | `features/planning/api/`, `models/period.dart` | `planning_test.dart`, `period_test.dart` |
-| **A saved activity is a `user_planned_activities` record**: the user, the activity, its start and its end. The end is set when the activity is planned and kept; the backend refuses one that is not after the start (a hook in the repository's `backend/api/hooks/planned_activity_end.go`, tested beside it). The planning asks for those starting before the period ends and ending after it starts. | `features/planning/api/` | `planning_test.dart` |
+| **A saved block is a `planned_blocks` record**: the user, a label, its start and its end, and the activity it runs, if any. The label and the end are set when the block is planned and kept: renaming the activity or changing its steps moves nothing. Deleting the activity keeps the block and clears the link. The backend refuses a block that does not end after it starts (a hook in the repository's `backend/api/hooks/planned_blocks.go`, tested beside it). The planning asks for those starting before the period ends and ending after it starts. | `features/planning/api/` | `planning_test.dart` |
 | **The router waits for the session**, sends nobody signed in to the login, a user not onboarded to the onboarding (`onboarded` on the user), and a signed-in user away from the login and the sign-up. | `features/user/guard.dart` | `user_test.dart` |
 | **A sign-up creates an unverified account, then asks for a code**: using it verifies the email. The backend refuses a session (the `users` auth rule) and any request (a hook in the repository's `backend/api/hooks/users.go`, tested beside it) to a user whose email is not verified. An email already taken is not an error. | `features/user/state/login_form.dart`, `backend/pocketbase/auth.dart` | `user_test.dart` |
 | **The session is kept in the device's secure storage**, not in plain preferences. | `backend/pocketbase/client.dart` | — |
