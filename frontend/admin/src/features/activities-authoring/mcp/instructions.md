@@ -5,15 +5,21 @@ it in the editor, whose link this tool returns.
 ## Procedure
 
 1. **Read the whole fiche** before calling anything. If the user gives a Confluence link without
-   its content, ask them to export the page as Markdown or paste it.
-2. **Call `list_references`** to see the tags, safety instructions, tips and materials that
-   already exist, so the names you write match them. When the user gives a glossary, its names
-   come next: use one rather than a new spelling whenever it says the same thing.
-3. **Call `save_activity`** with `sheet` mapped section by section from the fiche: each property's
-   description says which part of the fiche fills it. Give the cover visual and the resources as
-   absolute paths to the files the fiche links (see *Resources*).
-4. If the tool answers with problems, nothing was saved: fix them and call it again.
-5. **Report back** in a few lines: the editor link, the fields left empty because the fiche only
+   its content, ask them to export the page as Markdown or paste it. A file holding several
+   fiches is imported one fiche at a time.
+2. **Call `check_fiche`** with the fiche's Markdown and its folder. When it says the fiche is
+   incomplete, tell the user what is missing and ask whether to go on before mapping anything.
+3. **When the user gives a glossary, call `save_glossary` first**, once, with its names and
+   aliases as written. The catalogues then answer to every name it gives.
+4. **Call `list_references`** to see the tags, safety instructions, tips and materials that
+   already exist, each with the aliases it answers to, so the names you write match them.
+5. **Call `preview_activity`** with `sheet` mapped section by section from the fiche: each
+   property's description says which part of the fiche fills it. Give the cover visual and the
+   resources as absolute paths to the files the fiche links (see *Resources*). Read what it would
+   create: a name close to one it would link is a spelling to fix, not a new entry.
+6. **Call `save_activity`** with the same input. If it answers with problems, nothing was saved:
+   fix them and call it again.
+7. **Report back** in a few lines: the editor link, the fields left empty because the fiche only
    held template placeholders, everything dropped (see *Not imported*, and any value that fits no
    enum), and the tags, safety instructions and tips the save created, so the author can check
    their spelling.
@@ -32,8 +38,8 @@ it in the editor, whose link this tool returns.
 - **Enums are the schema's codes**, never the French label. A value that fits none is dropped and
   reported. It is not approximated.
 - **Tags, safety instructions and tips are names**, as the fiche writes them: one entry per
-  name, trimmed, no leading `#`. Split a comma or "et" list into several entries. Prefer the
-  spelling `list_references` gives when it is the same thing.
+  name, trimmed, no leading `#`. Split a comma or "et" list into several entries. A name or any
+  alias `list_references` gives links the entry; prefer its spelling when it is the same thing.
 - **Tags, safety instructions and tips that do not exist are created** in their catalogue, with
   the name as written, so spell a new one the way the catalogue shows its names: a capital first
   letter, the rest as the fiche writes it (« concentration » is `Concentration`). Drop the

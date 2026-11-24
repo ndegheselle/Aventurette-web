@@ -156,6 +156,17 @@ describe('activityFromSheet', () => {
         expect(unknown).toEqual([{ kind: ActivityTagType.DEVELOP_SOCIAL, label: 'activities.tagType.DEVELOP_SOCIAL', name: 'Écoute', description: '' }]);
     });
 
+    it('links a tag by one of its aliases', () => {
+        // A glossary gives the other names a fiche may use: none of them creates a second tag.
+        const cooperation = aTag({ type: ActivityTagType.GOAL, name: 'Coopération', slug: 'cooperation', aliases: 'coopérer; Entraide' });
+        const sheet = sheetOf({ name: 'Tag', pedagogy: { goals: ['entraide'] } });
+
+        const { activity, unknown } = activityFromSheet(sheet, { ...nothingKnown, tags: [cooperation] });
+
+        expect(activity.pedagogy.goals).toEqual([cooperation]);
+        expect(unknown).toEqual([]);
+    });
+
     it('reports a name that matched nothing once, whatever its case', () => {
         const sheet = sheetOf({ name: 'Tag', classification: { themes: ['Bugs', 'bugs', 'Birds'] } });
 

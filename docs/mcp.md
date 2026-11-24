@@ -60,8 +60,17 @@ To switch between local and production, add a second entry with the other `API_U
 
 | Tool | |
 |---|---|
-| `list_references` | the tags, safety instructions, tips and materials that already exist |
+| `check_fiche` | checks a fiche's Markdown against the template before anything maps it: sections, Informations rows, step durations against the totals, placeholders, « à valider » marks, resources |
+| `save_glossary` | loads a glossary into the catalogues: each tag, safety instruction or tip with the other names it goes by |
+| `list_references` | the tags, safety instructions, tips and materials that already exist, with their aliases |
+| `preview_activity` | a dry run of `save_activity`: what it would link, create, attach and leave empty, without writing |
 | `save_activity` | saves a fiche as a draft. Its description holds the rules for reading a fiche. |
+
+**Give the glossary once**, before the first imports: « Charge ce glossaire » with the file.
+After that, a fiche that writes *coopérer* links *Coopération* instead of creating a second tag.
+A glossary entry found in the catalogue is completed, never renamed; an alias another entry
+already has is left out and listed. Aliases can also be written by hand in the catalogue, as
+*Autres noms*, separated by `;`.
 
 The format and the rules live in
 `frontend/admin/src/features/activities-authoring/mcp/`: `activity-sheet.schema.json` and

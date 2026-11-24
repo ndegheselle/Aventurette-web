@@ -35,6 +35,19 @@ export function slugify(words: string): string {
         .replace(/^-|-$/g, '');
 }
 
+/** How `aliases` separates the other names of an entry. */
+export const ALIAS_SEPARATOR = ';';
+
+/** The other names an entry goes by, each trimmed, the blank ones dropped. */
+export function aliasesOf(entry: { aliases?: string } | null | undefined): string[] {
+    return (entry?.aliases ?? '').split(ALIAS_SEPARATOR).map(alias => alias.trim()).filter(Boolean);
+}
+
+/** Other names, back in the one field that holds them. */
+export function joinAliases(aliases: string[]): string {
+    return aliases.map(alias => alias.trim()).filter(Boolean).join(`${ALIAS_SEPARATOR} `);
+}
+
 /**
  * The slug of a new entry as its name changes: it follows the name while it is empty or still
  * the one the previous name gave, and stays once the author has written one of their own.
@@ -56,7 +69,7 @@ export function tagsFilter(search: string, type: ActivityTagType | null): Filter
         createFilter<ActivityTagData>({ key: 'type', value: type, operator: FilterOperator.Equals }),
     ];
     if (search.trim())
-        filters.unshift(createSearchFilter<ActivityTagData>(search.trim(), ['name', 'slug']));
+        filters.unshift(createSearchFilter<ActivityTagData>(search.trim(), ['name', 'slug', 'aliases']));
 
     const group = createGroup<ActivityTagData>({ filters });
     return removeEmptyFilters(group);

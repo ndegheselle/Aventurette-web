@@ -275,6 +275,7 @@ export type CatalogMaterialsRecord = {
 }
 
 export type CatalogSafetyInstructionsRecord = {
+	aliases?: string
 	created: IsoAutoDateString
 	description?: HTMLString
 	id: string
@@ -297,6 +298,7 @@ export const CatalogTagsTypeOptions = {
 } as const
 export type CatalogTagsTypeOptions = typeof CatalogTagsTypeOptions[keyof typeof CatalogTagsTypeOptions]
 export type CatalogTagsRecord = {
+	aliases?: string
 	created: IsoAutoDateString
 	id: string
 	name: string
@@ -306,6 +308,7 @@ export type CatalogTagsRecord = {
 }
 
 export type CatalogTipsRecord = {
+	aliases?: string
 	created: IsoAutoDateString
 	description?: HTMLString
 	id: string

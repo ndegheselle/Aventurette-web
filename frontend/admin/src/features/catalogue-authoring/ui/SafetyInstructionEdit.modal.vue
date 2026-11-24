@@ -33,6 +33,9 @@ defineExpose<IEditModal<SafetyInstructionData>>({ show });
                         v-model="instruction.slug" />
                 </Field>
             </div>
+            <Field label="catalogue.fields.aliases" :error="errors.get('aliases')">
+                <Input type="text" v-model="instruction.aliases" />
+            </Field>
             <Field label="catalogue.safety.fields.description" :error="errors.get('description')">
                 <TextEditor v-model="instruction.description" class="min-h-48" />
             </Field>

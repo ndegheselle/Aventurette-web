@@ -39,6 +39,9 @@ defineExpose<IEditModal<ActivityTagData>>({ show });
                 <Input type="text" :aria-invalid="!!errors.get('slug') || undefined"
                     v-model="tag.slug" />
             </Field>
+            <Field label="catalogue.fields.aliases" class="md:col-span-3" :error="errors.get('aliases')">
+                <Input type="text" v-model="tag.aliases" />
+            </Field>
         </div>
         <FieldError :error="errors.global.value" />
         <template #actions>

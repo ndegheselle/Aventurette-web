@@ -5,7 +5,7 @@ import type { ActivityTagData } from '@features/activities/models/tag';
 import { safetyInstructionsApi } from '@features/catalogue-authoring/api/safety.api';
 import { tagsApi } from '@features/catalogue-authoring/api/tags.api';
 import { tipsApi } from '@features/catalogue-authoring/api/tips.api';
-import { slugify } from '@features/catalogue-authoring/models/catalogue.edit';
+import { aliasesOf, joinAliases, slugify } from '@features/catalogue-authoring/models/catalogue.edit';
 import { materialCatalogueApi } from '@features/activities-authoring/api/materials.api';
 import { referencesApi } from '@features/activities-authoring/api/references.api';
 import { saveApi } from '@features/activities-authoring/api/save.api';
@@ -17,6 +17,7 @@ import {
     readActivitySheet,
     resourcesOfSheet,
     unsetFields,
+    type ReferenceKind,
     type SheetProblem,
     type SheetReferences,
     type SheetResourceFile,
@@ -25,6 +26,7 @@ import {
     type UnknownReference,
 } from '@features/activities-authoring/models/activity.import';
 import { checkFiche, FicheFindingCode, type FicheFinding } from '@features/activities-authoring/models/fiche.check';
+import { GLOSSARY_KINDS, planGlossary, type GlossaryEntry } from '@features/activities-authoring/models/glossary';
 import { materialNamed } from '@features/activities-authoring/models/material.edit';
 import { createResource } from '@features/activities-authoring/models/step.edit';
 import sheetSchema from '@features/activities-authoring/mcp/activity-sheet.schema.json';
@@ -65,7 +67,93 @@ export interface ToolContext {
 }
 
 export function activityTools(context: ToolContext): McpTool[] {
-    return [checkFicheTool(context), listReferencesTool(), previewActivityTool(context), saveActivityTool(context)];
+    return [
+        checkFicheTool(context),
+        listReferencesTool(),
+        saveGlossaryTool(context),
+        previewActivityTool(context),
+        saveActivityTool(context),
+    ];
+}
+
+function saveGlossaryTool(context: ToolContext): McpTool {
+    return {
+        name: 'save_glossary',
+        description: 'Load a glossary into the catalogues: the reference names of the tags, safety instructions and tips, '
+            + 'with the other names each goes by. An entry the catalogue already has, by its name or an alias, gains the '
+            + 'aliases it lacks and is never renamed; the others are created. Afterwards every import links a fiche\'s '
+            + 'wording to them, aliases included. Copy the glossary\'s names and aliases as written; never invent one. '
+            + 'Only when the user gives a glossary.',
+        inputSchema: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['entries'],
+            properties: {
+                entries: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        additionalProperties: false,
+                        required: ['kind', 'name'],
+                        properties: {
+                            kind: {
+                                enum: GLOSSARY_KINDS,
+                                description: 'A kind of tag (THEME, IMAGINARY, GOAL, IDEAL_FOR, DEVELOP_…), SAFETY or TIP.',
+                            },
+                            name: { type: 'string', pattern: '\\S' },
+                            aliases: { type: 'array', items: { type: 'string', pattern: '\\S' } },
+                            description: { type: 'string', description: 'For a safety instruction or a tip, as HTML.' },
+                        },
+                    },
+                },
+            },
+        },
+        call: input => saveGlossary(input, context),
+    };
+}
+
+async function saveGlossary(input: Record<string, unknown>, context: ToolContext): Promise<ToolResult> {
+    const given = Array.isArray(input.entries) ? input.entries as Record<string, unknown>[] : [];
+    const entries: GlossaryEntry[] = given
+        .filter(entry => GLOSSARY_KINDS.includes(entry.kind as ReferenceKind) && typeof entry.name === 'string' && entry.name.trim())
+        .map(entry => ({
+            kind: entry.kind as ReferenceKind,
+            name: (entry.name as string).trim(),
+            aliases: Array.isArray(entry.aliases) ? (entry.aliases as unknown[]).filter((alias): alias is string => typeof alias === 'string') : [],
+            description: typeof entry.description === 'string' ? entry.description : '',
+        }));
+    const refused = given.length - entries.length;
+
+    const plan = planGlossary(entries, await referencesApi.getAll());
+    const kind = (kind: ReferenceKind) => kind === 'SAFETY'
+        ? context.translate('activities.fields.safetyInstructions')
+        : kind === 'TIP' ? context.translate('activities.tips.title') : context.translate(`activities.tagType.${kind}`);
+
+    for (const { kind, name, aliases, description } of plan.create) {
+        const joined = joinAliases(aliases);
+        if (kind === 'SAFETY')
+            await safetyInstructionsApi.create({ name, slug: slugify(name), aliases: joined, description } as SafetyInstructionData);
+        else if (kind === 'TIP')
+            await tipsApi.create({ name, aliases: joined, description } as ActivityTipData);
+        else
+            await tagsApi.create({ type: kind, name, slug: slugify(name), aliases: joined } as ActivityTagData);
+    }
+    for (const { kind, id, aliases, description } of plan.update) {
+        const changes = { aliases, ...(description !== undefined && { description }) };
+        if (kind === 'SAFETY') await safetyInstructionsApi.update(id, changes);
+        else if (kind === 'TIP') await tipsApi.update(id, changes);
+        else await tagsApi.update(id, { aliases });
+    }
+
+    const lines = [
+        `Glossary loaded: ${plan.create.length} created, ${plan.update.length} completed, ${plan.unchanged.length} already there.`,
+        section('Created', plan.create.map(entry => `${entry.name} (${kind(entry.kind)})${entry.aliases.length ? `: ${joinAliases(entry.aliases)}` : ''}`)),
+        section('Completed', plan.update.map(entry => `${entry.name} (${kind(entry.kind)}): ${entry.aliases}`)),
+        section('Aliases left out, as another entry already answers to them', plan.conflicts.map(conflict =>
+            `${conflict.alias} for ${conflict.name} (${kind(conflict.kind)}): ${conflict.other} has it`)),
+        refused ? `${refused} entries left out: no name, or a kind that is not one of the schema's.` : '',
+    ];
+    return text(lines.filter(Boolean).join('\n\n'));
 }
 
 function checkFicheTool(context: ToolContext): McpTool {
@@ -140,18 +228,23 @@ function isAbsolutePath(path: string): boolean {
 function listReferencesTool(): McpTool {
     return {
         name: 'list_references',
-        description: 'The tags (by kind), safety instructions, tips and catalogue materials that already exist, by name. '
-            + 'Read it before `save_activity`, so the sheet names them as the app does.',
+        description: 'The tags (by kind), safety instructions, tips and catalogue materials that already exist, by name, '
+            + 'each with the other names it answers to after a `=`. Read it before `save_activity`, so the sheet names '
+            + 'them as the app does: a name or any of its aliases links the entry.',
         inputSchema: { type: 'object', properties: {} },
         async call() {
             const [known, materials] = await Promise.all([referencesApi.getAll(), materialCatalogueApi.getAll()]);
+            const named = (entry: { name: string; aliases?: string }) => {
+                const aliases = aliasesOf(entry);
+                return aliases.length ? `${entry.name} = ${aliases.join(' | ')}` : entry.name;
+            };
             const tags: Record<string, string[]> = {};
-            for (const tag of known.tags) (tags[tag.type] ??= []).push(tag.name);
+            for (const tag of known.tags) (tags[tag.type] ??= []).push(named(tag));
 
             return text(JSON.stringify({
                 tags,
-                safetyInstructions: known.safetyInstructions.map(instruction => instruction.name),
-                tips: known.tips.map(tip => tip.name),
+                safetyInstructions: known.safetyInstructions.map(named),
+                tips: known.tips.map(named),
                 materials: materials.map(material => material.name),
             }, null, 2));
         },

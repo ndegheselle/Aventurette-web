@@ -28,6 +28,7 @@ import {
 import { ActivityTagType, type ActivityTagData } from "@features/activities/models/tag";
 import type { ActivityWorkshopData } from "@features/activities/models/workshop";
 import { createEmptyActivity } from "@features/activities-authoring/models/activity.edit";
+import { aliasesOf } from "@features/catalogue-authoring/models/catalogue.edit";
 import {
     createCatalogueMaterial,
     createMaterialLink,
@@ -376,6 +377,12 @@ export interface UnknownReference {
     description: HTMLString;
 }
 
+/** Whether a catalogue entry goes by a name: its own, its slug or one of its aliases, whatever the case. */
+export function answersTo(entry: { name: string; slug?: string; aliases?: string }, name: string): boolean {
+    const wanted = nameKey(name);
+    return [entry.name, entry.slug, ...aliasesOf(entry)].some(known => nameKey(known) === wanted);
+}
+
 /** Two spellings of one name, in one kind, are the same reference. */
 function referenceKey(reference: Pick<UnknownReference, 'kind' | 'name'>): string {
     return `${reference.kind}:${nameKey(reference.name)}`;
@@ -392,14 +399,14 @@ export interface SheetActivity {
 
 /**
  * The activity a sheet describes, and the tips of each step. Tags, safety instructions and tips
- * are reference data, so a name matches an existing one of the same kind by name or slug,
+ * are reference data, so a name matches an existing one of the same kind by name, slug or alias,
  * whatever the case. One that matches nothing is reported and left off: the caller creates it,
  * then reads the sheet again.
  */
 export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences): SheetActivity {
     const unknown: UnknownReference[] = [];
 
-    function matching<T extends { id: string; name: string; slug?: string }>(
+    function matching<T extends { id: string; name: string; slug?: string; aliases?: string }>(
         kind: ReferenceKind,
         label: string,
         candidates: T[],
@@ -408,7 +415,7 @@ export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences):
         const found: T[] = [];
 
         for (const { name, description } of references) {
-            const match = candidates.find(candidate => nameKey(candidate.name) === nameKey(name) || nameKey(candidate.slug) === nameKey(name));
+            const match = candidates.find(candidate => answersTo(candidate, name));
             if (match) {
                 found.push(match);
                 continue;
