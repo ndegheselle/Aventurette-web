@@ -648,39 +648,50 @@ function escapeHtml(text: string): string {
 
 // ── What the MCP server adds ────────────────────────────────────────────────────────────────
 
-/** A file given for one of the sheet"s steps, by the step"s position. */
+/**
+ * A file given for one of the sheet's steps, by the step's position. `name` is what the fiche's
+ * resources table calls it; without one, the resource goes by its file's name.
+ */
 export interface SheetResourcePath {
     step: number;
     path: string;
+    name?: string;
 }
 
-/** Each step"s file paths, by its position, or what is wrong with them. */
+/** A step's file, as `resourcesOfSheet` groups it: where it is, and what it is called. */
+export interface SheetResourceFile {
+    path: string;
+    /** Empty when the fiche gives none. */
+    name: string;
+}
+
+/** Each step's files, by its position, or what is wrong with them. */
 export type SheetResourcesReading =
-    | { paths: string[][]; problems: [] }
-    | { paths: null; problems: SheetProblem[] };
+    | { files: SheetResourceFile[][]; problems: [] }
+    | { files: null; problems: SheetProblem[] };
 
 /**
- * Group the files given for a sheet"s steps by step. A position the sheet has no step at, or more
+ * Group the files given for a sheet's steps by step. A position the sheet has no step at, or more
  * files than a step may carry, is refused rather than dropped: the author meant that file.
  */
 export function resourcesOfSheet(sheet: Pick<ActivitySheet, "steps">, resources: SheetResourcePath[]): SheetResourcesReading {
-    const paths: string[][] = sheet.steps.map(() => []);
+    const files: SheetResourceFile[][] = sheet.steps.map(() => []);
     const problems: SheetProblem[] = [];
 
-    resources.forEach(({ step, path }, index) => {
-        const files = paths[step];
-        if (!Number.isInteger(step) || !files) {
+    resources.forEach(({ step, path, name }, index) => {
+        const stepFiles = files[step];
+        if (!Number.isInteger(step) || !stepFiles) {
             problems.push({ path: `resources[${index}].step`, code: "choice", value: String(step) });
             return;
         }
-        files.push(path);
+        stepFiles.push({ path, name: name?.trim() ?? "" });
     });
 
-    paths.forEach((files, step) => {
-        if (files.length > MAX_STEP_RESOURCES)
+    files.forEach((stepFiles, step) => {
+        if (stepFiles.length > MAX_STEP_RESOURCES)
             problems.push({ path: `steps[${step}]`, code: "files", value: String(MAX_STEP_RESOURCES) });
     });
 
-    if (problems.length) return { paths: null, problems };
-    return { paths, problems: [] };
+    if (problems.length) return { files: null, problems };
+    return { files, problems: [] };
 }

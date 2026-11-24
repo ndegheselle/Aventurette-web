@@ -5,8 +5,14 @@ Write the fiche in Markdown from the Confluence template, then ask Claude:
 > Save `C:\fiches\chasse-aux-couleurs.md` as an activity.
 
 Claude reads the fiche, saves it as a **draft**, and answers with the editor link and what the
-fiche left empty. Finish it in the editor. The files the fiche points at (cover image, step
-resources) are uploaded if they are next to it on your disk.
+fiche left empty. Finish it in the editor. The files the fiche links (cover image, resources)
+are uploaded from your disk.
+
+**Resources are files.** Export each one (a PDF, an image), keep it next to the fiche, and link
+it in the resources table of the step that uses it: `[Code Morse](ressources/code-morse.pdf)`.
+The link's text becomes the resource's name. A resource written out as text in the fiche is left
+out and reported: a Markdown export can flatten the resources table into prose, so check that
+section before asking.
 
 Only an **admin** account can use it. Why it works this way:
 [ADR 0026](adr/0026-activities-are-saved-through-an-mcp-server.md).

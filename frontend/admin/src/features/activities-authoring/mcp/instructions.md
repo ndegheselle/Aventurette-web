@@ -10,8 +10,8 @@ it in the editor, whose link this tool returns.
    already exist, so the names you write match them. When the user gives a glossary, its names
    come next: use one rather than a new spelling whenever it says the same thing.
 3. **Call `save_activity`** with `sheet` mapped section by section from the fiche: each property's
-   description says which part of the fiche fills it. Give the cover visual and each step's
-   resources as absolute paths to files next to the fiche, when the fiche points at some.
+   description says which part of the fiche fills it. Give the cover visual and the resources as
+   absolute paths to the files the fiche links (see *Resources*).
 4. If the tool answers with problems, nothing was saved: fix them and call it again.
 5. **Report back** in a few lines: the editor link, the fields left empty because the fiche only
    held template placeholders, everything dropped (see *Not imported*, and any value that fits no
@@ -58,6 +58,20 @@ it in the editor, whose link this tool returns.
 - The automatic steps ("Rassembler le matériel", "Regrouper les enfants") are never written. A
   step the fiche marks "à supprimer" and that holds only placeholders is left out.
 
+## Resources
+
+A resource is a file the author exported (a PDF, an image) and linked in the fiche: a list or a
+table of links under `## Ressources`, or under a step's `#### Ressources`.
+
+- **Each linked file is one entry of `resources`**: its absolute path, resolving a relative link
+  against the fiche's folder, and the link's text or its row's name as `name`.
+- **It goes on the step that uses it.** A step's `#### Ressources` is that step's. One under
+  `## Ressources` goes on the step whose text names it or uses it; when none does, the step that
+  launches the game. Say in the report where you put each one.
+- **Resources written out as text** (a word list, a code table) are not files: a Markdown export
+  sometimes flattens the template's resources table into prose. Leave them out and report them,
+  so the author exports each as a file and links it.
+
 ## Not imported
 
 The format has no place for these. List the ones that are not placeholders in the report, so the
@@ -65,6 +79,7 @@ author adds them from the editor.
 
 | Fiche | Why |
 |---|---|
-| `## Ressources`, a step's `#### Ressources` given as links | a resource is a file; a link is not one |
+| A resource given as a web link (`https://…`) | a resource is a file on the author's disk; a web page is not one |
+| A resource written out as text | see *Resources*: it has to be exported as a file first |
 | A timer on an action, an action's own material or resource | actions are a list in the step's description; give the material to the step instead |
 | `Source : …` | no field for it |

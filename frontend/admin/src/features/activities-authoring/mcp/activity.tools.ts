@@ -18,6 +18,7 @@ import {
     unsetFields,
     type SheetProblem,
     type SheetReferences,
+    type SheetResourceFile,
     type SheetResourcePath,
     type SheetStepFiles,
     type UnknownReference,
@@ -103,7 +104,9 @@ function saveActivityTool(context: ToolContext): McpTool {
                 },
                 resources: {
                     type: 'array',
-                    description: 'Files for the steps (a step\'s `#### Ressources`), each by absolute path and by the position of its step in `sheet.steps`, from 0.',
+                    description: 'The files the fiche links as resources, under `## Ressources` or a step\'s `#### Ressources`: '
+                        + 'each by absolute path (resolve a relative link against the fiche\'s folder) and by the position of '
+                        + 'the step that uses it in `sheet.steps`, from 0.',
                     items: {
                         type: 'object',
                         additionalProperties: false,
@@ -111,6 +114,10 @@ function saveActivityTool(context: ToolContext): McpTool {
                         properties: {
                             step: { type: 'integer', minimum: 0 },
                             path: { type: 'string' },
+                            name: {
+                                type: 'string',
+                                description: 'What the fiche calls the resource, such as the link\'s text or its row in the resources table. Omitted: the file\'s name.',
+                            },
                         },
                     },
                 },
@@ -128,11 +135,11 @@ async function saveActivity(input: Record<string, unknown>, context: ToolContext
 
     const sheet = reading.sheet;
     const resources = resourcesOfSheet(sheet, (input.resources ?? []) as SheetResourcePath[]);
-    if (!resources.paths) return refused(resources.problems, context);
+    if (!resources.files) return refused(resources.problems, context);
 
     // Read every file before writing anything: a wrong path must not leave half a save behind.
     const visual = typeof input.visual === 'string' && input.visual ? await context.readFile(input.visual) : undefined;
-    const stepFiles = await Promise.all(resources.paths.map(paths => filesOfStep(paths, context)));
+    const stepFiles = await Promise.all(resources.files.map(files => filesOfStep(files, context)));
 
     const known = await referencesApi.getAll();
     const created = await createReferences(activityFromSheet(sheet, known).unknown);
@@ -160,11 +167,15 @@ async function saveActivity(input: Record<string, unknown>, context: ToolContext
     }));
 }
 
-async function filesOfStep(paths: string[], context: ToolContext): Promise<SheetStepFiles> {
+async function filesOfStep(given: SheetResourceFile[], context: ToolContext): Promise<SheetStepFiles> {
     const id = saveApi.newId();
-    const files = await Promise.all(paths.map(path => context.readFile(path)));
+    const files = await Promise.all(given.map(({ path }) => context.readFile(path)));
     // No preview to show: the stored file's own url replaces this one on the next read.
-    return { id, resources: files.map(file => createResource(saveApi.newId(), id, file, '')) };
+    const resources = files.map((file, index) => {
+        const resource = createResource(saveApi.newId(), id, file, '');
+        return { ...resource, name: given[index]?.name || resource.name };
+    });
+    return { id, resources };
 }
 
 interface CreatedReferences {

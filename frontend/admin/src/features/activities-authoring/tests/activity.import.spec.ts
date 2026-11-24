@@ -366,10 +366,13 @@ describe('draftFromSheet', () => {
 describe('resourcesOfSheet', () => {
     const twoSteps = { steps: [{ title: 'Préparer' }, { title: 'Jouer' }] } as Pick<ActivitySheet, 'steps'>;
 
-    it('groups the files by the position of their step', () => {
-        const reading = resourcesOfSheet(twoSteps, [{ step: 1, path: '/a.png' }, { step: 1, path: '/b.pdf' }]);
+    it('groups the files by the position of their step, with the name the fiche gives them', () => {
+        const reading = resourcesOfSheet(twoSteps, [
+            { step: 1, path: '/a.png' },
+            { step: 1, path: '/morse.pdf', name: ' Code Morse ' },
+        ]);
 
-        expect(reading.paths).toEqual([[], ['/a.png', '/b.pdf']]);
+        expect(reading.files).toEqual([[], [{ path: '/a.png', name: '' }, { path: '/morse.pdf', name: 'Code Morse' }]]);
     });
 
     it('refuses a file for a step the sheet does not have, rather than dropping it', () => {
