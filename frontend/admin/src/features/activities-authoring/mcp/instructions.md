@@ -41,6 +41,9 @@ it in the editor, whose link this tool returns.
   If the steps have no durations but the table has totals, leave the steps at `0` and report it.
 - "Matériel (sans / avec)" is derived from `materials`, and is not written.
 - A step's `tips` stays `[]` unless the user gives names from the tips catalogue.
+- **A step's end criteria are codes, then words.** Tick a code only when the fiche ticks its
+  label or writes it word for word; everything else goes in `endCriteriaOther`, as written.
+  « les trois manches sont jouées » is not `ENOUGH_DONE`: it is `endCriteriaOther`.
 - The automatic steps ("Rassembler le matériel", "Regrouper les enfants") are never written. A
   step the fiche marks "à supprimer" and that holds only placeholders is left out.
 
@@ -52,8 +55,6 @@ author adds them from the editor.
 | Fiche | Why |
 |---|---|
 | `## Ressources`, a step's `#### Ressources` given as links | a resource is a file; a link is not one |
-| A step's **Visuel de l'étape** | a step's visual is not handled yet |
 | A step's `#### Conseil` | tips are a catalogue linked by name, and this is free text: it can be added to the catalogue, then linked |
-| A step's `#### Critère(s) de fin` | not handled yet |
 | A timer on an action, an action's own material or resource | actions are a list in the step's description; give the material to the step instead |
 | `Source : …` | no field for it |

@@ -54,7 +54,7 @@ The content follows the activity sheet template that Ajil writes in the back off
 | Place | Indoor or outdoor, and the places it suits: park, house, forest, lake… |
 | Safety | Safety instructions, picked from a shared list, each with its precautions. |
 | Pedagogy | Goals, what it is ideal for, the development axes it works on. |
-| Steps | In order. Each has a kind (preparing the game, a free step, or the conclusion), a title, an estimated duration, a description, the material and resources it uses, and its tips. |
+| Steps | In order. Each has a kind (preparing the game, a free step, or the conclusion), a title, an estimated duration, a description, the material and resources it uses, and its tips. A step can also say when it ends — the usual reasons (*le temps est écoulé*, *l'attention baisse*…), then any other in words — and describe the picture it should have. |
 | Material | Picked from a shared list, each with a quantity in words: *un par équipe* is a quantity too. |
 | Workshops | Stations run at the same time: a name, a theme, challenges, the material each uses, the adults each needs. |
 | Resources | Files, pictures and documents, attached to the steps. |
@@ -88,6 +88,8 @@ When the activity is placed in an event, this material and preparation become th
   rather than behind *Déroulé* and *Préparation et matériel*.
 - **Rich text shows as plain paragraphs and bullets**, without bold or links.
 - **Pictures are placeholders.**
+- **A step's end criteria and the brief of its picture are written in the back office only**: the
+  app does not show them yet.
 - ***Partager* and *Modifier* only say they are not available yet.**
 - **In *Préparation*:**
   - a material shows its name, and its quantity as the line under it: an activity's material has

@@ -19,11 +19,20 @@
                 "CUSTOM": "Étape libre",
                 "CONCLUSION": "Conclusion"
             },
+            "endCriterion": {
+                "TIME_UP": "Le temps prévu est écoulé",
+                "ENOUGH_DONE": "Assez de manches jouées",
+                "ATTENTION_DROPS": "L'attention baisse",
+                "TEAM_WON": "Une équipe a gagné"
+            },
             "fields": {
                 "title": "Titre",
                 "kind": "Type d'étape",
                 "duration": "Durée estimée",
                 "description": "Description",
+                "endCriteria": "Critères de fin",
+                "endCriteriaOther": "Autre critère de fin",
+                "visualBrief": "Brief du visuel de l'étape",
                 "resources": {
                     "title": "Ressources",
                     "count": "{count} ressource(s)",

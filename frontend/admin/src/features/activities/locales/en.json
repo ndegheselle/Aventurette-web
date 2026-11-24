@@ -19,11 +19,20 @@
                 "CUSTOM": "Free step",
                 "CONCLUSION": "Wrap up"
             },
+            "endCriterion": {
+                "TIME_UP": "Time is up",
+                "ENOUGH_DONE": "Enough rounds played",
+                "ATTENTION_DROPS": "Attention drops",
+                "TEAM_WON": "A team has won"
+            },
             "fields": {
                 "title": "Title",
                 "kind": "Kind of step",
                 "duration": "Estimated duration",
                 "description": "Description",
+                "endCriteria": "End criteria",
+                "endCriteriaOther": "Other end criterion",
+                "visualBrief": "Step visual brief",
                 "resources": {
                     "title": "Resources",
                     "count": "{count} resource(s)",

@@ -9,7 +9,7 @@ import {
     ImaginaryRule,
     SUMMARY_MAX_LENGTH,
 } from '@features/activities/models/activity';
-import { StepKind } from '@features/activities/models/step';
+import { StepEndCriterion, StepKind } from '@features/activities/models/step';
 import { ActivityTagType } from '@features/activities/models/tag';
 import {
     activityFromSheet,
@@ -60,6 +60,7 @@ describe('readActivitySheet', () => {
         expect(codes('location')).toEqual(Object.values(ActivityLocation));
         expect(codes('season')).toEqual(Object.values(ActivitySeason));
         expect(codes('stepKind')).toEqual(Object.values(StepKind));
+        expect(codes('endCriterion')).toEqual(Object.values(StepEndCriterion));
         expect(properties.pedagogy.properties.development.required).toEqual([...DEVELOPMENT_AXES]);
     });
 
@@ -272,6 +273,24 @@ describe('stepFromSheet', () => {
 
         expect(stepFromSheet(sheet.steps[0]!, 'stp-1', 'act-1', []).description).toBe('<p>Cache &amp; &lt;cherche&gt;</p>');
         expect(stepFromSheet(sheet.steps[1]!, 'stp-1', 'act-1', []).description).toBe('<p>Run</p>');
+    });
+
+    it('carries the visual brief and the end criteria, codes and words apart', () => {
+        const sheet = sheetOf({
+            name: 'Tag',
+            steps: [{
+                title: 'Play',
+                visualBrief: ' Children in a circle ',
+                endCriteria: ['TIME_UP', 'TIME_UP'],
+                endCriteriaOther: 'Night falls',
+            }],
+        });
+
+        expect(stepFromSheet(sheet.steps[0]!, 'stp-1', 'act-1', [])).toMatchObject({
+            visual_brief: 'Children in a circle',
+            end_criteria: [StepEndCriterion.TIME_UP],
+            end_criteria_other: 'Night falls',
+        });
     });
 });
 

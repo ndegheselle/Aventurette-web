@@ -63,19 +63,6 @@ describe('stepMapper', () => {
         expect(stepMapper.toPayload({ description: '<p>Hide.</p>' }))
             .toEqual({ description: '<p>Hide.</p>' });
     });
-
-    it('drops the columns the app sets aside, so saving a step never writes them back', () => {
-        const step = stepMapper.toEntity(aStepPayload({
-            visual_brief: 'Children in a circle',
-            end_criteria: ['TIME_UP'],
-            end_criteria_other: 'Dusk',
-        }), files);
-
-        expect(step).not.toHaveProperty('visual_brief');
-        expect(step).not.toHaveProperty('end_criteria');
-        expect(step).not.toHaveProperty('end_criteria_other');
-        expect(stepMapper.toPayload(step)).not.toHaveProperty('visual_brief');
-    });
 });
 
 describe('resourceMapper', () => {

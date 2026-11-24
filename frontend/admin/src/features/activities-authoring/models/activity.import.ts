@@ -18,7 +18,13 @@ import {
     type SafetyInstructionData,
 } from "@features/activities/models/activity";
 import type { ActivityMaterialData, MaterialData } from "@features/activities/models/material";
-import { StepKind, type ActivityResourceData, type ActivityStepData, type ActivityTipData } from "@features/activities/models/step";
+import {
+    StepEndCriterion,
+    StepKind,
+    type ActivityResourceData,
+    type ActivityStepData,
+    type ActivityTipData,
+} from "@features/activities/models/step";
 import { ActivityTagType, type ActivityTagData } from "@features/activities/models/tag";
 import type { ActivityWorkshopData } from "@features/activities/models/workshop";
 import { createEmptyActivity } from "@features/activities-authoring/models/activity.edit";
@@ -42,9 +48,10 @@ import { createEmptyWorkshop } from "@features/activities-authoring/models/works
 
 /**
  * The one format read, given in `version`. Version 1 named safety tags, and gave each step a tip,
- * a visual brief and end criteria. Version 2 named the tips on the activity.
+ * a visual brief and end criteria. Version 2 named the tips on the activity. Version 3 named them
+ * on each step, with no visual brief nor end criteria; version 4 gives those back.
  */
-export const SHEET_VERSION = 3;
+export const SHEET_VERSION = 4;
 
 export interface ActivitySheet {
     name: string;
@@ -93,6 +100,9 @@ export interface SheetStep {
     title: string;
     duration: number;
     description: HTMLString;
+    visualBrief: string;
+    endCriteria: StepEndCriterion[];
+    endCriteriaOther: string;
     /** Names from the sheet's materials. */
     materials: string[];
     /** Names from the tips catalogue. */
@@ -234,6 +244,9 @@ export function readActivitySheet(text: string): SheetReading {
                 title,
                 duration: read.number(step.duration, `${path}.duration`),
                 description,
+                visualBrief: read.text(step.visualBrief, `${path}.visualBrief`).trim(),
+                endCriteria: read.choices(step.endCriteria, `${path}.endCriteria`, StepEndCriterion),
+                endCriteriaOther: read.text(step.endCriteriaOther, `${path}.endCriteriaOther`).trim(),
                 materials: read.texts(step.materials, `${path}.materials`),
                 tips: read.texts(step.tips, `${path}.tips`),
             };
@@ -572,6 +585,9 @@ export function stepFromSheet(
         title: step.title,
         duration: step.duration,
         description,
+        visual_brief: step.visualBrief,
+        end_criteria: step.endCriteria,
+        end_criteria_other: step.endCriteriaOther,
         materials: recalledMaterials(materials, step.materials),
         tips,
     };

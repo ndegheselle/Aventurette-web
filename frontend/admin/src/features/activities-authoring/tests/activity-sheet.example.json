@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "name": "La chasse aux couleurs",
   "summary": "L'animateur annonce une couleur, les enfants rapportent au camp de base un objet de cette couleur.",
   "description": "<p>Les enfants partent à la recherche d'objets de la couleur annoncée par l'animateur et les rapportent au camp de base. Un jeu <strong>simple et rapide</strong>, idéal pour faire bouger un petit groupe.</p>",
@@ -60,6 +60,9 @@
       "title": "Préparer le jeu",
       "duration": 5,
       "description": "<p>Ce que l'animateur installe avant que les enfants ne commencent.</p><ol><li>Délimiter l'espace de jeu à la craie.</li><li>Poser le cerceau au centre : c'est le camp de base.</li></ol>",
+      "visualBrief": "",
+      "endCriteria": [],
+      "endCriteriaOther": "",
       "materials": ["Craie", "Cerceau"],
       "tips": []
     },
@@ -68,6 +71,9 @@
       "title": "Expliquer l'activité",
       "duration": 3,
       "description": "<ol><li>Annoncer une couleur.</li><li>Montrer un exemple d'objet de cette couleur.</li></ol>",
+      "visualBrief": "",
+      "endCriteria": [],
+      "endCriteriaOther": "",
       "materials": [],
       "tips": []
     },
@@ -76,6 +82,9 @@
       "title": "Lancer le jeu",
       "duration": 15,
       "description": "<ol><li>Annoncer la couleur et donner le départ.</li><li>Vérifier les objets rapportés au camp de base.</li></ol>",
+      "visualBrief": "Un enfant pose un objet rouge dans le cerceau, les autres courent autour.",
+      "endCriteria": [],
+      "endCriteriaOther": "",
       "materials": [],
       "tips": []
     },
@@ -84,6 +93,9 @@
       "title": "Annoncer la fin de l'activité",
       "duration": 2,
       "description": "<ol><li>Prévenir les enfants avant l'arrêt effectif plutôt que de couper l'activité net.</li></ol>",
+      "visualBrief": "",
+      "endCriteria": ["TIME_UP", "ATTENTION_DROPS"],
+      "endCriteriaOther": "Toutes les couleurs ont été annoncées.",
       "materials": [],
       "tips": []
     },
@@ -92,6 +104,9 @@
       "title": "Conclusion",
       "duration": 2,
       "description": "<ol><li>Féliciter l'ensemble des participants.</li></ol>",
+      "visualBrief": "",
+      "endCriteria": [],
+      "endCriteriaOther": "",
       "materials": [],
       "tips": []
     }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Fiche d'activité — import",
-  "description": "The activity sheet `save_activity` takes, mapped from a fiche d'activité written from the Confluence template. Version 3. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the sheet is written before anything exists to point at. Write every key, with its empty value when unset.",
+  "description": "The activity sheet `save_activity` takes, mapped from a fiche d'activité written from the Confluence template. Version 4. Enum values are the database codes. Tags, safety instructions, tips and materials are names: the sheet is written before anything exists to point at. Write every key, with its empty value when unset.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -23,8 +23,8 @@
   ],
   "properties": {
     "version": {
-      "const": 3,
-      "description": "Format version. Always 3."
+      "const": 4,
+      "description": "Format version. Always 4."
     },
     "name": {
       "type": "string",
@@ -334,6 +334,14 @@
         { "const": "CONCLUSION", "title": "Conclusion" }
       ]
     },
+    "endCriterion": {
+      "oneOf": [
+        { "const": "TIME_UP", "title": "Le temps prévu est écoulé" },
+        { "const": "ENOUGH_DONE", "title": "Assez de manches jouées" },
+        { "const": "ATTENTION_DROPS", "title": "L'attention baisse" },
+        { "const": "TEAM_WON", "title": "Une équipe a gagné" }
+      ]
+    },
     "material": {
       "type": "object",
       "additionalProperties": false,
@@ -385,7 +393,7 @@
     "step": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "title", "duration", "description", "materials", "tips"],
+      "required": ["kind", "title", "duration", "description", "visualBrief", "endCriteria", "endCriteriaOther", "materials", "tips"],
       "properties": {
         "kind": {
           "$ref": "#/$defs/stepKind",
@@ -403,6 +411,20 @@
         "description": {
           "$ref": "#/$defs/html",
           "description": "Free text under the title, such as « Ce que l'animateur installe… », then the actions table, column « Action à cocher », as an <ol> in order, without the 1.1 numbering. HTML."
+        },
+        "visualBrief": {
+          "type": "string",
+          "description": "The step's **Visuel de l'étape**: brief of its picture, plain text, without a leading « Brief : ». \"\" when there is none or it is a placeholder."
+        },
+        "endCriteria": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/endCriterion" },
+          "description": "`#### Critère(s) de fin`: the codes whose label the fiche ticks or writes word for word. Never inferred from a paraphrase: such text goes in `endCriteriaOther`."
+        },
+        "endCriteriaOther": {
+          "type": "string",
+          "description": "`#### Critère(s) de fin`: whatever the codes do not say, as the fiche writes it. Plain text."
         },
         "materials": {
           "$ref": "#/$defs/names",

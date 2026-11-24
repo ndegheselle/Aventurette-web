@@ -26,10 +26,7 @@ export type ActivityStepPayload = ActivitiesStepsResponse<{
     tips?: ActivityTipPayload[];
 }>;
 
-/**
- * Reads and writes a step. The columns the app sets aside are dropped on read, so nothing above
- * `api/` holds them and no write sends them back.
- */
+/** Reads and writes a step. */
 export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
     relations: [
         "materials",
@@ -37,11 +34,7 @@ export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
         "resources",
         "tips",
     ],
-    toEntity: ({
-        expand,
-        visual_brief: _visualBrief, end_criteria: _endCriteria, end_criteria_other: _endCriteriaOther,
-        ...step
-    }, files) => ({
+    toEntity: ({ expand, ...step }, files) => ({
         ...step,
         materials: toEntities(expand?.materials, activityMaterialMapper, files),
         resources: toEntities(expand?.resources, resourceMapper, files),
