@@ -1,7 +1,9 @@
 import { ValidationError } from '@chapelure/core';
 import type { SafetyInstructionData } from '@features/activities/models/activity';
 import type { ActivityTipData } from '@features/activities/models/step';
+import type { ActivityTagData } from '@features/activities/models/tag';
 import { safetyInstructionsApi } from '@features/catalogue-authoring/api/safety.api';
+import { tagsApi } from '@features/catalogue-authoring/api/tags.api';
 import { tipsApi } from '@features/catalogue-authoring/api/tips.api';
 import { slugify } from '@features/catalogue-authoring/models/catalogue.edit';
 import { materialCatalogueApi } from '@features/activities-authoring/api/materials.api';
@@ -12,7 +14,6 @@ import {
     activityFromSheet,
     draftFromSheet,
     readActivitySheet,
-    referencesToCreate,
     resourcesOfSheet,
     unsetFields,
     type SheetProblem,
@@ -134,7 +135,7 @@ async function saveActivity(input: Record<string, unknown>, context: ToolContext
     const stepFiles = await Promise.all(resources.paths.map(paths => filesOfStep(paths, context)));
 
     const known = await referencesApi.getAll();
-    const created = await createReferences(referencesToCreate(activityFromSheet(sheet, known).unknown));
+    const created = await createReferences(activityFromSheet(sheet, known).unknown);
     const preview = activityFromSheet(sheet, withCreated(known, created));
 
     const activity = { ...preview.activity, id: saveApi.newId(), user: context.authorId };
@@ -151,7 +152,6 @@ async function saveActivity(input: Record<string, unknown>, context: ToolContext
     return text(saveReport(context, {
         url: context.editorUrl(activity.id),
         created,
-        unmatched: preview.unknown,
         unset: unsetFields(preview.activity, sheet.steps).map(field => {
             const label = context.translate(field.label);
             return field.steps ? `${label} (${field.steps.join(', ')})` : label;
@@ -168,24 +168,28 @@ async function filesOfStep(paths: string[], context: ToolContext): Promise<Sheet
 }
 
 interface CreatedReferences {
+    tags: ActivityTagData[];
     safetyInstructions: SafetyInstructionData[];
     tips: ActivityTipData[];
 }
 
 /**
- * Add the safety instructions and tips the sheet names to their catalogues, one by one. Outside
- * the activity's batch: an entry outliving a failed save is matched by name on the next one.
+ * Add the tags, safety instructions and tips the sheet names to their catalogues, one by one.
+ * Outside the activity's batch: an entry outliving a failed save is matched by name on the next
+ * one.
  */
 async function createReferences(missing: UnknownReference[]): Promise<CreatedReferences> {
-    const created: CreatedReferences = { safetyInstructions: [], tips: [] };
+    const created: CreatedReferences = { tags: [], safetyInstructions: [], tips: [] };
 
     for (const { kind, name } of missing) {
         if (kind === 'SAFETY') {
             const instruction = { name, slug: slugify(name), description: '' } as SafetyInstructionData;
             created.safetyInstructions.push(await safetyInstructionsApi.create(instruction));
-        }
-        if (kind === 'TIP')
+        } else if (kind === 'TIP') {
             created.tips.push(await tipsApi.create({ name, description: '' } as ActivityTipData));
+        } else {
+            created.tags.push(await tagsApi.create({ type: kind, name, slug: slugify(name) } as ActivityTagData));
+        }
     }
 
     return created;
@@ -193,7 +197,7 @@ async function createReferences(missing: UnknownReference[]): Promise<CreatedRef
 
 function withCreated(known: SheetReferences, created: CreatedReferences): SheetReferences {
     return {
-        tags: known.tags,
+        tags: [...known.tags, ...created.tags],
         safetyInstructions: [...known.safetyInstructions, ...created.safetyInstructions],
         tips: [...known.tips, ...created.tips],
     };
@@ -202,19 +206,17 @@ function withCreated(known: SheetReferences, created: CreatedReferences): SheetR
 interface SaveSummary {
     url: string;
     created: CreatedReferences;
-    unmatched: UnknownReference[];
     unset: string[];
     newMaterials: string[];
 }
 
 function saveReport(context: ToolContext, summary: SaveSummary): string {
-    const tags = summary.unmatched.filter(reference => reference.kind !== 'SAFETY' && reference.kind !== 'TIP');
     const lines = [
         `Saved as a draft: ${summary.url}`,
+        section('Tags created', summary.created.tags.map(tag => `${tag.name} (${context.translate(`activities.tagType.${tag.type}`)})`)),
         section('Safety instructions created', summary.created.safetyInstructions.map(instruction => instruction.name)),
         section('Tips created', summary.created.tips.map(tip => tip.name)),
         section('Materials added to the catalogue', summary.newMaterials),
-        section('Tags left off, as none of that kind has this name', tags.map(tag => `${tag.name} (${context.translate(tag.label)})`)),
         section('Still empty, to fill in the editor', summary.unset),
     ];
     return lines.filter(Boolean).join('\n\n');

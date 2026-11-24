@@ -31,18 +31,21 @@ the editor link and what is left to do. The author then corrects the draft in th
   from another account is refused anyway.
 - **The sheet's format is `mcp/activity-sheet.schema.json`**, passed as is as the tool's input
   schema. `readActivitySheet` still checks it, since the input comes from outside the app.
-- **Safety instructions and tips that match nothing are created.** Tags are only linked: they
-  are a curated list, so a tag that matches nothing is reported, and the author picks one in the
-  editor.
+- **Tags, safety instructions and tips that match nothing are created**, each in its own kind,
+  and the answer lists them for the author to check. Tags were only linked at first, as a
+  curated list; but the catalogue started empty, and the fiches already write the reference
+  vocabulary, so a first import linked no tag at all and left about fifty to pick by hand.
 - The import modal, its composable and the skill are removed.
 
 ## Consequences
 
 - Getting a fiche into the app is one request to Claude, files included: they are read from the
   author's disk by path.
-- **The created safety instructions and tips are outside the activity's batch.** If the save
-  fails after creating them, they stay. That is harmless, because the next save matches them by
-  name instead of creating them again.
+- **The created tags, safety instructions and tips are outside the activity's batch.** If the
+  save fails after creating them, they stay. That is harmless, because the next save matches them
+  by name instead of creating them again.
+- **A misspelt tag becomes a second tag.** Nothing tells *Coopération* from *Cooperation*: the
+  author merges them in the catalogue, from the list the answer gives.
 - The PocketBase adapter can keep its session in memory (`initPocketBase(url, { session:
   'memory' })`), since Node has no browser storage.
 - Each author installs the server locally: a build from this repository, and an entry in their

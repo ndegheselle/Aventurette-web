@@ -14,7 +14,8 @@ it in the editor, whose link this tool returns.
 4. If the tool answers with problems, nothing was saved: fix them and call it again.
 5. **Report back** in a few lines: the editor link, the fields left empty because the fiche only
    held template placeholders, everything dropped (see *Not imported*, and any value that fits no
-   enum), the safety instructions and tips the save created, and the tags that matched nothing.
+   enum), and the tags, safety instructions and tips the save created, so the author can check
+   their spelling.
 
 ## Rules
 
@@ -32,9 +33,10 @@ it in the editor, whose link this tool returns.
 - **Tags, safety instructions and tips are names**, as the fiche writes them: one entry per
   name, trimmed, no leading `#`. Split a comma or "et" list into several entries. Prefer the
   spelling `list_references` gives when it is the same thing.
-- **Safety instructions and tips that do not exist are created** in their catalogue, with the
-  name as written. **Tags are only linked**: one that matches nothing is left off and reported,
-  for the author to pick in the editor.
+- **Tags, safety instructions and tips that do not exist are created** in their catalogue, with
+  the name as written, so spell a new one the way the catalogue shows its names: a capital first
+  letter, the rest as the fiche writes it (« concentration » is `Concentration`). Drop the
+  fiche's own notes on it, such as « (nouveau mot-clé) ».
 - **Numbers are plain non-negative numbers.** `0` means "not set". For free text that is not a
   number, leave `0` and keep the text in the matching notes field if one exists.
 - **Durations are per step.** "Temps de jeu" and "Temps de préparation" are computed by the app.

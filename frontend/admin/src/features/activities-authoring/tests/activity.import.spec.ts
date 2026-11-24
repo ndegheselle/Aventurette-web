@@ -16,7 +16,6 @@ import {
     draftFromSheet,
     materialsOfSheet,
     readActivitySheet,
-    referencesToCreate,
     resourcesOfSheet,
     SHEET_VERSION,
     stepFromSheet,
@@ -341,22 +340,6 @@ describe('draftFromSheet', () => {
 
         expect(draft.activity.materials.map(link => link.material))
             .toEqual(draft.newMaterials.map(material => material.id));
-    });
-});
-
-describe('referencesToCreate', () => {
-    it('creates the safety instructions and tips that matched nothing, never a tag', () => {
-        // Tags are a curated list: one that matches nothing is picked in the editor.
-        const sheet = sheetOf({
-            name: 'Tag',
-            classification: { themes: ['Insectes'] },
-            safety: { instructions: ['Feu'] },
-            steps: [{ title: 'Jouer', tips: ['Chuchoter'] }],
-        });
-
-        const created = referencesToCreate(activityFromSheet(sheet, nothingKnown).unknown);
-
-        expect(created.map(reference => [reference.kind, reference.name])).toEqual([['SAFETY', 'Feu'], ['TIP', 'Chuchoter']]);
     });
 });
 

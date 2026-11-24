@@ -368,8 +368,8 @@ export interface SheetActivity {
 /**
  * The activity a sheet describes, and the tips of each step. Tags, safety instructions and tips
  * are reference data, so a name matches an existing one of the same kind by name or slug,
- * whatever the case. One that matches nothing is reported and left off: creating it is the
- * caller's (`referencesToCreate`).
+ * whatever the case. One that matches nothing is reported and left off: the caller creates it,
+ * then reads the sheet again.
  */
 export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences): SheetActivity {
     const unknown: UnknownReference[] = [];
@@ -614,14 +614,6 @@ function escapeHtml(text: string): string {
 }
 
 // ── What the MCP server adds ────────────────────────────────────────────────────────────────
-
-/**
- * The names a save creates rather than reports: safety instructions and tips are free wording an
- * author may add, while tags are a curated list, picked in the editor when none matches.
- */
-export function referencesToCreate(unknown: UnknownReference[]): UnknownReference[] {
-    return unknown.filter(reference => reference.kind === "SAFETY" || reference.kind === "TIP");
-}
 
 /** A file given for one of the sheet"s steps, by the step"s position. */
 export interface SheetResourcePath {

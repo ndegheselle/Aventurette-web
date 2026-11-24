@@ -253,7 +253,7 @@
     },
     "names": {
       "type": "array",
-      "description": "Names as the fiche writes them, one per entry, trimmed, without a leading #. A comma or « et » list is split. A tag only links if one of that kind exists in the app; a safety instruction or a tip that does not exist is created.",
+      "description": "Names as the fiche writes them, one per entry, trimmed, without a leading #. A comma or « et » list is split. A name matches one of its own kind whatever the case; a tag, safety instruction or tip that matches nothing is created, so write a new one with a capital first letter.",
       "items": { "type": "string", "pattern": "\\S" }
     },
     "count": {
