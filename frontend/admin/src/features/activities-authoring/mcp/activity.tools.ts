@@ -13,6 +13,7 @@ import { activityWrites } from '@features/activities-authoring/models/activity.e
 import {
     activityFromSheet,
     draftFromSheet,
+    materialsOfSheet,
     readActivitySheet,
     resourcesOfSheet,
     unsetFields,
@@ -23,6 +24,7 @@ import {
     type SheetStepFiles,
     type UnknownReference,
 } from '@features/activities-authoring/models/activity.import';
+import { materialNamed } from '@features/activities-authoring/models/material.edit';
 import { createResource } from '@features/activities-authoring/models/step.edit';
 import sheetSchema from '@features/activities-authoring/mcp/activity-sheet.schema.json';
 import instructions from '@features/activities-authoring/mcp/instructions.md?raw';
@@ -62,7 +64,7 @@ export interface ToolContext {
 }
 
 export function activityTools(context: ToolContext): McpTool[] {
-    return [listReferencesTool(), saveActivityTool(context)];
+    return [listReferencesTool(), previewActivityTool(context), saveActivityTool(context)];
 }
 
 function listReferencesTool(): McpTool {
@@ -86,47 +88,121 @@ function listReferencesTool(): McpTool {
     };
 }
 
-function saveActivityTool(context: ToolContext): McpTool {
-    const { $defs, $schema: _, title: __, ...sheet } = sheetSchema as Record<string, unknown>;
+function previewActivityTool(context: ToolContext): McpTool {
+    return {
+        name: 'preview_activity',
+        description: 'A dry run of `save_activity`: the same input, and nothing is written. It answers what the save would '
+            + 'link to the catalogues, what it would create there, which linked files it cannot read, and what would stay '
+            + 'empty. Call it before `save_activity`, fix what it reports, then save.',
+        inputSchema: saveInputSchema(),
+        call: input => previewActivity(input, context),
+    };
+}
 
+function saveActivityTool(context: ToolContext): McpTool {
     return {
         name: 'save_activity',
         description: instructions,
-        inputSchema: {
-            type: 'object',
-            additionalProperties: false,
-            required: ['sheet'],
-            properties: {
-                sheet,
-                visual: {
-                    type: 'string',
-                    description: 'Absolute path to the cover image (Informations row « Visuel principal »), when the fiche comes with one.',
-                },
-                resources: {
-                    type: 'array',
-                    description: 'The files the fiche links as resources, under `## Ressources` or a step\'s `#### Ressources`: '
-                        + 'each by absolute path (resolve a relative link against the fiche\'s folder) and by the position of '
-                        + 'the step that uses it in `sheet.steps`, from 0.',
-                    items: {
-                        type: 'object',
-                        additionalProperties: false,
-                        required: ['step', 'path'],
-                        properties: {
-                            step: { type: 'integer', minimum: 0 },
-                            path: { type: 'string' },
-                            name: {
-                                type: 'string',
-                                description: 'What the fiche calls the resource, such as the link\'s text or its row in the resources table. Omitted: the file\'s name.',
-                            },
+        inputSchema: saveInputSchema(),
+        call: input => saveActivity(input, context),
+    };
+}
+
+/** What `save_activity` and its dry run take: the sheet, and the files it links. */
+function saveInputSchema(): Record<string, unknown> {
+    const { $defs, $schema: _, title: __, ...sheet } = sheetSchema as Record<string, unknown>;
+
+    return {
+        type: 'object',
+        additionalProperties: false,
+        required: ['sheet'],
+        properties: {
+            sheet,
+            visual: {
+                type: 'string',
+                description: 'Absolute path to the cover image (Informations row « Visuel principal »), when the fiche comes with one.',
+            },
+            resources: {
+                type: 'array',
+                description: 'The files the fiche links as resources, under `## Ressources` or a step\'s `#### Ressources`: '
+                    + 'each by absolute path (resolve a relative link against the fiche\'s folder) and by the position of '
+                    + 'the step that uses it in `sheet.steps`, from 0.',
+                items: {
+                    type: 'object',
+                    additionalProperties: false,
+                    required: ['step', 'path'],
+                    properties: {
+                        step: { type: 'integer', minimum: 0 },
+                        path: { type: 'string' },
+                        name: {
+                            type: 'string',
+                            description: 'What the fiche calls the resource, such as the link\'s text or its row in the resources table. Omitted: the file\'s name.',
                         },
                     },
                 },
             },
-            // `sheet`'s references point at the root, so its definitions are lifted there.
-            $defs,
         },
-        call: input => saveActivity(input, context),
+        // `sheet`'s references point at the root, so its definitions are lifted there.
+        $defs,
     };
+}
+
+async function previewActivity(input: Record<string, unknown>, context: ToolContext): Promise<ToolResult> {
+    const reading = readActivitySheet(JSON.stringify(input.sheet ?? null));
+    if (!reading.sheet) return refused(reading.problems, context, 'The sheet would be refused. Fix these:');
+
+    const sheet = reading.sheet;
+    const resources = resourcesOfSheet(sheet, (input.resources ?? []) as SheetResourcePath[]);
+    if (!resources.files) return refused(resources.problems, context, 'The sheet would be refused. Fix these:');
+
+    const paths = [
+        ...(typeof input.visual === 'string' && input.visual ? [input.visual] : []),
+        ...resources.files.flat().map(file => file.path),
+    ];
+    const unreadable = (await Promise.all(paths.map(async path => (await canRead(path, context)) ? null : path)))
+        .filter((path): path is string => path !== null);
+
+    const [known, catalogue] = await Promise.all([referencesApi.getAll(), materialCatalogueApi.getAll()]);
+    const { activity, stepTips, unknown } = activityFromSheet(sheet, known);
+    const { classification, imaginary, pedagogy, safety } = activity;
+    const tag = (tag: ActivityTagData) => `${tag.name} (${context.translate(`activities.tagType.${tag.type}`)})`;
+    const linkedTags = [
+        ...classification.themes, ...imaginary.universes, ...pedagogy.goals, ...pedagogy.idealFor,
+        ...Object.values(pedagogy.development).flat(),
+    ];
+
+    const lines = [
+        unreadable.length ? 'Not ready: some linked files cannot be read.' : 'Ready to save.',
+        section('Files that cannot be read', unreadable),
+        section('Would link these tags', linkedTags.map(tag)),
+        section('Would link these safety instructions', safety.instructions.map(instruction => instruction.name)),
+        section('Would link these tips', sheet.steps.flatMap((step, index) =>
+            (stepTips[index] ?? []).map(tip => `${tip.name} (${step.title})`))),
+        section('Would create', unknown.map(reference => `${reference.name} (${context.translate(reference.label)})`)),
+        section('Would add these materials to the catalogue', materialsOfSheet(sheet)
+            .filter(material => !materialNamed(catalogue, material.name))
+            .map(material => material.name)),
+        section('Would attach these resources', resources.files.flatMap((files, index) =>
+            files.map(file => `${file.name || basenameOf(file.path)} → ${sheet.steps[index]?.title ?? index}`))),
+        section('Would stay empty', unsetFields(activity, sheet.steps).map(field => {
+            const label = context.translate(field.label);
+            return field.steps ? `${label} (${field.steps.join(', ')})` : label;
+        })),
+    ];
+    return text(lines.filter(Boolean).join('\n\n'));
+}
+
+async function canRead(path: string, context: ToolContext): Promise<boolean> {
+    try {
+        await context.readFile(path);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function basenameOf(path: string): string {
+    return path.split(/[\\/]/).pop() ?? path;
 }
 
 async function saveActivity(input: Record<string, unknown>, context: ToolContext): Promise<ToolResult> {
@@ -237,12 +313,12 @@ function section(title: string, items: string[]): string {
     return items.length ? `${title}:\n${items.map(item => `- ${item}`).join('\n')}` : '';
 }
 
-function refused(problems: SheetProblem[], context: ToolContext): ToolResult {
+function refused(problems: SheetProblem[], context: ToolContext, lead = 'Nothing was saved. Fix these and call again:'): ToolResult {
     const messages = problems.map(problem => context.translate(
         `activities.authoring.import.problems.${problem.code}`,
         { path: problem.path, value: problem.value ?? '' },
     ));
-    return { isError: true, content: [{ type: 'text', text: `Nothing was saved. Fix these and call again:\n${messages.map(message => `- ${message}`).join('\n')}` }] };
+    return { isError: true, content: [{ type: 'text', text: `${lead}\n${messages.map(message => `- ${message}`).join('\n')}` }] };
 }
 
 function text(value: string): ToolResult {
