@@ -49,7 +49,8 @@ import { createEmptyWorkshop } from "@features/activities-authoring/models/works
 /**
  * The one format read, given in `version`. Version 1 named safety tags, and gave each step a tip,
  * a visual brief and end criteria. Version 2 named the tips on the activity. Version 3 named them
- * on each step, with no visual brief nor end criteria; version 4 gives those back.
+ * on each step, with no visual brief nor end criteria; version 4 gives those back, and lets a
+ * safety instruction or a tip come with the description it is created with.
  */
 export const SHEET_VERSION = 4;
 
@@ -70,7 +71,7 @@ export interface ActivitySheet {
     audience: ActivityAudience;
     supervision: ActivitySupervision;
     place: ActivityPlace;
-    safety: { instructions: string[] };
+    safety: { instructions: SheetReference[] };
     pedagogy: {
         goals: string[];
         idealFor: string[];
@@ -84,6 +85,15 @@ export interface ActivitySheet {
 export interface SheetMaterial {
     name: string;
     quantity: string;
+}
+
+/**
+ * A safety instruction or a tip, by name. The description is what it is created with when the
+ * catalogue has none of that name; one that exists keeps its own.
+ */
+export interface SheetReference {
+    name: string;
+    description: HTMLString;
 }
 
 export interface SheetWorkshop {
@@ -105,8 +115,7 @@ export interface SheetStep {
     endCriteriaOther: string;
     /** Names from the sheet's materials. */
     materials: string[];
-    /** Names from the tips catalogue. */
-    tips: string[];
+    tips: SheetReference[];
 }
 
 // ── Reading one ─────────────────────────────────────────────────────────────────────────────
@@ -200,7 +209,7 @@ export function readActivitySheet(text: string): SheetReading {
             seasons: read.choices(place.seasons, "place.seasons", ActivitySeason),
         },
         safety: {
-            instructions: read.texts(safety.instructions, "safety.instructions"),
+            instructions: read.references(safety.instructions, "safety.instructions"),
         },
         pedagogy: {
             goals: read.texts(pedagogy.goals, "pedagogy.goals"),
@@ -248,7 +257,7 @@ export function readActivitySheet(text: string): SheetReading {
                 endCriteria: read.choices(step.endCriteria, `${path}.endCriteria`, StepEndCriterion),
                 endCriteriaOther: read.text(step.endCriteriaOther, `${path}.endCriteriaOther`).trim(),
                 materials: read.texts(step.materials, `${path}.materials`),
-                tips: read.texts(step.tips, `${path}.tips`),
+                tips: read.references(step.tips, `${path}.tips`),
             };
         }),
     };
@@ -328,7 +337,21 @@ function createReader() {
         return names.filter(Boolean);
     }
 
-    return { problems, object, text, number, flag, list, choice, choices, texts };
+    /** Names, each alone or with a description; a blank name is dropped, as in `texts`. */
+    function references(value: unknown, path: string): SheetReference[] {
+        const entries = list(value, path, (entry, entryPath) => {
+            if (typeof entry === "string") return { name: entry.trim(), description: "" };
+
+            const reference = object(entry, entryPath);
+            return {
+                name: text(reference.name, `${entryPath}.name`).trim(),
+                description: text(reference.description, `${entryPath}.description`),
+            };
+        });
+        return entries.filter(reference => reference.name);
+    }
+
+    return { problems, object, text, number, flag, list, choice, choices, texts, references };
 }
 
 // ── Turning it into records ─────────────────────────────────────────────────────────────────
@@ -349,6 +372,8 @@ export interface UnknownReference {
     /** What kind of thing it should have been, as a translation key. */
     label: string;
     name: string;
+    /** What to create it with. Always empty for a tag, which has no description. */
+    description: HTMLString;
 }
 
 /** Two spellings of one name, in one kind, are the same reference. */
@@ -374,26 +399,34 @@ export interface SheetActivity {
 export function activityFromSheet(sheet: ActivitySheet, known: SheetReferences): SheetActivity {
     const unknown: UnknownReference[] = [];
 
-    function matching<T extends { id: string; name: string; slug?: string }>(kind: ReferenceKind, label: string, candidates: T[], names: string[]): T[] {
+    function matching<T extends { id: string; name: string; slug?: string }>(
+        kind: ReferenceKind,
+        label: string,
+        candidates: T[],
+        references: SheetReference[],
+    ): T[] {
         const found: T[] = [];
 
-        for (const name of names) {
+        for (const { name, description } of references) {
             const match = candidates.find(candidate => nameKey(candidate.name) === nameKey(name) || nameKey(candidate.slug) === nameKey(name));
             if (match) {
                 found.push(match);
                 continue;
             }
 
-            const reference = { kind, label, name };
-            if (!unknown.some(other => referenceKey(other) === referenceKey(reference)))
-                unknown.push(reference);
+            // Named twice, it is created once, with the first description the sheet gives.
+            const reference = { kind, label, name, description };
+            const seen = unknown.find(other => referenceKey(other) === referenceKey(reference));
+            if (!seen) unknown.push(reference);
+            else if (isBlankHtml(seen.description)) seen.description = description;
         }
 
         return distinctById(found);
     }
 
     function tags(type: ActivityTagType, names: string[]): ActivityTagData[] {
-        return matching(type, `activities.tagType.${type}`, known.tags.filter(tag => tag.type === type), names);
+        const references = names.map(name => ({ name, description: "" }));
+        return matching(type, `activities.tagType.${type}`, known.tags.filter(tag => tag.type === type), references);
     }
 
     const development = Object.fromEntries(DEVELOPMENT_AXES.map(axis =>

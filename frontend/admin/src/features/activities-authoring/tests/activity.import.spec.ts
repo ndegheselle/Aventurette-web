@@ -144,16 +144,16 @@ describe('activityFromSheet', () => {
         expect(activity.classification.themes).toEqual([insects]);
         expect(activity.imaginary.universes).toEqual([pirates]);
         // A pirate universe is not a theme: the name matched a tag of the wrong kind.
-        expect(unknown).toEqual([{ kind: ActivityTagType.THEME, label: 'activities.tagType.THEME', name: 'pirates' }]);
+        expect(unknown).toEqual([{ kind: ActivityTagType.THEME, label: 'activities.tagType.THEME', name: 'pirates', description: '' }]);
     });
 
-    it('reports a tag that does not exist and leaves it off, rather than creating it', () => {
+    it('reports a tag that does not exist and leaves it off, for the save to create', () => {
         const sheet = sheetOf({ name: 'Tag', pedagogy: { development: { DEVELOP_SOCIAL: ['Écoute'] } } });
 
         const { activity, unknown } = activityFromSheet(sheet, nothingKnown);
 
         expect(activity.pedagogy.development.DEVELOP_SOCIAL).toEqual([]);
-        expect(unknown).toEqual([{ kind: ActivityTagType.DEVELOP_SOCIAL, label: 'activities.tagType.DEVELOP_SOCIAL', name: 'Écoute' }]);
+        expect(unknown).toEqual([{ kind: ActivityTagType.DEVELOP_SOCIAL, label: 'activities.tagType.DEVELOP_SOCIAL', name: 'Écoute', description: '' }]);
     });
 
     it('reports a name that matched nothing once, whatever its case', () => {
@@ -186,8 +186,28 @@ describe('activityFromSheet', () => {
         expect(activity.safety.instructions).toEqual([fire, water]);
         expect(stepTips).toEqual([[pace]]);
         expect(unknown).toEqual([
-            { kind: 'SAFETY', label: 'activities.fields.safetyInstructions', name: 'Froid' },
-            { kind: 'TIP', label: 'activities.tips.title', name: 'Chanter' },
+            { kind: 'SAFETY', label: 'activities.fields.safetyInstructions', name: 'Froid', description: '' },
+            { kind: 'TIP', label: 'activities.tips.title', name: 'Chanter', description: '' },
+        ]);
+    });
+
+    it('creates a reference with the first description the sheet gives it, and ignores it for one that exists', () => {
+        const pace = aTip({ name: 'Garder le rythme' });
+        const sheet = sheetOf({
+            name: 'Tag',
+            safety: { instructions: [{ name: 'Photosensibilité', description: '<p>1 éclair par seconde au plus.</p>' }] },
+            steps: [
+                { title: 'Jeu', tips: ['Lettre par lettre', { name: 'Garder le rythme', description: '<p>Ignored.</p>' }] },
+                { title: 'Fin', tips: [{ name: 'lettre par lettre', description: '<p>Renvoyer lettre par lettre.</p>' }] },
+            ],
+        });
+
+        const { stepTips, unknown } = activityFromSheet(sheet, { ...nothingKnown, tips: [pace] });
+
+        expect(stepTips[0]).toEqual([pace]);
+        expect(unknown.map(({ kind, name, description }) => ({ kind, name, description }))).toEqual([
+            { kind: 'SAFETY', name: 'Photosensibilité', description: '<p>1 éclair par seconde au plus.</p>' },
+            { kind: 'TIP', name: 'Lettre par lettre', description: '<p>Renvoyer lettre par lettre.</p>' },
         ]);
     });
 });

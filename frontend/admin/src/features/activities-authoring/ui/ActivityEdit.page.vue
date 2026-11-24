@@ -285,6 +285,9 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                             </FilesInput>
                             <FilesList v-model:files="files" />
                         </Field>
+                        <Field label="activities.fields.visualBrief" :error="errors.get('visual_brief')">
+                            <Textarea v-model="activity.visualBrief" />
+                        </Field>
                     </Panel>
 
                     <Panel id="section-description" class="scroll-mt-16">

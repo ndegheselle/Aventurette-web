@@ -181,12 +181,12 @@ interface CreatedReferences {
 async function createReferences(missing: UnknownReference[]): Promise<CreatedReferences> {
     const created: CreatedReferences = { tags: [], safetyInstructions: [], tips: [] };
 
-    for (const { kind, name } of missing) {
+    for (const { kind, name, description } of missing) {
         if (kind === 'SAFETY') {
-            const instruction = { name, slug: slugify(name), description: '' } as SafetyInstructionData;
+            const instruction = { name, slug: slugify(name), description } as SafetyInstructionData;
             created.safetyInstructions.push(await safetyInstructionsApi.create(instruction));
         } else if (kind === 'TIP') {
-            created.tips.push(await tipsApi.create({ name, description: '' } as ActivityTipData));
+            created.tips.push(await tipsApi.create({ name, description } as ActivityTipData));
         } else {
             created.tags.push(await tagsApi.create({ type: kind, name, slug: slugify(name) } as ActivityTagData));
         }

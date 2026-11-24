@@ -171,8 +171,8 @@
       "required": ["instructions"],
       "properties": {
         "instructions": {
-          "$ref": "#/$defs/names",
-          "description": "Row « Sécurité »: safety instruction names or slugs from the catalogue, e.g. feu, eau, tranchant, alimentaire, meteo-extreme, premiers-secours. Do not copy the safety checklist."
+          "$ref": "#/$defs/references",
+          "description": "Row « Sécurité »: safety instruction names or slugs from the catalogue, e.g. feu, eau, tranchant, alimentaire, meteo-extreme, premiers-secours. Do not copy the safety checklist. When the row details one, as « photosensibilité : 1 éclair par seconde au plus… », the detail is its description, word for word."
         }
       }
     },
@@ -255,6 +255,24 @@
       "type": "array",
       "description": "Names as the fiche writes them, one per entry, trimmed, without a leading #. A comma or « et » list is split. A name matches one of its own kind whatever the case; a tag, safety instruction or tip that matches nothing is created, so write a new one with a capital first letter.",
       "items": { "type": "string", "pattern": "\\S" }
+    },
+    "references": {
+      "type": "array",
+      "description": "Safety instructions or tips: a name as in `names`, or a name with the description it is created with. An existing one of that name keeps its own description.",
+      "items": {
+        "anyOf": [
+          { "type": "string", "pattern": "\\S" },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "description"],
+            "properties": {
+              "name": { "type": "string", "pattern": "\\S" },
+              "description": { "$ref": "#/$defs/html" }
+            }
+          }
+        ]
+      }
     },
     "count": {
       "type": "number",
@@ -431,8 +449,8 @@
           "description": "`#### Matériel` of the step: names from `materials`. A name missing there is added to the activity."
         },
         "tips": {
-          "$ref": "#/$defs/names",
-          "description": "Names from the tips catalogue (conseils d'animation) for this step. A step's `#### Conseil` is free text, not a name: leave this empty unless the user gives names."
+          "$ref": "#/$defs/references",
+          "description": "The step's `#### Conseil`, one entry per piece of advice, and any tip the user names. Name each from the tips catalogue or the user's glossary when one says the same thing; otherwise a short title of a few words, capital first letter. The fiche's text goes in `description`, word for word, as HTML."
         }
       }
     }

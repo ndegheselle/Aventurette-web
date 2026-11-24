@@ -7,7 +7,8 @@ it in the editor, whose link this tool returns.
 1. **Read the whole fiche** before calling anything. If the user gives a Confluence link without
    its content, ask them to export the page as Markdown or paste it.
 2. **Call `list_references`** to see the tags, safety instructions, tips and materials that
-   already exist, so the names you write match them.
+   already exist, so the names you write match them. When the user gives a glossary, its names
+   come next: use one rather than a new spelling whenever it says the same thing.
 3. **Call `save_activity`** with `sheet` mapped section by section from the fiche: each property's
    description says which part of the fiche fills it. Give the cover visual and each step's
    resources as absolute paths to files next to the fiche, when the fiche points at some.
@@ -41,8 +42,16 @@ it in the editor, whose link this tool returns.
   number, leave `0` and keep the text in the matching notes field if one exists.
 - **Durations are per step.** "Temps de jeu" and "Temps de préparation" are computed by the app.
   If the steps have no durations but the table has totals, leave the steps at `0` and report it.
+  What the fiche says around a duration (« 3 manches de 12 min + 4 de rotation », « hors temps
+  de jeu ») goes at the top of the step's description, as written.
 - "Matériel (sans / avec)" is derived from `materials`, and is not written.
-- A step's `tips` stays `[]` unless the user gives names from the tips catalogue.
+- **A step's `#### Conseil` is a tip**: `{ name, description }`, the fiche's text word for word
+  in `description`. Name it from the tips catalogue or the user's glossary when one says the
+  same thing, otherwise with a short title of a few words. List the names you made up in the
+  report.
+- **A safety instruction the fiche details** (« photosensibilité : 1 éclair par seconde au
+  plus… ») is `{ name, description }`, the detail in `description`. It only fills a new
+  instruction: one the catalogue has keeps its own.
 - **A step's end criteria are codes, then words.** Tick a code only when the fiche ticks its
   label or writes it word for word; everything else goes in `endCriteriaOther`, as written.
   « les trois manches sont jouées » is not `ENOUGH_DONE`: it is `endCriteriaOther`.
@@ -57,6 +66,5 @@ author adds them from the editor.
 | Fiche | Why |
 |---|---|
 | `## Ressources`, a step's `#### Ressources` given as links | a resource is a file; a link is not one |
-| A step's `#### Conseil` | tips are a catalogue linked by name, and this is free text: it can be added to the catalogue, then linked |
 | A timer on an action, an action's own material or resource | actions are a list in the step's description; give the material to the step instead |
 | `Source : …` | no field for it |
