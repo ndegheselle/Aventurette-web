@@ -1,7 +1,5 @@
-<!-- The settings' menu. A section is a child route: a page of its own on a phone, beside the menu on a desktop. -->
 <script setup lang="ts">
 import Container from '@chapelure/ui/layout/Container.vue';
-import { useIsMobile } from '@chapelure/ui/layout/useIsMobile';
 import { useNavbar } from '@chapelure/ui/layout/useNavbar';
 import ResponsiveModal from '@chapelure/ui/modals/ResponsiveModal.vue';
 import { useModal } from '@chapelure/ui/modals/useModal';
@@ -9,19 +7,12 @@ import { EnumTheme, useSettings } from '@chapelure/ui/settings/useSettings';
 import { Button } from '@chapelure/ui/shadcn/button';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ChevronRightIcon, PaletteIcon, LanguagesIcon, LogOutIcon, UserIcon, UsersIcon } from 'lucide-vue-next';
+import { ChevronRightIcon, PaletteIcon, LanguagesIcon, LogOutIcon, UsersIcon } from 'lucide-vue-next';
 import { useLogout } from '@features/user/composables/useLogout';
-import { routesNames } from '@features/user/routes';
-import { useRoute } from 'vue-router';
 
 const { t } = useI18n();
 const { currentLanguage, currentTheme, changeTheme, changeLang } = useSettings();
 const { logoutToLogin } = useLogout();
-const { isMobile } = useIsMobile();
-const route = useRoute();
-
-/** Whether a section is open, rather than the menu alone. */
-const inSection = computed(() => route.name !== routesNames.settings);
 
 const themeSheet = useModal();
 const languageSheet = useModal();
@@ -53,9 +44,8 @@ useNavbar(t('user.settings.title'));
 </script>
 
 <template>
-    <Container class="p-2 md:grid md:grid-cols-[20rem_1fr] md:items-start md:gap-4">
-        <!-- On a phone an open section takes the whole page; on a desktop it shows beside the menu. -->
-        <div v-if="!isMobile || !inSection">
+    <Container class="p-2">
+        <div class="max-w-80">
             <h1 class="font-title text-2xl md:text-3xl lg:text-4xl font-bold mb-2">{{ t('user.settings.title') }}</h1>
             <nav class="flex flex-col gap-1 rounded-xl border bg-card p-3 text-card-foreground shadow-sm">
                 <h2 class="px-3 py-1.5 text-xs font-medium text-muted-foreground">{{ t('user.settings.preferences') }}</h2>
@@ -75,15 +65,6 @@ useNavbar(t('user.settings.title'));
             </nav>
             <nav class="flex flex-col gap-1 rounded-xl border bg-card p-3 text-card-foreground shadow-sm mt-2">
                 <h2 class="px-3 py-1.5 text-xs font-medium text-muted-foreground">{{ t('user.settings.account') }}</h2>
-                <RouterLink :to="{ name: routesNames.profile }" custom v-slot="{ href, navigate, isActive }">
-                    <Button as-child :variant="isActive ? 'secondary' : 'ghost'" class="w-full justify-start">
-                        <a :href @click="navigate">
-                            <UserIcon />
-                            <span class="flex-1 text-start">{{ t('user.settings.profile') }}</span>
-                            <ChevronRightIcon class="text-muted-foreground" />
-                        </a>
-                    </Button>
-                </RouterLink>
                 <Button variant="ghost" class="w-full justify-start" disabled>
                     <UsersIcon />
                     <span class="flex-1 text-start">{{ t('user.settings.children') }}</span>
@@ -97,8 +78,6 @@ useNavbar(t('user.settings.title'));
             </nav>
         </div>
 
-        <RouterView v-if="inSection" />
-        <p v-else-if="!isMobile" class="p-8 text-center text-muted-foreground">{{ t('user.settings.pickSection') }}</p>
 
         <ResponsiveModal :controller="themeSheet">
             <template #title>{{ t('user.settings.theme') }}</template>

@@ -44,9 +44,8 @@ types, its factory, its enums and its formatters together; `models/step.ts` does
 step and the materials and resources hanging off it. What the backend sends is not part of that:
 an entity's payload type and its `EntityMapper` live in `api/<entity>.mapper.ts`, with the rest
 of the code that knows a backend exists. A three-line type alias is not a file.
-A composable covers a screen — `useActivitiesList` owns the public list and its search,
-`useActivitiesEditList` the author's own and its add and delete buttons — rather than one
-slice of one.
+A composable covers a screen — `useActivitiesEditList` owns the list of activities and its add
+and delete buttons, `useActivityEdit` the editor and its save — rather than one slice of one.
 
 Full reasoning in [ADR 0009](docs/adr/0009-logic-lives-outside-components.md); the rest of the
 decisions are in [docs/adr/](docs/adr/README.md), and each feature is documented in

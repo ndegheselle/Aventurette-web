@@ -1,0 +1,76 @@
+import { filesWithinLimit, joinDuration, resourcePreviewOf, splitDuration, stepProblems } from '@features/activities-authoring/models/step.edit';
+import { aPickedFile, aResource } from '@tests';
+import { describe, expect, it } from 'vitest';
+
+describe('splitDuration', () => {
+    it('splits minutes into hours and minutes', () => {
+        expect(splitDuration(95)).toEqual({ hours: 1, minutes: 35 });
+    });
+
+    it('reads a step with no duration as zero', () => {
+        expect(splitDuration(undefined)).toEqual({ hours: 0, minutes: 0 });
+    });
+});
+
+describe('joinDuration', () => {
+    it('joins hours and minutes back into minutes', () => {
+        expect(joinDuration(1, 35)).toBe(95);
+    });
+
+    it('counts a cleared input as zero', () => {
+        expect(joinDuration('', 20)).toBe(20);
+    });
+
+    it('never goes below zero', () => {
+        expect(joinDuration(0, -10)).toBe(0);
+    });
+});
+
+describe('filesWithinLimit', () => {
+    it('takes everything when the step has room', () => {
+        const { accepted, rejected } = filesWithinLimit([], [aPickedFile(), aPickedFile()], 10);
+
+        expect(accepted).toHaveLength(2);
+        expect(rejected).toBe(0);
+    });
+
+    it('takes what fits and reports the rest, rather than dropping the whole pick', () => {
+        const { accepted, rejected } = filesWithinLimit(['one'], [aPickedFile(), aPickedFile()], 2);
+
+        expect(accepted).toHaveLength(1);
+        expect(rejected).toBe(1);
+    });
+
+    it('takes nothing once the step is full', () => {
+        const { accepted, rejected } = filesWithinLimit(['one', 'two'], [aPickedFile()], 2);
+
+        expect(accepted).toEqual([]);
+        expect(rejected).toBe(1);
+    });
+});
+
+describe('stepProblems', () => {
+    it('refuses a description with no text in it, as the collection would', () => {
+        // An editor emptied by hand leaves its paragraph behind.
+        expect(stepProblems({ description: '<p></p>' })).toEqual({ description: { code: 'validation_required' } });
+        expect(stepProblems({ description: '<p>&nbsp;</p>' })).toEqual({ description: { code: 'validation_required' } });
+        expect(stepProblems({ description: '<p>Line up.</p>' })).toEqual({});
+    });
+});
+
+describe('resourcePreviewOf', () => {
+    it('reads a stored file by its url, without the query string', () => {
+        expect(resourcePreviewOf(aResource({ url: 'https://files.test/map.PNG?thumb=100x100' }))).toBe('image');
+        expect(resourcePreviewOf(aResource({ url: 'https://files.test/rules.pdf' }))).toBe('pdf');
+    });
+
+    it('reads a picked file by its name, as its blob url has no extension', () => {
+        const resource = aResource({ url: 'blob:https://app.test/1234', file: aPickedFile('rules.pdf', 'application/pdf') });
+
+        expect(resourcePreviewOf(resource)).toBe('pdf');
+    });
+
+    it('shows anything else as a plain file', () => {
+        expect(resourcePreviewOf(aResource({ url: 'https://files.test/notes.txt' }))).toBe('file');
+    });
+});

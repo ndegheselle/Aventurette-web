@@ -1,24 +1,11 @@
 {
     "home": "Accueil",
     "back": "Retour",
-    "dock": {
-        "search": "Recherche",
-        "space": "Mon espace",
-        "tips": "Astuces",
-        "profil": "Profil"
-    },
     "admin": {
         "title": "Administration"
     },
     "sidebar": {
         "open": "Ouvrir le menu",
         "close": "Fermer le menu"
-    },
-    "space": {
-        "tabs": {
-            "planning": "Planning",
-            "favorites": "Favoris",
-            "history": "Historique"
-        }
     }
 }

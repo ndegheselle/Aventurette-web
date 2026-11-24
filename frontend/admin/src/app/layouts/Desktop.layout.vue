@@ -16,21 +16,16 @@ import {
     SidebarMenuItem,
     SidebarProvider,
 } from '@chapelure/ui/shadcn/sidebar';
-import { routesNames as activitiesRoutesNames } from '@features/activities/routes';
-import { routesNames as authoringRoutesNames } from '@features/admin/activities-authoring/routes';
-import { routesNames as catalogueRoutesNames } from '@features/admin/catalogue-authoring/routes';
-import { routesNames as planningRoutesNames } from '@features/planning/routes';
+import { routesNames as authoringRoutesNames } from '@features/activities-authoring/routes';
+import { routesNames as catalogueRoutesNames } from '@features/catalogue-authoring/routes';
 import { useAuth } from '@features/user/composables/useAuth';
 import { Role } from '@features/user/models/user';
 import { routesNames as usersRoutesNames } from '@features/user/routes';
 import {
-    FolderHeartIcon,
     LibraryBigIcon,
-    LightbulbIcon,
     PanelLeftCloseIcon,
     PanelLeftOpenIcon,
     PencilLineIcon,
-    SearchIcon,
     UserIcon,
 } from 'lucide-vue-next';
 import { ref } from 'vue';
@@ -51,7 +46,7 @@ const activeClass = 'bg-sidebar-accent font-medium text-sidebar-accent-foregroun
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" as-child>
-                            <RouterLink :to="{ name: activitiesRoutesNames.library }">
+                            <RouterLink :to="{ name: authoringRoutesNames.all }">
                                 <img class="size-8 rounded-md" src="https://placeholder.pagebee.io/api/plain/32/32" alt="" />
                                 <span class="font-semibold">Aventurette</span>
                             </RouterLink>
@@ -60,34 +55,6 @@ const activeClass = 'bg-sidebar-accent font-medium text-sidebar-accent-foregroun
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton as-child :tooltip="$t('dock.search')">
-                                <RouterLink :to="{ name: activitiesRoutesNames.library }" :active-class="activeClass">
-                                    <SearchIcon />
-                                    <span>{{ $t('dock.search') }}</span>
-                                </RouterLink>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <!-- The planning is the space's first tab: the link stays active on the others. -->
-                        <SidebarMenuItem>
-                            <SidebarMenuButton as-child :tooltip="$t('dock.space')">
-                                <RouterLink :to="{ name: planningRoutesNames.planning }" :active-class="activeClass">
-                                    <FolderHeartIcon />
-                                    <span>{{ $t('dock.space') }}</span>
-                                </RouterLink>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton disabled :tooltip="$t('dock.tips')">
-                                <LightbulbIcon />
-                                <span>{{ $t('dock.tips') }}</span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroup>
-                <!-- Authoring is desktop-only: the mobile dock has no counterpart. -->
                 <SidebarGroup v-if="hasRole(Role.ADMIN)">
                     <SidebarGroupLabel>{{ $t('admin.title') }}</SidebarGroupLabel>
                     <SidebarMenu>

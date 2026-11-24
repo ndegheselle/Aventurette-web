@@ -48,7 +48,7 @@ function isTestFile(path) {
 
 /**
  * Whether a file sits in one of a feature's layer folders. A feature may be nested in a group
- * folder — `features/user/` and `features/admin/catalogue-authoring/` are both features.
+ * folder — `features/user/` and `features/catalogue-authoring/` are both features.
  */
 function inFeatureLayer(path, layers) {
     return new RegExp(`^admin/src/features/(?:[^/]+/)+(?:${layers})/`).test(path);

@@ -1,7 +1,5 @@
 {
     "activities": {
-        "title": "Activités",
-        "description": "Description",
         "minutes": "{minutes} min",
         "families": {
             "informations": "Informations",
@@ -43,10 +41,6 @@
             "notNeeded": "Aucun matériel requis",
             "quantity": "Quantité"
         },
-        "supplies": {
-            "title": "Matériel et ressources",
-            "open": "Ouvrir la ressource"
-        },
         "workshops": {
             "title": "Ateliers",
             "adults": "{count} adulte(s)",
@@ -60,16 +54,6 @@
         },
         "tips": {
             "title": "Conseils"
-        },
-        "actions": {
-            "favorite": "Ajouter aux favoris",
-            "unfavorite": "Retirer des favoris",
-            "addToPlanning": "Ajouter au planning",
-            "start": "Démarrer"
-        },
-        "favorites": {
-            "added": "Activité ajoutée aux favoris",
-            "removed": "Activité retirée des favoris"
         },
         "fields": {
             "name": "Nom",
@@ -161,60 +145,6 @@
             "DEVELOP_SOCIAL": "Développement social",
             "DEVELOP_MORAL": "Développement moral / caractère",
             "DEVELOP_SPIRITUAL": "Développement spirituel"
-        },
-        "play": {
-            "progress": "Étape {current} sur {total}",
-            "previous": "Précédente",
-            "next": "Suivante",
-            "finish": "Terminer",
-            "empty": "Cette activité n'a pas encore d'étape."
-        },
-        "feedback": {
-            "bravo": "Bravo !",
-            "finished": "Vous avez terminé « {name} ».",
-            "like": "J'aime cette activité",
-            "comment": "Un commentaire ?",
-            "commentPlaceholder": "Ce qui a plu, ce qui a coincé…",
-            "leave": "Quitter",
-            "saveRefused": "Votre avis n'a pas pu être enregistré."
-        },
-        "details": {
-            "more": "Voir plus",
-            "less": "Voir moins"
-        },
-        "library": {
-            "catalogueEmpty": "Aucune activité ne correspond à votre recherche. Essayez d'élargir vos filtres.",
-            "favoritesEmpty": "Aucun favori pour l'instant. Touchez le cœur d'une activité pour la retrouver ici."
-        },
-        "filters": {
-            "title": "Filtres",
-            "open": "Filtrer les activités",
-            "reset": "Réinitialiser",
-            "apply": "Appliquer",
-            "any": "Tous",
-            "locations": "{count} lieux",
-            "age": {
-                "from": "{min} ans et +",
-                "upTo": "Jusqu'à {max} ans",
-                "between": "{min}–{max} ans",
-                "exactly": "{min} ans"
-            },
-            "participants": {
-                "from": "{min} enfants et +",
-                "upTo": "Jusqu'à {max} enfants",
-                "between": "{min}–{max} enfants",
-                "exactly": "{min} enfants"
-            },
-            "profile": {
-                "title": "Appliquer mon profil",
-                "help": "L'âge, le nombre d'enfants et les lieux de votre profil.",
-                "empty": "Votre profil n'a pas encore de filtres par défaut."
-            },
-            "quick": {
-                "age": "Âge",
-                "participants": "Enfants",
-                "location": "Lieu"
-            }
         }
     }
 }
