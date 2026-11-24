@@ -24,6 +24,7 @@ import {
     type SheetStepFiles,
     type UnknownReference,
 } from '@features/activities-authoring/models/activity.import';
+import { checkFiche, FicheFindingCode, type FicheFinding } from '@features/activities-authoring/models/fiche.check';
 import { materialNamed } from '@features/activities-authoring/models/material.edit';
 import { createResource } from '@features/activities-authoring/models/step.edit';
 import sheetSchema from '@features/activities-authoring/mcp/activity-sheet.schema.json';
@@ -64,7 +65,76 @@ export interface ToolContext {
 }
 
 export function activityTools(context: ToolContext): McpTool[] {
-    return [listReferencesTool(), previewActivityTool(context), saveActivityTool(context)];
+    return [checkFicheTool(context), listReferencesTool(), previewActivityTool(context), saveActivityTool(context)];
+}
+
+function checkFicheTool(context: ToolContext): McpTool {
+    return {
+        name: 'check_fiche',
+        description: 'Check one fiche d\'activité, as Markdown, against the Confluence template before mapping it: the '
+            + 'sections and Informations rows it must have, the steps\' durations against the totals, placeholders and '
+            + '« à valider » marks left in, and its resources (links to files that exist, not text). Call it first; '
+            + 'when it finds something missing, tell the user before going on.',
+        inputSchema: {
+            type: 'object',
+            additionalProperties: false,
+            required: ['markdown'],
+            properties: {
+                markdown: { type: 'string', description: 'One fiche, from its title to its last step. Split a file holding several.' },
+                folder: { type: 'string', description: 'Absolute path of the fiche\'s folder, to find the files its relative links point at.' },
+            },
+        },
+        call: input => checkFicheInput(input, context),
+    };
+}
+
+/** What each finding tells the assistant. */
+const FINDING_MESSAGES: Record<FicheFindingCode, (finding: FicheFinding) => string> = {
+    SECTION: ({ detail }) => `Missing section: ## ${detail}`,
+    ROW: ({ detail }) => `Missing Informations row: ${detail}`,
+    SUMMARY_LENGTH: ({ detail }) => `## Résumé is ${detail} characters; an activity takes 300 at most`,
+    NO_STEPS: () => '## Étapes has no « ### N. title » step',
+    STEP_DURATION: ({ where }) => `No « Durée estimée » in minutes: ${where}`,
+    DURATION_TOTAL: ({ where, detail }) => `${where}: the steps add up to ${detail.replace(' / ', ' min, the row says ')} min`,
+    PLACEHOLDER: ({ detail }) => `Template placeholder left in: ${detail}`,
+    TO_VALIDATE: ({ detail }) => `Marked « à valider »: ${detail}`,
+    RESOURCE_TEXT: ({ where }) => `Resources written as text, not links to files (${where}): export each and link it`,
+    RESOURCE_WEB_LINK: ({ where, detail }) => `Resource linked to a web page, not a file (${where}): ${detail}`,
+};
+
+/** Findings that leave the import short of something, as opposed to ones to check. */
+const MISSING: FicheFindingCode[] = [
+    FicheFindingCode.SECTION, FicheFindingCode.ROW, FicheFindingCode.NO_STEPS, FicheFindingCode.STEP_DURATION,
+    FicheFindingCode.RESOURCE_TEXT,
+];
+
+async function checkFicheInput(input: Record<string, unknown>, context: ToolContext): Promise<ToolResult> {
+    const markdown = typeof input.markdown === 'string' ? input.markdown : '';
+    const folder = typeof input.folder === 'string' ? input.folder : '';
+    const { findings, links } = checkFiche(markdown);
+
+    const unreadable: string[] = [];
+    for (const link of links) {
+        const path = isAbsolutePath(link.target) || !folder ? link.target : `${folder.replace(/[\\/]+$/, '')}/${link.target}`;
+        if (!(await canRead(decodeURI(path), context))) unreadable.push(`${link.text || link.target} (${link.where}): ${path}`);
+    }
+
+    const missing = findings.filter(finding => MISSING.includes(finding.code));
+    const toCheck = findings.filter(finding => !MISSING.includes(finding.code));
+    const message = (finding: FicheFinding) => FINDING_MESSAGES[finding.code](finding);
+
+    const lines = [
+        missing.length || unreadable.length ? 'The fiche is incomplete.' : 'The fiche has everything the template asks for.',
+        section('Missing', missing.map(message)),
+        section('Linked files that cannot be read', unreadable),
+        section('To check', toCheck.map(message)),
+        section('Resources found', links.map(link => `${link.text || link.target} (${link.where})`)),
+    ];
+    return text(lines.filter(Boolean).join('\n\n'));
+}
+
+function isAbsolutePath(path: string): boolean {
+    return /^([a-z]:[\\/]|[\\/])/i.test(path);
 }
 
 function listReferencesTool(): McpTool {
