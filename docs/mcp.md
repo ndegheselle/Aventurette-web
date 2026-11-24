@@ -67,4 +67,7 @@ The format and the rules live in
 - **"… is not an admin"**: the account signed in, but its role is not `ADMIN`.
 - **"Nothing was saved"**: the fiche had problems, listed in the answer. Claude usually fixes
   them and tries again.
+- **"Batch requests are not allowed"**: the PocketBase has batching off, so its migrations have
+  not run. Restart it, or turn on *Settings → Application → Batch API*. Safety instructions and
+  tips the failed save created stay, and the next save reuses them.
 - **Errors after a week**: the session expired. Restart the client.

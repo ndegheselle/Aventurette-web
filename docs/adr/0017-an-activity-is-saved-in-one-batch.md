@@ -28,7 +28,9 @@ points at records that already exist and no delete cascades onto the activity.
 **Nothing under an activity is written before its save.** The editor and the import hold the
 whole activity in memory, new records included. **The save is one PocketBase batch**
 (`/api/batch`), which runs its writes in order inside one transaction: they all land, or none
-does. Migration `1790840000_batch_writes.go` turns batching on, which PocketBase ships without.
+does. Migration `1793700000_batch_writes.go` turns batching on, which PocketBase ships without.
+It replaces `1790840000_batch_writes.go`, which the squash of the migrations dropped: the
+snapshot keeps the collections, not the settings.
 
 **New records get their ids from the client** (`newId`, PocketBase's own `[a-z0-9]{15}` format),
 when they are added. That is what lets one batch create a step and, further down, the activity
