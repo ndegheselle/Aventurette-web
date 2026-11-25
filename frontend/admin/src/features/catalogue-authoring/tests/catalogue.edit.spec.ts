@@ -61,10 +61,10 @@ describe('tagsFilter', () => {
         expect(filters[0]).toMatchObject({ key: 'type', value: ActivityTagType.THEME, operator: FilterOperator.Equals });
     });
 
-    it('searches the name, the slug and the aliases, within the kind', () => {
+    it('searches the name and the slug, within the kind', () => {
         const [search, type] = tagsFilter('pirate', ActivityTagType.IMAGINARY).filters;
 
-        expect(isFilterGroup(search!) && search.filters.map(f => !isFilterGroup(f) && f.key)).toEqual(['name', 'slug', 'aliases']);
+        expect(isFilterGroup(search!) && search.filters.map(f => !isFilterGroup(f) && f.key)).toEqual(['name', 'slug']);
         expect(type).toMatchObject({ key: 'type', value: ActivityTagType.IMAGINARY });
     });
 });

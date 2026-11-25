@@ -34,8 +34,7 @@ got that shape. When the two disagree, `ARCHITECTURE.md` is wrong.
 | [0023](0023-unbuilt-screens-throw-at-the-api-seam.md) | A screen not built yet has its route, and says *Bientôt disponible* | Accepted |
 | [0024](0024-mobile-app-uses-forui-theme.md) | The mobile app uses forui's own theme and icons | Accepted |
 | [0025](0025-structures-are-managed-in-a-web-app.md) | Structures are managed in a web app of their own | Proposed |
-| [0026](0026-activities-are-saved-through-an-mcp-server.md) | New activities are saved through an MCP server, not imported in the back office | Accepted |
-| [0027](0027-catalogue-entries-answer-to-aliases.md) | Catalogue entries answer to aliases, loaded from a glossary | Accepted |
+| [0026](0026-fiches-are-imported-from-a-zip-written-at-the-source.md) | Fiches are imported from a zip, written as JSON at the source | Accepted |
 
 ## Writing a new one
 

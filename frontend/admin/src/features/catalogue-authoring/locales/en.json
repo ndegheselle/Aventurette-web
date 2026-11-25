@@ -5,8 +5,7 @@
         "removed": "Deleted from the catalogue.",
         "fields": {
             "name": "Name",
-            "slug": "Identifier",
-            "aliases": "Other names, separated by ;"
+            "slug": "Identifier"
         },
         "materials": {
             "title": "Materials",

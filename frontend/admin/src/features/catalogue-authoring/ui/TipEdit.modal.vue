@@ -27,9 +27,6 @@ defineExpose<IEditModal<ActivityTipData>>({ show });
                 <Input type="text" :aria-invalid="!!errors.get('name') || undefined"
                     v-model="tip.name" />
             </Field>
-            <Field label="catalogue.fields.aliases" :error="errors.get('aliases')">
-                <Input type="text" v-model="tip.aliases" />
-            </Field>
             <Field label="catalogue.tips.fields.description" :error="errors.get('description')">
                 <TextEditor v-model="tip.description" class="min-h-48" />
             </Field>

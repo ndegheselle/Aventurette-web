@@ -5,8 +5,7 @@
         "removed": "Supprimé du catalogue.",
         "fields": {
             "name": "Nom",
-            "slug": "Identifiant",
-            "aliases": "Autres noms, séparés par ;"
+            "slug": "Identifiant"
         },
         "materials": {
             "title": "Matériel",
