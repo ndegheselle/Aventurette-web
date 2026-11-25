@@ -1,4 +1,4 @@
-import type { ActivitiesStepsResponse, StepsResourcesResponse } from "@/backend/schema.g";
+import type { ActivitiesStepsResponse, FileNameString, StepsResourcesResponse } from "@/backend/schema.g";
 import { toEntities, toIds, type EntityMapper } from "@chapelure/core";
 import { activityMaterialMapper, type ActivityMaterialPayload } from "@features/activities/api/material.mapper";
 import { tipMapper, type ActivityTipPayload } from "@features/activities/api/tip.mapper";
@@ -19,12 +19,15 @@ export const resourceMapper: EntityMapper<ActivityResourcePayload, ActivityResou
     toPayload: ({ url: _url, ...resource }) => resource,
 };
 
-/** A step as the backend stores it, with what an expanded read carries alongside. */
-export type ActivityStepPayload = ActivitiesStepsResponse<{
+/**
+ * A step as the backend stores it, with what an expanded read carries alongside. `visual` is the
+ * stored file's name coming back, and the upload going up, as a resource's `file` is.
+ */
+export type ActivityStepPayload = Omit<ActivitiesStepsResponse<{
     materials?: ActivityMaterialPayload[];
     resources?: ActivityResourcePayload[];
     tips?: ActivityTipPayload[];
-}>;
+}>, 'visual'> & { visual?: string | File };
 
 /** Reads and writes a step. */
 export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
@@ -34,14 +37,18 @@ export const stepMapper: EntityMapper<ActivityStepPayload, ActivityStepData> = {
         "resources",
         "tips",
     ],
-    toEntity: ({ expand, ...step }, files) => ({
+    toEntity: ({ expand, visual, ...step }, files) => ({
         ...step,
+        visual: (typeof visual === 'string' ? visual : '') as FileNameString,
+        visualUrl: typeof visual === 'string' && visual ? files.getUrl(step, visual) : '',
         materials: toEntities(expand?.materials, activityMaterialMapper, files),
         resources: toEntities(expand?.resources, resourceMapper, files),
         tips: toEntities(expand?.tips, tipMapper, files),
     }),
-    toPayload: ({ materials, resources, tips, ...step }) => ({
+    // A stored picture is left as it is: only a new one, or none, is written.
+    toPayload: ({ materials, resources, tips, visual, visualUrl: _url, visualFile, ...step }) => ({
         ...step,
+        ...(visualFile ? { visual: visualFile } : visual === '' ? { visual: '' } : {}),
         ...(materials && { materials: toIds(materials) }),
         ...(resources && { resources: toIds(resources) }),
         ...(tips && { tips: toIds(tips) }),

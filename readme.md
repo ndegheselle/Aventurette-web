@@ -11,7 +11,7 @@ in `backend/api/` that both talk to.
 | [docs/adr/](docs/adr/README.md) | why it is that way — one file per decision |
 | [docs/coding-guidelines.md](docs/coding-guidelines.md) | how to write code that stays simple to read |
 | [docs/testing.md](docs/testing.md) | how to test any of it |
-| [docs/mcp.md](docs/mcp.md) | saving an activity from a fiche with Claude, and setting it up |
+| [docs/user/import/](docs/user/import/README.md) | importing fiches written in Confluence, as a zip of JSON |
 | [backend/DEPLOYMENT.md](backend/DEPLOYMENT.md) | putting it on a server |
 | [branding/ajil.svg](branding/ajil.svg) | the app's icon, shared by both apps: change it there, then run `branding/render-icons.sh` (needs ImageMagick 7) to update every copy |
 
@@ -56,7 +56,6 @@ npm run test           # the test suite
 npm run test:watch     # the suite, while working
 npm run lint:arch      # architecture boundaries
 npm run check          # all three — what CI runs
-npm run build:mcp      # the MCP server that saves fiches (docs/mcp.md)
 ```
 
 The API runs separately, from `backend/api/` — see [backend/api/readme.md](backend/api/readme.md).

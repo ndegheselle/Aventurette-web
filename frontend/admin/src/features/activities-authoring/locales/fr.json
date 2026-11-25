@@ -30,21 +30,47 @@
                 "create": "Créer « {name} »"
             },
             "import": {
+                "title": "Importer des fiches",
+                "hint": "Un zip avec un dossier par fiche, nommé d'après l'id de sa page Confluence, qui contient son activity.json et ses fichiers ; et, à la racine, glossary.json s'il y a lieu.",
+                "checking": "Vérification de {name}…",
+                "unreadable": "{name} n'est pas un zip lisible.",
+                "zip": "Le zip",
+                "glossary": {
+                    "title": "Glossaire",
+                    "changes": "{created} entrée(s) à créer, {updated} à modifier."
+                },
+                "create": "Nouvelle activité",
+                "update": "Mise à jour",
+                "unreadableFiche": "Illisible",
+                "saved": "Importée",
+                "failed": "Échec : {message}",
+                "warnings": "{count} point à vérifier | {count} points à vérifier",
+                "blocked": "Corrigez les erreurs dans Confluence, puis importez un nouveau zip.",
+                "run": "Importer la fiche | Importer les {count} fiches",
+                "done": "{count} fiche importée. | {count} fiches importées.",
+                "back": "Retour aux activités",
                 "unset": {
                     "indoorOutdoor": "Intérieur / extérieur"
                 },
                 "problems": {
-                    "json": "Le fichier n'est pas un JSON valide.",
-                    "version": "La version de fiche {value} n'est pas prise en charge.",
-                    "required": "{path} : champ obligatoire.",
-                    "object": "{path} : un objet est attendu.",
-                    "text": "{path} : un texte est attendu.",
-                    "number": "{path} : un nombre positif est attendu.",
-                    "boolean": "{path} : true ou false est attendu.",
-                    "list": "{path} : une liste est attendue.",
-                    "choice": "{path} : « {value} » n'est pas une valeur reconnue.",
-                    "length": "{path} : {value} caractères au plus.",
-                    "files": "{path} : {value} fichiers au plus."
+                    "json": "activity.json n'est pas un JSON valide.",
+                    "format": "Ce n'est pas un fichier {value}.",
+                    "malformed": "Le fichier ne suit pas activity.schema.json : une clé manque ou n'a pas le bon type.",
+                    "noFiche": "Le zip ne contient aucun activity.json.",
+                    "folder": "Le dossier ne porte pas l'id de la fiche, {value}.",
+                    "duplicateEntry": "Le glossaire donne deux fois {value}.",
+                    "reference": "{path} : « {value} » n'est pas dans le glossaire ({label}).",
+                    "missingFile": "{path} : {value} manque dans le zip.",
+                    "fileSize": "{path} : {value} dépasse 2 Mo.",
+                    "unlistedMaterial": "{path} : « {value} » n'est pas dans le matériel de la fiche.",
+                    "unlistedResource": "{path} : « {value} » n'est pas dans les ressources de la fiche.",
+                    "tooManyResources": "{path} : {value} ressources au plus.",
+                    "noDuration": "L'étape « {value} » n'a pas de durée.",
+                    "newMaterial": "« {value} » sera ajouté au catalogue du matériel.",
+                    "unattachedResource": "La ressource « {value} » n'est liée à aucune étape : elle ne sera pas importée.",
+                    "toConfirm": "« {value} » est encore à valider.",
+                    "unset": "{label} : vide.",
+                    "unusedFile": "{value} n'est utilisé par aucune fiche."
                 }
             },
             "comments": {

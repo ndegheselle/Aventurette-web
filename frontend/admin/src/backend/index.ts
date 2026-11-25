@@ -16,9 +16,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 if (!apiUrl)
     throw new Error('VITE_API_URL is not set — copy frontend/admin/.env.example to frontend/admin/.env.');
 
-// The MCP server is the one build with no browser (`vite.mcp.config.ts`, an SSR build): its
-// session lives in memory, and ends with the process.
-const client = initPocketBase(apiUrl, { session: import.meta.env.SSR ? 'memory' : 'browser' });
+const client = initPocketBase(apiUrl);
 
 /** A CRUD service for one collection, reading through to the server every time. */
 export const crud: CrudFactory = <TPayload extends BaseEntity, TEntity extends BaseEntity>(

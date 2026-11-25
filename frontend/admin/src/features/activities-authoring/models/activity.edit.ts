@@ -32,6 +32,8 @@ export function createEmptyActivity(): ActivityData {
         description: "",
         state: ActivityState.DRAFT,
         visualBrief: "",
+        sourceId: "",
+        gatherDuration: 0,
         classification: { format: null, practices: [], themes: [] },
         imaginary: { rule: null, universes: [] },
         audience: {

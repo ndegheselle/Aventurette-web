@@ -30,21 +30,47 @@
                 "create": "Add \"{name}\""
             },
             "import": {
+                "title": "Import fiches",
+                "hint": "A zip with one folder per fiche, named after its Confluence page id, holding its activity.json and its files; and, at the root, glossary.json when there is one.",
+                "checking": "Checking {name}…",
+                "unreadable": "{name} is not a readable zip.",
+                "zip": "The zip",
+                "glossary": {
+                    "title": "Glossary",
+                    "changes": "{created} entries to create, {updated} to change."
+                },
+                "create": "New activity",
+                "update": "Update",
+                "unreadableFiche": "Unreadable",
+                "saved": "Imported",
+                "failed": "Failed: {message}",
+                "warnings": "{count} thing to check | {count} things to check",
+                "blocked": "Fix the errors in Confluence, then import a new zip.",
+                "run": "Import the fiche | Import the {count} fiches",
+                "done": "{count} fiche imported. | {count} fiches imported.",
+                "back": "Back to the activities",
                 "unset": {
                     "indoorOutdoor": "Indoor / outdoor"
                 },
                 "problems": {
-                    "json": "The file is not valid JSON.",
-                    "version": "Sheet version {value} is not supported.",
-                    "required": "{path}: required.",
-                    "object": "{path}: an object is expected.",
-                    "text": "{path}: a text is expected.",
-                    "number": "{path}: a positive number is expected.",
-                    "boolean": "{path}: true or false is expected.",
-                    "list": "{path}: a list is expected.",
-                    "choice": "{path}: \"{value}\" is not a known value.",
-                    "length": "{path}: {value} characters at most.",
-                    "files": "{path}: {value} files at most."
+                    "json": "activity.json is not valid JSON.",
+                    "format": "This is not a {value} file.",
+                    "malformed": "The file does not follow activity.schema.json: a key is missing or has the wrong type.",
+                    "noFiche": "The zip holds no activity.json.",
+                    "folder": "The folder is not named after the fiche's id, {value}.",
+                    "duplicateEntry": "The glossary gives {value} twice.",
+                    "reference": "{path}: \"{value}\" is not in the glossary ({label}).",
+                    "missingFile": "{path}: {value} is missing from the zip.",
+                    "fileSize": "{path}: {value} is over 2 MB.",
+                    "unlistedMaterial": "{path}: \"{value}\" is not in the fiche's material.",
+                    "unlistedResource": "{path}: \"{value}\" is not in the fiche's resources.",
+                    "tooManyResources": "{path}: {value} resources at most.",
+                    "noDuration": "Step \"{value}\" has no duration.",
+                    "newMaterial": "\"{value}\" will be added to the materials catalogue.",
+                    "unattachedResource": "Resource \"{value}\" is on no step: it will not be imported.",
+                    "toConfirm": "\"{value}\" is still to be confirmed.",
+                    "unset": "{label}: empty.",
+                    "unusedFile": "{value} is used by no fiche."
                 }
             },
             "comments": {

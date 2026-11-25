@@ -3,6 +3,6 @@
 
 export { createPocketBaseAuth } from './auth';
 export { createPocketBaseBatch, pocketBaseId } from './batch';
-export { initPocketBase, type PocketBaseOptions } from './client';
+export { initPocketBase } from './client';
 export { createPocketBaseCrud } from './crud';
 

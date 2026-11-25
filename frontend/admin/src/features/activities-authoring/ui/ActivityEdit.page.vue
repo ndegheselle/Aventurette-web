@@ -18,6 +18,7 @@ import { Button } from '@chapelure/ui/shadcn/button';
 import { Card, CardContent } from '@chapelure/ui/shadcn/card';
 import { Checkbox } from '@chapelure/ui/shadcn/checkbox';
 import { Input } from '@chapelure/ui/shadcn/input';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@chapelure/ui/shadcn/input-group';
 import { Label } from '@chapelure/ui/shadcn/label';
 import { NativeSelect, NativeSelectOption } from '@chapelure/ui/shadcn/native-select';
 import { Spinner } from '@chapelure/ui/shadcn/spinner';
@@ -592,6 +593,12 @@ async function confirmRemoveWorkshop(workshop: ActivityWorkshopData) {
                                 · {{ $t('activities.fields.playTime') }} {{ $t('activities.minutes', { minutes: timing.play }) }}
                             </span>
                         </h2>
+                        <Field label="activities.fields.gatherDuration" :error="errors.get('gather_duration')" class="md:w-64">
+                            <InputGroup>
+                                <InputGroupInput type="number" min="0" v-model.number="activity.gatherDuration" />
+                                <InputGroupAddon align="inline-end">{{ $t('activities.authoring.steps.minutes') }}</InputGroupAddon>
+                            </InputGroup>
+                        </Field>
                         <Button @click="() => editStep(newStep())">
                             <PlusIcon />
                             {{ $t('actions.add') }}

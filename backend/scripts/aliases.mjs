@@ -16,6 +16,8 @@ export const aliases = {
     '@chapelure/ui': fromFrontend('packages/ui/src'),
     '@features': fromFrontend('admin/src/features'),
     '@': fromFrontend('admin/src'),
+    // Test-only: the import's specs read the documented example fiche (docs/user/import).
+    '@docs': fromFrontend('../docs'),
     // Test-only. `lint:arch` fails if anything that ships imports through it.
     '@tests': fromFrontend('tests'),
 };

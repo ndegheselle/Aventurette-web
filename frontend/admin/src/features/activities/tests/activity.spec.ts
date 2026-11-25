@@ -245,6 +245,12 @@ describe('timingOf', () => {
         expect(timingOf(activity)).toEqual({ preparation: 10, play: 30, total: 40 });
     });
 
+    it('counts gathering the material as preparation: the app makes that step, so the activity holds its duration', () => {
+        const activity = anActivity({ gatherDuration: 30, steps: [aStep({ kind: StepKind.PREPARE, duration: 30 })] });
+
+        expect(timingOf(activity)).toEqual({ preparation: 60, play: 0, total: 60 });
+    });
+
     it('counts a step with no duration as nothing', () => {
         expect(timingOf(anActivity({ steps: [aStep({ duration: 0 })] }))).toEqual({ preparation: 0, play: 0, total: 0 });
         expect(timingOf(null)).toEqual({ preparation: 0, play: 0, total: 0 });

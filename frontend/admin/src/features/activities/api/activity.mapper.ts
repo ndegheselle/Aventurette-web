@@ -63,6 +63,8 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
             user: activity.user,
             visual: activity.visual,
             visualBrief: activity.visual_brief,
+            sourceId: activity.source_id ?? "",
+            gatherDuration: activity.gather_duration ?? 0,
 
             classification: {
                 format: activity.format || null,
@@ -110,7 +112,8 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
     },
     toPayload: (activity) => {
         const {
-            visualBrief, classification, imaginary, audience, supervision, place, safety, pedagogy,
+            visualBrief, sourceId, gatherDuration,
+            classification, imaginary, audience, supervision, place, safety, pedagogy,
             steps, materials, workshops,
             ...columns
         } = activity;
@@ -118,6 +121,8 @@ export const activityMapper: EntityMapper<ActivityPayload, ActivityData> = {
         return {
             ...columns,
             ...(visualBrief !== undefined && { visual_brief: visualBrief }),
+            ...(sourceId !== undefined && { source_id: sourceId }),
+            ...(gatherDuration !== undefined && { gather_duration: gatherDuration }),
             ...(classification && {
                 format: emptyIfNull(classification.format),
                 practices: classification.practices,

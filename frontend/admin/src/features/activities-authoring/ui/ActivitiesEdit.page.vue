@@ -11,7 +11,7 @@ import { ActivityState, type ActivityData } from '@features/activities/models/ac
 import { useActivitiesEditList } from '@features/activities-authoring/composables/useActivitiesEditList';
 import { authoredStateTabs } from '@features/activities-authoring/models/activity.edit';
 import { routesNames } from '@features/activities-authoring/routes';
-import { PenIcon, PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
+import { FileArchiveIcon, PenIcon, PlusIcon, TrashIcon, TriangleAlertIcon } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 
 const {
@@ -58,6 +58,14 @@ useNavbar(t('activities.authoring.title'));
                 </TabsList>
             </Tabs>
             <div class="ms-auto my-auto flex gap-2">
+                <Button size="icon"
+                        variant="secondary"
+                        as-child>
+                    <RouterLink :title="$t('activities.authoring.import.title')"
+                                :to="{ name: routesNames.import }">
+                        <FileArchiveIcon />
+                    </RouterLink>
+                </Button>
                 <Button size="icon"
                         as-child>
                     <RouterLink :title="$t('actions.add')"

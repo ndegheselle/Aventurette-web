@@ -13,13 +13,19 @@ import type { ActivityMaterialData } from "@features/activities/models/material"
 /**
  * One step of the activity: what the animator does, and how long it takes. `materials` are the activity's own, recalled here; `tips` are the catalogue's, linked.
  *
- * `visual_brief` describes the step's picture, which is not stored yet. `end_criteria` and
- * `end_criteria_other` say when the step stops: the usual reasons, then anything else in words.
+ * `visual_brief` describes the step's picture, and `visual` is the stored one: `visualUrl` reads
+ * it, `visualFile` uploads a new one with the save. `advice` is written for this activity, where
+ * `tips` are the catalogue's. `end_criteria` and `end_criteria_other` say when the step stops:
+ * the usual reasons, then anything else in words.
  */
 export type ActivityStepData = Entity<ActivitiesStepsResponse, {
     materials: ActivityMaterialData[];
     resources: ActivityResourceData[];
     tips: ActivityTipData[];
+    /** Where the stored picture can be read. Empty when there is none. */
+    visualUrl: string;
+    /** A picture on its way up, which replaces `visual` when the activity is saved. */
+    visualFile?: File;
 }>;
 
 export const StepKind = ActivitiesStepsKindOptions;

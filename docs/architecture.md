@@ -14,7 +14,6 @@ The end objective is to have the following :
 flowchart LR
     phone["Ajil — clients' app<br/>frontend/mobile"]
     browser["Back office — admins<br/>frontend/admin"]
-    mcp["MCP server — on an admin's machine<br/>frontend/admin/src/mcp"]
     nginx["nginx<br/>TLS, routing by host"]
     api["PocketBase<br/>backend/api"]
     appweb["Clients' app, web build<br/>app domain"]
@@ -23,7 +22,6 @@ flowchart LR
 
     phone -- "HTTPS, api domain<br/>(and app domain in a browser)" --> nginx
     browser -- "HTTPS, admin and api domains" --> nginx
-    mcp -- "HTTPS, api domain<br/>(or a local PocketBase)" --> nginx
     nginx --> api
     nginx --> appweb
     nginx --> spa

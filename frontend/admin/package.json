@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "build:mcp": "vite build --config vite.mcp.config.ts",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -14,9 +13,9 @@
     "@chapelure/pocketbase": "*",
     "@chapelure/ui": "*",
     "@fullcalendar/vue3": "^7.1.3",
-    "@modelcontextprotocol/sdk": "^1.32.2",
     "@tailwindcss/typography": "^0.5.4",
     "@tailwindcss/vite": "^4.1.18",
+    "fflate": "^0.8.2",
     "lottie-web": "^5.13.0",
     "lucide-vue-next": "^0.577.0",
     "pocketbase": "^0.26.8",

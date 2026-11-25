@@ -42,7 +42,8 @@
                 "materials": {
                     "title": "Materials used",
                     "count": "{count} material(s)"
-                }
+                },
+                "advice": "Advice for this activity"
             }
         },
         "materials": {
@@ -89,7 +90,8 @@
             "preparationTime": "Preparation time",
             "playTime": "Playing time",
             "totalTime": "Total time",
-            "unset": "Not specified"
+            "unset": "Not specified",
+            "gatherDuration": "Gathering the material"
         },
         "constraints": {
             "picture": "PNG, JPEG and JPG formats. 2MB maximum",

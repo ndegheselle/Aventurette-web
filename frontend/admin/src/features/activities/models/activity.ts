@@ -34,6 +34,10 @@ export type ActivityData = Pick<ActivitiesResponse,
     summary: string;
     /** What the cover visual has to show, until there is one. */
     visualBrief: string;
+    /** The Confluence page id of the fiche it was imported from; empty when written here. */
+    sourceId: string;
+    /** Minutes of « Rassembler le matériel », the step the app makes from the material list. */
+    gatherDuration: number;
 
     classification: ActivityClassification;
     imaginary: ActivityImaginary;
@@ -211,7 +215,7 @@ export function resourcesOf(activity: ActivityData | null | undefined): Activity
 
 /** The durations the sheet shows, in minutes. */
 export interface ActivityTiming {
-    /** Before the children arrive: the steps preparing the game. */
+    /** Before the children arrive: gathering the material, then the steps preparing the game. */
     preparation: number;
     /** Every other step, from gathering the children to the conclusion. */
     play: number;
@@ -221,10 +225,10 @@ export interface ActivityTiming {
 
 /**
  * The activity's durations, as the sum of its steps' own. Gathering the material is a step the
- * app generates, not one the author writes, so it adds nothing.
+ * app generates rather than one the author writes, so its duration is the activity's own.
  */
-export function timingOf(activity: Pick<ActivityData, 'steps'> | null | undefined): ActivityTiming {
-    const timing: ActivityTiming = { preparation: 0, play: 0, total: 0 };
+export function timingOf(activity: Pick<ActivityData, 'steps' | 'gatherDuration'> | null | undefined): ActivityTiming {
+    const timing: ActivityTiming = { preparation: activity?.gatherDuration || 0, play: 0, total: 0 };
 
     for (const step of activity?.steps ?? []) {
         const minutes = step.duration || 0;

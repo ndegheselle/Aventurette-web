@@ -103,8 +103,12 @@ defineExpose<IEditModal<ActivityStepData>>({ show });
             <Field label="activities.steps.fields.visualBrief" :error="errors.get('visual_brief')">
                 <Textarea v-model="step.visual_brief" />
             </Field>
+            <img v-if="step.visualUrl" :src="step.visualUrl" alt="" class="max-h-48 w-fit rounded-md" />
             <Field label="activities.tips.title">
                 <TagSelect :items="tips" displayKey="name" keyBy="id" v-model="step.tips" />
+            </Field>
+            <Field label="activities.steps.fields.advice" :error="errors.get('advice')">
+                <TextEditor v-model="step.advice" class="min-h-24" />
             </Field>
             <Field label="activities.steps.fields.materials.title">
                 <TagSelect :items="materials" displayKey="name" keyBy="id" v-model="step.materials" />

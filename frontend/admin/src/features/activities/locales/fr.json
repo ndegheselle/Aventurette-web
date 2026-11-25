@@ -42,7 +42,8 @@
                 "materials": {
                     "title": "Matériel utilisé",
                     "count": "{count} matériel(s)"
-                }
+                },
+                "advice": "Conseil propre à l'activité"
             }
         },
         "materials": {
@@ -89,7 +90,8 @@
             "preparationTime": "Temps de préparation",
             "playTime": "Temps de jeu",
             "totalTime": "Durée totale",
-            "unset": "Non précisé"
+            "unset": "Non précisé",
+            "gatherDuration": "Rassembler le matériel"
         },
         "constraints": {
             "picture": "Formats PNG, JPEG et JPG. Maximum 2MB",

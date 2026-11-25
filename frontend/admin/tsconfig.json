@@ -27,6 +27,7 @@
             "@chapelure/ui/*": [ "../packages/ui/src/*" ],
             "@features/*": [ "./src/features/*" ],
             "@/*": [ "./src/*" ],
+            "@docs/*": [ "../../docs/*" ],
             "@tests": [ "../tests/index.ts" ],
             "@tests/*": [ "../tests/*" ]
         }

@@ -10,7 +10,6 @@
     "scripts": {
         "dev": "npm run dev --workspace @aventurette/admin",
         "build": "npm run build --workspace @aventurette/admin",
-        "build:mcp": "npm run build:mcp --workspace @aventurette/admin",
         "preview": "npm run preview --workspace @aventurette/admin",
         "test": "vitest run",
         "test:watch": "vitest",

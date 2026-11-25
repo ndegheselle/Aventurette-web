@@ -54,15 +54,15 @@ The content follows the activity sheet template that Ajil writes in the back off
 | Place | Indoor or outdoor, and the places it suits: park, house, forest, lake… |
 | Safety | Safety instructions, picked from a shared list, each with its precautions. |
 | Pedagogy | Goals, what it is ideal for, the development axes it works on. |
-| Steps | In order. Each has a kind (preparing the game, a free step, or the conclusion), a title, an estimated duration, a description, the material and resources it uses, and its tips. A step can also say when it ends — the usual reasons (*le temps est écoulé*, *l'attention baisse*…), then any other in words — and describe the picture it should have. |
+| Steps | In order. Each has a kind (preparing the game, a free step, or the conclusion), a title, an estimated duration, a description, the material and resources it uses, its tips, and advice written for this activity alone. A step can also say when it ends — the usual reasons (*le temps est écoulé*, *l'attention baisse*…), then any other in words — and have a picture, with the brief it is drawn from. |
 | Material | Picked from a shared list, each with a quantity in words: *un par équipe* is a quantity too. |
 | Workshops | Stations run at the same time: a name, a theme, challenges, the material each uses, the adults each needs. |
 | Resources | Files, pictures and documents, attached to the steps. |
 
 What the sheet derives from them:
 
-- **Preparation time** is the sum of the steps that prepare the game; **play time** is the sum of
-  the others. A step with no duration counts as zero.
+- **Preparation time** is the time to gather the material, plus the steps that prepare the game;
+  **play time** is the sum of the others. A step with no duration counts as zero.
 - **The activity's resources** are those of its steps, each listed once.
 - **A range with no bound** on one side has no limit on that side.
 
@@ -88,8 +88,9 @@ When the activity is placed in an event, this material and preparation become th
   rather than behind *Déroulé* and *Préparation et matériel*.
 - **Rich text shows as plain paragraphs and bullets**, without bold or links.
 - **Pictures are placeholders.**
-- **A step's end criteria and the brief of its picture are written in the back office only**: the
-  app does not show them yet.
+- **A step's end criteria, its picture and its brief, its own advice, and the time to gather the
+  material are written in the back office only**: the app does not show them yet, and leaves
+  gathering out of the preparation time.
 - ***Partager* and *Modifier* only say they are not available yet.**
 - **In *Préparation*:**
   - a material shows its name, and its quantity as the line under it: an activity's material has

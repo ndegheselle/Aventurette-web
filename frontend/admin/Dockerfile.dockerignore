@@ -2,7 +2,6 @@
 # this file, next to the Dockerfile, in place of a root .dockerignore.
 **/node_modules
 **/dist
-**/dist-mcp
 .git
 .gitignore
 .vscode

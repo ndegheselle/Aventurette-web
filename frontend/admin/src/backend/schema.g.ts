@@ -186,6 +186,7 @@ export type ActivitiesRecord = {
 	development_tags?: RecordIdString[]
 	duration?: number
 	format?: ActivitiesFormatOptions
+	gather_duration?: number
 	goal_tags?: RecordIdString[]
 	host_effort?: ActivitiesHostEffortOptions
 	id: string
@@ -203,6 +204,7 @@ export type ActivitiesRecord = {
 	recommended_hosts_numbers?: number
 	safety_instructions?: RecordIdString[]
 	seasons?: ActivitiesSeasonsOptions[]
+	source_id?: string
 	state: ActivitiesStateOptions
 	steps?: RecordIdString[]
 	summary?: string
@@ -240,6 +242,7 @@ export const ActivitiesStepsEndCriteriaOptions = {
 export type ActivitiesStepsEndCriteriaOptions = typeof ActivitiesStepsEndCriteriaOptions[keyof typeof ActivitiesStepsEndCriteriaOptions]
 export type ActivitiesStepsRecord = {
 	activity: RecordIdString
+	advice?: HTMLString
 	created: IsoAutoDateString
 	description: HTMLString
 	duration?: number
@@ -252,6 +255,7 @@ export type ActivitiesStepsRecord = {
 	tips?: RecordIdString[]
 	title?: string
 	updated: IsoAutoDateString
+	visual?: FileNameString
 	visual_brief?: string
 }
 
@@ -275,7 +279,6 @@ export type CatalogMaterialsRecord = {
 }
 
 export type CatalogSafetyInstructionsRecord = {
-	aliases?: string
 	created: IsoAutoDateString
 	description?: HTMLString
 	id: string
@@ -298,7 +301,6 @@ export const CatalogTagsTypeOptions = {
 } as const
 export type CatalogTagsTypeOptions = typeof CatalogTagsTypeOptions[keyof typeof CatalogTagsTypeOptions]
 export type CatalogTagsRecord = {
-	aliases?: string
 	created: IsoAutoDateString
 	id: string
 	name: string
@@ -308,11 +310,11 @@ export type CatalogTagsRecord = {
 }
 
 export type CatalogTipsRecord = {
-	aliases?: string
 	created: IsoAutoDateString
 	description?: HTMLString
 	id: string
 	name: string
+	slug?: string
 	updated: IsoAutoDateString
 }
 

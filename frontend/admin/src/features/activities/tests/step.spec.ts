@@ -59,6 +59,16 @@ describe('stepMapper', () => {
         });
     });
 
+    it('reads the stored picture as a url, and writes it only when it is replaced or removed', () => {
+        const step = stepMapper.toEntity(aStepPayload({ visual: 'morse.png' as never }), files);
+        const picked = new File(['x'], 'new.png');
+
+        expect(step.visualUrl).not.toBe('');
+        expect(stepMapper.toPayload(step)).not.toHaveProperty('visual');
+        expect(stepMapper.toPayload({ ...step, visualFile: picked }).visual).toBe(picked);
+        expect(stepMapper.toPayload({ ...step, visual: '' as never }).visual).toBe('');
+    });
+
     it('leaves out a relation the caller did not mention, so an update stays partial', () => {
         expect(stepMapper.toPayload({ description: '<p>Hide.</p>' }))
             .toEqual({ description: '<p>Hide.</p>' });
