@@ -1,0 +1,182 @@
+{
+    "schema": "aventurette.activity.v1",
+    "id": "130973697",
+    "name": "Les Phares — Morse lumineux",
+    "summary": "À la tombée du jour, les équipes deviennent des phares : elles s'envoient des messages en Morse avec des lampes, les décodent et les vérifient ensemble. Un rôle de scribe permet à chacun de participer sans fixer la lumière. Pas de classement : chaque message reçu compte.",
+    "description": "<p>Depuis l'Après, les phares sont le seul moyen de communiquer d'une rive à l'autre. Deux lignes de postes se font face. Chaque équipe compte des émetteurs, qui envoient un message court à la lampe, des lecteurs, qui annoncent ce qu'ils voient, et un scribe, qui note et décode. Les rôles tournent à chaque manche.</p>",
+    "visual": {
+        "brief": "Deux groupes de jeunes de 11 à 13 ans se font face à distance au crépuscule, l'un émet avec une lampe, l'autre note sur une planchette. Un adulte est visible de chaque côté. Ambiance calme, ciel bleu sombre, aucune lumière dirigée vers un visage.",
+        "file": null
+    },
+    "classification": {
+        "format": "BIG_GAME",
+        "practices": [],
+        "themes": ["vie-au-camp", "communication"]
+    },
+    "imaginary": {
+        "rule": "ADAPTABLE",
+        "universes": ["post-apocalyptique"]
+    },
+    "audience": {
+        "ageMin": 11,
+        "ageMax": 13,
+        "participantsMin": 12,
+        "participantsMax": 24,
+        "childrenPace": "CALM",
+        "ageVariants": "<p>Base 11–13 ans : 65 min. Avec des 14 ans : messages plus longs (deux mots) et rôle de coordination de ligne proposé. Plan B sans obscurité : Morse sonore (sifflet court / long), ou lumière à 30 m sur fond sombre.</p>"
+    },
+    "supervision": {
+        "hostEffort": "MEDIUM",
+        "hostsRequired": 3,
+        "crossSupervision": false,
+        "notes": "<p>2 lignes de 2 postes face à face ; 1 adulte par ligne ; 1 coordination au centre qui garde les messages et les solutions.</p><p>Animateurs : 1 par ligne de postes + 1 coordination.</p>"
+    },
+    "place": {
+        "indoor": false,
+        "outdoor": true,
+        "locations": [],
+        "conditions": "<p>Terrain dégagé, plat et repéré de jour, sans obstacle ni point d'eau entre les postes. Postes distants de 30 à 50 m. Lampe frontale pour chaque adulte pour les déplacements. Activité qui se termine de nuit : retour accompagné, éclairé et compté.</p><p>Photosensibilité : 1 éclair par seconde au plus, ni laser ni projecteur, rôle de scribe pour qui ne doit pas fixer une lumière clignotante.</p>",
+        "seasons": ["AUTUMN", "WINTER"]
+    },
+    "safety": ["meteo-extreme", "premiers-secours"],
+    "pedagogy": {
+        "goals": ["cooperation", "concentration", "memoire", "ecoute"],
+        "idealFor": ["conclure-un-temps-collectif"],
+        "development": {
+            "physical": ["connaitre-et-reguler-son-corps"],
+            "intellectual": ["apprendre-et-memoriser", "raisonner-et-resoudre"],
+            "affect": [],
+            "social": ["communiquer-et-ecouter", "cooperer-et-s-entraider"],
+            "moral": ["perseverance-et-courage"],
+            "spiritual": []
+        }
+    },
+    "gatherDuration": 30,
+    "materials": [
+        { "name": "Lampe torche à bouton poussoir", "quantity": "2 par équipe, soit 8 (ni laser ni projecteur)" },
+        { "name": "Lampe frontale", "quantity": "1 par adulte" },
+        { "name": "Planchette rigide et crayon", "quantity": "1 par équipe" },
+        { "name": "Cartes-messages", "quantity": "3 par équipe, préparées à l'avance, avec la solution réservée à la coordination" },
+        { "name": "Sifflet", "quantity": "1 par équipe, pour le plan B sonore" },
+        { "name": "Trousse de premiers secours", "quantity": "1, au poste de coordination" }
+    ],
+    "resources": [
+        { "name": "Code Morse", "file": "ressources/code-morse.pdf" }
+    ],
+    "workshops": [],
+    "steps": [
+        {
+            "kind": "PREPARE",
+            "title": "Préparer le jeu",
+            "duration": 30,
+            "description": "<p>Avant l'arrivée des jeunes (hors temps de jeu).</p>",
+            "actions": [
+                "Repérer le terrain de jour et retirer les obstacles.",
+                "Installer les deux lignes de postes à 30–50 m.",
+                "Tester chaque lampe et prévoir des piles de rechange.",
+                "Préparer les cartes-messages et la feuille de solutions.",
+                "Vérifier l'heure de la tombée du jour et du retour."
+            ],
+            "visual": { "brief": "", "file": null },
+            "materials": ["Lampe torche à bouton poussoir", "Cartes-messages"],
+            "resources": ["Code Morse"],
+            "tips": [],
+            "advice": "",
+            "endCriteria": [],
+            "endCriteriaOther": ""
+        },
+        {
+            "kind": "CUSTOM",
+            "title": "Expliquer l'activité",
+            "duration": 10,
+            "description": "<p><strong>Message à dire :</strong> « Depuis l'Après, les phares sont notre seul moyen de nous parler. Ce soir, chaque équipe devient un phare. Votre message doit traverser la nuit. »</p>",
+            "actions": [
+                "Raconter la situation des phares.",
+                "Montrer un point et un trait à la lampe.",
+                "Faire décoder un mot ensemble.",
+                "Présenter les rôles : émetteur, lecteur, scribe.",
+                "Rappeler : jamais de lampe vers un visage."
+            ],
+            "visual": { "brief": "", "file": null },
+            "materials": ["Lampe torche à bouton poussoir"],
+            "resources": ["Code Morse"],
+            "tips": [],
+            "advice": "",
+            "endCriteria": [],
+            "endCriteriaOther": ""
+        },
+        {
+            "kind": "CUSTOM",
+            "title": "Constituer les équipes",
+            "duration": 5,
+            "description": "",
+            "actions": [
+                "Reprendre les équipes de la journée.",
+                "Placer deux équipes sur chaque ligne.",
+                "Répartir les rôles pour la première manche.",
+                "Proposer le rôle de scribe à qui ne souhaite pas fixer la lumière."
+            ],
+            "visual": { "brief": "", "file": null },
+            "materials": [],
+            "resources": [],
+            "tips": ["constitution-equipes"],
+            "advice": "",
+            "endCriteria": [],
+            "endCriteriaOther": ""
+        },
+        {
+            "kind": "CUSTOM",
+            "title": "Lancer le jeu ou l'activité",
+            "duration": 40,
+            "description": "<p>3 manches de 12 min + 4 min de rotation.</p>",
+            "actions": [
+                "Manche 1 : chaque équipe envoie un mot de 3 lettres.",
+                "Rotation des rôles.",
+                "Manche 2 : mot de 4 à 5 lettres, envoi dans les deux sens.",
+                "Rotation des rôles.",
+                "Manche 3 : chaque équipe transmet son indicatif lumineux."
+            ],
+            "visual": { "brief": "", "file": null },
+            "materials": ["Lampe torche à bouton poussoir", "Planchette rigide et crayon", "Cartes-messages"],
+            "resources": ["Code Morse"],
+            "tips": [],
+            "advice": "<p>Si un message bloque, l'émetteur peut renvoyer lettre par lettre. Un message mal décodé n'est jamais une erreur : on compare avec l'émetteur et on cherche où le signal s'est perdu.</p>",
+            "endCriteria": [],
+            "endCriteriaOther": ""
+        },
+        {
+            "kind": "CUSTOM",
+            "title": "Annoncer la fin de l'activité",
+            "duration": 2,
+            "description": "",
+            "actions": [],
+            "visual": { "brief": "", "file": null },
+            "materials": [],
+            "resources": [],
+            "tips": ["annoncer-fin"],
+            "advice": "",
+            "endCriteria": [],
+            "endCriteriaOther": "Les trois manches sont jouées ; ou la nuit, le froid ou la fatigue imposent d'arrêter."
+        },
+        {
+            "kind": "CONCLUSION",
+            "title": "Conclusion",
+            "duration": 8,
+            "description": "",
+            "actions": [
+                "Réunir les équipes au centre, lampes éteintes.",
+                "Lire à voix haute les messages reçus.",
+                "Demander : « Qu'est-ce qui a aidé votre message à passer ? »",
+                "Compter les jeunes avant le retour."
+            ],
+            "visual": { "brief": "", "file": null },
+            "materials": [],
+            "resources": [],
+            "tips": ["mener-un-debriefing"],
+            "advice": "",
+            "endCriteria": [],
+            "endCriteriaOther": ""
+        }
+    ],
+    "toConfirm": ["Nombre d'animateurs requis", "Effectif recommandé"]
+}

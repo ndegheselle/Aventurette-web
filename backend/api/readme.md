@@ -6,7 +6,7 @@ go run . serve
 # Development 
 Test super user :
 ```
-admin@test.local
+admin@example.local
 test1234admin
 ```
 Test user :

@@ -88,10 +88,10 @@ app's real catalogue, so assertions are on the copy a user would read.
   unwrapped in a template.
 
 ## Standards
-@standards/coding.md
-@standards/tests.md
-@standards/documentation.md
-@standards/structure.md
+@standards/writting/structure.md
+@standards/writting/coding.md
+@standards/writting/tests.md
+@standards/writting/documentation.md
 
 ## Things that will bite
 
