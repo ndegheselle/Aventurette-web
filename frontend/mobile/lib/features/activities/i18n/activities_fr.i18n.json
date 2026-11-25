@@ -140,6 +140,7 @@
         "empty": "Cette activité n'a pas encore d'étape.",
         "instructions": "Consignes",
         "tips": "Conseils",
+        "advice": "Pour cette activité",
         "supplies": "Matériel de l'étape"
     },
     "feedback": {

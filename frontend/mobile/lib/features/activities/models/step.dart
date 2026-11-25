@@ -57,6 +57,8 @@ class ActivityStep implements Identified {
     this.title = '',
     this.description = '',
     this.duration = 0,
+    this.visualUrl = '',
+    this.advice = '',
     this.materials = const [],
     this.resources = const [],
     this.tips = const [],
@@ -73,11 +75,23 @@ class ActivityStep implements Identified {
   /// Estimated, in minutes. 0 when the author gave none.
   final int duration;
 
+  /// Where the step's picture can be read. Empty when it has none.
+  final String visualUrl;
+
+  /// Rich text: advice written for this activity, where [tips] are the catalogue's.
+  final String advice;
+
   /// The activity's own, recalled here.
   final List<ActivityMaterial> materials;
   final List<StepResource> resources;
   final List<StepTip> tips;
 }
+
+/// Whether a step has advice to show: the catalogue's tips, or its own.
+bool hasAdvice(ActivityStep step) => step.tips.isNotEmpty || !isBlankHtml(step.advice);
+
+/// Whether rich text holds no text: an editor emptied by hand leaves `<p></p>` behind.
+bool isBlankHtml(String html) => html.replaceAll(RegExp(r'<[^>]*>'), '').replaceAll('&nbsp;', ' ').trim().isEmpty;
 
 /// What a resource shows as its picture: its own url when it is an image, empty otherwise (a
 /// PDF).

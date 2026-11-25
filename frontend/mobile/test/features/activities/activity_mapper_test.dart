@@ -106,6 +106,23 @@ void main() {
       expect(step.materials.single.quantity, 'un par équipe');
       expect(activity.classification.themes, isEmpty, reason: 'theme_tags holds ids but was not expanded');
     });
+
+    test('reads a step\'s picture as its url, its own advice, and the time to gather the material', () {
+      final activity = read({
+        'gather_duration': 30,
+        'expand': {
+          'steps': [
+            {'id': 's1', 'kind': 'CUSTOM', 'visual': 'lancer.png', 'advice': '<p>Renvoyer lettre par lettre.</p>'},
+            {'id': 's2', 'kind': 'CUSTOM', 'visual': ''},
+          ],
+        },
+      });
+
+      expect(activity.gatherDuration, 30);
+      expect(activity.steps.first.visualUrl, 'files/s1/lancer.png');
+      expect(activity.steps.first.advice, '<p>Renvoyer lettre par lettre.</p>');
+      expect(activity.steps.last.visualUrl, isEmpty);
+    });
   });
 
   group('the catalogue filter', () {

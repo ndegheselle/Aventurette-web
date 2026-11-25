@@ -76,3 +76,5 @@ Also:
 - **There is no *Activité en cours* banner.** Leaving the run returns to the sheet.
 - **A step's safety** shows as the activity's warning, not as a tab of the step.
 - **No leader is named per step**, since there are no events yet.
+- **A step shows its picture**, when it has one, above its tabs; *Conseils* holds the advice
+  written for this activity, then the tips it links.

@@ -140,6 +140,7 @@
         "empty": "This activity has no step yet.",
         "instructions": "Instructions",
         "tips": "Tips",
+        "advice": "For this activity",
         "supplies": "Materials for this step"
     },
     "feedback": {

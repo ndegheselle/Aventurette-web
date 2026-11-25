@@ -124,6 +124,7 @@ class ActivityData implements Identified {
     this.description = '',
     this.state = ActivityState.draft,
     this.user = '',
+    this.gatherDuration = 0,
     this.classification = const ActivityClassification(),
     this.imaginary = const ActivityImaginary(),
     this.audience = const ActivityAudience(),
@@ -149,6 +150,10 @@ class ActivityData implements Identified {
 
   /// The author's id.
   final String user;
+
+  /// Minutes to gather the material: a step the app makes from [materials], which counts as
+  /// preparation.
+  final int gatherDuration;
 
   final ActivityClassification classification;
   final ActivityImaginary imaginary;
@@ -202,7 +207,7 @@ List<StepResource> resourcesOf(ActivityData activity) {
 class ActivityTiming {
   const ActivityTiming({required this.preparation, required this.play});
 
-  /// Before the children arrive: the steps preparing the game.
+  /// Before the children arrive: gathering the material, then the steps preparing the game.
   final int preparation;
 
   /// Every other step, from gathering the children to the conclusion.
@@ -211,9 +216,10 @@ class ActivityTiming {
   int get total => preparation + play;
 }
 
-/// The activity's durations, as the sum of its steps' own. A step with no duration counts as 0.
+/// The activity's durations, as the sum of its steps' own, gathering the material included. A
+/// step with no duration counts as 0.
 ActivityTiming timingOf(ActivityData activity) {
-  var preparation = 0;
+  var preparation = activity.gatherDuration;
   var play = 0;
 
   for (final step in activity.steps) {

@@ -75,7 +75,12 @@ class _Run extends StatelessWidget {
             style: context.overlineText,
           ),
           Text(step.title.isEmpty ? t.stepKind[step.kind.name]! : step.title, style: context.titleText),
-          if (step.tips.isEmpty)
+          if (step.visualUrl.isNotEmpty)
+            ClipRRect(
+              borderRadius: context.theme.style.borderRadius.lg,
+              child: Image.network(step.visualUrl, fit: BoxFit.contain),
+            ),
+          if (!hasAdvice(step))
             _Instructions(step)
           else
             FTabs(
@@ -149,6 +154,17 @@ class _Tips extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppSpaces.spacing,
       children: [
+        if (!isBlankHtml(step.advice))
+          Panel(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                Text(context.t.activities.run.advice, style: context.labelText),
+                HtmlText(step.advice, style: context.captionText),
+              ],
+            ),
+          ),
         for (final tip in step.tips)
           Panel(
             child: Column(

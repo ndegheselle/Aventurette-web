@@ -88,9 +88,9 @@ When the activity is placed in an event, this material and preparation become th
   rather than behind *Déroulé* and *Préparation et matériel*.
 - **Rich text shows as plain paragraphs and bullets**, without bold or links.
 - **Pictures are placeholders.**
-- **A step's end criteria, its picture and its brief, its own advice, and the time to gather the
-  material are written in the back office only**: the app does not show them yet, and leaves
-  gathering out of the preparation time.
+- **A step's end criteria and the brief of its picture are written in the back office only**: the
+  app does not show them. Its picture and its own advice show in the guided mode, and the time to
+  gather the material counts in the preparation time.
 - ***Partager* and *Modifier* only say they are not available yet.**
 - **In *Préparation*:**
   - a material shows its name, and its quantity as the line under it: an activity's material has

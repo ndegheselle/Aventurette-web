@@ -607,6 +607,9 @@ class Translations$activities$run$fr {
 	/// fr: 'Conseils'
 	String get tips => 'Conseils';
 
+	/// fr: 'Pour cette activité'
+	String get advice => 'Pour cette activité';
+
 	/// fr: 'Matériel de l'étape'
 	String get supplies => 'Matériel de l\'étape';
 }
@@ -1615,6 +1618,7 @@ extension on Translations {
 			'activities.run.empty' => 'Cette activité n\'a pas encore d\'étape.',
 			'activities.run.instructions' => 'Consignes',
 			'activities.run.tips' => 'Conseils',
+			'activities.run.advice' => 'Pour cette activité',
 			'activities.run.supplies' => 'Matériel de l\'étape',
 			'activities.feedback.bravo' => 'Bravo !',
 			'activities.feedback.finished' => ({required Object name}) => 'Vous avez terminé « ${name} ».',

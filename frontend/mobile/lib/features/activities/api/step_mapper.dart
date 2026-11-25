@@ -7,6 +7,12 @@ Never _readOnly(String what) => throw UnimplementedError('$what are written by t
 
 int _intOf(Object? value) => (value as num?)?.toInt() ?? 0;
 
+/// The url a file column is served at, or empty when it holds none.
+String _urlOf(Payload payload, String column, FileUrlResolver files) {
+  final file = (payload[column] as String?) ?? '';
+  return file.isEmpty ? '' : files.urlOf(payload, file);
+}
+
 /// An activity's link to a catalogue material, read with the material's name folded in.
 class ActivityMaterialMapper implements EntityMapper<ActivityMaterial> {
   const ActivityMaterialMapper();
@@ -37,11 +43,10 @@ class StepResourceMapper implements EntityMapper<StepResource> {
 
   @override
   StepResource toEntity(Payload payload, FileUrlResolver files) {
-    final file = (payload['file'] as String?) ?? '';
     return StepResource(
       id: payload['id'] as String,
       name: (payload['name'] as String?) ?? '',
-      url: file.isEmpty ? '' : files.urlOf(payload, file),
+      url: _urlOf(payload, 'file', files),
     );
   }
 
@@ -66,8 +71,9 @@ class StepTipMapper implements EntityMapper<StepTip> {
   Payload toPayload(StepTip entity) => _readOnly('tips');
 }
 
-/// A step, with its relations read out of `expand`. The columns the app sets aside — the visual
-/// brief and the end criteria — are never read.
+/// A step, with its relations read out of `expand`. `visual` is the stored picture's name, read
+/// as the url it is served at. The columns the app sets aside — the visual brief and the end
+/// criteria — are never read.
 class StepMapper implements EntityMapper<ActivityStep> {
   const StepMapper();
 
@@ -90,6 +96,8 @@ class StepMapper implements EntityMapper<ActivityStep> {
     title: (payload['title'] as String?) ?? '',
     description: (payload['description'] as String?) ?? '',
     duration: _intOf(payload['duration']),
+    visualUrl: _urlOf(payload, 'visual', files),
+    advice: (payload['advice'] as String?) ?? '',
     materials: toEntities(payload, 'materials', _materials, files),
     resources: toEntities(payload, 'resources', _resources, files),
     tips: toEntities(payload, 'tips', _tips, files),

@@ -466,6 +466,7 @@ class _Translations$activities$run$en extends Translations$activities$run$fr {
 	@override String get empty => 'This activity has no step yet.';
 	@override String get instructions => 'Instructions';
 	@override String get tips => 'Tips';
+	@override String get advice => 'For this activity';
 	@override String get supplies => 'Materials for this step';
 }
 
@@ -1128,6 +1129,7 @@ extension on TranslationsEn {
 			'activities.run.empty' => 'This activity has no step yet.',
 			'activities.run.instructions' => 'Instructions',
 			'activities.run.tips' => 'Tips',
+			'activities.run.advice' => 'For this activity',
 			'activities.run.supplies' => 'Materials for this step',
 			'activities.feedback.bravo' => 'Well done!',
 			'activities.feedback.finished' => ({required Object name}) => 'You finished “${name}”.',

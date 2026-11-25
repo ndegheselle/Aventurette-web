@@ -109,6 +109,7 @@ class ActivityMapper implements EntityMapper<ActivityData> {
       description: (payload['description'] as String?) ?? '',
       state: enumOf(ActivityState.values, payload['state']) ?? ActivityState.draft,
       user: (payload['user'] as String?) ?? '',
+      gatherDuration: _intOf(payload['gather_duration']),
       classification: ActivityClassification(
         format: enumOf(ActivityFormat.values, payload['format']),
         practices: enumsOf(ActivityPractice.values, payload['practices']),

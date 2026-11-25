@@ -25,6 +25,19 @@ void main() {
     expect((timing.preparation, timing.play, timing.total), (15, 60, 75));
   });
 
+  test('gathering the material counts as preparation: the app makes that step, so the activity holds its time', () {
+    final timing = timingOf(
+      ActivityData(id: 'a', name: 'A', gatherDuration: 30, steps: [step('1', StepKind.prepare, duration: 30)]),
+    );
+
+    expect((timing.preparation, timing.play), (60, 0));
+  });
+
+  test('a step has advice to show when it has tips, or advice of its own that is not blank', () {
+    expect(hasAdvice(const ActivityStep(id: 's', kind: StepKind.custom, advice: '<p></p>')), isFalse);
+    expect(hasAdvice(const ActivityStep(id: 's', kind: StepKind.custom, advice: '<p>Ralentir.</p>')), isTrue);
+  });
+
   test('gathers the resources of every step, each once, in first-use order', () {
     const shared = StepResource(id: 'r1', name: 'Carte', url: '');
     const other = StepResource(id: 'r2', name: 'Indice', url: '');
