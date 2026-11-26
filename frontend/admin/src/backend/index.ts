@@ -31,6 +31,14 @@ export const batch: BatchFactory = () => createPocketBaseBatch(client);
 export const newId: IdFactory = pocketBaseId;
 
 /**
+ * A call to one of the backend's own routes, as the signed-in user. A JSON answer comes back
+ * parsed; an error status throws.
+ */
+export function send<T>(path: string, init: { method: string; body?: FormData }): Promise<T> {
+    return client.send<T>(path, init);
+}
+
+/**
  * The auth provider, narrowed to the caller's user type. The session holds `fields` of the user
  * and nothing more. Every provider shares the client's one session.
  */

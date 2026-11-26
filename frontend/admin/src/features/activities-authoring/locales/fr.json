@@ -32,12 +32,11 @@
             "import": {
                 "title": "Importer des fiches",
                 "hint": "Un zip avec un dossier par fiche, nommé d'après l'id de sa page Confluence, qui contient son activity.json et ses fichiers ; et, à la racine, glossary.json s'il y a lieu.",
-                "checking": "Vérification de {name}…",
-                "unreadable": "{name} n'est pas un zip lisible.",
+                "importing": "Import de {name}…",
                 "zip": "Le zip",
                 "glossary": {
                     "title": "Glossaire",
-                    "changes": "{created} entrée(s) à créer, {updated} à modifier."
+                    "changes": "{created} entrée(s) nouvelle(s), {updated} modifiée(s)."
                 },
                 "create": "Nouvelle activité",
                 "update": "Mise à jour",
@@ -45,17 +44,18 @@
                 "saved": "Importée",
                 "failed": "Échec : {message}",
                 "warnings": "{count} point à vérifier | {count} points à vérifier",
-                "blocked": "Corrigez les erreurs dans Confluence, puis importez un nouveau zip.",
-                "run": "Importer la fiche | Importer les {count} fiches",
+                "blocked": "Rien n'a été importé. Corrigez les erreurs dans Confluence, puis importez un nouveau zip.",
+                "run": "Importer",
                 "done": "{count} fiche importée. | {count} fiches importées.",
                 "back": "Retour aux activités",
                 "unset": {
                     "indoorOutdoor": "Intérieur / extérieur"
                 },
                 "problems": {
-                    "json": "activity.json n'est pas un JSON valide.",
+                    "notZip": "Le fichier n'est pas un zip lisible.",
+                    "json": "Le fichier n'est pas un JSON valide.",
                     "format": "Ce n'est pas un fichier {value}.",
-                    "malformed": "Le fichier ne suit pas activity.schema.json : une clé manque ou n'a pas le bon type.",
+                    "malformed": "Le fichier ne suit pas son schéma : {path} n'a pas le bon type.",
                     "noFiche": "Le zip ne contient aucun activity.json.",
                     "folder": "Le dossier ne porte pas l'id de la fiche, {value}.",
                     "duplicateEntry": "Le glossaire donne deux fois {value}.",
@@ -70,7 +70,8 @@
                     "unattachedResource": "La ressource « {value} » n'est liée à aucune étape : elle ne sera pas importée.",
                     "toConfirm": "« {value} » est encore à valider.",
                     "unset": "{label} : vide.",
-                    "unusedFile": "{value} n'est utilisé par aucune fiche."
+                    "unusedFile": "{value} n'est utilisé par aucune fiche.",
+                    "saveFailed": "Le serveur l'a refusée, rien n'a donc été importé : {value}"
                 }
             },
             "comments": {

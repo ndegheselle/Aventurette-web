@@ -2,8 +2,8 @@
 
 A fiche d'activité is written in Confluence, from the template. An assistant there, given the
 fiche, the glossary and [activity.schema.json](activity.schema.json), writes it as JSON. The back
-office imports a zip of those files: it checks the whole zip first, shows what is wrong or
-missing, and writes nothing until the check passes and the import is confirmed.
+office sends a zip of those files to the server, which checks the whole zip and imports it only
+when nothing in it is an error. Either way, the back office shows what is wrong or missing.
 
 ## The zip
 
@@ -41,7 +41,8 @@ lumineux*, written this way. Its three tips are not in the fiche: they show the 
 
 ## What the check reports
 
-Errors stop the import; warnings are shown and can be accepted.
+Errors stop the import, and nothing is written. Warnings do not: the zip is imported, and they
+are shown with it. Only an admin can import.
 
 | | |
 |---|---|
@@ -49,6 +50,7 @@ Errors stop the import; warnings are shown and can be accepted.
 | Error | an identifier the glossary does not have |
 | Error | a file named but missing from the zip, or over 2 MB |
 | Error | a step naming a material or resource the fiche does not list |
+| Error | a value the collections refuse when it is written: nothing of the zip is kept |
 | Warning | a material the catalogue does not have yet |
 | Warning | the rows in `toConfirm`, still « à valider » in the fiche |
 | Warning | an empty field the template expects: summary, description, ages, durations… |
