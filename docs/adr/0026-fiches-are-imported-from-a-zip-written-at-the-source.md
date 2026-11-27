@@ -1,9 +1,10 @@
 # 0026. Fiches are imported from a zip, written as JSON at the source
 
 Status: Accepted. It replaces the MCP server that saved a fiche, and the catalogue aliases that
-came with it (the former 0027). Where [0017](0017-an-activity-is-saved-in-one-batch.md) and
+came with it (the former 0027), then the import the back office ran in the browser. Where
+[0017](0017-an-activity-is-saved-in-one-batch.md) and
 [0018](0018-safety-instructions-and-tips-are-catalogues.md) say "the import", read this one: it
-links tips and safety instructions by identifier, not by name.
+links tips and safety instructions by identifier, not by name, and writes on the server.
 
 ## Context
 
@@ -38,12 +39,18 @@ the two sides; [docs/user/import](../user/import/README.md) describes it.
 its `activity.json` and the files it names. An optional `glossary.json` at the root is applied
 first.
 
-**The back office imports it, from the activities list.** It reads the whole zip and checks it:
-the identifiers, the files, and the cross-references between steps and the fiche's lists. The
-schema itself is not validated in the browser: each file only has to say which format it is,
-and the collections refuse what they cannot store. Then it shows the errors and warnings of each fiche. It writes nothing until no error is
-left and the author confirms. Each fiche is then saved in one batch
-([0017](0017-an-activity-is-saved-in-one-batch.md)).
+**The server imports it, in one call.** The back office sends the zip to
+`POST /api/activities/import`, from the activities list. The route refuses anyone but an admin
+before it reads the zip. Then it checks the whole zip: the identifiers, the files, and the
+cross-references between steps and the fiche's lists. Each value must have its schema's type; the
+schema itself is not validated otherwise, and the collections refuse what they cannot store.
+When no problem is an error, it writes the glossary and every fiche in one transaction. Either
+way, it answers with the errors and warnings of each fiche, and whether the zip was written.
+
+The browser used to do all of this, with a check before a confirmed import. The rules lived in
+TypeScript, each fiche was its own batch, and the zip was read twice over HTTP: once to check,
+once to upload its files. On the server, the rules sit next to the collections they write, one
+refused write undoes the whole zip, and any client can call the route.
 
 **A fiche is its Confluence page id.** The activity stores it, uniquely. Importing the fiche
 again updates that activity, whatever its title has become, and keeps its state.
@@ -79,10 +86,15 @@ new one is created, and the check lists it as a warning.
   matériel », a step's visual file and a step's own advice. They are added with the import. The
   app keeps resources on steps, so a resource that no step names is left out, with a warning.
 - **The zip is assembled by hand**, from the page's attachments and the assistant's JSON.
-- **Nothing is installed, and no password sits in a configuration file.** The import runs in
-  the back office, with the author's session and the collections' rules.
-- **A file that strays from the schema is caught late, or loosely.** A value of the wrong kind
-  is refused by the collection at save time, for that fiche only; a missing key makes the fiche
-  unreadable in the check, without saying which. Validating the schema, in the browser or on the
-  server, is left for when this proves too coarse.
-- The browser reads the zip with `fflate`.
+- **Nothing is installed, and no password sits in a configuration file.** The import runs with
+  the author's session, and the route checks the role itself: it writes as the server, past the
+  collections' rules.
+- **An import is all or nothing.** Warnings do not stop it; an error, or a write a collection
+  refuses, leaves the database as it was. The refusal is reported against its fiche.
+- **There is no confirmation step.** The author picks the zip and imports it; a zip with an error
+  only gets its report back. A warning is read after the import, and fixed by a new one.
+- **A file that strays from the schema is caught loosely.** A value of the wrong type is
+  reported with its key. A missing key reads as its empty value. Validating the schema fully is
+  left for when this proves too coarse.
+- **The zip is limited to 128 MB**, past PocketBase's default 32 MB: it holds the pictures.
+- The code is in `backend/api/importer`, and its tests are Go tests.

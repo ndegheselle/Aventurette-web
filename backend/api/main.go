@@ -8,6 +8,7 @@ import (
 	"github.com/pocketbase/pocketbase/tools/osutils"
 
 	"backend/hooks"
+	"backend/importer"
 	// Registers every migration in the package. Blank: nothing calls into it, the `init` of
 	// each file is the point — without this import a fresh database comes up with no
 	// collections and `migrate up` has nothing to apply.
@@ -22,6 +23,7 @@ func main() {
 	})
 
 	hooks.Register(app)
+	importer.Register(app)
 	registerSeedCommand(app)
 
 	if err := app.Start(); err != nil {
